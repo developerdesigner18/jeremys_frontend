@@ -37,10 +37,23 @@ function UserProfile(props) {
               city: city,
               state: state,
               password: password,
-              mobileNumber: phoneNumber,
+              phoneNumber: phoneNumber,
               country: country,
               showImage: profileImgURl,
               type: type,
+              paymentType: result.data.paymentData
+                ? result.data.paymentData.paymentType
+                : '',
+              expiryDate: result.data.paymentData
+                ? result.data.paymentData.expiryDate
+                : '',
+              cvv: result.data.paymentData ? result.data.paymentData.cvv : '',
+              cardNumber: result.data.paymentData
+                ? result.data.paymentData.cardNumber
+                : '',
+              preferredCarrier: result.data.paymentData
+                ? result.data.paymentData.preferredCarrier
+                : '',
             }));
           }
         })
@@ -56,7 +69,7 @@ function UserProfile(props) {
     confPass: '',
     country: '',
     city: '',
-    mobileNumber: '',
+    phoneNumber: '',
     paymentType: '',
     expiryDate: '',
     state: '',
@@ -65,6 +78,7 @@ function UserProfile(props) {
     image: '',
     showImage: '',
     type: '',
+    cvv: '',
   });
 
   const handleChange = e => {
@@ -95,7 +109,8 @@ function UserProfile(props) {
       fd.append('paymentType', userInfo.paymentType);
       fd.append('cardNumber', userInfo.cardNumber);
       fd.append('expiryDate', userInfo.expiryDate);
-      fd.append('phoneNumber', userInfo.mobileNumber);
+      fd.append('phoneNumber', userInfo.phoneNumber);
+      fd.append('preferredCarrier', userInfo.preferredCarrier);
       fd.append('type', userInfo.type);
       fd.append('email', userInfo.email);
       fd.append('image', userInfo.image);
@@ -244,8 +259,8 @@ function UserProfile(props) {
                   <label>MOBILE NUMBER</label>
                   <input
                     type="text"
-                    name="mobileNumber"
-                    value={userInfo.mobileNumber}
+                    name="phoneNumber"
+                    value={userInfo.phoneNumber}
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -281,13 +296,11 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail d-none d-sm-block "
-                  style={{ opacity: 0 }}>
+                <div className="form_detail d-none d-sm-block ">
                   <label>PREFERRED CARRIER</label>
                   <input type="text" />
                 </div>
-                <div className="form_detail">
+                {/* <div className="form_detail">
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
@@ -295,7 +308,7 @@ function UserProfile(props) {
                     value={userInfo.preferredCarrier}
                     onChange={e => handleChange(e)}
                   />
-                </div>
+                </div> */}
 
                 <div
                   className="form_detail d-none d-sm-block "
@@ -312,10 +325,15 @@ function UserProfile(props) {
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                {/* <div className="form_detail">
+                <div className="form_detail">
                   <label>CVV</label>
-                  <input type="text" />
-                </div> */}
+                  <input
+                    type="password"
+                    name="cvv"
+                    value={userInfo.cvv}
+                    onChange={e => handleChange(e)}
+                  />
+                </div>
               </div>
             </div>
           </div>

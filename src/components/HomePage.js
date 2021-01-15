@@ -22,7 +22,7 @@ function HomePage(props) {
           'welcome ' + localStorage.getItem('name')
         ) : (
           <div>
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center hader_top">
               <a
                 className="login"
                 onClick={goToLogin}

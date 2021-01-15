@@ -69,6 +69,10 @@ a {
 a:hover {
   color: #ffffff !important;
   opacity: 0.7;
+  text-decoration: none;
+}
+.hader_top {
+  justify-content: flex-end;
 }
 header a {
   padding: 0 10px;
@@ -153,6 +157,10 @@ video {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 25%;
+  margin: auto;
+  z-index: 9;
+  background-image: radial-gradient(circle, #000000e8, #00000000, #00000000);
 }
 .float_button:after {
   content: 'music';
