@@ -53,7 +53,7 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: proxima-nova;
-  background: #1b1b1b;
+  background: black;
 }
 .tabcontent {
   display: none;

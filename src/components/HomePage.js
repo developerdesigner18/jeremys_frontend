@@ -16,9 +16,8 @@ function HomePage(props) {
   };
 
   return (
-    <div className="container p-3 p-md-5 main">
+    <div className="container p-3 p-md-3 main">
       <header>
-        {console.log('props ', props)}
         {localStorage.getItem('token') ? (
           'welcome ' + localStorage.getItem('name')
         ) : (
