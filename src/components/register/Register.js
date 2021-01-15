@@ -6,7 +6,7 @@ import axios from 'axios';
 function Register(props) {
   const history = useHistory();
 
-  const [type, setType] = useState('');
+  const [type, setType] = useState('Fan');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -61,53 +61,61 @@ function Register(props) {
     }
   };
 
+  const changeType = (e, type) => {
+    console.log('typre ', type);
+    e.preventDefault();
+    setType(type);
+  };
+
   return (
     <div className="container p-5 main mt-5">
+      {console.log('type', type)}
       <form method="post" onSubmit={e => callRegister(e)}>
         <div className="tab">
-          <input
-            required
-            type="radio"
-            name="type"
-            value="Fan"
-            onChange={e => setType(e.target.value)}
-          />
-          Fan
-          <input
-            type="radio"
-            name="type"
-            value="Fan"
-            onChange={e => setType(e.target.value)}
-          />
-          Star
-          <input
-            type="radio"
-            name="type"
-            value="Chef"
-            onChange={e => setType(e.target.value)}
-          />
-          Chef
-          <input
-            type="radio"
-            name="type"
-            value="Stylist"
-            onChange={e => setType(e.target.value)}
-          />
-          Stylist
-          <input
-            type="radio"
-            name="type"
-            value="Trainer"
-            onChange={e => setType(e.target.value)}
-          />
-          Trainer
-          <input
-            type="radio"
-            name="type"
-            value="Advertiser"
-            onChange={e => setType(e.target.value)}
-          />
-          Advertiser
+          <button
+            className="tablinks"
+            type="button"
+            style={{ border: type == 'Fan' ? '2px solid #363636' : 'none' }}
+            onClick={e => changeType(e, 'Fan')}>
+            FAN
+          </button>
+          <button
+            className="tablinks"
+            type="button"
+            style={{ border: type == 'Star' ? '2px solid #363636' : 'none' }}
+            onClick={e => changeType(e, 'Star')}>
+            STAR
+          </button>
+          <button
+            className="tablinks"
+            type="button"
+            style={{ border: type == 'Chef' ? '2px solid #363636' : 'none' }}
+            onClick={e => changeType(e, 'Chef')}>
+            CHEF
+          </button>
+          <button
+            type="button"
+            className="tablinks"
+            style={{ border: type == 'Stylist' ? '2px solid #363636' : 'none' }}
+            onClick={e => changeType(e, 'Stylist')}>
+            STYLIST
+          </button>
+          <button
+            className="tablinks"
+            type="button"
+            style={{ border: type == 'Trainer' ? '2px solid #363636' : 'none' }}
+            onClick={e => changeType(e, 'Trainer')}>
+            TRAINER
+          </button>
+          <button
+            className="tablinks"
+            type="button"
+            style={{
+              border: type == 'Advertiser' ? '2px solid #363636' : 'none',
+            }}
+            onClick={e => changeType(e, 'Advertiser')}>
+            ADVERTISER
+          </button>
         </div>
 
         <div id="fan" className="tabcontent active">
@@ -172,7 +180,9 @@ function Register(props) {
             </div>
           </div>
           <div className="create_ac_container d-flex justify-content-center mt-5">
-            <button className="create_ac">Create My Account</button>
+            <button className="create_ac" type="submit">
+              Create My Account
+            </button>
           </div>
           <div className="privacy">
             By clicking the button, you agree to our <span>Terms</span>,{' '}

@@ -89,7 +89,7 @@ button.create_ac {
   text-decoration: underline;
 }
 .form_container {
-  width: 70%;
+  width: 100% !important;
   margin: auto;
   background-color: #000000;
 }
