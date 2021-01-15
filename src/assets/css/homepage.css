@@ -1,219 +1,225 @@
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/ProximaNova-Regular.otf');
-	font-weight: 400;
+  font-family: proxima-nova;
+  src: url('../fonts/ProximaNova-Regular.otf');
+  font-weight: 400;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/ProximaNova-Regular-1.otf');
-	font-weight: 500;
+  font-family: proxima-nova;
+  src: url('../fonts/ProximaNova-Regular-1.otf');
+  font-weight: 500;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Bold.otf');
-	font-weight: 600;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Bold.otf');
+  font-weight: 600;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Extrabold.otf');
-	font-weight: 700;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Extrabold.otf');
+  font-weight: 700;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Black.otf');
-	font-weight: 800;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Black.otf');
+  font-weight: 800;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Thin.otf');
-	font-weight: 300;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Thin.otf');
+  font-weight: 300;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Alt Light.otf');
-	font-weight: 200;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Alt Light.otf');
+  font-weight: 200;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Alt Thin.otf');
-	font-weight: 100;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Alt Thin.otf');
+  font-weight: 100;
 }
 @font-face {
-	font-family: mplus;
-	src: url('../fonts/mplus-2p-thin.ttf');
+  font-family: mplus;
+  src: url('../fonts/mplus-2p-thin.ttf');
 }
 @font-face {
-	font-family: Avalon_Bold;
-	src: url('../fonts/Avalon_Bold.ttf');
+  font-family: Avalon_Bold;
+  src: url('../fonts/Avalon_Bold.ttf');
 }
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: #000000;
-    color: #ffffff;
-    font-family: Avalon_Bold;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: #000000;
+  color: #ffffff;
+  font-family: Avalon_Bold;
 }
 header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
-a{
-    color: #ffffff;
-    transition: 0.2s ease;
-    opacity: 1;
+a {
+  color: #ffffff;
+  transition: 0.2s ease;
+  opacity: 1;
 }
 a:hover {
-    color: #ffffff !important;
-    opacity: 0.7;
+  color: #ffffff !important;
+  opacity: 0.7;
 }
 header a {
-    padding: 0 10px;
-    padding-right: 0;
-    color: #6d6d6d;
-    text-transform: capitalize;
+  padding: 0 10px;
+  padding-right: 0;
+  color: #6d6d6d;
+  text-transform: capitalize;
 }
 a.login {
-    padding-right: 10px;
-    border-right: 1px solid;
-    line-height: 1;
+  padding-right: 10px;
+  line-height: 1;
 }
 header div:last-child {
-    padding-top: 5px;
+  padding-top: 5px;
 }
 .main_sec > div {
-    flex: 1;
+  flex: 1;
 }
 .main_sec {
-    display: flex;
-    align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
 }
 .links {
-    justify-content: center;
-    display: flex;
-}   
+  justify-content: center;
+  display: flex;
+}
 .links ul {
-    padding: 0;
-    list-style-type: none;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: baseline;
-    margin-bottom: 0;
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  margin-bottom: 0;
 }
 .links ul li {
-    letter-spacing: 1.8px;
+  letter-spacing: 1.8px;
 }
 .logo {
-    text-align: center;
+  text-align: center;
 }
 .links ul a {
-    color: #ffffff;
-    font-size: 16px;
-    text-transform: uppercase;
+  color: #ffffff;
+  font-size: 16px;
+  text-transform: uppercase;
 }
 .links li:not(:last-child) {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 .links ul a {
-    color: #6d6d6d;
-    font-size: 16px;
-    text-transform: uppercase;
+  color: #6d6d6d;
+  font-size: 16px;
+  text-transform: uppercase;
 }
 .hero_text.text-center {
-    font-weight: 300 !important;
-    font-family: proxima-nova;
-    margin-top: 15px;
-    letter-spacing: 1.8px;
-    font-size: 20px;
+  font-weight: 300 !important;
+  font-family: proxima-nova;
+  margin-top: 15px;
+  letter-spacing: 1.8px;
+  font-size: 20px;
 }
-.videos_container{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.videos_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 video {
-    width: 100%;
-    height: 320px;
-    object-fit: cover;
-    outline: none;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  outline: none;
 }
 .video_content {
-    display: flex;
-    position: relative;
-    z-index: 3;
+  display: flex;
+  position: relative;
+  z-index: 3;
 }
 .hero_button {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .float_button:after {
-    content: "music";
-    position: absolute;
-    z-index: 2;
-    color: #ffffff;
-    text-transform: uppercase;
-    font-size: 20px;
-    letter-spacing: 1.8px;
-    font-family: proxima-nova;
-    opacity: 1;
+  content: 'music';
+  position: absolute;
+  z-index: 2;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 20px;
+  letter-spacing: 1.8px;
+  font-family: proxima-nova;
+  opacity: 1;
 }
 .food .float_button:after {
-    content: "food";
+  content: 'food';
 }
 .style .float_button:after {
-    content: "style";
+  content: 'style';
 }
 .body .float_button:after {
-    content: "body";
+  content: 'body';
 }
 
 .float_button {
-    height: 100px;
-    width: 100px;
-    border: 10px solid #343434;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 60px;
-    color: #343434;
-    opacity: 0.8;
-    position: relative;
-    z-index: 4;
+  height: 100px;
+  width: 100px;
+  border: 10px solid #343434;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  color: #343434;
+  opacity: 0.8;
+  position: relative;
+  z-index: 4;
 }
 .videos_container:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #0000002e;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0000002e;
 }
 
-@media (max-width: 545px){
-.logo img {
+a.login:last-child {
+  padding-right: 0;
+}
+a.login:first-child {
+  border-right: 1px solid;
+}
+
+@media (max-width: 545px) {
+  .logo img {
     width: 85px;
     margin: 0 20px;
-}
-video {
+  }
+  video {
     height: 230px;
-}
-.float_button:after {
+  }
+  .float_button:after {
     font-size: 16px;
-}
-.float_button {
+  }
+  .float_button {
     height: 70px;
-    width: 70px;    
+    width: 70px;
     font-size: 40px;
-}
+  }
 }
