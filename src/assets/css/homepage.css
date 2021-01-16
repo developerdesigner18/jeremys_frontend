@@ -94,6 +94,14 @@ header div:last-child {
   display: flex;
   align-items: flex-end;
 }
+.custom_main_sec {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+.cust_home_page {
+  max-width: 100%;
+  padding: 0 !important;
+}
 .links {
   justify-content: center;
   display: flex;
@@ -132,6 +140,7 @@ header div:last-child {
   margin-top: 15px;
   letter-spacing: 1.8px;
   font-size: 20px;
+  margin-bottom: 18px !important;
 }
 .videos_container {
   display: grid;
@@ -161,6 +170,12 @@ video {
   margin: auto;
   z-index: 9;
   background-image: radial-gradient(circle, #000000e8, #00000000, #00000000);
+}
+.float_button {
+  height: 150px !important;
+  width: 150px !important;
+  border: 15px solid #343434 !important;
+  box-shadow: 2px -2px 107px 200px #000;
 }
 .float_button:after {
   content: 'music';

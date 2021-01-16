@@ -16,7 +16,7 @@ function HomePage(props) {
   };
 
   return (
-    <div className="container p-3 p-md-3 main">
+    <div className="container p-3 p-md-3 main cust_home_page">
       <header>
         {localStorage.getItem('token') ? (
           'welcome ' + localStorage.getItem('name')
@@ -44,7 +44,7 @@ function HomePage(props) {
           </div>
         )}
       </header>
-      <div className="main_sec">
+      <div className="main_sec custom_main_sec">
         <div className="links left_links">
           <ul>
             <li>

@@ -1,23 +1,20 @@
-import React, { useState } from "react";
-import "../../assets/css/signin.css";
-import { useHistory } from "react-router-dom";
-import axios from "axios";
-import Header from "../header/Header";
+import React, { useState } from 'react';
+import '../../assets/css/signin.css';
+import { useHistory } from 'react-router-dom';
+import { login } from '../../actions/userActions';
+import { useDispatch } from 'react-redux';
+
 function Login(props) {
   const history = useHistory();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const goToRegister = () => {
-    history.push("/register");
+    history.push('/register');
   };
 
-  const goToLogin = () => {
-    history.push("/login");
-  };
-
-  const callLogin = (e) => {
-    console.log("-=-=- fn called");
+  const callLogin = async e => {
     e.preventDefault();
 
     if (email && password) {
@@ -25,22 +22,8 @@ function Login(props) {
         email,
         password,
       };
-      axios
-        .post(
-          "https://radiant-beach-45888.herokuapp.com/auth/signin",
-          dataToPass
-        )
-        .then((result) => {
-          console.log("result ", result.data);
-          if (result.status === 200) {
-            props.history.push("/profile", {
-              name: result.data.data.firstName,
-            });
-            localStorage.setItem("token", result.data.authToken);
-            localStorage.setItem("name", result.data.data.firstName);
-          }
-        })
-        .catch((err) => alert(err.toString()));
+
+      await dispatch(login(dataToPass));
     }
   };
 

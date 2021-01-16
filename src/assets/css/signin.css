@@ -88,8 +88,8 @@ button.create_ac {
 .privacy span {
   text-decoration: underline;
 }
-.form_container {
-  width: 70%;
+.login_form_container {
+  width: 70% !important;
   margin: auto;
   background-color: #000000;
 }
@@ -147,7 +147,7 @@ button.create_ac {
   letter-spacing: 0.6px;
 }
 @media (max-width: 768px) {
-  .form_container {
+  .login_form_container {
     width: 100%;
   }
 }

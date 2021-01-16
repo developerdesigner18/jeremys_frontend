@@ -90,6 +90,7 @@ button.tablinks.active {
 }
 .form_container {
   align-items: flex-end;
+  width: 100%;
 }
 .form_container > div {
   flex: 1;

@@ -30,14 +30,6 @@ function UserProfile(props) {
               type,
             } = result.data.data;
 
-            const {
-              paymentType,
-              cardNumber,
-              cvv,
-              expiryDate,
-            } = result.data.paymentData;
-            console.log("profileImgURl....", result.data.data);
-            console.log("paymentType....", paymentType);
             setUserInfo((prevState) => ({
               ...prevState,
               firstName: firstName,
@@ -46,14 +38,23 @@ function UserProfile(props) {
               city: city,
               state: state,
               password: password,
-              mobileNumber: phoneNumber,
+              phoneNumber: phoneNumber,
               country: country,
               showImage: profileImgURl,
               type: type,
-              paymentType: paymentType,
-              expiryDate: expiryDate,
-              cvv: cvv,
-              cardNumber: cardNumber,
+              paymentType: result.data.paymentData
+                ? result.data.paymentData.paymentType
+                : "",
+              expiryDate: result.data.paymentData
+                ? result.data.paymentData.expiryDate
+                : "",
+              cvv: result.data.paymentData ? result.data.paymentData.cvv : "",
+              cardNumber: result.data.paymentData
+                ? result.data.paymentData.cardNumber
+                : "",
+              preferredCarrier: result.data.paymentData
+                ? result.data.paymentData.preferredCarrier
+                : "",
             }));
           }
         })
@@ -69,7 +70,7 @@ function UserProfile(props) {
     confPass: "",
     country: "",
     city: "",
-    mobileNumber: "",
+    phoneNumber: "",
     paymentType: "",
     expiryDate: "",
     state: "",
@@ -109,7 +110,8 @@ function UserProfile(props) {
       fd.append("paymentType", userInfo.paymentType);
       fd.append("cardNumber", userInfo.cardNumber);
       fd.append("expiryDate", userInfo.expiryDate);
-      fd.append("phoneNumber", userInfo.mobileNumber);
+      fd.append("phoneNumber", userInfo.phoneNumber);
+      fd.append("preferredCarrier", userInfo.preferredCarrier);
       fd.append("type", userInfo.type);
       fd.append("email", userInfo.email);
       fd.append("image", userInfo.image);
@@ -259,8 +261,8 @@ function UserProfile(props) {
                   <label>MOBILE NUMBER</label>
                   <input
                     type="text"
-                    name="mobileNumber"
-                    value={userInfo.mobileNumber}
+                    name="phoneNumber"
+                    value={userInfo.phoneNumber}
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
@@ -328,7 +330,12 @@ function UserProfile(props) {
                 </div>
                 <div className="form_detail">
                   <label>CVV</label>
-                  <input type="password" />
+                  <input
+                    type="password"
+                    name="cvv"
+                    value={userInfo.cvv}
+                    onChange={(e) => handleChange(e)}
+                  />
                 </div>
               </div>
             </div>
