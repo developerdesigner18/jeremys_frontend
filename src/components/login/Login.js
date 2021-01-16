@@ -47,7 +47,7 @@ function Login(props) {
   return (
     <div className="container">
       <form method="post" onSubmit={e => callLogin(e)}>
-        <div className="form_container p-3 p-md-5 mt-5">
+        <div className="login_form_container p-3 p-md-5 mt-5">
           <div className="form_detail">
             <label>E-mail</label>
             <input
