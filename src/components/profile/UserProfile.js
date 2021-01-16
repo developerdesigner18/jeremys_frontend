@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import Header from '../header/Header';
 
 function UserProfile(props) {
   const history = useHistory();
@@ -149,62 +150,64 @@ function UserProfile(props) {
   };
 
   return (
-    <div className="container mb-5  ">
-      <div className="wrapper " style={{ color: 'white' }}>
-        <div className="my-5" style={{ textAlign: 'center' }}>
-          USER INFORMATION
-        </div>
-        <form method="post" onSubmit={e => callUpdate(e)}>
-          <div>
-            <div className="row">
-              <div className="col-md-6 col-sm-12">
-                <div className="form_detail">
-                  <label>LAST NAME</label>
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={userInfo.lastName}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
-                <div className="form_detail">
-                  <label>FIRST NAME</label>
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={userInfo.firstName}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
-                <div className="form_detail">
-                  <label>EMAIL</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={userInfo.email}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
+    <>
+      <Header />
+      <div className="container mb-5  ">
+        <div className="wrapper " style={{ color: 'white' }}>
+          <div className="my-5" style={{ textAlign: 'center' }}>
+            USER INFORMATION
+          </div>
+          <form method="post" onSubmit={e => callUpdate(e)}>
+            <div>
+              <div className="row">
+                <div className="col-md-6 col-sm-12">
+                  <div className="form_detail">
+                    <label>LAST NAME</label>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={userInfo.lastName}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_detail">
+                    <label>FIRST NAME</label>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={userInfo.firstName}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_detail">
+                    <label>EMAIL</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={userInfo.email}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
 
-                <div className="form_detail">
-                  <label>PASSWORD</label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={userInfo.password}
-                    onChange={e => handleChange(e)}
-                  />
+                  <div className="form_detail">
+                    <label>PASSWORD</label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={userInfo.password}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-sm-12">
-                <label style={{}}></label>
-                <div
-                  style={{ marginTop: '0.5rem', width: '100%' }}
-                  className="upload"
-                  method="POST">
-                  <input type="file" onChange={e => imageChange(e)} />
-                  <p>
-                    {/* <img
+                <div className="col-md-6 col-sm-12">
+                  <label style={{}}></label>
+                  <div
+                    style={{ marginTop: '0.5rem', width: '100%' }}
+                    className="upload"
+                    method="POST">
+                    <input type="file" onChange={e => imageChange(e)} />
+                    <p>
+                      {/* <img
                       src={userInfo.showImage}
                       style={{
                         height: '200px',
@@ -212,95 +215,95 @@ function UserProfile(props) {
                         objectFit: 'cover',
                       }}
                     /> */}
-                    UPLOAD
-                    <br />
-                    PROFILE PHOTO
-                  </p>
-                </div>
+                      UPLOAD
+                      <br />
+                      PROFILE PHOTO
+                    </p>
+                  </div>
 
-                <div className="form_detail">
-                  <label>CONFIRM PASSWORD</label>
-                  <input
-                    type="password"
-                    name="confPass"
-                    value={userInfo.password}
-                    onChange={e => handleChange(e)}
-                  />
+                  <div className="form_detail">
+                    <label>CONFIRM PASSWORD</label>
+                    <input
+                      type="password"
+                      name="confPass"
+                      value={userInfo.password}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="my-5" style={{ textAlign: 'center' }}>
-            CONTACT DETAILS
-          </div>
-          <div>
-            <p>*SHIPPING ADDRESS / DROP-OFF</p>
-            <div className="row">
-              <div className="col-md-6 col-sm-12">
-                <div className="form_detail">
-                  <label>COUNTRY</label>
-                  <input
-                    type="text"
-                    name="country"
-                    value={userInfo.country}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
-                <div className="form_detail">
-                  <label>CITY</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={userInfo.city}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
-                <div className="form_detail">
-                  <label>MOBILE NUMBER</label>
-                  <input
-                    type="text"
-                    name="phoneNumber"
-                    value={userInfo.phoneNumber}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
+            <div className="my-5" style={{ textAlign: 'center' }}>
+              CONTACT DETAILS
+            </div>
+            <div>
+              <p>*SHIPPING ADDRESS / DROP-OFF</p>
+              <div className="row">
+                <div className="col-md-6 col-sm-12">
+                  <div className="form_detail">
+                    <label>COUNTRY</label>
+                    <input
+                      type="text"
+                      name="country"
+                      value={userInfo.country}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_detail">
+                    <label>CITY</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={userInfo.city}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_detail">
+                    <label>MOBILE NUMBER</label>
+                    <input
+                      type="text"
+                      name="phoneNumber"
+                      value={userInfo.phoneNumber}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
 
-                <div className="form_detail">
-                  <label>PAYMENT TYPE</label>
-                  <input
-                    type="text"
-                    name="paymentType"
-                    value={userInfo.paymentType}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
+                  <div className="form_detail">
+                    <label>PAYMENT TYPE</label>
+                    <input
+                      type="text"
+                      name="paymentType"
+                      value={userInfo.paymentType}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
 
-                <div className="form_detail">
-                  <label>EXPIRY DATE</label>
-                  <input
-                    type="text"
-                    name="expiryDate"
-                    value={userInfo.expiryDate}
-                    onChange={e => handleChange(e)}
-                  />
+                  <div className="form_detail">
+                    <label>EXPIRY DATE</label>
+                    <input
+                      type="text"
+                      name="expiryDate"
+                      value={userInfo.expiryDate}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-sm-12 d-flex align-items-stretch flex-column ">
-                <div className="form_detail">
-                  <label>STATE</label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={userInfo.state}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
+                <div className="col-md-6 col-sm-12 d-flex align-items-stretch flex-column ">
+                  <div className="form_detail">
+                    <label>STATE</label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={userInfo.state}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
 
-                <div className="form_detail d-none d-sm-block ">
-                  <label>PREFERRED CARRIER</label>
-                  <input type="text" />
-                </div>
-                {/* <div className="form_detail">
+                  <div className="form_detail d-none d-sm-block ">
+                    <label>PREFERRED CARRIER</label>
+                    <input type="text" />
+                  </div>
+                  {/* <div className="form_detail">
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
@@ -310,43 +313,44 @@ function UserProfile(props) {
                   />
                 </div> */}
 
-                <div
-                  className="form_detail d-none d-sm-block "
-                  style={{ opacity: 0 }}>
-                  <label>PREFERRED CARRIER</label>
-                  <input type="text" />
-                </div>
-                <div className="form_detail">
-                  <label>CARD NUMBER</label>
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    value={userInfo.cardNumber}
-                    onChange={e => handleChange(e)}
-                  />
-                </div>
-                <div className="form_detail">
-                  <label>CVV</label>
-                  <input
-                    type="password"
-                    name="cvv"
-                    value={userInfo.cvv}
-                    onChange={e => handleChange(e)}
-                  />
+                  <div
+                    className="form_detail d-none d-sm-block "
+                    style={{ opacity: 0 }}>
+                    <label>PREFERRED CARRIER</label>
+                    <input type="text" />
+                  </div>
+                  <div className="form_detail">
+                    <label>CARD NUMBER</label>
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      value={userInfo.cardNumber}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
+                  <div className="form_detail">
+                    <label>CVV</label>
+                    <input
+                      type="password"
+                      name="cvv"
+                      value={userInfo.cvv}
+                      onChange={e => handleChange(e)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
+            <div className="create_ac_container d-flex justify-content-center mt-5">
+              <button className="create_ac">SAVE</button>
+            </div>
+          </form>
+          <div className="privacy">
+            By clicking the button, you agree to our <span>Terms</span>,{' '}
+            <span>Privacy</span> and <span>Security Policy</span>.
           </div>
-          <div className="create_ac_container d-flex justify-content-center mt-5">
-            <button className="create_ac">SAVE</button>
-          </div>
-        </form>
-        <div className="privacy">
-          By clicking the button, you agree to our <span>Terms</span>,{' '}
-          <span>Privacy</span> and <span>Security Policy</span>.
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
