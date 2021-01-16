@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../../assets/css/signup.css';
 import { useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { registration } from '../../actions/userActions';
+import { useSelector, useDispatch } from 'react-redux';
 
 function Register(props) {
   const history = useHistory();
+  const stateData = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
   const [type, setType] = useState('Fan');
   const [firstName, setFirstName] = useState('');
@@ -45,19 +48,7 @@ function Register(props) {
       fd.append('type', type);
       if (image) fd.append('image', image);
 
-      axios
-        .post('https://radiant-beach-45888.herokuapp.com/auth/signup', fd)
-        .then(result => {
-          //   console.log('result ', result);
-          if (result.status === 200) {
-            props.history.push('/profile', {
-              name: result.data.data.firstName,
-            });
-            localStorage.setItem('token', result.data.authToken);
-            localStorage.setItem('name', result.data.data.firstName);
-          }
-        })
-        .catch(err => console.log('error ', err));
+      await dispatch(registration(fd));
     }
   };
 
