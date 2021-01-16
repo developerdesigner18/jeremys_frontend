@@ -102,6 +102,9 @@ header div:last-child {
   max-width: 100%;
   padding: 0 !important;
 }
+.cust_home_page header {
+  padding: 0 10px;
+}
 .links {
   justify-content: center;
   display: flex;
@@ -187,6 +190,7 @@ video {
   letter-spacing: 1.8px;
   font-family: proxima-nova;
   opacity: 1;
+  font-weight: 400;
 }
 .food .float_button:after {
   content: 'food';
@@ -206,7 +210,9 @@ video {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 60px;
+  font-size: 104px;
+  font-family: 'Kodchasan', sans-serif;
+  font-weight: 900;
   color: #343434;
   opacity: 0.8;
   position: relative;

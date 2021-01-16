@@ -3,6 +3,7 @@ import '../../assets/css/signin.css';
 import { useHistory } from 'react-router-dom';
 import { login } from '../../actions/userActions';
 import { useDispatch } from 'react-redux';
+import Header from '../header/Header';
 
 function Login(props) {
   const history = useHistory();
@@ -31,7 +32,7 @@ function Login(props) {
     <>
       <Header />
       <div className="container">
-        <form method="post" onSubmit={(e) => callLogin(e)}>
+        <form method="post" onSubmit={e => callLogin(e)}>
           <div className="form_container p-3 p-md-5 mt-5">
             <div className="form_detail">
               <label>E-mail</label>
@@ -39,7 +40,7 @@ function Login(props) {
                 type="email"
                 name="email"
                 required
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
             <div className="form_detail">
@@ -48,7 +49,7 @@ function Login(props) {
                 type="password"
                 name="password"
                 required
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
             <div className="forgot_pass">
@@ -64,8 +65,8 @@ function Login(props) {
               <button>Login</button>
             </div>
             <div className="text-center newbie">
-              are You a newbie?{" "}
-              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
+              are You a newbie?{' '}
+              <a onClick={goToRegister} style={{ cursor: 'pointer' }}>
                 Sign Up
               </a>
             </div>

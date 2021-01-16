@@ -1,51 +1,50 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import '../../assets/css/homepage.css';
 
 function Header() {
   const history = useHistory();
   const goToRegister = () => {
-    history.push("/register");
+    history.push('/register');
   };
 
   const goToLogin = () => {
-    history.push("/login");
+    history.push('/login');
   };
   const goToHome = () => {
-    history.push("/");
+    history.push('/');
   };
   return (
-    <div className="container p-3 p-md-3 ">
+    <div className="container p-3 p-md-3 cust_home_page">
       <header>
         {window.location.pathname ==
-        "/fanHomePage" ? null : localStorage.getItem("token") ? (
-          "welcome " + localStorage.getItem("name")
+        '/fanHomePage' ? null : localStorage.getItem('token') ? (
+          'welcome ' + localStorage.getItem('name')
         ) : (
           <div>
             <div className="d-flex align-items-center hader_top">
               <a
                 className="login"
                 onClick={goToLogin}
-                style={{ cursor: "pointer" }}
-              >
+                style={{ cursor: 'pointer' }}>
                 Login
               </a>
               <a
                 className="login"
                 onClick={goToRegister}
-                style={{ cursor: "pointer" }}
-              >
+                style={{ cursor: 'pointer' }}>
                 Register
               </a>
             </div>
             <div>
-              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
+              <a onClick={goToRegister} style={{ cursor: 'pointer' }}>
                 sign up for FREE
               </a>
             </div>
           </div>
         )}
       </header>
-      <div className="main_sec">
+      <div className="main_sec custom_main_sec">
         <div className="links left_links">
           <ul>
             <li>
@@ -66,7 +65,7 @@ function Header() {
           <img
             src={`../assets/images/logo.png`}
             onClick={goToHome}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: 'pointer' }}
           />
         </div>
         <div className="links right_links">
