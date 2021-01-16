@@ -18,7 +18,12 @@ function Header() {
       <header>
         {window.location.pathname ==
         "/fanHomePage" ? null : localStorage.getItem("token") ? (
-          "welcome " + localStorage.getItem("name")
+          <>
+            <span>{"welcome " + localStorage.getItem("name")}</span>
+            <span style={{ cursor: "pointer" }}>
+              <i class="fas fa-sign-out-alt" /> Logout
+            </span>
+          </>
         ) : (
           <div>
             <div className="d-flex align-items-center hader_top">

@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import Header from "../header/Header";
 
 function UserProfile(props) {
   const history = useHistory();
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem("token")) {
       axios
-        .get('https://radiant-beach-45888.herokuapp.com/api/user/getUserData', {
+        .get("https://radiant-beach-45888.herokuapp.com/api/user/getUserData", {
           headers: {
-            token: localStorage.getItem('token'),
+            token: localStorage.getItem("token"),
           },
         })
-        .then(result => {
-          console.log('reslu', result);
+        .then((result) => {
+          console.log("reslu", result);
           if (result.status === 201) {
             const {
               firstName,
@@ -28,14 +29,16 @@ function UserProfile(props) {
               profileImgURl,
               type,
             } = result.data.data;
+
             const {
               paymentType,
               cardNumber,
               cvv,
               expiryDate,
             } = result.data.paymentData;
-
-            setUserInfo(prevState => ({
+            console.log("profileImgURl....", result.data.data);
+            console.log("paymentType....", paymentType);
+            setUserInfo((prevState) => ({
               ...prevState,
               firstName: firstName,
               lastName: lastName,
@@ -54,103 +57,105 @@ function UserProfile(props) {
             }));
           }
         })
-        .catch(err => console.log('err ', err));
+        .catch((err) => console.log("err ", err));
     }
   }, []);
 
   const [userInfo, setUserInfo] = useState({
-    lastName: '',
-    firstName: '',
-    email: '',
-    password: '',
-    confPass: '',
-    country: '',
-    city: '',
-    mobileNumber: '',
-    paymentType: '',
-    expiryDate: '',
-    state: '',
-    preferredCarrier: '',
-    cardNumber: '',
-    image: '',
-    showImage: '',
-    type: '',
-    cvv: '',
+    lastName: "",
+    firstName: "",
+    email: "",
+    password: "",
+    confPass: "",
+    country: "",
+    city: "",
+    mobileNumber: "",
+    paymentType: "",
+    expiryDate: "",
+    state: "",
+    preferredCarrier: "",
+    cardNumber: "",
+    image: "",
+    showImage: "",
+    type: "",
+    cvv: "",
   });
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setUserInfo(prevState => ({
+    setUserInfo((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const imageChange = e => {
-    setUserInfo(prevState => ({
+  const imageChange = (e) => {
+    setUserInfo((prevState) => ({
       ...prevState,
       image: e.target.files[0],
       showImage: URL.createObjectURL(e.target.files[0]),
     }));
   };
 
-  const callUpdate = e => {
+  const callUpdate = (e) => {
     e.preventDefault();
     if (userInfo.image) {
       let fd = new FormData();
-      fd.append('firstName', userInfo.firstName);
-      fd.append('lastName', userInfo.lastName);
-      fd.append('city', userInfo.city);
-      fd.append('state', userInfo.state);
-      fd.append('country', userInfo.country);
-      fd.append('paymentType', userInfo.paymentType);
-      fd.append('cardNumber', userInfo.cardNumber);
-      fd.append('expiryDate', userInfo.expiryDate);
-      fd.append('phoneNumber', userInfo.mobileNumber);
-      fd.append('type', userInfo.type);
-      fd.append('email', userInfo.email);
-      fd.append('image', userInfo.image);
+      fd.append("firstName", userInfo.firstName);
+      fd.append("lastName", userInfo.lastName);
+      fd.append("city", userInfo.city);
+      fd.append("state", userInfo.state);
+      fd.append("country", userInfo.country);
+      fd.append("paymentType", userInfo.paymentType);
+      fd.append("cardNumber", userInfo.cardNumber);
+      fd.append("expiryDate", userInfo.expiryDate);
+      fd.append("phoneNumber", userInfo.mobileNumber);
+      fd.append("type", userInfo.type);
+      fd.append("email", userInfo.email);
+      fd.append("image", userInfo.image);
       axios
         .post(
-          'https://radiant-beach-45888.herokuapp.com/api/user/updateProfile',
+          "https://radiant-beach-45888.herokuapp.com/api/user/updateProfile",
           fd,
           {
             headers: {
-              token: localStorage.getItem('token'),
+              token: localStorage.getItem("token"),
             },
           }
         )
-        .then(result => {
+        .then((result) => {
           if (result.status === 200) {
-            alert('updated profile successfully');
-            history.push('/');
+            alert("updated profile successfully");
+            history.push("/");
           }
         })
-        .catch(err => console.log('error ', err));
+        .catch((err) => console.log("error ", err));
     } else {
       axios
-        .post('http://localhost:8000/api/user/updateProfile', userInfo, {
+        .post("http://localhost:8000/api/user/updateProfile", userInfo, {
           headers: {
-            token: localStorage.getItem('token'),
+            token: localStorage.getItem("token"),
           },
         })
-        .then(result => {
+        .then((result) => {
           if (result.status === 200) {
-            alert('updated profile successfully');
-            history.push('/');
+            alert("updated profile successfully");
+            history.push("/");
           }
         })
-        .catch(err => console.log('error ', err));
+        .catch((err) => console.log("error ", err));
     }
   };
 
   return (
     <div className="container mb-5  ">
-      <div className="wrapper " style={{ color: 'white' }}>
-        <div className="my-5" style={{ textAlign: 'center' }}>
+      {console.log("profileImgURl....", userInfo)}
+      <Header />
+      <div className="wrapper " style={{ color: "white" }}>
+        <div className="mb-5" style={{ textAlign: "center" }}>
           USER INFORMATION
         </div>
-        <form method="post" onSubmit={e => callUpdate(e)}>
+        <form method="post" onSubmit={(e) => callUpdate(e)}>
           <div>
             <div className="row">
               <div className="col-md-6 col-sm-12">
@@ -160,7 +165,7 @@ function UserProfile(props) {
                     type="text"
                     name="lastName"
                     value={userInfo.lastName}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
                 <div className="form_detail">
@@ -169,7 +174,7 @@ function UserProfile(props) {
                     type="text"
                     name="firstName"
                     value={userInfo.firstName}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
                 <div className="form_detail">
@@ -178,7 +183,7 @@ function UserProfile(props) {
                     type="email"
                     name="email"
                     value={userInfo.email}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
 
@@ -188,26 +193,25 @@ function UserProfile(props) {
                     type="password"
                     name="password"
                     value={userInfo.password}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
               </div>
               <div className="col-md-6 col-sm-12">
                 <label style={{}}></label>
                 <div
-                  style={{ marginTop: '0.5rem', width: '100%' }}
+                  style={{ marginTop: "0.5rem", width: "100%" }}
                   className="upload"
-                  method="POST">
-                  <input type="file" onChange={e => imageChange(e)} />
+                  method="POST"
+                >
+                  <input type="file" onChange={(e) => imageChange(e)} />
                   <p>
-                    {/* <img
+                    <img
                       src={userInfo.showImage}
                       style={{
-                        height: '200px',
-                        width: '440px',
-                        objectFit: 'cover',
+                        objectFit: "cover",
                       }}
-                    /> */}
+                    />
                     UPLOAD
                     <br />
                     PROFILE PHOTO
@@ -220,13 +224,13 @@ function UserProfile(props) {
                     type="password"
                     name="confPass"
                     value={userInfo.password}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
               </div>
             </div>
           </div>
-          <div className="my-5" style={{ textAlign: 'center' }}>
+          <div className="my-5" style={{ textAlign: "center" }}>
             CONTACT DETAILS
           </div>
           <div>
@@ -239,7 +243,7 @@ function UserProfile(props) {
                     type="text"
                     name="country"
                     value={userInfo.country}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
                 <div className="form_detail">
@@ -248,7 +252,7 @@ function UserProfile(props) {
                     type="text"
                     name="city"
                     value={userInfo.city}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
                 <div className="form_detail">
@@ -257,7 +261,7 @@ function UserProfile(props) {
                     type="text"
                     name="mobileNumber"
                     value={userInfo.mobileNumber}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
 
@@ -267,7 +271,7 @@ function UserProfile(props) {
                     type="text"
                     name="paymentType"
                     value={userInfo.paymentType}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
 
@@ -277,7 +281,7 @@ function UserProfile(props) {
                     type="text"
                     name="expiryDate"
                     value={userInfo.expiryDate}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
               </div>
@@ -288,7 +292,7 @@ function UserProfile(props) {
                     type="text"
                     name="state"
                     value={userInfo.state}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
 
@@ -308,7 +312,8 @@ function UserProfile(props) {
 
                 <div
                   className="form_detail d-none d-sm-block "
-                  style={{ opacity: 0 }}>
+                  style={{ opacity: 0 }}
+                >
                   <label>PREFERRED CARRIER</label>
                   <input type="text" />
                 </div>
@@ -318,7 +323,7 @@ function UserProfile(props) {
                     type="text"
                     name="cardNumber"
                     value={userInfo.cardNumber}
-                    onChange={e => handleChange(e)}
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
                 <div className="form_detail">
@@ -333,7 +338,7 @@ function UserProfile(props) {
           </div>
         </form>
         <div className="privacy">
-          By clicking the button, you agree to our <span>Terms</span>,{' '}
+          By clicking the button, you agree to our <span>Terms</span>,{" "}
           <span>Privacy</span> and <span>Security Policy</span>.
         </div>
       </div>
