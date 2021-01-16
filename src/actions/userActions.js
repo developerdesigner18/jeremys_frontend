@@ -60,8 +60,35 @@ export const getUser = () => {
       })
       .then(result => {
         if (result.status === 200) {
+          dispatch({
+            type: 'GET_USER',
+            payload: result.data,
+          });
+        } else {
+          console.log('error while retriving api ');
         }
       })
       .catch(error => console.log('error in get user api ', error));
+  };
+};
+
+export const updateProfile = data => {
+  return dispatch => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}api/user/updateProfile`, data, {
+        headers: {
+          token: localStorage.getItem('token'),
+        },
+      })
+      .then(result => {
+        if (result.status === 200) {
+          dispatch({
+            type: 'UPDATE_PROFILE',
+            payload: result.data,
+          });
+          swal('Info', 'User updatetion done successfully!', 'success');
+        }
+      })
+      .catch(err => console.log('error ', err));
   };
 };
