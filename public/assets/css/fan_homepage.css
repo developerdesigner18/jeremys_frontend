@@ -1,0 +1,269 @@
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular.otf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular-1.otf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Bold.otf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Extrabold.otf");
+  font-weight: 700;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Black.otf");
+  font-weight: 800;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Thin.otf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Light.otf");
+  font-weight: 200;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Thin.otf");
+  font-weight: 100;
+}
+@font-face {
+  font-family: mplus;
+  src: url("../fonts/mplus-2p-thin.ttf");
+}
+@font-face {
+  font-family: Avalon_Bold;
+  src: url("../fonts/Avalon_Bold.ttf");
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  background: #1b1b1b;
+  color: #ffffff;
+}
+.form_container {
+  width: 70%;
+  margin: auto;
+  background-color: #000000;
+}
+header {
+  justify-content: center;
+}
+.links ul {
+  padding: 0;
+  list-style-type: none;
+}
+.logo img {
+  height: 130px;
+  object-fit: contain;
+}
+.links ul a {
+  color: #ffffff;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.links {
+  justify-content: center;
+  display: flex;
+}
+header > div {
+  flex: 1;
+}
+.links ul {
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+.logo {
+  text-align: center;
+}
+.links ul li {
+  letter-spacing: 1.8px;
+}
+.hero_text {
+  font-size: 14px;
+  margin-top: 5px;
+  letter-spacing: 1.8px;
+}
+.tab {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.tab > div {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+.tab > div:not(:last-child) {
+  margin-right: 10px;
+}
+button.tablinks {
+  background-image: url("../images/button_bg.png");
+  padding: 25px;
+  background-color: transparent;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100px;
+  width: 100px;
+  border: 0;
+  background-size: contain;
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 1.8px;
+  font-weight: 800;
+  outline: none;
+}
+.fan_image img {
+  width: 100%;
+}
+button.tablinks.active {
+  box-shadow: 0 0 14px 2px #ff0000;
+}
+.category {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #333333;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: -3rem;
+  margin-right: -3rem;
+}
+.category > div {
+  flex: 1;
+  text-align: center;
+}
+.cats_content a {
+  color: #ffffff;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+}
+.cats_content video {
+  width: 100%;
+}
+.main_cat .cats_content video {
+  width: 100%;
+}
+.main_cat video {
+  width: 100%;
+}
+.vids {
+  background: #000000;
+  padding: 0 10px;
+}
+.main_cat:not(:last-child) {
+  margin-right: 10px;
+}
+.main_cat video {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 50%;
+  outline: none;
+}
+.tabcontent.active {
+  display: block;
+}
+.tabcontent {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .form_container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .main_cat video {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (max-width: 545px) {
+  .vids {
+    flex-wrap: wrap;
+  }
+  .category {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .main_cat:not(:last-child) {
+    margin-right: 0;
+  }
+  button.tablinks {
+    padding: 0;
+    height: 60px;
+    width: 60px;
+    font-size: 10px;
+  }
+  .category.vids {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+  }
+  .main_cat video {
+    width: 120px;
+    height: 120px;
+  }
+  .fan_image {
+    order: 1;
+  }
+  .tab1 {
+    order: 2;
+    display: inline-block !important;
+    width: 50%;
+  }
+  .tab2 {
+    order: 3;
+    display: inline-block !important;
+    width: 50%;
+    float: right;
+  }
+  .tab3 {
+    order: 4;
+    display: inline-block !important;
+    width: 50%;
+  }
+  .tab4 {
+    order: 5;
+    display: inline-block !important;
+    width: 50%;
+    float: right;
+  }
+  .tab {
+    display: block;
+  }
+  .tab > div:not(:last-child) {
+    margin-right: 0;
+  }
+  .fan_image img {
+    width: 50%;
+  }
+  .tab > div {
+    text-align: center;
+  }
+}
