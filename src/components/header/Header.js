@@ -80,7 +80,7 @@ function Header(props) {
         )}
       </header>
       <div className="main_sec custom_main_sec">
-        {stateData != null && stateData.userDetail ? (
+        {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
           stateData.userDetail.data.type === 'Fan' ? (
             <div className="links left_links">
@@ -101,22 +101,6 @@ function Header(props) {
             </div>
           ) : null
         ) : null}
-        {/* <div className="links left_links">
-          <ul>
-            <li>
-              <a href="#">stars</a>
-            </li>
-            <li>
-              <a href="#">chef</a>
-            </li>
-            <li>
-              <a href="#">style</a>
-            </li>
-            <li>
-              <a href="#">trainer</a>
-            </li>
-          </ul>
-        </div> */}
         <div className="logo">
           <img
             src={`../assets/images/logo.png`}
@@ -124,7 +108,7 @@ function Header(props) {
             style={{ cursor: 'pointer' }}
           />
         </div>
-        {stateData != null && stateData.userDetail ? (
+        {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
           stateData.userDetail.data.type === 'Fan' ? (
             <div className="links right_links">
