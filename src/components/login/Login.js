@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import '../../assets/css/signin.css';
-import { useHistory } from 'react-router-dom';
-import { login } from '../../actions/userActions';
-import { useDispatch } from 'react-redux';
-
+import React, { useState } from "react";
+import "../../assets/css/signin.css";
+import { useHistory } from "react-router-dom";
+import { login } from "../../actions/userActions";
+import { useDispatch } from "react-redux";
+import Header from "../header/Header";
 function Login(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const goToRegister = () => {
-    history.push('/register');
+    history.push("/register");
   };
 
-  const callLogin = async e => {
+  const callLogin = async (e) => {
     e.preventDefault();
 
     if (email && password) {

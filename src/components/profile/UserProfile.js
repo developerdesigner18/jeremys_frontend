@@ -200,24 +200,31 @@ function UserProfile(props) {
                 </div>
               </div>
               <div className="col-md-6 col-sm-12">
-                <label style={{}}></label>
+                <label style={{}}>CHANGE PROFILE PHOTO</label>
                 <div
-                  style={{ marginTop: "0.5rem", width: "100%" }}
+                  // style={{
+                  //   marginTop: "0.5rem",
+                  //   width: "100%",
+                  //   zIndex: "1",
+                  //   // background: `url("../assets/images/logo.png") no-repeat  !important`,
+                  //   backgroundSize: "cover",
+                  // }}
+                  style={
+                    userInfo.showImage != undefined ||
+                    userInfo.showImage != null
+                      ? {
+                          width: "100%",
+                          background: `url("${userInfo.showImage}") no-repeat center `,
+                          color: "white",
+                          backgroundSize: "cover",
+                        }
+                      : { background: "#ffff", width: "100%" }
+                  }
                   className="upload"
                   method="POST"
                 >
-                  <input type="file" onChange={(e) => imageChange(e)} />
-                  <p>
-                    <img
-                      src={userInfo.showImage}
-                      style={{
-                        objectFit: "cover",
-                      }}
-                    />
-                    UPLOAD
-                    <br />
-                    PROFILE PHOTO
-                  </p>
+                  <input type="image" onChange={(e) => imageChange(e)} />
+                  {userInfo.showImage ? null : <p>ADD PROFILE PHOTO</p>}
                 </div>
 
                 <div className="form_detail">
