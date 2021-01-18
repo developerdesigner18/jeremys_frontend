@@ -172,13 +172,13 @@ video {
   width: 25%;
   margin: auto;
   z-index: 9;
-  background-image: radial-gradient(circle, #000000e8, #00000000, #00000000);
+  /* background-image: radial-gradient(circle, #000000e8, #00000000, #00000000); */
 }
 .float_button {
   height: 150px !important;
   width: 150px !important;
-  border: 15px solid #343434 !important;
-  box-shadow: 2px -2px 107px 200px #000;
+  /* border: 15px solid #343434 !important; */
+  /* box-shadow: 2px -2px 107px 200px #000; */
 }
 .float_button:after {
   content: 'music';

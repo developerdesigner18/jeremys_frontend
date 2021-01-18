@@ -1,67 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../header/Header';
+import { getUser, updateProfile } from '../../actions/userActions';
+import { useSelector, useDispatch } from 'react-redux';
 
 function UserProfile(props) {
-  const history = useHistory();
-
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      axios
-        .get('https://radiant-beach-45888.herokuapp.com/api/user/getUserData', {
-          headers: {
-            token: localStorage.getItem('token'),
-          },
-        })
-        .then(result => {
-          console.log('reslu', result);
-          if (result.status === 201) {
-            const {
-              firstName,
-              lastName,
-              emailId,
-              city,
-              state,
-              country,
-              password,
-              phoneNumber,
-              profileImgURl,
-              type,
-            } = result.data.data;
-
-            setUserInfo(prevState => ({
-              ...prevState,
-              firstName: firstName,
-              lastName: lastName,
-              email: emailId,
-              city: city,
-              state: state,
-              password: password,
-              phoneNumber: phoneNumber,
-              country: country,
-              showImage: profileImgURl,
-              type: type,
-              paymentType: result.data.paymentData
-                ? result.data.paymentData.paymentType
-                : '',
-              expiryDate: result.data.paymentData
-                ? result.data.paymentData.expiryDate
-                : '',
-              cvv: result.data.paymentData ? result.data.paymentData.cvv : '',
-              cardNumber: result.data.paymentData
-                ? result.data.paymentData.cardNumber
-                : '',
-              preferredCarrier: result.data.paymentData
-                ? result.data.paymentData.preferredCarrier
-                : '',
-            }));
-          }
-        })
-        .catch(err => console.log('err ', err));
-    }
-  }, []);
-
+  const dispatch = useDispatch();
+  const stateData = useSelector(state => {
+    if (localStorage.getItem('token')) return state.user;
+  });
   const [userInfo, setUserInfo] = useState({
     lastName: '',
     firstName: '',
@@ -81,6 +27,79 @@ function UserProfile(props) {
     type: '',
     cvv: '',
   });
+  const useHasChanged = val => {
+    const prevVal = usePrevious(val);
+    return prevVal !== val;
+  };
+
+  const usePrevious = value => {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  };
+
+  const hasVal1Changed = useHasChanged(userInfo);
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      dispatch(getUser());
+
+      // if (hasVal1Changed) {
+      //   console.log('val1 has changed', stateData, hasVal1Changed);
+      if (stateData && stateData.userDetail) {
+        console.log(
+          'stateData.userDetail.data&payment ',
+          stateData.userDetail,
+          stateData.userDetail.data,
+          stateData.userDetail.paymentData
+        );
+        const {
+          firstName,
+          lastName,
+          emailId,
+          city,
+          state,
+          country,
+          password,
+          phoneNumber,
+          profileImgURl,
+          type,
+        } = stateData.userDetail.data;
+
+        setUserInfo(prevState => ({
+          ...prevState,
+          firstName: firstName,
+          lastName: lastName,
+          email: emailId,
+          city: city,
+          state: state,
+          password: password,
+          phoneNumber: phoneNumber,
+          country: country,
+          showImage: profileImgURl,
+          type: type,
+          paymentType: stateData.userDetail.paymentData
+            ? stateData.userDetail.paymentData.paymentType
+            : '',
+          expiryDate: stateData.userDetail.paymentData
+            ? stateData.userDetail.paymentData.expiryDate
+            : '',
+          cvv: stateData.userDetail.paymentData
+            ? stateData.userDetail.paymentData.cvv
+            : '',
+          cardNumber: stateData.userDetail.paymentData
+            ? stateData.userDetail.paymentData.cardNumber
+            : '',
+          preferredCarrier: stateData.userDetail.paymentData
+            ? stateData.userDetail.paymentData.preferredCarrier
+            : '',
+        }));
+      }
+      // }
+    }
+  }, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -90,15 +109,20 @@ function UserProfile(props) {
     }));
   };
 
-  const imageChange = e => {
-    setUserInfo(prevState => ({
-      ...prevState,
-      image: e.target.files[0],
-      showImage: URL.createObjectURL(e.target.files[0]),
-    }));
+  const imageChange = event => {
+    let reader = new FileReader();
+    reader.onload = e => {
+      setUserInfo(prevState => ({
+        ...prevState,
+        image: event.target.files[0],
+        showImage: e.target.result,
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
   };
 
-  const callUpdate = e => {
+  const callUpdate = async e => {
+    console.log('usrinfo ', userInfo);
     e.preventDefault();
     if (userInfo.image) {
       let fd = new FormData();
@@ -115,44 +139,16 @@ function UserProfile(props) {
       fd.append('type', userInfo.type);
       fd.append('email', userInfo.email);
       fd.append('image', userInfo.image);
-      axios
-        .post(
-          'https://radiant-beach-45888.herokuapp.com/api/user/updateProfile',
-          fd,
-          {
-            headers: {
-              token: localStorage.getItem('token'),
-            },
-          }
-        )
-        .then(result => {
-          if (result.status === 200) {
-            alert('updated profile successfully');
-            history.push('/');
-          }
-        })
-        .catch(err => console.log('error ', err));
+      await dispatch(updateProfile(fd));
     } else {
-      axios
-        .post('http://localhost:8000/api/user/updateProfile', userInfo, {
-          headers: {
-            token: localStorage.getItem('token'),
-          },
-        })
-        .then(result => {
-          if (result.status === 200) {
-            alert('updated profile successfully');
-            history.push('/');
-          }
-        })
-        .catch(err => console.log('error ', err));
+      await dispatch(updateProfile(userInfo));
     }
   };
 
   return (
     <div className="container mb-5  ">
-      {console.log('profileImgURl....', userInfo)}
       <Header />
+      {console.log('state data', stateData)}
       <div className="wrapper " style={{ color: 'white' }}>
         <div className="mb-5" style={{ textAlign: 'center' }}>
           USER INFORMATION
@@ -166,7 +162,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="lastName"
-                    value={userInfo.lastName}
+                    value={
+                      userInfo.lastName
+                        ? userInfo.lastName
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.lastName
+                          : userInfo.lastName
+                        : userInfo.lastName
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -175,7 +179,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="firstName"
-                    value={userInfo.firstName}
+                    value={
+                      userInfo.firstName
+                        ? userInfo.firstName
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.firstName
+                          : userInfo.firstName
+                        : userInfo.firstName
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -184,7 +196,15 @@ function UserProfile(props) {
                   <input
                     type="email"
                     name="email"
-                    value={userInfo.email}
+                    value={
+                      userInfo.email
+                        ? userInfo.email
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.emailId
+                          : userInfo.email
+                        : userInfo.email
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -194,7 +214,15 @@ function UserProfile(props) {
                   <input
                     type="password"
                     name="password"
-                    value={userInfo.password}
+                    value={
+                      userInfo.password
+                        ? userInfo.password
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.password
+                          : userInfo.password
+                        : userInfo.password
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -206,15 +234,19 @@ function UserProfile(props) {
                   //   marginTop: "0.5rem",
                   //   width: "100%",
                   //   zIndex: "1",
-                  //   // background: `url("../assets/images/logo.png") no-repeat  !important`,
+                  //   background: `url("../assets/images/logo.png") no-repeat  !important`,
                   //   backgroundSize: "cover",
                   // }}
                   style={
-                    userInfo.showImage != undefined ||
-                    userInfo.showImage != null
+                    userInfo.showImage ||
+                    (stateData != null && stateData.userDetail)
                       ? {
                           width: '100%',
-                          background: `url("${userInfo.showImage}") no-repeat center `,
+                          background: `url("${
+                            userInfo.showImage
+                              ? userInfo.showImage
+                              : stateData.userDetail.data.profileImgURl
+                          }") no-repeat center `,
                           color: 'white',
                           backgroundSize: 'cover',
                         }
@@ -222,8 +254,10 @@ function UserProfile(props) {
                   }
                   className="upload"
                   method="POST">
-                  <input type="image" onChange={e => imageChange(e)} />
-                  {userInfo.showImage ? null : <p>ADD PROFILE PHOTO</p>}
+                  <input type="file" onChange={e => imageChange(e)} />
+                  {stateData && stateData.userDetail ? null : (
+                    <p>ADD PROFILE PHOTO</p>
+                  )}
                 </div>
 
                 <div className="form_detail">
@@ -231,7 +265,15 @@ function UserProfile(props) {
                   <input
                     type="password"
                     name="confPass"
-                    value={userInfo.password}
+                    value={
+                      userInfo.password
+                        ? userInfo.password
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.password
+                          : userInfo.password
+                        : userInfo.password
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -250,7 +292,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="country"
-                    value={userInfo.country}
+                    value={
+                      userInfo.country
+                        ? userInfo.country
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.country
+                          : userInfo.country
+                        : userInfo.country
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -259,7 +309,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="city"
-                    value={userInfo.city}
+                    value={
+                      userInfo.city
+                        ? userInfo.city
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.city
+                          : userInfo.city
+                        : userInfo.city
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -268,7 +326,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="phoneNumber"
-                    value={userInfo.phoneNumber}
+                    value={
+                      userInfo.phoneNumber
+                        ? userInfo.phoneNumber
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.phoneNumber
+                          : userInfo.phoneNumber
+                        : userInfo.phoneNumber
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -278,7 +344,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="paymentType"
-                    value={userInfo.paymentType}
+                    value={
+                      userInfo.paymentType
+                        ? userInfo.paymentType
+                        : stateData !== null
+                        ? stateData.userDetail.paymentData
+                          ? stateData.userDetail.paymentData.paymentType
+                          : userInfo.paymentType
+                        : userInfo.paymentType
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -288,7 +362,15 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="expiryDate"
-                    value={userInfo.expiryDate}
+                    value={
+                      userInfo.expiryDate
+                        ? userInfo.expiryDate
+                        : stateData !== null
+                        ? stateData.userDetail.paymentData
+                          ? stateData.userDetail.paymentData.expiryDate
+                          : userInfo.expiryDate
+                        : userInfo.expiryDate
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -299,59 +381,70 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="state"
-                    value={userInfo.state}
+                    value={
+                      userInfo.state
+                        ? userInfo.state
+                        : stateData !== null
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.state
+                          : userInfo.state
+                        : userInfo.state
+                    }
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                <div className="col-md-6 col-sm-12 d-flex align-items-stretch flex-column ">
-                  <div className="form_detail">
-                    <label>STATE</label>
-                    <input
-                      type="text"
-                      name="state"
-                      value={userInfo.state}
-                      onChange={e => handleChange(e)}
-                    />
-                  </div>
 
-                  <div className="form_detail d-none d-sm-block ">
-                    <label>PREFERRED CARRIER</label>
-                    <input type="text" />
-                  </div>
-                  {/* <div className="form_detail">
+                <div className="form_detail">
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
                     name="preferredCarrier"
-                    value={userInfo.preferredCarrier}
+                    value={
+                      userInfo.preferredCarrier
+                        ? userInfo.preferredCarrier
+                        : stateData !== null
+                        ? stateData.userDetail.paymentData
+                          ? stateData.userDetail.paymentData.preferredCarrier
+                          : userInfo.preferredCarrier
+                        : userInfo.preferredCarrier
+                    }
                     onChange={e => handleChange(e)}
                   />
-                </div> */}
+                </div>
 
-                  <div
-                    className="form_detail d-none d-sm-block "
-                    style={{ opacity: 0 }}>
-                    <label>PREFERRED CARRIER</label>
-                    <input type="text" />
-                  </div>
-                  <div className="form_detail">
-                    <label>CARD NUMBER</label>
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      value={userInfo.cardNumber}
-                      onChange={e => handleChange(e)}
-                    />
-                  </div>
-                  <div className="form_detail">
-                    <label>CVV</label>
-                    <input
-                      type="password"
-                      name="cvv"
-                      value={userInfo.cvv}
-                      onChange={e => handleChange(e)}
-                    />
-                  </div>
+                <div className="form_detail">
+                  <label>CARD NUMBER</label>
+                  <input
+                    type="text"
+                    name="cardNumber"
+                    value={
+                      userInfo.cardNumber
+                        ? userInfo.cardNumber
+                        : stateData !== null
+                        ? stateData.userDetail.paymentData
+                          ? stateData.userDetail.paymentData.cardNumber
+                          : userInfo.cardNumber
+                        : userInfo.cardNumber
+                    }
+                    onChange={e => handleChange(e)}
+                  />
+                </div>
+                <div className="form_detail">
+                  <label>CVV</label>
+                  <input
+                    type="password"
+                    name="cvv"
+                    value={
+                      userInfo.cvv
+                        ? userInfo.cvv
+                        : stateData !== null
+                        ? stateData.userDetail.paymentData
+                          ? stateData.userDetail.paymentData.cvv
+                          : userInfo.cvv
+                        : userInfo.cvv
+                    }
+                    onChange={e => handleChange(e)}
+                  />
                 </div>
               </div>
             </div>

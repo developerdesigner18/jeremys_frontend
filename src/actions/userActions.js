@@ -16,6 +16,7 @@ export const registration = data => {
               window.location.replace('/profile');
               localStorage.setItem('token', result.data.authToken);
               localStorage.setItem('name', result.data.data.firstName);
+              localStorage.setItem('type', result.data.data.type);
             }
           );
           //   props.history.push('/profile', {
@@ -42,6 +43,7 @@ export const login = data => {
           window.location.replace('/profile');
           localStorage.setItem('token', result.data.authToken);
           localStorage.setItem('name', result.data.data.firstName);
+          localStorage.setItem('type', result.data.data.type);
         } else {
           swal('Error!', 'Somthing went wrong,Please try again!', 'error');
         }
@@ -59,13 +61,14 @@ export const getUser = () => {
         },
       })
       .then(result => {
-        if (result.status === 200) {
+        console.log('api response ', result.data);
+        if (result.status === 201) {
           dispatch({
             type: 'GET_USER',
             payload: result.data,
           });
         } else {
-          console.log('error while retriving api ');
+          console.log('error while retriving api ', result);
         }
       })
       .catch(error => console.log('error in get user api ', error));
@@ -73,6 +76,7 @@ export const getUser = () => {
 };
 
 export const updateProfile = data => {
+  console.log('localStorage.getItem()', localStorage.getItem('token'), data);
   return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/user/updateProfile`, data, {

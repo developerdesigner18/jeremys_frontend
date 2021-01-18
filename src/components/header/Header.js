@@ -22,6 +22,11 @@ function Header() {
 
   const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? ' show' : ''}`;
 
+  const callLogout = () => {
+    localStorage.clear();
+    history.push('/');
+  };
+
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
@@ -36,7 +41,7 @@ function Header() {
               onClick={toggleValue}>
               {'welcome ' + localStorage.getItem('name')}
             </span>
-            <span style={{ cursor: 'pointer' }}>
+            <span style={{ cursor: 'pointer' }} onClick={callLogout}>
               <i class="fas fa-sign-out-alt" /> Logout
             </span>
           </>
@@ -105,9 +110,7 @@ function Header() {
           </ul>
         </div>
       </div>
-      <div className="hero_text text-center mb-4">
-        "Go live! and lets make our Earth a better place"
-      </div>
+      <div className="hero_text text-center mb-4"></div>
     </div>
   );
 }
