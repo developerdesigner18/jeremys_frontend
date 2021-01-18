@@ -75,7 +75,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/videos/7-trainer.mp4"
+                src="http://s3.amazonaws.com/jl-s3/7-trainer.mp4"
                 type="video/mp4"
               />
             </video>
