@@ -80,10 +80,7 @@ function Header(props) {
         )}
       </header>
       <div className="main_sec custom_main_sec">
-        {window.location.pathname === 'login' ||
-        window.location.pathname === 'register' ||
-        window.location.pathname === '/' ||
-        (stateData && stateData.userDetail) ? (
+        {stateData != null && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
           stateData.userDetail.data.type === 'Fan' ? (
             <div className="links left_links">
@@ -127,10 +124,7 @@ function Header(props) {
             style={{ cursor: 'pointer' }}
           />
         </div>
-        {window.location.pathname === 'login' ||
-        window.location.pathname === 'register' ||
-        window.location.pathname === '/' ||
-        (stateData && stateData.userDetail) ? (
+        {stateData != null && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
           stateData.userDetail.data.type === 'Fan' ? (
             <div className="links right_links">
