@@ -100,6 +100,25 @@ function Header(props) {
               </ul>
             </div>
           ) : null
+        ) : window.location.pathname === '/' ||
+          window.location.pathname === '/login' ||
+          window.location.pathname === '/register' ? (
+          <div className="links left_links">
+            <ul>
+              <li>
+                <a href="#">stars</a>
+              </li>
+              <li>
+                <a href="#">chef</a>
+              </li>
+              <li>
+                <a href="#">style</a>
+              </li>
+              <li>
+                <a href="#">trainer</a>
+              </li>
+            </ul>
+          </div>
         ) : null}
         <div className="logo">
           <img
@@ -128,6 +147,25 @@ function Header(props) {
               </ul>
             </div>
           ) : null
+        ) : window.location.pathname === '/' ||
+          window.location.pathname === '/login' ||
+          window.location.pathname === '/register' ? (
+          <div className="links right_links">
+            <ul>
+              <li>
+                <a href="#">fans</a>
+              </li>
+              <li>
+                <a href="#">food</a>
+              </li>
+              <li>
+                <a href="#">shopping</a>
+              </li>
+              <li>
+                <a href="#">athlete</a>
+              </li>
+            </ul>
+          </div>
         ) : null}
       </div>
       <div className="hero_text text-center mb-4"></div>
