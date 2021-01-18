@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../assets/css/homepage.css';
+import { getUser } from '../../actions/userActions';
+import { useSelector, useDispatch } from 'react-redux';
 
-function Header() {
+function Header(props) {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const stateData = useSelector(state => state.user);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(async () => {
+    if (localStorage.getItem('token')) await dispatch(getUser());
+  }, []);
+
   const goToRegister = () => {
     history.push('/register');
   };
@@ -42,7 +52,7 @@ function Header() {
               {'welcome ' + localStorage.getItem('name')}
             </span>
             <span style={{ cursor: 'pointer' }} onClick={callLogout}>
-              <i class="fas fa-sign-out-alt" /> Logout
+              <i className="fas fa-sign-out-alt" /> Logout
             </span>
           </>
         ) : (
@@ -70,7 +80,31 @@ function Header() {
         )}
       </header>
       <div className="main_sec custom_main_sec">
-        <div className="links left_links">
+        {window.location.pathname === 'login' ||
+        window.location.pathname === 'register' ||
+        window.location.pathname === '/' ||
+        (stateData && stateData.userDetail) ? (
+          stateData.userDetail.data.type === 'fan' ||
+          stateData.userDetail.data.type === 'Fan' ? (
+            <div className="links left_links">
+              <ul>
+                <li>
+                  <a href="#">stars</a>
+                </li>
+                <li>
+                  <a href="#">chef</a>
+                </li>
+                <li>
+                  <a href="#">style</a>
+                </li>
+                <li>
+                  <a href="#">trainer</a>
+                </li>
+              </ul>
+            </div>
+          ) : null
+        ) : null}
+        {/* <div className="links left_links">
           <ul>
             <li>
               <a href="#">stars</a>
@@ -85,7 +119,7 @@ function Header() {
               <a href="#">trainer</a>
             </li>
           </ul>
-        </div>
+        </div> */}
         <div className="logo">
           <img
             src={`../assets/images/logo.png`}
@@ -93,22 +127,30 @@ function Header() {
             style={{ cursor: 'pointer' }}
           />
         </div>
-        <div className="links right_links">
-          <ul>
-            <li>
-              <a href="#">fans</a>
-            </li>
-            <li>
-              <a href="#">food</a>
-            </li>
-            <li>
-              <a href="#">shopping</a>
-            </li>
-            <li>
-              <a href="#">athlete</a>
-            </li>
-          </ul>
-        </div>
+        {window.location.pathname === 'login' ||
+        window.location.pathname === 'register' ||
+        window.location.pathname === '/' ||
+        (stateData && stateData.userDetail) ? (
+          stateData.userDetail.data.type === 'fan' ||
+          stateData.userDetail.data.type === 'Fan' ? (
+            <div className="links right_links">
+              <ul>
+                <li>
+                  <a href="#">fans</a>
+                </li>
+                <li>
+                  <a href="#">food</a>
+                </li>
+                <li>
+                  <a href="#">shopping</a>
+                </li>
+                <li>
+                  <a href="#">athlete</a>
+                </li>
+              </ul>
+            </div>
+          ) : null
+        ) : null}
       </div>
       <div className="hero_text text-center mb-4"></div>
     </div>

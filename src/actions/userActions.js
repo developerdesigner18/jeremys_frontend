@@ -26,7 +26,10 @@ export const registration = data => {
           swal('Error!', 'Somthing went wrong,Please try again!', 'error');
         }
       })
-      .catch(err => console.log('error ', err));
+      .catch(err => {
+        console.log('error ', err);
+        swal('Error!', err.toString(), 'error');
+      });
   };
 };
 
@@ -48,7 +51,7 @@ export const login = data => {
           swal('Error!', 'Somthing went wrong,Please try again!', 'error');
         }
       })
-      .catch(err => console.log('error ', err));
+      .catch(err => swal('Error!', err.toString(), 'error'));
   };
 };
 
