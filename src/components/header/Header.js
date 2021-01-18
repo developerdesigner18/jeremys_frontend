@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../assets/css/homepage.css';
 
 function Header() {
   const history = useHistory();
+  const [isOpen, setIsOpen] = useState(false);
   const goToRegister = () => {
     history.push('/register');
   };
@@ -14,12 +15,26 @@ function Header() {
   const goToHome = () => {
     history.push('/');
   };
+
+  const toggleValue = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? ' show' : ''}`;
+
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
         {window.location.pathname ==
         '/fanHomePage' ? null : localStorage.getItem('token') ? (
-          'welcome ' + localStorage.getItem('name')
+          <p
+            style={{ cursor: 'pointer' }}
+            className="dropdown-toggle"
+            data-toggle="dropdown"
+            id="dropdownMenuButton"
+            onClick={toggleValue}>
+            {'welcome ' + localStorage.getItem('name')}
+          </p>
         ) : (
           <div>
             <div className="d-flex align-items-center hader_top">

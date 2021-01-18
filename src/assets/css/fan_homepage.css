@@ -1,52 +1,52 @@
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/ProximaNova-Regular.otf");
+  src: url('../fonts/ProximaNova-Regular.otf');
   font-weight: 400;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/ProximaNova-Regular-1.otf");
+  src: url('../fonts/ProximaNova-Regular-1.otf');
   font-weight: 500;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Bold.otf");
+  src: url('../fonts/Proxima Nova Bold.otf');
   font-weight: 600;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Extrabold.otf");
+  src: url('../fonts/Proxima Nova Extrabold.otf');
   font-weight: 700;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Black.otf");
+  src: url('../fonts/Proxima Nova Black.otf');
   font-weight: 800;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Thin.otf");
+  src: url('../fonts/Proxima Nova Thin.otf');
   font-weight: 300;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Alt Light.otf");
+  src: url('../fonts/Proxima Nova Alt Light.otf');
   font-weight: 200;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url("../fonts/Proxima Nova Alt Thin.otf");
+  src: url('../fonts/Proxima Nova Alt Thin.otf');
   font-weight: 100;
 }
 @font-face {
   font-family: mplus;
-  src: url("../fonts/mplus-2p-thin.ttf");
+  src: url('../fonts/mplus-2p-thin.ttf');
 }
 @font-face {
   font-family: Avalon_Bold;
-  src: url("../fonts/Avalon_Bold.ttf");
+  src: url('../fonts/Avalon_Bold.ttf');
 }
 body {
   margin: 0;
@@ -118,7 +118,7 @@ header > div {
   margin-right: 10px;
 }
 button.tablinks {
-  background-image: url("../images/button_bg.png");
+  background-image: url('../images/button_bg.png');
   padding: 25px;
   background-color: transparent;
   border-radius: 50%;
@@ -189,7 +189,28 @@ button.tablinks.active {
 .tabcontent {
   display: none;
 }
-
+.main_links {
+  justify-content: center;
+}
+.down_links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.down_links img {
+  width: 50px;
+  object-fit: contain;
+}
+.down_links:not(:last-child) {
+  margin-right: 30px;
+}
+.down_links div {
+  color: #666a76;
+}
+.main_links {
+  justify-content: center;
+  margin: 20px 0;
+}
 @media (max-width: 1024px) {
   .form_container {
     width: 100%;
