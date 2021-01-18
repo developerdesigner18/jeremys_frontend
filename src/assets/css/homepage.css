@@ -234,7 +234,18 @@ a.login:last-child {
 a.login:first-child {
   border-right: 1px solid;
 }
-
+.dropdown-menu {
+  padding: 0;
+}
+.menu_item {
+  padding-left: 0px;
+}
+.menu_item i {
+  padding-right: 5px;
+}
+.dropdown-toggle::after {
+  vertical-align: middle;
+}
 @media (max-width: 545px) {
   .logo img {
     width: 85px;

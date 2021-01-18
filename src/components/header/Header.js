@@ -15,6 +15,8 @@ function Header(props) {
     if (localStorage.getItem('token')) await dispatch(getUser());
   }, []);
 
+  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? ' show' : ''}`;
+
   const goToRegister = () => {
     history.push('/register');
   };
@@ -30,8 +32,6 @@ function Header(props) {
     setIsOpen(!isOpen);
   };
 
-  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? ' show' : ''}`;
-
   const callLogout = () => {
     localStorage.clear();
     history.push('/');
@@ -44,15 +44,26 @@ function Header(props) {
         '/fanHomePage' ? null : localStorage.getItem('token') ? (
           <>
             <span
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', position: 'relative' }}
               className="dropdown-toggle"
               data-toggle="dropdown"
               id="dropdownMenuButton"
               onClick={toggleValue}>
               {'welcome ' + localStorage.getItem('name')}
-            </span>
-            <span style={{ cursor: 'pointer' }} onClick={callLogout}>
-              <i className="fas fa-sign-out-alt" /> Logout
+
+              <div className={menuClass} aria-labelledby="dropdownMenuButton">
+                <ul className="menu_item">
+                  <li className="dropdown-item menu">
+                    <i className="fa fa-user" aria-hidden="true"></i>
+                    Profile
+                  </li>
+                  <li className="dropdown-item menu">
+                    <span style={{ cursor: 'pointer' }} onClick={callLogout}>
+                      <i className="fas fa-sign-out-alt" /> Logout
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </span>
           </>
         ) : (
