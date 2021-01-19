@@ -1,9 +1,9 @@
-import { BrowserRouter, Route } from "react-router-dom";
-import fanHomePage from "./components/fanHomePage/fanHomePage";
-import HomePage from "./components/HomePage";
-import Login from "./components/login/Login";
-import UserProfile from "./components/profile/UserProfile";
-import Register from "./components/register/Register";
+import { BrowserRouter, Route } from 'react-router-dom';
+import fanHomePage from './components/fanHomePage/fanHomePage';
+import HomePage from './components/HomePage';
+import Login from './components/login/Login';
+import UserProfile from './components/profile/UserProfile';
+import Register from './components/register/Register';
 
 function App() {
   return (

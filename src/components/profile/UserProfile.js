@@ -42,62 +42,66 @@ function UserProfile(props) {
 
   const hasVal1Changed = useHasChanged(userInfo);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (localStorage.getItem('token')) {
-      dispatch(getUser());
+      let mounted = true;
+      await dispatch(getUser());
 
-      // if (hasVal1Changed) {
-      //   console.log('val1 has changed', stateData, hasVal1Changed);
-      if (stateData && stateData.userDetail) {
-        console.log(
-          'stateData.userDetail.data&payment ',
-          stateData.userDetail,
-          stateData.userDetail.data,
-          stateData.userDetail.paymentData
-        );
-        const {
-          firstName,
-          lastName,
-          emailId,
-          city,
-          state,
-          country,
-          password,
-          phoneNumber,
-          profileImgURl,
-          type,
-        } = stateData.userDetail.data;
+      if (mounted) {
+        console.log('val1 has changed', stateData, mounted);
+        if (stateData && stateData.userDetail) {
+          console.log(
+            'stateData.userDetail.data&payment ',
+            stateData.userDetail,
+            stateData.userDetail.data,
+            stateData.userDetail.paymentData
+          );
+          const {
+            firstName,
+            lastName,
+            emailId,
+            city,
+            state,
+            country,
+            password,
+            phoneNumber,
+            profileImgURl,
+            type,
+          } = stateData.userDetail.data;
 
-        setUserInfo(prevState => ({
-          ...prevState,
-          firstName: firstName,
-          lastName: lastName,
-          email: emailId,
-          city: city,
-          state: state,
-          password: password,
-          phoneNumber: phoneNumber,
-          country: country,
-          showImage: profileImgURl,
-          type: type,
-          paymentType: stateData.userDetail.paymentData
-            ? stateData.userDetail.paymentData.paymentType
-            : '',
-          expiryDate: stateData.userDetail.paymentData
-            ? stateData.userDetail.paymentData.expiryDate
-            : '',
-          cvv: stateData.userDetail.paymentData
-            ? stateData.userDetail.paymentData.cvv
-            : '',
-          cardNumber: stateData.userDetail.paymentData
-            ? stateData.userDetail.paymentData.cardNumber
-            : '',
-          preferredCarrier: stateData.userDetail.paymentData
-            ? stateData.userDetail.paymentData.preferredCarrier
-            : '',
-        }));
+          setUserInfo(prevState => ({
+            ...prevState,
+            firstName: firstName,
+            lastName: lastName,
+            email: emailId,
+            city: city,
+            state: state,
+            password: password,
+            phoneNumber: phoneNumber,
+            country: country,
+            showImage: profileImgURl,
+            type: type,
+            paymentType: stateData.userDetail.paymentData
+              ? stateData.userDetail.paymentData.paymentType
+              : '',
+            expiryDate: stateData.userDetail.paymentData
+              ? stateData.userDetail.paymentData.expiryDate
+              : '',
+            cvv: stateData.userDetail.paymentData
+              ? stateData.userDetail.paymentData.cvv
+              : '',
+            cardNumber: stateData.userDetail.paymentData
+              ? stateData.userDetail.paymentData.cardNumber
+              : '',
+            preferredCarrier: stateData.userDetail.paymentData
+              ? stateData.userDetail.paymentData.preferredCarrier
+              : '',
+          }));
+        }
       }
-      // }
+      return () => (mounted = false);
+    } else {
+      props.history.push('/');
     }
   }, []);
 

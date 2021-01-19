@@ -79,7 +79,6 @@ export const getUser = () => {
 };
 
 export const updateProfile = data => {
-  console.log('localStorage.getItem()', localStorage.getItem('token'), data);
   return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/user/updateProfile`, data, {
