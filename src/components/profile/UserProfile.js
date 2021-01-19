@@ -108,6 +108,15 @@ function UserProfile(props) {
 
   const handleChange = e => {
     const { name, value } = e.target;
+    if (stateData) {
+      if (stateData.userDetail && stateData.userDetail.data) {
+        setUserInfo(prevState => ({
+          ...prevState,
+          email: stateData.userDetail.data.emailId,
+          type: stateData.userDetail.data.type,
+        }));
+      }
+    }
     setUserInfo(prevState => ({
       ...prevState,
       [name]: value,
@@ -127,8 +136,17 @@ function UserProfile(props) {
   };
 
   const callUpdate = async e => {
-    console.log('usrinfo ', userInfo);
     e.preventDefault();
+    if (stateData) {
+      if (stateData.userDetail && stateData.userDetail.data) {
+        setUserInfo(prevState => ({
+          ...prevState,
+          email: stateData.userDetail.data.emailId,
+          type: stateData.userDetail.data.type,
+        }));
+      }
+    }
+    console.log('usrinfo ', stateData, userInfo);
     if (userInfo.image) {
       let fd = new FormData();
       fd.append('firstName', userInfo.firstName);
@@ -141,12 +159,36 @@ function UserProfile(props) {
       fd.append('expiryDate', userInfo.expiryDate);
       fd.append('phoneNumber', userInfo.phoneNumber);
       fd.append('preferredCarrier', userInfo.preferredCarrier);
-      fd.append('type', userInfo.type);
-      fd.append('email', userInfo.email);
+      fd.append('type', stateData.userDetail.data.type);
+      fd.append('email', stateData.userDetail.data.emailId);
       fd.append('image', userInfo.image);
       await dispatch(updateProfile(fd));
     } else {
-      await dispatch(updateProfile(userInfo));
+      console.log('new user info ', userInfo);
+      if (
+        userInfo.email == '' &&
+        userInfo.type == '' &&
+        userInfo.firstName == '' &&
+        userInfo.lastName == '' &&
+        userInfo.password == '' &&
+        userInfo.country == '' &&
+        userInfo.city == '' &&
+        userInfo.state == '' &&
+        userInfo.paymentType == '' &&
+        userInfo.preferredCarrier == '' &&
+        userInfo.cardNumber == '' &&
+        userInfo.cvv == '' &&
+        userInfo.expiryDate == '' &&
+        userInfo.phoneNumber == ''
+      ) {
+        const dataToPass = {
+          email: stateData.userDetail.data.emailId,
+          type: stateData.userDetail.data.type,
+        };
+        await dispatch(updateProfile(dataToPass));
+      } else {
+        await dispatch(updateProfile(userInfo));
+      }
     }
   };
 
@@ -303,6 +345,8 @@ function UserProfile(props) {
                         : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.country
+                            ? stateData.userDetail.data.country
+                            : userInfo.country
                           : userInfo.country
                         : userInfo.country
                     }

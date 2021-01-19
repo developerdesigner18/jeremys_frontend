@@ -59,6 +59,15 @@ function Register(props) {
     setType(type);
   };
 
+  const imageChange = event => {
+    let reader = new FileReader();
+    reader.onload = e => {
+      setImage(event.target.files[0]);
+      setShowImage(e.target.result);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
   return (
     <>
       <Header />
@@ -156,14 +165,21 @@ function Register(props) {
                 </div>
               </div>
               <div className="form_right_container">
-                <div className="upload">
-                  <input type="file" onChange={e => onImageChange(e)} />
-                  {/* <img src={showImage} /> */}
-                  <p>
-                    UPLOAD
-                    <br />
-                    PROFILE PHOTO
-                  </p>
+                <div
+                  style={
+                    showImage
+                      ? {
+                          width: '100%',
+                          background: `url("${showImage}") no-repeat center `,
+                          color: 'white',
+                          backgroundSize: 'cover',
+                        }
+                      : { background: '#ffff', width: '100%' }
+                  }
+                  className="upload"
+                  method="POST">
+                  <input type="file" onChange={e => imageChange(e)} />
+                  {showImage ? null : <p>ADD PROFILE PHOTO</p>}
                 </div>
                 <div className="form_detail">
                   <label>confirm password</label>
