@@ -62,12 +62,6 @@ function Header(props) {
                     Profile
                   </li>
                   <li className="dropdown-item menu">
-                    <span style={{ cursor: 'pointer' }}>
-                      <i className="fas fa-sign-out-alt" />
-                      Account Deactivation
-                    </span>
-                  </li>
-                  <li className="dropdown-item menu">
                     <span style={{ cursor: 'pointer' }} onClick={callLogout}>
                       <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
                       Logout
@@ -104,7 +98,8 @@ function Header(props) {
       <div className="main_sec custom_main_sec">
         {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
-          stateData.userDetail.data.type === 'Fan' ? (
+          stateData.userDetail.data.type === 'Fan' ||
+          window.location.pathname == '/forgotPassword' ? (
             <div className="links left_links">
               <ul>
                 <li>
@@ -122,25 +117,6 @@ function Header(props) {
               </ul>
             </div>
           ) : null
-        ) : window.location.pathname === '/' ||
-          window.location.pathname === '/login' ||
-          window.location.pathname === '/register' ? (
-          <div className="links left_links">
-            <ul>
-              <li>
-                <a href="#">stars</a>
-              </li>
-              <li>
-                <a href="#">chef</a>
-              </li>
-              <li>
-                <a href="#">style</a>
-              </li>
-              <li>
-                <a href="#">trainer</a>
-              </li>
-            </ul>
-          </div>
         ) : null}
         <div className="logo">
           <img
@@ -151,7 +127,8 @@ function Header(props) {
         </div>
         {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === 'fan' ||
-          stateData.userDetail.data.type === 'Fan' ? (
+          stateData.userDetail.data.type === 'Fan' ||
+          window.location.pathname == '/forgotPassword' ? (
             <div className="links right_links">
               <ul>
                 <li>
@@ -169,25 +146,6 @@ function Header(props) {
               </ul>
             </div>
           ) : null
-        ) : window.location.pathname === '/' ||
-          window.location.pathname === '/login' ||
-          window.location.pathname === '/register' ? (
-          <div className="links right_links">
-            <ul>
-              <li>
-                <a href="#">fans</a>
-              </li>
-              <li>
-                <a href="#">food</a>
-              </li>
-              <li>
-                <a href="#">shopping</a>
-              </li>
-              <li>
-                <a href="#">athlete</a>
-              </li>
-            </ul>
-          </div>
         ) : null}
       </div>
       <div className="hero_text text-center mb-4"></div>

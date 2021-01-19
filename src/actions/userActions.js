@@ -92,9 +92,48 @@ export const updateProfile = data => {
             type: 'UPDATE_PROFILE',
             payload: result.data,
           });
-          swal('Info', 'User updatetion done successfully!', 'success');
+          swal('Info', 'User details updated successfully!', 'success');
         }
       })
       .catch(err => console.log('error ', err));
+  };
+};
+
+export const forgotPassword = data => {
+  return dispatch => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}auth/forgetpassword`, data)
+      .then(result => {
+        console.log('result ', result);
+        if (result.status === 200) {
+          dispatch({
+            type: 'FORGOT_PASSWORD',
+          });
+          swal('Info', result.data.message, 'success');
+        }
+      })
+      .catch(err => {
+        swal('Error', err.toString());
+      });
+  };
+};
+
+export const resetPassword = data => {
+  return dispatch => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}auth/resetpassword`, data)
+      .then(result => {
+        if (result.status === 200) {
+          dispatch({
+            type: 'RESET_PASSWORD',
+          });
+          swal('Info', result.data.message).then(() =>
+            window.location.replace('/login')
+          );
+        }
+      })
+      .catch(err => {
+        swal('Error', err.toString());
+      });
   };
 };

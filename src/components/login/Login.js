@@ -28,6 +28,10 @@ function Login(props) {
     }
   };
 
+  const callForgotPassword = () => {
+    history.push('/forgotPassword');
+  };
+
   return (
     <>
       <Header />
@@ -53,7 +57,7 @@ function Login(props) {
               />
             </div>
             <div className="forgot_pass">
-              <a>
+              <a style={{ cursor: 'pointer' }} onClick={callForgotPassword}>
                 <span>forgot password</span>
               </a>
             </div>

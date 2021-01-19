@@ -23,6 +23,16 @@ const userReducer = (state = null, action) => {
         ...state,
       };
 
+    case 'FORGOT_PASSWORD':
+      return {
+        ...state,
+      };
+
+    case 'RESET_PASSWORD':
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }
