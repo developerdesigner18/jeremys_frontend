@@ -37,6 +37,10 @@ function Header(props) {
     history.push('/');
   };
 
+  const goToProfile = () => {
+    history.push('/profile');
+  };
+
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
@@ -53,13 +57,20 @@ function Header(props) {
 
               <div className={menuClass} aria-labelledby="dropdownMenuButton">
                 <ul className="menu_item">
-                  <li className="dropdown-item menu">
+                  <li className="dropdown-item menu" onClick={goToProfile}>
                     <i className="fa fa-user" aria-hidden="true"></i>
                     Profile
                   </li>
                   <li className="dropdown-item menu">
+                    <span style={{ cursor: 'pointer' }}>
+                      <i className="fas fa-sign-out-alt" />
+                      Account Deactivation
+                    </span>
+                  </li>
+                  <li className="dropdown-item menu">
                     <span style={{ cursor: 'pointer' }} onClick={callLogout}>
-                      <i className="fas fa-sign-out-alt" /> Logout
+                      <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
+                      Logout
                     </span>
                   </li>
                 </ul>

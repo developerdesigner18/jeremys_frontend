@@ -1,7 +1,8 @@
 import React from 'react';
 import '../../assets/css/fan_homepage.css';
 import Header from '../header/Header';
-function fanHomePage() {
+
+function fanHomePage(props) {
   const openCity = (evt, cityName) => {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName('tabcontent');
@@ -15,6 +16,11 @@ function fanHomePage() {
     document.getElementById(cityName).style.display = 'block';
     evt.currentTarget.className += ' active';
   };
+
+  const goToHome = () => {
+    props.history.push('/');
+  };
+
   return (
     <div class="container">
       <div class="form_container px-3 px-md-5 mt-5">
@@ -171,7 +177,7 @@ function fanHomePage() {
           </div>
           <div className="main_links d-flex">
             <div className="down_links">
-              <a href="#">
+              <a style={{ cursor: 'pointer' }} onClick={goToHome}>
                 <img src="../assets/images/1.png" />
               </a>
               <div className="link_text">Home</div>

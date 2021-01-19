@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Header from '../header/Header';
 import { getUser, updateProfile } from '../../actions/userActions';
 import { useSelector, useDispatch } from 'react-redux';
+import swal from 'sweetalert';
 
 function UserProfile(props) {
   const dispatch = useDispatch();
@@ -101,7 +102,7 @@ function UserProfile(props) {
       }
       return () => (mounted = false);
     } else {
-      props.history.push('/');
+      swal('Info', 'Please do logout').then(() => props.history.push('/login'));
     }
   }, []);
 
@@ -169,7 +170,7 @@ function UserProfile(props) {
                     value={
                       userInfo.lastName
                         ? userInfo.lastName
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.lastName
                           : userInfo.lastName
@@ -186,7 +187,7 @@ function UserProfile(props) {
                     value={
                       userInfo.firstName
                         ? userInfo.firstName
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.firstName
                           : userInfo.firstName
@@ -203,7 +204,7 @@ function UserProfile(props) {
                     value={
                       userInfo.email
                         ? userInfo.email
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.emailId
                           : userInfo.email
@@ -221,7 +222,7 @@ function UserProfile(props) {
                     value={
                       userInfo.password
                         ? userInfo.password
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.password
                           : userInfo.password
@@ -272,7 +273,7 @@ function UserProfile(props) {
                     value={
                       userInfo.password
                         ? userInfo.password
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.password
                           : userInfo.password
@@ -299,7 +300,7 @@ function UserProfile(props) {
                     value={
                       userInfo.country
                         ? userInfo.country
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.country
                           : userInfo.country
@@ -316,7 +317,7 @@ function UserProfile(props) {
                     value={
                       userInfo.city
                         ? userInfo.city
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.city
                           : userInfo.city
@@ -333,7 +334,7 @@ function UserProfile(props) {
                     value={
                       userInfo.phoneNumber
                         ? userInfo.phoneNumber
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.phoneNumber
                           : userInfo.phoneNumber
@@ -351,7 +352,7 @@ function UserProfile(props) {
                     value={
                       userInfo.paymentType
                         ? userInfo.paymentType
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.paymentData
                           ? stateData.userDetail.paymentData.paymentType
                           : userInfo.paymentType
@@ -369,7 +370,7 @@ function UserProfile(props) {
                     value={
                       userInfo.expiryDate
                         ? userInfo.expiryDate
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.paymentData
                           ? stateData.userDetail.paymentData.expiryDate
                           : userInfo.expiryDate
@@ -388,7 +389,7 @@ function UserProfile(props) {
                     value={
                       userInfo.state
                         ? userInfo.state
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.data
                           ? stateData.userDetail.data.state
                           : userInfo.state
@@ -406,7 +407,7 @@ function UserProfile(props) {
                     value={
                       userInfo.preferredCarrier
                         ? userInfo.preferredCarrier
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.paymentData
                           ? stateData.userDetail.paymentData.preferredCarrier
                           : userInfo.preferredCarrier
@@ -424,7 +425,7 @@ function UserProfile(props) {
                     value={
                       userInfo.cardNumber
                         ? userInfo.cardNumber
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.paymentData
                           ? stateData.userDetail.paymentData.cardNumber
                           : userInfo.cardNumber
@@ -441,7 +442,7 @@ function UserProfile(props) {
                     value={
                       userInfo.cvv
                         ? userInfo.cvv
-                        : stateData !== null
+                        : stateData
                         ? stateData.userDetail.paymentData
                           ? stateData.userDetail.paymentData.cvv
                           : userInfo.cvv
