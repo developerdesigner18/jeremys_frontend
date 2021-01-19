@@ -59,7 +59,7 @@ function ForgotPassword() {
             </div>
             <div className="row mt-3">
               <div className="col-6 forgot_button">
-                <button className="btn btn-default" type="submit">
+                <button className="btn btn-default btn_submit" type="submit">
                   Submit
                 </button>
               </div>
