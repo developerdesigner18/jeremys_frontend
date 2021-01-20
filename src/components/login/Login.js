@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { login } from '../../actions/userActions';
 import { useDispatch } from 'react-redux';
 import Header from '../header/Header';
+import swal from 'sweetalert';
 
 function Login(props) {
   const history = useHistory();
@@ -28,6 +29,9 @@ function Login(props) {
 
       await dispatch(login(dataToPass));
     }
+    else{
+      swal('!Oops', 'Field cannot be blank', 'error')
+    }
   };
 
   const callForgotPassword = () => {
@@ -45,7 +49,6 @@ function Login(props) {
               <input
                 type="email"
                 name="email"
-                required
                 onChange={e => setEmail(e.target.value)}
               />
             </div>
@@ -54,7 +57,6 @@ function Login(props) {
               <input
                 type="password"
                 name="password"
-                required
                 onChange={e => setPassword(e.target.value)}
               />
             </div>

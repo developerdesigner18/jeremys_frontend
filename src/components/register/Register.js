@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { registration } from '../../actions/userActions';
 import { useSelector, useDispatch } from 'react-redux';
 import Header from '../header/Header';
+import swal from 'sweetalert';
 
 function Register(props) {
   const history = useHistory();
@@ -29,17 +30,17 @@ function Register(props) {
     e.preventDefault();
 
     if (
-      firstName === undefined &&
-      lastName === undefined &&
-      email === undefined &&
-      password === undefined &&
-      confpass === undefined &&
-      type === undefined
+      firstName === '' ||
+      lastName === '' ||
+      email === '' ||
+      password === '' ||
+      confpass === '' ||
+      type === ''
     ) {
-      alert('fill up all detail');
+      swal('!Oops', 'Field cannot be blank', 'error')
       return;
     } else if (password !== confpass) {
-      alert('password and confirm password not mathch');
+      swal('!Oops', 'Password and confirm password must be same', 'error')
     } else {
       let fd = new FormData();
       fd.append('firstName', firstName);
@@ -133,7 +134,7 @@ function Register(props) {
                     type="text"
                     name="firstName"
                     onChange={e => setFirstName(e.target.value)}
-                    required
+                    
                   />
                 </div>
                 <div className="form_detail">
@@ -142,7 +143,7 @@ function Register(props) {
                     type="text"
                     name="lastName"
                     onChange={e => setLastName(e.target.value)}
-                    required
+                    
                   />
                 </div>
                 <div className="form_detail">
@@ -151,7 +152,7 @@ function Register(props) {
                     type="email"
                     name="email"
                     onChange={e => setEmail(e.target.value)}
-                    required
+                    
                   />
                 </div>
                 <div className="form_detail">
@@ -160,7 +161,7 @@ function Register(props) {
                     type="password"
                     name="password"
                     onChange={e => setPassword(e.target.value)}
-                    required
+                    
                   />
                 </div>
               </div>
@@ -187,7 +188,7 @@ function Register(props) {
                     type="password"
                     name="confpass"
                     onChange={e => setConfpass(e.target.value)}
-                    required
+                    
                   />
                 </div>
               </div>
