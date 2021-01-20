@@ -33,6 +33,17 @@ const userReducer = (state = null, action) => {
         ...state,
       };
 
+    case 'LOGOUT':
+      return {
+        ...state,
+      };
+
+    case 'USER_INFO':
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+
     default:
       return state;
   }

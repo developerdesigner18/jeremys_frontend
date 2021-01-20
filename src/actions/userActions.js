@@ -14,9 +14,7 @@ export const registration = data => {
           swal('Info', 'Registration done successfully!', 'success').then(
             () => {
               window.location.replace('/profile');
-              localStorage.setItem('token', result.data.authToken);
-              localStorage.setItem('name', result.data.data.firstName);
-              localStorage.setItem('type', result.data.data.type);
+              localStorage.setItem('id', result.data.data._id);
             }
           );
           //   props.history.push('/profile', {
@@ -44,9 +42,12 @@ export const login = data => {
             payload: result.data,
           });
           window.location.replace('/profile');
-          localStorage.setItem('token', result.data.authToken);
-          localStorage.setItem('name', result.data.data.firstName);
-          localStorage.setItem('type', result.data.data.type);
+          if (data.remember) {
+            localStorage.setItem('token', result.data.authToken);
+            localStorage.setItem('name', result.data.data.firstName);
+            localStorage.setItem('type', result.data.data.type);
+          }
+          localStorage.setItem('id', result.data.data._id);
         } else {
           swal('Error!', 'Somthing went wrong,Please try again!', 'error');
         }
@@ -130,6 +131,41 @@ export const resetPassword = data => {
           swal('Info', result.data.message).then(() =>
             window.location.replace('/login')
           );
+        }
+      })
+      .catch(err => {
+        swal('Error', err.toString());
+      });
+  };
+};
+
+export const logout = data => {
+  return dispatch => {
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}auth/logout`, data)
+      .then(result => {
+        if (result.status === 200) {
+          dispatch({
+            type: 'LOGOUT',
+          });
+        }
+      })
+      .catch(err => {
+        swal('Error', err.toString());
+      });
+  };
+};
+
+export const getUserWithId = async data => {
+  return dispatch => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
+      .then(result => {
+        if (result.status === 200) {
+          dispatch({
+            type: 'USER_INFO',
+            payload: result.data,
+          });
         }
       })
       .catch(err => {

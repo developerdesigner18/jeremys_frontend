@@ -44,7 +44,7 @@ function UserProfile(props) {
   const hasVal1Changed = useHasChanged(userInfo);
 
   useEffect(async () => {
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('id')) {
       let mounted = true;
       await dispatch(getUser());
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../../assets/css/homepage.css';
-import { getUser } from '../../actions/userActions';
+import { getUser, logout } from '../../actions/userActions';
 import { useSelector, useDispatch } from 'react-redux';
 
 function Header(props) {
@@ -32,9 +32,15 @@ function Header(props) {
     setIsOpen(!isOpen);
   };
 
-  const callLogout = () => {
-    localStorage.clear();
-    history.push('/');
+  const callLogout = async () => {
+    if (stateData && stateData.userDetail) {
+      localStorage.clear();
+      const dataToPass = {
+        userId: stateData.userDetail.data._id,
+      };
+      await dispatch(logout(dataToPass));
+      history.push('/');
+    }
   };
 
   const goToProfile = () => {
@@ -44,6 +50,43 @@ function Header(props) {
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
+        {/* {stateData ? (
+          stateData.userDetail && stateData.userDetail.data ? (
+            stateData.userDetail.data.remember ? (
+              <>
+                <span
+                  style={{ cursor: 'pointer', position: 'relative' }}
+                  className="dropdown-toggle"
+                  data-toggle="dropdown"
+                  id="dropdownMenuButton"
+                  onClick={toggleValue}>
+                  {'welcome ' + stateData.userDetail.data.firstName}
+
+                  <div
+                    className={menuClass}
+                    aria-labelledby="dropdownMenuButton">
+                    <ul className="menu_item">
+                      <li className="dropdown-item menu" onClick={goToProfile}>
+                        <i className="fa fa-user" aria-hidden="true"></i>
+                        Profile
+                      </li>
+                      <li className="dropdown-item menu">
+                        <span
+                          style={{ cursor: 'pointer' }}
+                          onClick={callLogout}>
+                          <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
+                          Logout
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </span>
+              </>
+            ) : null
+          ) : (
+            false
+          )
+        ) : null} */}
         {window.location.pathname ==
         '/fanHomePage' ? null : localStorage.getItem('token') ? (
           <>
