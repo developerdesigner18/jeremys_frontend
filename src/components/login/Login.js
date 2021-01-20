@@ -10,6 +10,7 @@ function Login(props) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
 
   const goToRegister = () => {
     history.push('/register');
@@ -22,6 +23,7 @@ function Login(props) {
       const dataToPass = {
         email,
         password,
+        remember,
       };
 
       await dispatch(login(dataToPass));
@@ -62,7 +64,11 @@ function Login(props) {
               </a>
             </div>
             <div className="remember">
-              <input type="checkbox" name="" />
+              <input
+                type="checkbox"
+                name=""
+                onChange={() => setRemember(!remember)}
+              />
               <label>Remember me</label>
             </div>
             <div className="login">
