@@ -33,14 +33,14 @@ function Header(props) {
   };
 
   const callLogout = async () => {
-    if (stateData && stateData.userDetail) {
-      localStorage.clear();
-      const dataToPass = {
-        userId: stateData.userDetail.data._id,
-      };
-      await dispatch(logout(dataToPass));
-      history.push('/');
-    }
+    localStorage.clear();
+    history.push('/');
+    // if (stateData && stateData.userDetail) {
+      // const dataToPass = {
+      //   userId: stateData.userDetail.data._id,
+      // };
+      // await dispatch(logout(dataToPass));
+    // }
   };
 
   const goToProfile = () => {

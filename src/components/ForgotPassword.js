@@ -19,11 +19,14 @@ function ForgotPassword() {
   const callForgot = async e => {
     e.preventDefault();
 
-    const dataToPass = {
-      email: email,
-    };
-
-    await dispatch(forgotPassword(dataToPass));
+    if (email=='') {
+      setEmailError('Please enter email address');
+    }else{
+      const dataToPass = {
+        email: email,
+      };
+      await dispatch(forgotPassword(dataToPass));
+    }
   };
 
   const emailValidation = event => {
@@ -52,7 +55,6 @@ function ForgotPassword() {
               <input
                 type="email"
                 name="email"
-                required
                 onChange={e => emailValidation(e)}
               />
               <small style={{ color: 'red' }}>{emailError}</small>

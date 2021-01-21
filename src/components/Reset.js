@@ -3,6 +3,7 @@ import '../assets/css/forgotPassword.css';
 import Header from './header/Header';
 import { resetPassword } from '../actions/userActions';
 import { useDispatch } from 'react-redux';
+import swal from 'sweetalert';
 
 function ResetPassword(props) {
   const dispatch = useDispatch();
@@ -12,7 +13,14 @@ function ResetPassword(props) {
 
   const callResetPassword = async e => {
     e.preventDefault();
-    if (password === confirmPassword) {
+    if (
+      password === '' ||
+      confirmPassword === ''
+    ) {
+      swal('!Oops', 'Field cannot be blank', 'error')
+      return;
+    }
+    else if (password === confirmPassword) {
       setError('');
       const dataToPass = {
         token: props.location.search.split('=')[1],
@@ -37,7 +45,6 @@ function ResetPassword(props) {
               <input
                 type="password"
                 name="password"
-                required
                 onChange={e => setPassword(e.target.value)}
               />
             </div>
@@ -46,7 +53,6 @@ function ResetPassword(props) {
               <input
                 type="password"
                 name="confirmPassword"
-                required
                 onChange={e => setConfirmPassword(e.target.value)}
               />
               <small style={{ color: 'red' }}>{error}</small>
