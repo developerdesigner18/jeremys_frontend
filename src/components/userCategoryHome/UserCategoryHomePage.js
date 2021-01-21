@@ -2,7 +2,7 @@ import React from 'react';
 import '../../assets/css/fan_homepage.css';
 import Header from '../header/Header';
 
-function fanHomePage(props) {
+function UserCategoryHomePage(props) {
   const openCity = (evt, cityName) => {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName('tabcontent');
@@ -23,22 +23,35 @@ function fanHomePage(props) {
 
   return (
     <div class="container">
+      {console.log('props ', props)}
       <div class="form_container px-3 px-md-5">
         <Header />
         <div class="tabs_image">
           <div class="tab">
-            <div class="tab1">
-              <button
-                class="tablinks active"
-                onClick={event => openCity(event, 'music')}>
-                MUSIC
-              </button>
-            </div>
+            <div class="tab1"></div>
             <div class="tab2">
               <button
                 class="tablinks"
                 onClick={event => openCity(event, 'food')}>
-                FOOD
+                {localStorage.getItem('type') === 'Chef' ||
+                localStorage.getItem('type') === 'chef'
+                  ? "Chef's Table"
+                  : localStorage.getItem('type') === 'Advertiser' ||
+                    localStorage.getItem('type') === 'advertiser'
+                  ? 'Published Ad'
+                  : localStorage.getItem('type') === 'trainer' ||
+                    localStorage.getItem('type') === 'Trainer'
+                  ? 'Studio Live!'
+                  : localStorage.getItem('type') === 'Stylist' ||
+                    localStorage.getItem('type') === 'stylist'
+                  ? 'Stylist'
+                  : localStorage.getItem('type') === 'Star' ||
+                    localStorage.getItem('type') === 'star'
+                  ? 'Stage'
+                  : localStorage.getItem('type') === 'artist' ||
+                    localStorage.getItem('type') === 'Artist'
+                  ? 'Stage'
+                  : ''}
               </button>
             </div>
             <div class="fan_image">
@@ -48,16 +61,10 @@ function fanHomePage(props) {
               <button
                 class="tablinks"
                 onClick={event => openCity(event, 'style')}>
-                STYLE
+                Meet and Greet
               </button>
             </div>
-            <div class="tab4">
-              <button
-                class="tablinks"
-                onClick={event => openCity(event, 'body')}>
-                BODY
-              </button>
-            </div>
+            <div class="tab4"></div>
           </div>
           <div id="music" class="tabcontent active">
             <div class="category">
@@ -207,4 +214,4 @@ function fanHomePage(props) {
   );
 }
 
-export default fanHomePage;
+export default UserCategoryHomePage;

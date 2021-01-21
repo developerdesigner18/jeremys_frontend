@@ -1,7 +1,7 @@
 import axios from 'axios';
 import swal from 'sweetalert';
 
-export const registration = data => {
+export const registration = (data, props) => {
   return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/signup`, data)
@@ -13,9 +13,14 @@ export const registration = data => {
           });
           swal('Info', 'Registration done successfully!', 'success').then(
             () => {
-              window.location.replace('/profile');
               localStorage.setItem('name', result.data.data.firstName);
               localStorage.setItem('token', result.data.authToken);
+              localStorage.setItem('type', result.data.data.type);
+              if (data.type === 'Fan' || data.type === 'fan') {
+                window.location.replace('/fanHomePage');
+              } else {
+                props.history.push('/userHomepage', { type: data.type });
+              }
             }
           );
           //   props.history.push('/profile', {
@@ -32,7 +37,7 @@ export const registration = data => {
   };
 };
 
-export const login = data => {
+export const login = (data, props) => {
   return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/signin`, data)
@@ -42,9 +47,14 @@ export const login = data => {
             type: 'SIGN_IN',
             payload: result.data,
           });
-          window.location.replace('/profile');
           localStorage.setItem('token', result.data.authToken);
           localStorage.setItem('name', result.data.data.firstName);
+          localStorage.setItem('type', result.data.data.type);
+          if (result.data.data.type === 'Fan' || data.type === 'fan') {
+            window.location.replace('/fanHomePage');
+          } else {
+            props.history.push('/userHomepage', { type: result.data.type });
+          }
         } else {
           swal('!Oops', result.data.message, 'error');
         }

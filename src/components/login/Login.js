@@ -27,7 +27,7 @@ function Login(props) {
         remember,
       };
 
-      await dispatch(login(dataToPass));
+      await dispatch(login(dataToPass, props));
     } else {
       swal('!Oops', 'Field cannot be blank', 'error');
     }

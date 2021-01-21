@@ -37,10 +37,10 @@ function Register(props) {
       confpass === '' ||
       type === ''
     ) {
-      swal('!Oops', 'Field cannot be blank', 'error')
+      swal('!Oops', 'Field cannot be blank', 'error');
       return;
     } else if (password !== confpass) {
-      swal('!Oops', 'Password and confirm password must be same', 'error')
+      swal('!Oops', 'Password and confirm password must be same', 'error');
     } else {
       let fd = new FormData();
       fd.append('firstName', firstName);
@@ -50,7 +50,7 @@ function Register(props) {
       fd.append('type', type);
       if (image) fd.append('image', image);
 
-      await dispatch(registration(fd));
+      await dispatch(registration(fd, props));
     }
   };
 
@@ -134,7 +134,6 @@ function Register(props) {
                     type="text"
                     name="firstName"
                     onChange={e => setFirstName(e.target.value)}
-                    
                   />
                 </div>
                 <div className="form_detail">
@@ -143,7 +142,6 @@ function Register(props) {
                     type="text"
                     name="lastName"
                     onChange={e => setLastName(e.target.value)}
-                    
                   />
                 </div>
                 <div className="form_detail">
@@ -152,7 +150,6 @@ function Register(props) {
                     type="email"
                     name="email"
                     onChange={e => setEmail(e.target.value)}
-                    
                   />
                 </div>
                 <div className="form_detail">
@@ -161,7 +158,6 @@ function Register(props) {
                     type="password"
                     name="password"
                     onChange={e => setPassword(e.target.value)}
-                    
                   />
                 </div>
               </div>
@@ -188,7 +184,6 @@ function Register(props) {
                     type="password"
                     name="confpass"
                     onChange={e => setConfpass(e.target.value)}
-                    
                   />
                 </div>
               </div>

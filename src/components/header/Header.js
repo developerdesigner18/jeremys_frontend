@@ -36,10 +36,10 @@ function Header(props) {
     localStorage.clear();
     history.push('/');
     // if (stateData && stateData.userDetail) {
-      // const dataToPass = {
-      //   userId: stateData.userDetail.data._id,
-      // };
-      // await dispatch(logout(dataToPass));
+    // const dataToPass = {
+    //   userId: stateData.userDetail.data._id,
+    // };
+    // await dispatch(logout(dataToPass));
     // }
   };
 
@@ -50,70 +50,30 @@ function Header(props) {
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
-        {/* {stateData ? (
-          stateData.userDetail && stateData.userDetail.data ? (
-            stateData.userDetail.data.remember ? (
-              <>
-                <span
-                  style={{ cursor: 'pointer', position: 'relative' }}
-                  className="dropdown-toggle"
-                  data-toggle="dropdown"
-                  id="dropdownMenuButton"
-                  onClick={toggleValue}>
-                  {'welcome ' + stateData.userDetail.data.firstName}
+        {localStorage.getItem('token') ? (
+          <span
+            style={{ cursor: 'pointer', position: 'relative' }}
+            className="dropdown-toggle"
+            data-toggle="dropdown"
+            id="dropdownMenuButton"
+            onClick={toggleValue}>
+            {'welcome ' + localStorage.getItem('name')}
 
-                  <div
-                    className={menuClass}
-                    aria-labelledby="dropdownMenuButton">
-                    <ul className="menu_item">
-                      <li className="dropdown-item menu" onClick={goToProfile}>
-                        <i className="fa fa-user" aria-hidden="true"></i>
-                        Profile
-                      </li>
-                      <li className="dropdown-item menu">
-                        <span
-                          style={{ cursor: 'pointer' }}
-                          onClick={callLogout}>
-                          <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
-                          Logout
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </span>
-              </>
-            ) : null
-          ) : (
-            false
-          )
-        ) : null} */}
-        {window.location.pathname ==
-        '/fanHomePage' ? null : localStorage.getItem('token') ? (
-          <>
-            <span
-              style={{ cursor: 'pointer', position: 'relative' }}
-              className="dropdown-toggle"
-              data-toggle="dropdown"
-              id="dropdownMenuButton"
-              onClick={toggleValue}>
-              {'welcome ' + localStorage.getItem('name')}
-
-              <div className={menuClass} aria-labelledby="dropdownMenuButton">
-                <ul className="menu_item">
-                  <li className="dropdown-item menu" onClick={goToProfile}>
-                    <i className="fa fa-user" aria-hidden="true"></i>
-                    Profile
-                  </li>
-                  <li className="dropdown-item menu">
-                    <span style={{ cursor: 'pointer' }} onClick={callLogout}>
-                      <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
-                      Logout
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </span>
-          </>
+            <div className={menuClass} aria-labelledby="dropdownMenuButton">
+              <ul className="menu_item">
+                <li className="dropdown-item menu" onClick={goToProfile}>
+                  <i className="fa fa-user" aria-hidden="true"></i>
+                  Profile
+                </li>
+                <li className="dropdown-item menu">
+                  <span style={{ cursor: 'pointer' }} onClick={callLogout}>
+                    <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
+                    Logout
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </span>
         ) : (
           <div>
             <div className="d-flex align-items-center hader_top">

@@ -1,153 +1,153 @@
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/ProximaNova-Regular.otf');
-	font-weight: 400;
+  font-family: proxima-nova;
+  src: url('../fonts/ProximaNova-Regular.otf');
+  font-weight: 400;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/ProximaNova-Regular-1.otf');
-	font-weight: 500;
+  font-family: proxima-nova;
+  src: url('../fonts/ProximaNova-Regular-1.otf');
+  font-weight: 500;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Bold.otf');
-	font-weight: 600;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Bold.otf');
+  font-weight: 600;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Extrabold.otf');
-	font-weight: 700;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Extrabold.otf');
+  font-weight: 700;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Black.otf');
-	font-weight: 800;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Black.otf');
+  font-weight: 800;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Thin.otf');
-	font-weight: 300;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Thin.otf');
+  font-weight: 300;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Alt Light.otf');
-	font-weight: 200;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Alt Light.otf');
+  font-weight: 200;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url('../fonts/Proxima Nova Alt Thin.otf');
-	font-weight: 100;
+  font-family: proxima-nova;
+  src: url('../fonts/Proxima Nova Alt Thin.otf');
+  font-weight: 100;
 }
 @font-face {
-	font-family: mplus;
-	src: url('../fonts/mplus-2p-thin.ttf');
+  font-family: mplus;
+  src: url('../fonts/mplus-2p-thin.ttf');
 }
 @font-face {
-	font-family: Avalon_Bold;
-	src: url('../fonts/Avalon_Bold.ttf');
+  font-family: Avalon_Bold;
+  src: url('../fonts/Avalon_Bold.ttf');
 }
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: proxima-nova;
-    background: #1b1b1b;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  background: #1b1b1b;
 }
 .form_detail input {
-    width: 100%;
-    padding: 5px 10px;
+  width: 100%;
+  padding: 5px 10px;
 }
 .form_detail label {
-    text-transform: uppercase;
-    color: #ffffff;
-    letter-spacing: 1.8px;
-    font-size: 14px;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 1.8px;
+  font-size: 14px;
 }
 .form_detail:not(:first-child) {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 button.create_ac {
-    width: 50%;
+  width: 50%;
 }
 button.create_ac {
-    width: 50%;
-    font-size: 20px;
-    font-weight: 900;
-    padding: 5px 10px;
-    border: 0;
-    font-family: proxima-nova !important;
+  width: 50%;
+  font-size: 20px;
+  font-weight: 900;
+  padding: 5px 10px;
+  border: 0;
+  font-family: proxima-nova !important;
 }
 .privacy {
-    margin-top: 25px;
-    text-align: center;
-    color: #ffffff;
+  margin-top: 25px;
+  text-align: center;
+  color: #ffffff;
 }
 .privacy span {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 .form_container {
-    width: 70%;
-    margin: auto;
-    background-color: #000000;
+  width: 70%;
+  margin: auto;
+  background-color: #000000;
 }
 .forgot_pass {
-    text-align: right;
-    margin-top: 10px;
+  text-align: right;
+  margin-top: 10px;
 }
 .forgot_pass span {
-    color: #ffffff;
-    text-transform: uppercase;
-    font-size: 14px;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 14px;
 }
 .forgot_pass a:hover {
-    text-decoration: underline;
-    color: #ffffff;
+  text-decoration: underline;
+  color: #ffffff;
 }
 .remember label {
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1.5px;
-    margin-left: 10px;
-    color: #ffffff;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  margin-left: 10px;
+  color: #ffffff;
 }
 .remember {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 .login {
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 25px;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 25px;
 }
 .login button {
-    color: #FF2800;
-    border: 0;
-    background: #2D2D2D;
-    height: 120px;
-    width: 120px;
-    font-size: 22px;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-radius: 50%;
-    outline: none;
-    letter-spacing: 1.2px;
-    font-family: Avalon_Bold;
+  color: #ff2800;
+  border: 0;
+  background: #2d2d2d;
+  height: 120px;
+  width: 120px;
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 50%;
+  outline: none;
+  letter-spacing: 1.2px;
+  font-family: Avalon_Bold;
 }
 .newbie a {
-    color: #ffffff;
-    margin-left: 10px;
-    font-weight: 600;
+  color: #ffffff;
+  margin-left: 10px;
+  font-weight: 600;
 }
 .newbie {
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: .6px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
-@media (max-width: 768px){
-.form_container {
+@media (max-width: 768px) {
+  .form_container {
     width: 100%;
-}
+  }
 }

@@ -53,13 +53,14 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: proxima-nova;
-  background: #1b1b1b;
   color: #ffffff;
+  background: url('../images/background_black.jpg');
+  background-size: cover !important;
+  background-position: center !important;
 }
 .form_container {
   width: 70%;
   margin: auto;
-  background-color: #000000;
 }
 header {
   justify-content: center;
@@ -144,7 +145,6 @@ button.tablinks.active {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #333333;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: -3rem;
@@ -170,7 +170,6 @@ button.tablinks.active {
   width: 100%;
 }
 .vids {
-  background: #000000;
   padding: 0 10px;
 }
 .main_cat:not(:last-child) {
