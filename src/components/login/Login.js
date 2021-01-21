@@ -11,7 +11,7 @@ function Login(props) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(true);
 
   const goToRegister = () => {
     history.push('/register');
@@ -28,9 +28,8 @@ function Login(props) {
       };
 
       await dispatch(login(dataToPass));
-    }
-    else{
-      swal('!Oops', 'Field cannot be blank', 'error')
+    } else {
+      swal('!Oops', 'Field cannot be blank', 'error');
     }
   };
 
@@ -69,6 +68,7 @@ function Login(props) {
               <input
                 type="checkbox"
                 name=""
+                checked={remember}
                 onChange={() => setRemember(!remember)}
               />
               <label>Remember me</label>

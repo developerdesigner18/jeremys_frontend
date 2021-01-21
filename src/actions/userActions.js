@@ -14,17 +14,15 @@ export const registration = data => {
           swal('Info', 'Registration done successfully!', 'success').then(
             () => {
               window.location.replace('/profile');
-              localStorage.setItem('id', result.data.data._id);
               localStorage.setItem('name', result.data.data.firstName);
-            localStorage.setItem('type', result.data.data.type);
-            localStorage.setItem('token', result.data.authToken);
+              localStorage.setItem('token', result.data.authToken);
             }
           );
           //   props.history.push('/profile', {
           //     name: result.data.data.firstName,
           //   });
         } else {
-          swal('Error!', result.data.message , 'error');
+          swal('Error!', result.data.message, 'error');
         }
       })
       .catch(err => {
@@ -45,17 +43,10 @@ export const login = data => {
             payload: result.data,
           });
           window.location.replace('/profile');
-          // if (data.remember) {
-          //   localStorage.setItem('token', result.data.authToken);
-          //   localStorage.setItem('name', result.data.data.firstName);
-          //   localStorage.setItem('type', result.data.data.type);
-          // }
           localStorage.setItem('token', result.data.authToken);
           localStorage.setItem('name', result.data.data.firstName);
-            localStorage.setItem('type', result.data.data.type);
-          localStorage.setItem('id', result.data.data._id);
         } else {
-          swal('!Oops',result.data.message, 'error');
+          swal('!Oops', result.data.message, 'error');
         }
       })
       .catch(err => swal('Error!', err.toString(), 'error'));
@@ -109,13 +100,13 @@ export const updateProfile = data => {
 export const forgotPassword = data => {
   return dispatch => {
     swal({
-      title: "processing...",
-      text: "Plase wait for some time",
-      icon: "warning",
+      title: 'processing...',
+      text: 'Plase wait for some time',
+      icon: 'warning',
       dangerMode: true,
       closeOnClickOutside: false,
-      buttons:false
-    })
+      buttons: false,
+    });
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/forgetpassword`, data)
       .then(result => {
@@ -125,24 +116,24 @@ export const forgotPassword = data => {
             type: 'FORGOT_PASSWORD',
           });
           swal({
-            title: "Success",
+            title: 'Success',
             text: result.data.message,
-            icon: "success",
+            icon: 'success',
             closeOnClickOutside: false,
             dangerMode: false,
-          })
-        }else{
+          });
+        } else {
           swal({
-            title: "Oops!",
+            title: 'Oops!',
             text: result.data.message,
-            icon: "error",
+            icon: 'error',
             closeOnClickOutside: false,
             dangerMode: false,
-          })
+          });
         }
       })
       .catch(err => {
-        swal('oops!', err.toString(),"error");
+        swal('oops!', err.toString(), 'error');
       });
   };
 };
