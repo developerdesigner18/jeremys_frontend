@@ -55,7 +55,14 @@ function UserCategoryHomePage(props) {
               </button>
             </div>
             <div class="fan_image">
-              <img src="../assets/images/fan.png" />
+              <img
+                src={
+                  localStorage.getItem('type') === 'Chef' ||
+                  localStorage.getItem('type') === 'chef'
+                    ? `../assets/images/chef.png`
+                    : `../assets/images/fan.png`
+                }
+              />
             </div>
             <div class="tab3">
               <button
