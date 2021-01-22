@@ -1,63 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import '../../assets/css/homepage.css';
-import { getUser, logout } from '../../actions/userActions';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useRef } from "react"
+import { useHistory } from "react-router-dom"
+import "../../assets/css/homepage.css"
+import { getUser, logout } from "../../actions/userActions"
+import { useSelector, useDispatch } from "react-redux"
+
+const useOutsideClick = (ref, callback) => {
+  const handleClick = e => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick)
+
+    return () => {
+      document.removeEventListener("click", handleClick)
+    }
+  })
+}
 
 function Header(props) {
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const stateData = useSelector(state => state.user);
+  const history = useHistory()
+  const dispatch = useDispatch()
+  const stateData = useSelector(state => state.user)
+  const ref = useRef()
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(async () => {
-    if (localStorage.getItem('token')) await dispatch(getUser());
-  }, []);
+    if (localStorage.getItem("token")) await dispatch(getUser())
+  }, [])
 
-  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? ' show' : ''}`;
+  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? " show" : ""}`
 
   const goToRegister = () => {
-    history.push('/register');
-  };
+    history.push("/register")
+  }
 
   const goToLogin = () => {
-    history.push('/login');
-  };
+    history.push("/login")
+  }
   const goToHome = () => {
-    history.push('/');
-  };
+    if (
+      localStorage.getItem("type") === "Fan" ||
+      localStorage.getItem("type") === "fan"
+    ) {
+      history.push("/fanHomePage")
+    } else {
+      history.push("/userHomepage")
+    }
+  }
 
   const toggleValue = () => {
-    setIsOpen(!isOpen);
-  };
+    setIsOpen(!isOpen)
+  }
+  useOutsideClick(ref, () => {
+    setIsOpen(false)
+  })
 
   const callLogout = async () => {
-    localStorage.clear();
-    history.push('/');
+    localStorage.clear()
+    history.push("/")
     // if (stateData && stateData.userDetail) {
     // const dataToPass = {
     //   userId: stateData.userDetail.data._id,
     // };
     // await dispatch(logout(dataToPass));
     // }
-  };
+  }
 
   const goToProfile = () => {
-    history.push('/profile');
-  };
+    history.push("/profile")
+  }
 
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
-        {localStorage.getItem('token') ? (
+        {localStorage.getItem("token") ? (
           <span
-            style={{ cursor: 'pointer', position: 'relative' }}
+            style={{ cursor: "pointer", position: "relative" }}
             className="dropdown-toggle"
             data-toggle="dropdown"
             id="dropdownMenuButton"
-            onClick={toggleValue}>
-            {'welcome ' + localStorage.getItem('name')}
+            onClick={toggleValue}
+            ref={ref}>
+            {"welcome " + localStorage.getItem("name")}
 
             <div className={menuClass} aria-labelledby="dropdownMenuButton">
               <ul className="menu_item">
@@ -66,8 +94,8 @@ function Header(props) {
                   Profile
                 </li>
                 <li className="dropdown-item menu">
-                  <span style={{ cursor: 'pointer' }} onClick={callLogout}>
-                    <i className="fa fa-power-off" aria-hidden="true"></i>{' '}
+                  <span style={{ cursor: "pointer" }} onClick={callLogout}>
+                    <i className="fa fa-power-off" aria-hidden="true"></i>{" "}
                     Logout
                   </span>
                 </li>
@@ -80,18 +108,18 @@ function Header(props) {
               <a
                 className="login"
                 onClick={goToLogin}
-                style={{ cursor: 'pointer' }}>
+                style={{ cursor: "pointer" }}>
                 Login
               </a>
               <a
                 className="login"
                 onClick={goToRegister}
-                style={{ cursor: 'pointer' }}>
+                style={{ cursor: "pointer" }}>
                 Register
               </a>
             </div>
             <div>
-              <a onClick={goToRegister} style={{ cursor: 'pointer' }}>
+              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
                 sign up for FREE
               </a>
             </div>
@@ -100,9 +128,9 @@ function Header(props) {
       </header>
       <div className="main_sec custom_main_sec">
         {stateData && stateData.userDetail ? (
-          stateData.userDetail.data.type === 'fan' ||
-          stateData.userDetail.data.type === 'Fan' ||
-          window.location.pathname == '/forgotPassword' ? (
+          stateData.userDetail.data.type === "fan" ||
+          stateData.userDetail.data.type === "Fan" ||
+          window.location.pathname == "/forgotPassword" ? (
             <div className="links left_links">
               <ul>
                 <li>
@@ -125,13 +153,13 @@ function Header(props) {
           <img
             src={`../assets/images/logo.png`}
             onClick={goToHome}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           />
         </div>
         {stateData && stateData.userDetail ? (
-          stateData.userDetail.data.type === 'fan' ||
-          stateData.userDetail.data.type === 'Fan' ||
-          window.location.pathname == '/forgotPassword' ? (
+          stateData.userDetail.data.type === "fan" ||
+          stateData.userDetail.data.type === "Fan" ||
+          window.location.pathname == "/forgotPassword" ? (
             <div className="links right_links">
               <ul>
                 <li>
@@ -153,7 +181,7 @@ function Header(props) {
       </div>
       <div className="hero_text text-center mb-4"></div>
     </div>
-  );
+  )
 }
 
-export default Header;
+export default Header

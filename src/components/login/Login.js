@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import '../../assets/css/signin.css';
-import { useHistory } from 'react-router-dom';
-import { login } from '../../actions/userActions';
-import { useDispatch } from 'react-redux';
-import Header from '../header/Header';
-import swal from 'sweetalert';
+import React, { useState } from "react";
+import "../../assets/css/signin.css";
+import { useHistory } from "react-router-dom";
+import { login } from "../../actions/userActions";
+import { useDispatch } from "react-redux";
+import Header from "../header/Header";
+import swal from "sweetalert";
 
 function Login(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
 
   const goToRegister = () => {
-    history.push('/register');
+    history.push("/register");
   };
 
-  const callLogin = async e => {
+  const callLogin = async (e) => {
     e.preventDefault();
 
     if (email && password) {
@@ -29,26 +29,26 @@ function Login(props) {
 
       await dispatch(login(dataToPass, props));
     } else {
-      swal('!Oops', 'Field cannot be blank', 'error');
+      swal("!Oops", "Field cannot be blank", "error");
     }
   };
 
   const callForgotPassword = () => {
-    history.push('/forgotPassword');
+    history.push("/forgotPassword");
   };
 
   return (
-    <>
+    <div style={{ background: "black" }}>
       <Header />
       <div className="container">
-        <form method="post" onSubmit={e => callLogin(e)}>
+        <form method="post" onSubmit={(e) => callLogin(e)}>
           <div className="login_form_container p-3 p-md-5 mt-5">
             <div className="form_detail">
               <label>E-mail</label>
               <input
                 type="email"
                 name="email"
-                onChange={e => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form_detail">
@@ -56,11 +56,11 @@ function Login(props) {
               <input
                 type="password"
                 name="password"
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div className="forgot_pass">
-              <a style={{ cursor: 'pointer' }} onClick={callForgotPassword}>
+              <a style={{ cursor: "pointer" }} onClick={callForgotPassword}>
                 <span>forgot password</span>
               </a>
             </div>
@@ -77,15 +77,15 @@ function Login(props) {
               <button>Login</button>
             </div>
             <div className="text-center newbie">
-              are You a newbie?{' '}
-              <a onClick={goToRegister} style={{ cursor: 'pointer' }}>
+              are You a newbie?{" "}
+              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
                 Sign Up
               </a>
             </div>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 }
 

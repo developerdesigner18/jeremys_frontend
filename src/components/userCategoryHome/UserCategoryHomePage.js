@@ -1,29 +1,29 @@
-import React from 'react';
-import '../../assets/css/fan_homepage.css';
-import Header from '../header/Header';
+import React, { useEffect, useRef, useState } from "react"
+import "../../assets/css/fan_homepage.css"
+import Header from "../header/Header"
 
 function UserCategoryHomePage(props) {
   const openCity = (evt, cityName) => {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName('tabcontent');
+    var i, tabcontent, tablinks
+    tabcontent = document.getElementsByClassName("tabcontent")
     for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = 'none';
+      tabcontent[i].style.display = "none"
     }
-    tablinks = document.getElementsByClassName('tablinks');
+    tablinks = document.getElementsByClassName("tablinks")
     for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(' active', '');
+      tablinks[i].className = tablinks[i].className.replace(" active", "")
     }
-    document.getElementById(cityName).style.display = 'block';
-    evt.currentTarget.className += ' active';
-  };
+    document.getElementById(cityName).style.display = "block"
+    evt.currentTarget.className += " active"
+  }
 
   const goToHome = () => {
-    props.history.push('/');
-  };
+    props.history.push("/")
+  }
 
   return (
     <div class="container">
-      {console.log('props ', props)}
+      {console.log("props ", props)}
       <div class="form_container px-3 px-md-5">
         <Header />
         <div class="tabs_image">
@@ -31,34 +31,47 @@ function UserCategoryHomePage(props) {
             <div class="tab1"></div>
             <div class="tab2">
               <button
-                class="tablinks"
-                onClick={event => openCity(event, 'food')}>
-                {localStorage.getItem('type') === 'Chef' ||
-                localStorage.getItem('type') === 'chef'
+                class="tablinks_responsive"
+                onClick={event => openCity(event, "food")}
+                style={{
+                  padding:
+                    localStorage.getItem("type") === "Advertiser" ||
+                    localStorage.getItem("type") === "advertiser"
+                      ? "10px"
+                      : "25px",
+                  // fontSize:
+                  //   (setMobileResponsive &&
+                  //     localStorage.getItem("type") === "Advertiser") ||
+                  //   localStorage.getItem("type") === "advertiser"
+                  //     ? "7px"
+                  //     : "10px",
+                }}>
+                {localStorage.getItem("type") === "Chef" ||
+                localStorage.getItem("type") === "chef"
                   ? "Chef's Table"
-                  : localStorage.getItem('type') === 'Advertiser' ||
-                    localStorage.getItem('type') === 'advertiser'
-                  ? 'Published Ad'
-                  : localStorage.getItem('type') === 'trainer' ||
-                    localStorage.getItem('type') === 'Trainer'
-                  ? 'Studio Live!'
-                  : localStorage.getItem('type') === 'Stylist' ||
-                    localStorage.getItem('type') === 'stylist'
-                  ? 'Stylist'
-                  : localStorage.getItem('type') === 'Star' ||
-                    localStorage.getItem('type') === 'star'
-                  ? 'Stage'
-                  : localStorage.getItem('type') === 'artist' ||
-                    localStorage.getItem('type') === 'Artist'
-                  ? 'Stage'
-                  : ''}
+                  : localStorage.getItem("type") === "Advertiser" ||
+                    localStorage.getItem("type") === "advertiser"
+                  ? "Published Ad"
+                  : localStorage.getItem("type") === "trainer" ||
+                    localStorage.getItem("type") === "Trainer"
+                  ? "Studio Live!"
+                  : localStorage.getItem("type") === "Stylist" ||
+                    localStorage.getItem("type") === "stylist"
+                  ? "Stylist"
+                  : localStorage.getItem("type") === "Star" ||
+                    localStorage.getItem("type") === "star"
+                  ? "Stage"
+                  : localStorage.getItem("type") === "artist" ||
+                    localStorage.getItem("type") === "Artist"
+                  ? "Stage"
+                  : ""}
               </button>
             </div>
             <div class="fan_image">
               <img
                 src={
-                  localStorage.getItem('type') === 'Chef' ||
-                  localStorage.getItem('type') === 'chef'
+                  localStorage.getItem("type") === "Chef" ||
+                  localStorage.getItem("type") === "chef"
                     ? `../assets/images/chef.png`
                     : `../assets/images/fan.png`
                 }
@@ -66,28 +79,15 @@ function UserCategoryHomePage(props) {
             </div>
             <div class="tab3">
               <button
-                class="tablinks"
-                onClick={event => openCity(event, 'style')}>
+                class="meet_greet_tablinks"
+                onClick={event => openCity(event, "style")}>
                 Meet and Greet
               </button>
             </div>
             <div class="tab4"></div>
           </div>
           <div id="music" class="tabcontent active">
-            <div class="category">
-              <div class="cats_content">
-                <a href="#">POP</a>
-              </div>
-              <div class="cats_content">
-                <a href="#">ROCK</a>
-              </div>
-              <div class="cats_content">
-                <a href="#">BLUES</a>
-              </div>
-              <div class="cats_content">
-                <a href="#">R&B</a>
-              </div>
-            </div>
+            <div class="category_empty"></div>
             <div class="category_video vids">
               <div class="main_cat">
                 <video muted={true} autoplay>
@@ -191,7 +191,7 @@ function UserCategoryHomePage(props) {
           </div>
           <div className="main_links d-flex">
             <div className="down_links">
-              <a style={{ cursor: 'pointer' }} onClick={goToHome}>
+              <a style={{ cursor: "pointer" }} onClick={goToHome}>
                 <img src="../assets/images/1.png" />
               </a>
               <div className="link_text">Home</div>
@@ -218,7 +218,7 @@ function UserCategoryHomePage(props) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default UserCategoryHomePage;
+export default UserCategoryHomePage

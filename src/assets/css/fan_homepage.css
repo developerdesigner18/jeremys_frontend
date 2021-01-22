@@ -1,52 +1,52 @@
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/ProximaNova-Regular.otf');
+  src: url("../fonts/ProximaNova-Regular.otf");
   font-weight: 400;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/ProximaNova-Regular-1.otf');
+  src: url("../fonts/ProximaNova-Regular-1.otf");
   font-weight: 500;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Bold.otf');
+  src: url("../fonts/Proxima Nova Bold.otf");
   font-weight: 600;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Extrabold.otf');
+  src: url("../fonts/Proxima Nova Extrabold.otf");
   font-weight: 700;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Black.otf');
+  src: url("../fonts/Proxima Nova Black.otf");
   font-weight: 800;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Thin.otf');
+  src: url("../fonts/Proxima Nova Thin.otf");
   font-weight: 300;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Alt Light.otf');
+  src: url("../fonts/Proxima Nova Alt Light.otf");
   font-weight: 200;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Alt Thin.otf');
+  src: url("../fonts/Proxima Nova Alt Thin.otf");
   font-weight: 100;
 }
 @font-face {
   font-family: mplus;
-  src: url('../fonts/mplus-2p-thin.ttf');
+  src: url("../fonts/mplus-2p-thin.ttf");
 }
 @font-face {
   font-family: Avalon_Bold;
-  src: url('../fonts/Avalon_Bold.ttf');
+  src: url("../fonts/Avalon_Bold.ttf");
 }
 body {
   margin: 0;
@@ -54,7 +54,7 @@ body {
   box-sizing: border-box;
   font-family: proxima-nova;
   color: #ffffff;
-  background: url('../images/background_black.jpg') !important;
+  background: url("../images/background_black.jpg") !important;
   background-size: cover !important;
   background-position: center !important;
 }
@@ -118,8 +118,42 @@ header > div {
 .tab > div:not(:last-child) {
   margin-right: 10px;
 }
+button.meet_greet_tablinks {
+  background-image: url("../images/button_bg.png");
+  padding: 25px;
+  background-color: transparent;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100px;
+  width: 100px;
+  border: 0;
+  background-size: contain;
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 1.8px;
+  font-weight: 800;
+  outline: none;
+}
 button.tablinks {
-  background-image: url('../images/button_bg.png');
+  background-image: url("../images/button_bg.png");
+  padding: 25px;
+  background-color: transparent;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  height: 100px;
+  width: 100px;
+  border: 0;
+  background-size: contain;
+  color: #ffffff;
+  font-size: 14px;
+  letter-spacing: 1.8px;
+  font-weight: 800;
+  outline: none;
+}
+button.tablinks_responsive {
+  background-image: url("../images/button_bg.png");
   padding: 25px;
   background-color: transparent;
   border-radius: 50%;
@@ -141,6 +175,15 @@ button.tablinks {
 button.tablinks.active {
   box-shadow: 0 0 14px 2px #ff0000;
 }
+.category_empty {
+  display: flex;
+  background: #333333 !important;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: -3rem;
+  margin-right: -3rem;
+  height: 25px;
+}
 .category {
   display: flex;
   align-items: center;
@@ -152,7 +195,7 @@ button.tablinks.active {
   margin-right: -3rem;
 }
 .category_video {
-  border: 'solid 1px red';
+  border: "solid 1px red";
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -255,6 +298,18 @@ button.tablinks.active {
     width: 60px;
     font-size: 10px;
   }
+  button.meet_greet_tablinks {
+    padding: 0;
+    height: 60px;
+    width: 60px;
+    font-size: 10px;
+  }
+  button.tablinks_responsive {
+    padding: 0 !important;
+    height: 60px;
+    width: 60px;
+    font-size: 10px;
+  }
   .category_video.vids {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -265,10 +320,10 @@ button.tablinks.active {
     height: 120px;
   }
   .fan_image {
-    order: 1;
+    order: 3;
   }
   .tab1 {
-    order: 2;
+    order: 1;
     display: inline-block !important;
     width: 50%;
   }
@@ -296,7 +351,7 @@ button.tablinks.active {
     margin-right: 0;
   }
   .fan_image img {
-    width: 50%;
+    width: 80%;
   }
   .tab > div {
     text-align: center;

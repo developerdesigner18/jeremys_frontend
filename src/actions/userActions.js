@@ -74,7 +74,6 @@ export const getUser = () => {
         },
       })
       .then(result => {
-        console.log("api response ", result.data)
         if (result.status === 201) {
           dispatch({
             type: "GET_USER",
