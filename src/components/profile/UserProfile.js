@@ -1,69 +1,74 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Header from '../header/Header';
-import { getUser, updateProfile } from '../../actions/userActions';
-import { useSelector, useDispatch } from 'react-redux';
-import swal from 'sweetalert';
+import React, { useState, useEffect, useRef } from "react"
+import Header from "../header/Header"
+import {
+  getUser,
+  updateProfile,
+  deactivateUserAccount,
+} from "../../actions/userActions"
+import { useSelector, useDispatch } from "react-redux"
+import swal from "sweetalert"
+import "../../assets/css/profile.css"
 
 function UserProfile(props) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const stateData = useSelector(state => {
-    if (localStorage.getItem('token')) return state.user;
-  });
+    if (localStorage.getItem("token")) return state.user
+  })
   const [userInfo, setUserInfo] = useState({
-    lastName: '',
-    firstName: '',
-    email: '',
-    password: '',
-    confPass: '',
-    country: '',
-    city: '',
-    phoneNumber: '',
-    userNameHandle: '',
-    startAddress: '',
-    audienceTheme: '',
-    brandName: '',
-    bandName: '',
-    contactNumber: '',
-    userName: '',
-    paymentType: '',
-    expiryDate: '',
-    state: '',
-    preferredCarrier: '',
-    cardNumber: '',
-    image: '',
-    showImage: '',
-    type: '',
-    cvv: '',
-  });
+    lastName: "",
+    firstName: "",
+    email: "",
+    password: "",
+    confPass: "",
+    country: "",
+    city: "",
+    phoneNumber: "",
+    userNameHandle: "",
+    startAddress: "",
+    audienceTheme: "",
+    brandName: "",
+    bandName: "",
+    contactNumber: "",
+    userName: "",
+    paymentType: "",
+    expiryDate: "",
+    state: "",
+    preferredCarrier: "",
+    cardNumber: "",
+    image: "",
+    showImage: "",
+    type: "",
+    cvv: "",
+  })
   const useHasChanged = val => {
-    const prevVal = usePrevious(val);
-    return prevVal !== val;
-  };
+    const prevVal = usePrevious(val)
+    return prevVal !== val
+  }
 
   const usePrevious = value => {
-    const ref = useRef();
+    const ref = useRef()
     useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  };
+      ref.current = value
+    })
+    return ref.current
+  }
 
-  const hasVal1Changed = useHasChanged(userInfo);
+  const hasVal1Changed = useHasChanged(userInfo)
 
   useEffect(async () => {
-    if (localStorage.getItem('token')) {
-      let mounted = true;
-      await dispatch(getUser());
+    if (localStorage.getItem("token")) {
+      let mounted = true
+      await dispatch(getUser())
 
       if (mounted) {
-        console.log('val1 has changed', stateData, mounted);
+        console.log("val1 has changed", stateData, mounted)
         if (stateData && stateData.userDetail) {
           console.log(
-            'stateData.userDetail.data&payment ',
+            "stateData.userDetail.data&payment ",
             stateData.userDetail,
             stateData.userDetail.data,
             stateData.userDetail.paymentData
-          );
+          )
           const {
             firstName,
             lastName,
@@ -82,7 +87,7 @@ function UserProfile(props) {
             contactNumber,
             profileImgURl,
             type,
-          } = stateData.userDetail.data;
+          } = stateData.userDetail.data
 
           setUserInfo(prevState => ({
             ...prevState,
@@ -105,30 +110,30 @@ function UserProfile(props) {
             type: type,
             paymentType: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.paymentType
-              : '',
+              : "",
             expiryDate: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.expiryDate
-              : '',
+              : "",
             cvv: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.cvv
-              : '',
+              : "",
             cardNumber: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.cardNumber
-              : '',
+              : "",
             preferredCarrier: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.preferredCarrier
-              : '',
-          }));
+              : "",
+          }))
         }
       }
-      return () => (mounted = false);
+      return () => (mounted = false)
     } else {
-      swal('Info', 'Please do logout').then(() => props.history.push('/login'));
+      swal("Info", "Please do logout").then(() => props.history.push("/login"))
     }
-  }, []);
+  }, [])
 
   const handleChange = e => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     // if (stateData) {
     //   if (stateData.userDetail && stateData.userDetail.data) {
     //     setUserInfo(prevState => ({
@@ -141,80 +146,80 @@ function UserProfile(props) {
     setUserInfo(prevState => ({
       ...prevState,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
   const imageChange = event => {
-    let reader = new FileReader();
+    let reader = new FileReader()
     reader.onload = e => {
       setUserInfo(prevState => ({
         ...prevState,
         image: event.target.files[0],
         showImage: e.target.result,
-      }));
-    };
-    reader.readAsDataURL(event.target.files[0]);
-  };
+      }))
+    }
+    reader.readAsDataURL(event.target.files[0])
+  }
 
   const callUpdate = async e => {
-    e.preventDefault();
+    e.preventDefault()
     if (stateData) {
       if (stateData.userDetail && stateData.userDetail.data) {
         setUserInfo(prevState => ({
           ...prevState,
           email: stateData.userDetail.data.emailId,
           type: stateData.userDetail.data.type,
-        }));
+        }))
       }
     }
-    console.log('usrinfo ', stateData, userInfo);
+    console.log("usrinfo ", stateData, userInfo)
     if (userInfo.image) {
-      let fd = new FormData();
-      fd.append('firstName', userInfo.firstName);
-      fd.append('lastName', userInfo.lastName);
-      fd.append('city', userInfo.city);
-      fd.append('state', userInfo.state);
-      fd.append('country', userInfo.country);
-      fd.append('paymentType', userInfo.paymentType);
-      fd.append('cardNumber', userInfo.cardNumber);
-      fd.append('expiryDate', userInfo.expiryDate);
-      fd.append('phoneNumber', userInfo.phoneNumber);
-      fd.append('userNameHandle', userInfo.userNameHandle);
-      fd.append('startAddress', userInfo.startAddress);
-      fd.append('audienceTheme', userInfo.audienceTheme);
-      fd.append('brandName', userInfo.brandName);
-      fd.append('bandName', userInfo.bandName);
-      fd.append('contactNumber', userInfo.contactNumber);
-      fd.append('userName', userInfo.userName);
-      fd.append('preferredCarrier', userInfo.preferredCarrier);
-      fd.append('type', stateData.userDetail.data.type);
-      fd.append('email', stateData.userDetail.data.emailId);
-      fd.append('image', userInfo.image);
-      await dispatch(updateProfile(fd));
+      let fd = new FormData()
+      fd.append("firstName", userInfo.firstName)
+      fd.append("lastName", userInfo.lastName)
+      fd.append("city", userInfo.city)
+      fd.append("state", userInfo.state)
+      fd.append("country", userInfo.country)
+      fd.append("paymentType", userInfo.paymentType)
+      fd.append("cardNumber", userInfo.cardNumber)
+      fd.append("expiryDate", userInfo.expiryDate)
+      fd.append("phoneNumber", userInfo.phoneNumber)
+      fd.append("userNameHandle", userInfo.userNameHandle)
+      fd.append("startAddress", userInfo.startAddress)
+      fd.append("audienceTheme", userInfo.audienceTheme)
+      fd.append("brandName", userInfo.brandName)
+      fd.append("bandName", userInfo.bandName)
+      fd.append("contactNumber", userInfo.contactNumber)
+      fd.append("userName", userInfo.userName)
+      fd.append("preferredCarrier", userInfo.preferredCarrier)
+      fd.append("type", stateData.userDetail.data.type)
+      fd.append("email", stateData.userDetail.data.emailId)
+      fd.append("image", userInfo.image)
+      await dispatch(updateProfile(fd))
     } else {
-      console.log('new user info ', userInfo);
+      console.log("new user info ", userInfo)
       if (
-        userInfo.email == '' &&
-        userInfo.type == '' &&
-        userInfo.firstName == '' &&
-        userInfo.lastName == '' &&
-        userInfo.password == '' &&
-        userInfo.country == '' &&
-        userInfo.city == '' &&
-        userInfo.state == '' &&
-        userInfo.paymentType == '' &&
-        userInfo.preferredCarrier == '' &&
-        userInfo.cardNumber == '' &&
-        userInfo.cvv == '' &&
-        userInfo.expiryDate == '' &&
-        userInfo.phoneNumber == '' &&
-        userInfo.userName == ''&&
-        userInfo.userNameHandle == '' &&
-        userInfo.startAddress == '' &&
-        userInfo.audienceTheme == '' &&
-        userInfo.brandName == '' &&
-        userInfo.contactNumber == '' &&
-        userInfo.bandName == '' 
+        userInfo.email == "" &&
+        userInfo.type == "" &&
+        userInfo.firstName == "" &&
+        userInfo.lastName == "" &&
+        userInfo.password == "" &&
+        userInfo.country == "" &&
+        userInfo.city == "" &&
+        userInfo.state == "" &&
+        userInfo.paymentType == "" &&
+        userInfo.preferredCarrier == "" &&
+        userInfo.cardNumber == "" &&
+        userInfo.cvv == "" &&
+        userInfo.expiryDate == "" &&
+        userInfo.phoneNumber == "" &&
+        userInfo.userName == "" &&
+        userInfo.userNameHandle == "" &&
+        userInfo.startAddress == "" &&
+        userInfo.audienceTheme == "" &&
+        userInfo.brandName == "" &&
+        userInfo.contactNumber == "" &&
+        userInfo.bandName == ""
       ) {
         const dataToPass = {
           email: stateData.userDetail.data.emailId,
@@ -229,22 +234,38 @@ function UserProfile(props) {
           contactNumber: stateData.userDetail.data.contactNumber,
           phoneNumber: stateData.userDetail.data.phoneNumber,
           city: stateData.userDetail.data.city,
-          state:stateData.userDetail.data.state
-        };
-        await dispatch(updateProfile(dataToPass));
+          state: stateData.userDetail.data.state,
+        }
+        await dispatch(updateProfile(dataToPass))
       } else {
-        await dispatch(updateProfile(userInfo));
+        await dispatch(updateProfile(userInfo))
       }
     }
-  };
+  }
+
+  const callDeactivate = async () => {
+    console.log("callDeactivatefn called")
+    const dataToPass = {
+      id: localStorage.getItem("id"),
+    }
+    await dispatch(deactivateUserAccount(dataToPass))
+  }
 
   return (
     <div className="container mb-5  ">
       <Header />
-      {console.log('state data', stateData)}
-      <div className="wrapper " style={{ color: 'white' }}>
-        <div className="mb-5" style={{ textAlign: 'center' }}>
+
+      <div className="wrapper " style={{ color: "white" }}>
+        <div className="mb-5" style={{ textAlign: "center" }}>
           USER INFORMATION
+        </div>
+        <div className="mb-4 deactivate">
+          <button
+            className="btn btn-default btn_submit"
+            type="button"
+            onClick={callDeactivate}>
+            Deactivate Account
+          </button>
         </div>
         <form method="post" onSubmit={e => callUpdate(e)}>
           <div>
@@ -336,16 +357,16 @@ function UserProfile(props) {
                     userInfo.showImage ||
                     (stateData != null && stateData.userDetail)
                       ? {
-                          width: '100%',
+                          width: "100%",
                           background: `url("${
                             userInfo.showImage
                               ? userInfo.showImage
                               : stateData.userDetail.data.profileImgURl
                           }") no-repeat center `,
-                          color: 'white',
-                          backgroundSize: 'cover',
+                          color: "white",
+                          backgroundSize: "cover",
                         }
-                      : { background: '#ffff', width: '100%' }
+                      : { background: "#ffff", width: "100%" }
                   }
                   className="upload"
                   method="POST">
@@ -376,14 +397,13 @@ function UserProfile(props) {
             </div>
           </div>
           {/* ========================================================================================*/}
-          <div className="my-5" style={{ textAlign: 'center' }}>
+          <div className="my-5" style={{ textAlign: "center" }}>
             DETAILS
           </div>
           <div>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-
-              <div className="form_detail">
+                <div className="form_detail">
                   <label>USER NAME</label>
                   <input
                     type="text"
@@ -401,7 +421,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-              <div className="form_detail">
+                <div className="form_detail">
                   <label>MOBILE NUMBER</label>
                   <input
                     type="text"
@@ -419,7 +439,12 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:localStorage.getItem('name')==="star"?"":"none"}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "star" ? "" : "none",
+                  }}>
                   <label>AUDIENCE THEME</label>
                   <input
                     type="text"
@@ -437,7 +462,14 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:localStorage.getItem('name')==="advertiser"?"":"none"}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser"
+                        ? ""
+                        : "none",
+                  }}>
                   <label>BRAND NAME</label>
                   <input
                     type="text"
@@ -455,7 +487,15 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:(localStorage.getItem('name')==="advertiser"||localStorage.getItem('name')==="star")?"none":""}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser" ||
+                      localStorage.getItem("name") === "star"
+                        ? "none"
+                        : "",
+                  }}>
                   <label>CITY</label>
                   <input
                     type="text"
@@ -473,7 +513,15 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:(localStorage.getItem('name')==="advertiser"||localStorage.getItem('name')==="star")?"none":""}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser" ||
+                      localStorage.getItem("name") === "star"
+                        ? "none"
+                        : "",
+                  }}>
                   <label>COUNTRY</label>
                   <input
                     type="text"
@@ -493,7 +541,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:"none"}}>
+                <div className="form_detail" style={{ display: "none" }}>
                   <label>PAYMENT TYPE</label>
                   <input
                     type="text"
@@ -511,7 +559,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:"none"}}>
+                <div className="form_detail" style={{ display: "none" }}>
                   <label>EXPIRY DATE</label>
                   <input
                     type="text"
@@ -530,8 +578,7 @@ function UserProfile(props) {
                 </div>
               </div>
               <div className="col-md-6 col-sm-12 d-flex align-items-stretch flex-column ">
-
-              <div className="form_detail">
+                <div className="form_detail">
                   <label>USER NAME HANDLE</label>
                   <input
                     type="text"
@@ -549,7 +596,12 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:localStorage.getItem('name')==="star"?"":"none"}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "star" ? "" : "none",
+                  }}>
                   <label>BAND NAME</label>
                   <input
                     type="text"
@@ -567,7 +619,14 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:localStorage.getItem('name')==="advertiser"?"":"none"}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser"
+                        ? ""
+                        : "none",
+                  }}>
                   <label>CONTACT NUMBER</label>
                   <input
                     type="text"
@@ -585,7 +644,15 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:(localStorage.getItem('name')==="advertiser"||localStorage.getItem('name')==="star")?"none":""}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser" ||
+                      localStorage.getItem("name") === "star"
+                        ? "none"
+                        : "",
+                  }}>
                   <label>ADDRESS</label>
                   <input
                     type="text"
@@ -603,7 +670,15 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:(localStorage.getItem('name')==="advertiser"||localStorage.getItem('name')==="star")?"none":""}}>
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("name") === "advertiser" ||
+                      localStorage.getItem("name") === "star"
+                        ? "none"
+                        : "",
+                  }}>
                   <label>STATE</label>
                   <input
                     type="text"
@@ -621,7 +696,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:"none"}}>
+                <div className="form_detail" style={{ display: "none" }}>
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
@@ -639,7 +714,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{display:"none"}}>
+                <div className="form_detail" style={{ display: "none" }}>
                   <label>CARD NUMBER</label>
                   <input
                     type="text"
@@ -656,7 +731,7 @@ function UserProfile(props) {
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                <div className="form_detail" style={{display:"none"}}>
+                <div className="form_detail" style={{ display: "none" }}>
                   <label>CVV</label>
                   <input
                     type="password"
@@ -681,12 +756,12 @@ function UserProfile(props) {
           </div>
         </form>
         <div className="privacy">
-          By clicking the button, you agree to our <span>Terms</span>,{' '}
+          By clicking the button, you agree to our <span>Terms</span>,{" "}
           <span>Privacy</span> and <span>Security Policy</span>.
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default UserProfile;
+export default UserProfile

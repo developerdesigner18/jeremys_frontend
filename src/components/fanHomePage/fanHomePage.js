@@ -22,156 +22,156 @@ function fanHomePage(props) {
   };
 
   return (
-    <div class="container">
-      <div class="form_container px-3 px-md-5">
+    <div className="container">
+      <div className="form_container px-3 px-md-5">
         <Header />
-        <div class="tabs_image">
-          <div class="tab">
-            <div class="tab1">
+        <div className="tabs_image">
+          <div className="tab">
+            <div className="tab1">
               <button
-                class="tablinks active"
+                className="tablinks active"
                 onClick={event => openCity(event, 'music')}>
                 MUSIC
               </button>
             </div>
-            <div class="tab2">
+            <div className="tab2">
               <button
-                class="tablinks"
+                className="tablinks"
                 onClick={event => openCity(event, 'food')}>
                 FOOD
               </button>
             </div>
-            <div class="fan_image">
+            <div className="fan_image">
               <img src="../assets/images/fan.png" />
             </div>
-            <div class="tab3">
+            <div className="tab3">
               <button
-                class="tablinks"
+                className="tablinks"
                 onClick={event => openCity(event, 'style')}>
                 STYLE
               </button>
             </div>
-            <div class="tab4">
+            <div className="tab4">
               <button
-                class="tablinks"
+                className="tablinks"
                 onClick={event => openCity(event, 'body')}>
                 BODY
               </button>
             </div>
           </div>
-          <div id="music" class="tabcontent active">
-            <div class="category">
-              <div class="cats_content">
+          <div id="music" className="tabcontent active">
+            <div className="category">
+              <div className="cats_content">
                 <a href="#">POP</a>
               </div>
-              <div class="cats_content">
+              <div className="cats_content">
                 <a href="#">ROCK</a>
               </div>
-              <div class="cats_content">
+              <div className="cats_content">
                 <a href="#">BLUES</a>
               </div>
-              <div class="cats_content">
+              <div className="cats_content">
                 <a href="#">R&B</a>
               </div>
             </div>
-            <div class="category vids">
-              <div class="main_cat">
-                <video muted={true} autoplay>
+            <div className="category_video vids">
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-            </div>
-            <div class="category vids">
-              <div class="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
             </div>
-            <div class="category vids">
-              <div class="main_cat">
-                <video muted={true} autoplay>
+            <div className="category_video vids">
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
             </div>
-            <div class="category vids">
-              <div class="main_cat">
-                <video muted={true} autoplay>
+            <div className="category_video vids">
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
-              <div class="main_cat">
-                <video muted={true} autoplay>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+            </div>
+            <div className="category_video vids">
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
             </div>
           </div>
-          <div id="food" class="tabcontent">
+          <div id="food" className="tabcontent">
             <h3>Paris</h3>
             <p>Paris is the capital of France.</p>
           </div>
-          <div id="style" class="tabcontent">
+          <div id="style" className="tabcontent">
             <h3>Tokyo</h3>
             <p>Tokyo is the capital of Japan.</p>
           </div>
-          <div id="body" class="tabcontent">
+          <div id="body" className="tabcontent">
             <h3>London</h3>
             <p>London is the capital city of England.</p>
           </div>

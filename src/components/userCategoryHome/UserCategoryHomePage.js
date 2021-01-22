@@ -88,7 +88,7 @@ function UserCategoryHomePage(props) {
                 <a href="#">R&B</a>
               </div>
             </div>
-            <div class="category vids">
+            <div class="category_video vids">
               <div class="main_cat">
                 <video muted={true} autoplay>
                   <source src="../assets/images/vid.mp4" />
@@ -110,7 +110,7 @@ function UserCategoryHomePage(props) {
                 </video>
               </div>
             </div>
-            <div class="category vids">
+            <div class="category_video vids">
               <div class="main_cat">
                 <video muted={true} autoplay>
                   <source src="../assets/images/vid.mp4" />
@@ -132,7 +132,7 @@ function UserCategoryHomePage(props) {
                 </video>
               </div>
             </div>
-            <div class="category vids">
+            <div class="category_video vids">
               <div class="main_cat">
                 <video muted={true} autoplay>
                   <source src="../assets/images/vid.mp4" />
@@ -154,7 +154,7 @@ function UserCategoryHomePage(props) {
                 </video>
               </div>
             </div>
-            <div class="category vids">
+            <div class="category_video vids">
               <div class="main_cat">
                 <video muted={true} autoplay>
                   <source src="../assets/images/vid.mp4" />

@@ -1,0 +1,16 @@
+.deactivate button {
+  color: #ff2800;
+  border: 0;
+  background: #2d2d2d;
+  outline: none;
+  letter-spacing: 1.2px;
+  font-family: Avalon_Bold;
+}
+.btn_submit:hover {
+  color: #ff2800;
+}
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none;
+}
