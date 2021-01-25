@@ -1,74 +1,73 @@
-import React, { useState, useEffect, useRef } from "react"
-import Header from "../header/Header"
-import {
-  getUser,
-  updateProfile,
-  deactivateUserAccount,
-} from "../../actions/userActions"
-import { useSelector, useDispatch } from "react-redux"
-import swal from "sweetalert"
+import React, { useState, useEffect, useRef } from 'react';
+import Header from '../header/Header';
+import { getUser, updateProfile, deactivateUserAccount, } from '../../actions/userActions';
+import { useSelector, useDispatch } from 'react-redux';
+import swal from 'sweetalert';
+import { PayPalButton } from "react-paypal-button-v2";
 import "../../assets/css/profile.css"
 
 function UserProfile(props) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const stateData = useSelector(state => {
-    if (localStorage.getItem("token")) return state.user
-  })
+    if (localStorage.getItem('token')) return state.user;
+  });
   const [userInfo, setUserInfo] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    password: "",
-    confPass: "",
-    country: "",
-    city: "",
-    phoneNumber: "",
-    userNameHandle: "",
-    startAddress: "",
-    audienceTheme: "",
-    brandName: "",
-    bandName: "",
-    contactNumber: "",
-    userName: "",
-    paymentType: "",
-    expiryDate: "",
-    state: "",
-    preferredCarrier: "",
-    cardNumber: "",
-    image: "",
-    showImage: "",
-    type: "",
-    cvv: "",
-  })
+    lastName: '',
+    firstName: '',
+    email: '',
+    password: '',
+    confPass: '',
+    country: '',
+    city: '',
+    phoneNumber: '',
+    userNameHandle: '',
+    startAddress: '',
+    audienceTheme: '',
+    brandName: '',
+    bandName: '',
+    contactNumber: '',
+    userName: '',
+    paymentType: '',
+    expiryDate: '',
+    state: '',
+    preferredCarrier: '',
+    cardNumber: '',
+    image: '',
+    showImage: '',
+    bannerImage:'',
+    showBannerImage:'',
+    type: '',
+    cvv: '',
+  });
   const useHasChanged = val => {
-    const prevVal = usePrevious(val)
-    return prevVal !== val
-  }
+    const prevVal = usePrevious(val);
+    return prevVal !== val;
+  };
 
   const usePrevious = value => {
-    const ref = useRef()
+    const ref = useRef();
     useEffect(() => {
-      ref.current = value
-    })
-    return ref.current
-  }
+      ref.current = value;
+    });
+    return ref.current;
+  };
 
-  const hasVal1Changed = useHasChanged(userInfo)
+  const hasVal1Changed = useHasChanged(userInfo);
 
   useEffect(async () => {
-    if (localStorage.getItem("token")) {
-      let mounted = true
-      await dispatch(getUser())
+    if (localStorage.getItem('token')) {
+      let mounted = true;
+      await dispatch(getUser());
 
       if (mounted) {
-        console.log("val1 has changed", stateData, mounted)
+        console.log('val1 has changed', stateData, mounted);
         if (stateData && stateData.userDetail) {
           console.log(
-            "stateData.userDetail.data&payment ",
+            'stateData.userDetail.data&payment ',
             stateData.userDetail,
             stateData.userDetail.data,
             stateData.userDetail.paymentData
-          )
+          );
           const {
             firstName,
             lastName,
@@ -87,7 +86,7 @@ function UserProfile(props) {
             contactNumber,
             profileImgURl,
             type,
-          } = stateData.userDetail.data
+          } = stateData.userDetail.data;
 
           setUserInfo(prevState => ({
             ...prevState,
@@ -110,30 +109,30 @@ function UserProfile(props) {
             type: type,
             paymentType: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.paymentType
-              : "",
+              : '',
             expiryDate: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.expiryDate
-              : "",
+              : '',
             cvv: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.cvv
-              : "",
+              : '',
             cardNumber: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.cardNumber
-              : "",
+              : '',
             preferredCarrier: stateData.userDetail.paymentData
               ? stateData.userDetail.paymentData.preferredCarrier
-              : "",
-          }))
+              : '',
+          }));
         }
       }
-      return () => (mounted = false)
+      return () => (mounted = false);
     } else {
-      swal("Info", "Please do logout").then(() => props.history.push("/login"))
+      swal('Info', 'Please do logout').then(() => props.history.push('/login'));
     }
-  }, [])
+  }, []);
 
   const handleChange = e => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     // if (stateData) {
     //   if (stateData.userDetail && stateData.userDetail.data) {
     //     setUserInfo(prevState => ({
@@ -146,80 +145,94 @@ function UserProfile(props) {
     setUserInfo(prevState => ({
       ...prevState,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const imageChange = event => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onload = e => {
       setUserInfo(prevState => ({
         ...prevState,
         image: event.target.files[0],
         showImage: e.target.result,
-      }))
-    }
-    reader.readAsDataURL(event.target.files[0])
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  const BannerChange = (event) => {
+    let reader = new FileReader();
+    reader.onload = e => {
+      setUserInfo(prevState => ({
+        ...prevState,
+        bannerImage: event.target.files[0],
+        showBannerImage: e.target.result,
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
   }
 
   const callUpdate = async e => {
-    e.preventDefault()
+    e.preventDefault();
     if (stateData) {
       if (stateData.userDetail && stateData.userDetail.data) {
         setUserInfo(prevState => ({
           ...prevState,
           email: stateData.userDetail.data.emailId,
           type: stateData.userDetail.data.type,
-        }))
+        }));
       }
     }
-    console.log("usrinfo ", stateData, userInfo)
-    if (userInfo.image) {
-      let fd = new FormData()
-      fd.append("firstName", userInfo.firstName)
-      fd.append("lastName", userInfo.lastName)
-      fd.append("city", userInfo.city)
-      fd.append("state", userInfo.state)
-      fd.append("country", userInfo.country)
-      fd.append("paymentType", userInfo.paymentType)
-      fd.append("cardNumber", userInfo.cardNumber)
-      fd.append("expiryDate", userInfo.expiryDate)
-      fd.append("phoneNumber", userInfo.phoneNumber)
-      fd.append("userNameHandle", userInfo.userNameHandle)
-      fd.append("startAddress", userInfo.startAddress)
-      fd.append("audienceTheme", userInfo.audienceTheme)
-      fd.append("brandName", userInfo.brandName)
-      fd.append("bandName", userInfo.bandName)
-      fd.append("contactNumber", userInfo.contactNumber)
-      fd.append("userName", userInfo.userName)
-      fd.append("preferredCarrier", userInfo.preferredCarrier)
-      fd.append("type", stateData.userDetail.data.type)
-      fd.append("email", stateData.userDetail.data.emailId)
-      fd.append("image", userInfo.image)
-      await dispatch(updateProfile(fd))
+    console.log('usrinfo ', stateData, userInfo);
+    if (userInfo.image || userInfo.bannerImage) {
+      console.log('-=-=-=- inside image');
+      let fd = new FormData();
+      fd.append('firstName', userInfo.firstName);
+      fd.append('lastName', userInfo.lastName);
+      fd.append('city', userInfo.city);
+      fd.append('state', userInfo.state);
+      fd.append('country', userInfo.country);
+      fd.append('paymentType', userInfo.paymentType);
+      fd.append('cardNumber', userInfo.cardNumber);
+      fd.append('expiryDate', userInfo.expiryDate);
+      fd.append('phoneNumber', userInfo.phoneNumber);
+      fd.append('userNameHandle', userInfo.userNameHandle);
+      fd.append('startAddress', userInfo.startAddress);
+      fd.append('audienceTheme', userInfo.audienceTheme);
+      fd.append('brandName', userInfo.brandName);
+      fd.append('bandName', userInfo.bandName);
+      fd.append('contactNumber', userInfo.contactNumber);
+      fd.append('userName', userInfo.userName);
+      fd.append('preferredCarrier', userInfo.preferredCarrier);
+      fd.append('type', stateData.userDetail.data.type);
+      fd.append('email', stateData.userDetail.data.emailId);
+      if(userInfo.image) fd.append('image', userInfo.image);
+      if(userInfo.bannerImage) fd.append('bannerImage',userInfo.bannerImage);
+      await dispatch(updateProfile(fd));
     } else {
-      console.log("new user info ", userInfo)
+      console.log('new user info ', userInfo);
       if (
-        userInfo.email == "" &&
-        userInfo.type == "" &&
-        userInfo.firstName == "" &&
-        userInfo.lastName == "" &&
-        userInfo.password == "" &&
-        userInfo.country == "" &&
-        userInfo.city == "" &&
-        userInfo.state == "" &&
-        userInfo.paymentType == "" &&
-        userInfo.preferredCarrier == "" &&
-        userInfo.cardNumber == "" &&
-        userInfo.cvv == "" &&
-        userInfo.expiryDate == "" &&
-        userInfo.phoneNumber == "" &&
-        userInfo.userName == "" &&
-        userInfo.userNameHandle == "" &&
-        userInfo.startAddress == "" &&
-        userInfo.audienceTheme == "" &&
-        userInfo.brandName == "" &&
-        userInfo.contactNumber == "" &&
-        userInfo.bandName == ""
+        userInfo.email == '' &&
+        userInfo.type == '' &&
+        userInfo.firstName == '' &&
+        userInfo.lastName == '' &&
+        userInfo.password == '' &&
+        userInfo.country == '' &&
+        userInfo.city == '' &&
+        userInfo.state == '' &&
+        userInfo.paymentType == '' &&
+        userInfo.preferredCarrier == '' &&
+        userInfo.cardNumber == '' &&
+        userInfo.cvv == '' &&
+        userInfo.expiryDate == '' &&
+        userInfo.phoneNumber == '' &&
+        userInfo.userName == ''&&
+        userInfo.userNameHandle == '' &&
+        userInfo.startAddress == '' &&
+        userInfo.audienceTheme == '' &&
+        userInfo.brandName == '' &&
+        userInfo.contactNumber == '' &&
+        userInfo.bandName == '' 
       ) {
         const dataToPass = {
           email: stateData.userDetail.data.emailId,
@@ -234,14 +247,14 @@ function UserProfile(props) {
           contactNumber: stateData.userDetail.data.contactNumber,
           phoneNumber: stateData.userDetail.data.phoneNumber,
           city: stateData.userDetail.data.city,
-          state: stateData.userDetail.data.state,
-        }
-        await dispatch(updateProfile(dataToPass))
+          state:stateData.userDetail.data.state
+        };
+        await dispatch(updateProfile(dataToPass));
       } else {
-        await dispatch(updateProfile(userInfo))
+        await dispatch(updateProfile(userInfo));
       }
     }
-  }
+  };
 
   const callDeactivate = async () => {
     console.log("callDeactivatefn called")
@@ -254,11 +267,12 @@ function UserProfile(props) {
   return (
     <div className="container mb-5  ">
       <Header />
-
-      <div className="wrapper " style={{ color: "white" }}>
-        <div className="mb-5" style={{ textAlign: "center" }}>
+      {console.log('state data', stateData)}
+      <div className="wrapper " style={{ color: 'white' }}>
+        <div className="mb-5" style={{ textAlign: 'center' }}>
           USER INFORMATION
         </div>
+
         <div className="mb-4 deactivate">
           <button
             className="btn btn-default btn_submit"
@@ -267,10 +281,46 @@ function UserProfile(props) {
             Deactivate Account
           </button>
         </div>
+
         <form method="post" onSubmit={e => callUpdate(e)}>
           <div>
             <div className="row">
               <div className="col-md-6 col-sm-12">
+              <div className="form_detail" style={{display:localStorage.getItem('type')==="Fan"?"none":""}}>
+                {/* <label style={{}}>CHANGE BANNER</label> */}
+                <label style={{}}>{localStorage.getItem('type')==="Advertiser"?"BANNER 1":"CHANGE BANNER"}</label>
+                  <div
+                    // style={{
+                    //   marginTop: "0.5rem",
+                    //   width: "100%",
+                    //   zIndex: "1",
+                    //   background: `url("../assets/images/logo.png") no-repeat  !important`,
+                    //   backgroundSize: "cover",
+                    // }}
+                    style={
+                      userInfo.showBannerImage ||
+                      (stateData != null && stateData.userDetail)
+                        ? {
+                            width: '100%',
+                            background: `url("${
+                              userInfo.showBannerImage
+                                ? userInfo.showBannerImage
+                                : null
+                            }") no-repeat center `,
+                            color: 'white',
+                            backgroundSize: 'cover !important'
+                          }
+                        : { background: '#ffff', width: '100%' }
+                    }
+                    className="upload"
+                    method="POST">
+                    <input type="file" onChange={e => BannerChange(e)} />
+                    {stateData && stateData.userDetail ? null : (
+                      <p>ADD PROFILE PHOTO</p>
+                    )}
+                </div>
+                </div>
+
                 <div className="form_detail">
                   <label>LAST NAME</label>
                   <input
@@ -305,7 +355,7 @@ function UserProfile(props) {
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                <div className="form_detail">
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Fan"?"":"none"}}>
                   <label>EMAIL</label>
                   <input
                     type="email"
@@ -324,7 +374,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail">
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Fan"?"":"none"}}>
                   <label>PASSWORD</label>
                   <input
                     type="password"
@@ -344,7 +394,9 @@ function UserProfile(props) {
                 </div>
               </div>
               <div className="col-md-6 col-sm-12">
-                <label style={{}}>CHANGE PROFILE PHOTO</label>
+
+                {/* <label style={{}}>CHANGE PROFILE PHOTO</label> */}
+                <label style={{}}>{localStorage.getItem('type')==="Advertiser"?"BANNER 2":"CHANGE PROFILE PHOTO"}</label>
                 <div
                   // style={{
                   //   marginTop: "0.5rem",
@@ -357,16 +409,16 @@ function UserProfile(props) {
                     userInfo.showImage ||
                     (stateData != null && stateData.userDetail)
                       ? {
-                          width: "100%",
+                          width: '100%',
                           background: `url("${
                             userInfo.showImage
                               ? userInfo.showImage
                               : stateData.userDetail.data.profileImgURl
                           }") no-repeat center `,
-                          color: "white",
-                          backgroundSize: "cover",
+                          color: 'white',
+                          backgroundSize: 'cover',
                         }
-                      : { background: "#ffff", width: "100%" }
+                      : { background: '#ffff', width: '100%' }
                   }
                   className="upload"
                   method="POST">
@@ -375,7 +427,43 @@ function UserProfile(props) {
                     <p>ADD PROFILE PHOTO</p>
                   )}
                 </div>
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Fan"?"none":""}}>
+                  <label>EMAIL</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={
+                      userInfo.email
+                        ? userInfo.email
+                        : stateData
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.emailId
+                          : userInfo.email
+                        : userInfo.email
+                    }
+                    onChange={e => handleChange(e)}
+                    disabled
+                  />
+                </div>
 
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Fan"?"none":""}}>
+                  <label>PASSWORD</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={
+                      userInfo.password
+                        ? userInfo.password
+                        : stateData
+                        ? stateData.userDetail.data
+                          ? stateData.userDetail.data.password
+                          : userInfo.password
+                        : userInfo.password
+                    }
+                    disabled
+                    onChange={e => handleChange(e)}
+                  />
+                </div>
                 {/* <div className="form_detail">
                   <label>CONFIRM PASSWORD</label>
                   <input
@@ -397,13 +485,14 @@ function UserProfile(props) {
             </div>
           </div>
           {/* ========================================================================================*/}
-          <div className="my-5" style={{ textAlign: "center" }}>
+          <div className="my-5" style={{ textAlign: 'center' }}>
             DETAILS
           </div>
           <div>
             <div className="row">
               <div className="col-md-6 col-sm-12">
-                <div className="form_detail">
+
+              <div className="form_detail">
                   <label>USER NAME</label>
                   <input
                     type="text"
@@ -421,7 +510,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail">
+              <div className="form_detail">
                   <label>MOBILE NUMBER</label>
                   <input
                     type="text"
@@ -439,12 +528,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "star" ? "" : "none",
-                  }}>
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Star"?"":"none"}}>
                   <label>AUDIENCE THEME</label>
                   <input
                     type="text"
@@ -462,14 +546,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser"
-                        ? ""
-                        : "none",
-                  }}>
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Advertiser"?"":"none"}}>
                   <label>BRAND NAME</label>
                   <input
                     type="text"
@@ -487,15 +564,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser" ||
-                      localStorage.getItem("name") === "star"
-                        ? "none"
-                        : "",
-                  }}>
+                <div className="form_detail" style={{display:(localStorage.getItem('type')==="Advertiser"||localStorage.getItem('type')==="Star")?"none":""}}>
                   <label>CITY</label>
                   <input
                     type="text"
@@ -513,15 +582,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser" ||
-                      localStorage.getItem("name") === "star"
-                        ? "none"
-                        : "",
-                  }}>
+                <div className="form_detail" style={{display:(localStorage.getItem('type')==="Advertiser"||localStorage.getItem('type')==="Star")?"none":""}}>
                   <label>COUNTRY</label>
                   <input
                     type="text"
@@ -541,7 +602,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display:"none"}}>
                   <label>PAYMENT TYPE</label>
                   <input
                     type="text"
@@ -559,7 +620,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display:"none"}}>
                   <label>EXPIRY DATE</label>
                   <input
                     type="text"
@@ -578,7 +639,8 @@ function UserProfile(props) {
                 </div>
               </div>
               <div className="col-md-6 col-sm-12 d-flex align-items-stretch flex-column ">
-                <div className="form_detail">
+
+              <div className="form_detail">
                   <label>USER NAME HANDLE</label>
                   <input
                     type="text"
@@ -596,12 +658,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "star" ? "" : "none",
-                  }}>
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Star"?"":"none"}}>
                   <label>BAND NAME</label>
                   <input
                     type="text"
@@ -619,14 +676,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser"
-                        ? ""
-                        : "none",
-                  }}>
+                <div className="form_detail" style={{display:localStorage.getItem('type')==="Advertiser"?"":"none"}}>
                   <label>CONTACT NUMBER</label>
                   <input
                     type="text"
@@ -644,15 +694,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser" ||
-                      localStorage.getItem("name") === "star"
-                        ? "none"
-                        : "",
-                  }}>
+                <div className="form_detail" style={{display:(localStorage.getItem('type')==="Advertiser"||localStorage.getItem('type')==="Star")?"none":""}}>
                   <label>ADDRESS</label>
                   <input
                     type="text"
@@ -670,15 +712,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div
-                  className="form_detail"
-                  style={{
-                    display:
-                      localStorage.getItem("name") === "advertiser" ||
-                      localStorage.getItem("name") === "star"
-                        ? "none"
-                        : "",
-                  }}>
+                <div className="form_detail" style={{display:(localStorage.getItem('type')==="Advertiser"||localStorage.getItem('type')==="Star")?"none":""}}>
                   <label>STATE</label>
                   <input
                     type="text"
@@ -696,7 +730,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display:"none"}}>
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
@@ -714,7 +748,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display:"none"}}>
                   <label>CARD NUMBER</label>
                   <input
                     type="text"
@@ -731,7 +765,7 @@ function UserProfile(props) {
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display:"none"}}>
                   <label>CVV</label>
                   <input
                     type="password"
@@ -756,12 +790,30 @@ function UserProfile(props) {
           </div>
         </form>
         <div className="privacy">
-          By clicking the button, you agree to our <span>Terms</span>,{" "}
+          By clicking the button, you agree to our <span>Terms</span>,{' '}
           <span>Privacy</span> and <span>Security Policy</span>.
+        </div>
+        <div style={{ textAlign: 'center',marginTop:"10px" }}>
+            {/* <div id="paypal-button-container"></div> */}
+            <PayPalButton
+              amount="0.01"
+              // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+              onSuccess={(details, data) => {
+                alert("Transaction completed by " + details.payer.name.given_name);
+      
+                // OPTIONAL: Call your server to save the transaction
+                return fetch("/paypal-transaction-complete", {
+                  method: "post",
+                  body: JSON.stringify({
+                    orderID: data.orderID
+                  })
+                });
+              }}
+            />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default UserProfile
+export default UserProfile;
