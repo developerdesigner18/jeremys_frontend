@@ -42,13 +42,18 @@ function Header(props) {
     history.push("/login")
   }
   const goToHome = () => {
-    if (
-      localStorage.getItem("type") === "Fan" ||
-      localStorage.getItem("type") === "fan"
-    ) {
-      history.push("/fanHomePage")
-    } else {
-      history.push("/userHomepage")
+    if(localStorage.getItem('type')) {
+      if (
+        localStorage.getItem("type") === "Fan" ||
+        localStorage.getItem("type") === "fan"
+      ) {
+        history.push("/fanHomePage")
+      } else {
+        history.push("/userHomepage")
+      }
+    }
+    else {
+      history.push("/")
     }
   }
 
