@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import swal from 'sweetalert';
 import { PayPalButton } from "react-paypal-button-v2";
 import "../../assets/css/profile.css"
+import axios from "axios"
 
 function UserProfile(props) {
   const dispatch = useDispatch();
@@ -57,17 +58,15 @@ function UserProfile(props) {
   useEffect(async () => {
     if (localStorage.getItem('token')) {
       let mounted = true;
-      await dispatch(getUser());
-
-      if (mounted) {
-        console.log('val1 has changed', stateData, mounted);
-        if (stateData && stateData.userDetail) {
-          console.log(
-            'stateData.userDetail.data&payment ',
-            stateData.userDetail,
-            stateData.userDetail.data,
-            stateData.userDetail.paymentData
-          );
+      axios
+      .get(`${process.env.REACT_APP_API_URL}api/user/getUserData`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then(result => {
+        console.log('result.data ',result);
+        if (result.status === 201) {
           const {
             firstName,
             lastName,
@@ -86,7 +85,7 @@ function UserProfile(props) {
             contactNumber,
             profileImgURl,
             type,
-          } = stateData.userDetail.data;
+          } = result.data.data;
 
           setUserInfo(prevState => ({
             ...prevState,
@@ -107,25 +106,26 @@ function UserProfile(props) {
             country: country,
             showImage: profileImgURl,
             type: type,
-            paymentType: stateData.userDetail.paymentData
-              ? stateData.userDetail.paymentData.paymentType
+            paymentType: result.data.paymentData
+              ? result.data.paymentData.paymentType
               : '',
-            expiryDate: stateData.userDetail.paymentData
-              ? stateData.userDetail.paymentData.expiryDate
+            expiryDate: result.data.paymentData
+              ? result.data.paymentData.expiryDate
               : '',
-            cvv: stateData.userDetail.paymentData
-              ? stateData.userDetail.paymentData.cvv
+            cvv: result.data.paymentData
+              ? result.data.paymentData.cvv
               : '',
-            cardNumber: stateData.userDetail.paymentData
-              ? stateData.userDetail.paymentData.cardNumber
+            cardNumber: result.data.paymentData
+              ? result.data.paymentData.cardNumber
               : '',
-            preferredCarrier: stateData.userDetail.paymentData
-              ? stateData.userDetail.paymentData.preferredCarrier
+            preferredCarrier: result.data.paymentData
+              ? result.data.paymentData.preferredCarrier
               : '',
           }));
         }
-      }
-      return () => (mounted = false);
+      })
+      .catch(err => console.log("error ", err))
+
     } else {
       swal('Info', 'Please do logout').then(() => props.history.push('/login'));
     }
@@ -133,6 +133,7 @@ function UserProfile(props) {
 
   const handleChange = e => {
     const { name, value } = e.target;
+    console.log('fn called ', value);
     // if (stateData) {
     //   if (stateData.userDetail && stateData.userDetail.data) {
     //     setUserInfo(prevState => ({
@@ -201,7 +202,7 @@ function UserProfile(props) {
       fd.append('audienceTheme', userInfo.audienceTheme);
       fd.append('brandName', userInfo.brandName);
       fd.append('bandName', userInfo.bandName);
-      fd.append('contactNumber', userInfo.contactNumber);
+      // fd.append('contactNumber', userInfo.contactNumber);
       fd.append('userName', userInfo.userName);
       fd.append('preferredCarrier', userInfo.preferredCarrier);
       fd.append('type', stateData.userDetail.data.type);
@@ -211,48 +212,7 @@ function UserProfile(props) {
       await dispatch(updateProfile(fd));
     } else {
       console.log('new user info ', userInfo);
-      if (
-        userInfo.email == '' &&
-        userInfo.type == '' &&
-        userInfo.firstName == '' &&
-        userInfo.lastName == '' &&
-        userInfo.password == '' &&
-        userInfo.country == '' &&
-        userInfo.city == '' &&
-        userInfo.state == '' &&
-        userInfo.paymentType == '' &&
-        userInfo.preferredCarrier == '' &&
-        userInfo.cardNumber == '' &&
-        userInfo.cvv == '' &&
-        userInfo.expiryDate == '' &&
-        userInfo.phoneNumber == '' &&
-        userInfo.userName == ''&&
-        userInfo.userNameHandle == '' &&
-        userInfo.startAddress == '' &&
-        userInfo.audienceTheme == '' &&
-        userInfo.brandName == '' &&
-        userInfo.contactNumber == '' &&
-        userInfo.bandName == '' 
-      ) {
-        const dataToPass = {
-          email: stateData.userDetail.data.emailId,
-          type: stateData.userDetail.data.type,
-          country: stateData.userDetail.data.country,
-          userName: stateData.userDetail.data.userName,
-          userNameHandle: stateData.userDetail.data.userNameHandle,
-          startAddress: stateData.userDetail.data.startAddress,
-          audienceTheme: stateData.userDetail.data.audienceTheme,
-          brandName: stateData.userDetail.data.brandName,
-          bandName: stateData.userDetail.data.bandName,
-          contactNumber: stateData.userDetail.data.contactNumber,
-          phoneNumber: stateData.userDetail.data.phoneNumber,
-          city: stateData.userDetail.data.city,
-          state:stateData.userDetail.data.state
-        };
-        await dispatch(updateProfile(dataToPass));
-      } else {
         await dispatch(updateProfile(userInfo));
-      }
     }
   };
 
@@ -267,7 +227,6 @@ function UserProfile(props) {
   return (
     <div className="container mb-5  ">
       <Header />
-      {console.log('state data', stateData)}
       <div className="wrapper " style={{ color: 'white' }}>
         <div className="mb-5" style={{ textAlign: 'center' }}>
           USER INFORMATION
@@ -290,13 +249,13 @@ function UserProfile(props) {
                 {/* <label style={{}}>CHANGE BANNER</label> */}
                 <label style={{}}>{localStorage.getItem('type')==="Advertiser"?"BANNER 1":"CHANGE BANNER"}</label>
                   <div
-                    // style={{
-                    //   marginTop: "0.5rem",
-                    //   width: "100%",
-                    //   zIndex: "1",
-                    //   background: `url("../assets/images/logo.png") no-repeat  !important`,
-                    //   backgroundSize: "cover",
-                    // }}
+                    style={{
+                      marginTop: "0.5rem",
+                      width: "100%",
+                      zIndex: "1",
+                      background: `url("../assets/images/logo.png") no-repeat  !important`,
+                      backgroundSize: "cover",
+                    }}
                     style={
                       userInfo.showBannerImage ||
                       (stateData != null && stateData.userDetail)
@@ -328,12 +287,6 @@ function UserProfile(props) {
                     name="lastName"
                     value={
                       userInfo.lastName
-                        ? userInfo.lastName
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.lastName
-                          : userInfo.lastName
-                        : userInfo.lastName
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -362,12 +315,6 @@ function UserProfile(props) {
                     name="email"
                     value={
                       userInfo.email
-                        ? userInfo.email
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.emailId
-                          : userInfo.email
-                        : userInfo.email
                     }
                     onChange={e => handleChange(e)}
                     disabled
@@ -381,12 +328,6 @@ function UserProfile(props) {
                     name="password"
                     value={
                       userInfo.password
-                        ? userInfo.password
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.password
-                          : userInfo.password
-                        : userInfo.password
                     }
                     disabled
                     onChange={e => handleChange(e)}
@@ -416,7 +357,7 @@ function UserProfile(props) {
                               : stateData.userDetail.data.profileImgURl
                           }") no-repeat center `,
                           color: 'white',
-                          backgroundSize: 'cover',
+                          backgroundSize: 'contain',
                         }
                       : { background: '#ffff', width: '100%' }
                   }
@@ -434,12 +375,6 @@ function UserProfile(props) {
                     name="email"
                     value={
                       userInfo.email
-                        ? userInfo.email
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.emailId
-                          : userInfo.email
-                        : userInfo.email
                     }
                     onChange={e => handleChange(e)}
                     disabled
@@ -453,12 +388,6 @@ function UserProfile(props) {
                     name="password"
                     value={
                       userInfo.password
-                        ? userInfo.password
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.password
-                          : userInfo.password
-                        : userInfo.password
                     }
                     disabled
                     onChange={e => handleChange(e)}
@@ -499,12 +428,6 @@ function UserProfile(props) {
                     name="userName"
                     value={
                       userInfo.userName
-                        ? userInfo.userName
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.userName
-                          : userInfo.userName
-                        : userInfo.userName
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -517,13 +440,7 @@ function UserProfile(props) {
                     name="phoneNumber"
                     value={
                       userInfo.phoneNumber
-                        ? userInfo.phoneNumber
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.phoneNumber
-                          : userInfo.phoneNumber
-                        : userInfo.phoneNumber
-                    }
+                       }
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -535,12 +452,6 @@ function UserProfile(props) {
                     name="audienceTheme"
                     value={
                       userInfo.audienceTheme
-                        ? userInfo.audienceTheme
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.audienceTheme
-                          : userInfo.audienceTheme
-                        : userInfo.audienceTheme
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -553,12 +464,6 @@ function UserProfile(props) {
                     name="brandName"
                     value={
                       userInfo.brandName
-                        ? userInfo.brandName
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.brandName
-                          : userInfo.brandName
-                        : userInfo.brandName
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -571,12 +476,7 @@ function UserProfile(props) {
                     name="city"
                     value={
                       userInfo.city
-                        ? userInfo.city
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.city
-                          : userInfo.city
-                        : userInfo.city
+                        
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -589,14 +489,6 @@ function UserProfile(props) {
                     name="country"
                     value={
                       userInfo.country
-                        ? userInfo.country
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.country
-                            ? stateData.userDetail.data.country
-                            : userInfo.country
-                          : userInfo.country
-                        : userInfo.country
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -609,12 +501,6 @@ function UserProfile(props) {
                     name="paymentType"
                     value={
                       userInfo.paymentType
-                        ? userInfo.paymentType
-                        : stateData
-                        ? stateData.userDetail.paymentData
-                          ? stateData.userDetail.paymentData.paymentType
-                          : userInfo.paymentType
-                        : userInfo.paymentType
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -627,12 +513,7 @@ function UserProfile(props) {
                     name="expiryDate"
                     value={
                       userInfo.expiryDate
-                        ? userInfo.expiryDate
-                        : stateData
-                        ? stateData.userDetail.paymentData
-                          ? stateData.userDetail.paymentData.expiryDate
-                          : userInfo.expiryDate
-                        : userInfo.expiryDate
+                        
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -647,12 +528,6 @@ function UserProfile(props) {
                     name="userNameHandle"
                     value={
                       userInfo.userNameHandle
-                        ? userInfo.userNameHandle
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.userNameHandle
-                          : userInfo.userNameHandle
-                        : userInfo.userNameHandle
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -665,12 +540,6 @@ function UserProfile(props) {
                     name="bandName"
                     value={
                       userInfo.bandName
-                        ? userInfo.bandName
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.bandName
-                          : userInfo.bandName
-                        : userInfo.bandName
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -683,12 +552,6 @@ function UserProfile(props) {
                     name="contactNumber"
                     value={
                       userInfo.contactNumber
-                        ? userInfo.contactNumber
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.contactNumber
-                          : userInfo.contactNumber
-                        : userInfo.contactNumber
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -701,12 +564,6 @@ function UserProfile(props) {
                     name="startAddress"
                     value={
                       userInfo.startAddress
-                        ? userInfo.startAddress
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.startAddress
-                          : userInfo.startAddress
-                        : userInfo.startAddress
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -719,12 +576,6 @@ function UserProfile(props) {
                     name="state"
                     value={
                       userInfo.state
-                        ? userInfo.state
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.state
-                          : userInfo.state
-                        : userInfo.state
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -737,12 +588,6 @@ function UserProfile(props) {
                     name="preferredCarrier"
                     value={
                       userInfo.preferredCarrier
-                        ? userInfo.preferredCarrier
-                        : stateData
-                        ? stateData.userDetail.paymentData
-                          ? stateData.userDetail.paymentData.preferredCarrier
-                          : userInfo.preferredCarrier
-                        : userInfo.preferredCarrier
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -755,12 +600,6 @@ function UserProfile(props) {
                     name="cardNumber"
                     value={
                       userInfo.cardNumber
-                        ? userInfo.cardNumber
-                        : stateData
-                        ? stateData.userDetail.paymentData
-                          ? stateData.userDetail.paymentData.cardNumber
-                          : userInfo.cardNumber
-                        : userInfo.cardNumber
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -772,12 +611,6 @@ function UserProfile(props) {
                     name="cvv"
                     value={
                       userInfo.cvv
-                        ? userInfo.cvv
-                        : stateData
-                        ? stateData.userDetail.paymentData
-                          ? stateData.userDetail.paymentData.cvv
-                          : userInfo.cvv
-                        : userInfo.cvv
                     }
                     onChange={e => handleChange(e)}
                   />
@@ -793,8 +626,7 @@ function UserProfile(props) {
           By clicking the button, you agree to our <span>Terms</span>,{' '}
           <span>Privacy</span> and <span>Security Policy</span>.
         </div>
-        <div style={{ textAlign: 'center',marginTop:"10px" }}>
-            {/* <div id="paypal-button-container"></div> */}
+        {/* <div style={{ textAlign: 'center',marginTop:"10px" }}>
             <PayPalButton
               amount="0.01"
               // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
@@ -810,7 +642,7 @@ function UserProfile(props) {
                 });
               }}
             />
-        </div>
+        </div> */}
       </div>
     </div>
   );

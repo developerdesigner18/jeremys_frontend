@@ -17,7 +17,7 @@ export const registration = (data, props) => {
               localStorage.setItem("token", result.data.authToken)
               localStorage.setItem("type", result.data.data.type)
               localStorage.setItem("id", result.data.data._id)
-              if (data.type === "Fan" || data.type === "fan") {
+              if (data.type === "Fan" || data.type === "fan" || result.data.data.type == 'Fan') {
                 window.location.replace("/fanHomePage")
               } else {
                 props.history.push("/userHomepage", { type: data.type })
@@ -52,7 +52,7 @@ export const login = (data, props) => {
           localStorage.setItem("name", result.data.data.firstName)
           localStorage.setItem("type", result.data.data.type)
           localStorage.setItem("id", result.data.data._id)
-          if (result.data.data.type === "Fan" || data.type === "fan") {
+          if (result.data.data.type === "Fan" || data.type === "fan" || localStorage.getItem('type') == 'Fan') {
             window.location.replace("/fanHomePage")
           } else {
             props.history.push("/userHomepage", { type: result.data.type })
