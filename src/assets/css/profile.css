@@ -22,3 +22,9 @@
   width: 100%;
   padding: 5px 10px;
 }
+.go_live {
+  color: #ff2800;
+  font-size: 18px;
+  font-family: "Avalon_Bold";
+  cursor: pointer;
+}

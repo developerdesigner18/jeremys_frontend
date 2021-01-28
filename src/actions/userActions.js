@@ -17,14 +17,12 @@ export const registration = (data, props) => {
               localStorage.setItem("token", result.data.authToken)
               localStorage.setItem("type", result.data.data.type)
               localStorage.setItem("id", result.data.data._id)
-              if (
-                data.type === "Fan" ||
-                data.type === "fan" ||
-                result.data.data.type == "Fan"
-              ) {
-                window.location.replace("/fanHomePage")
+              if (data.type === "Fan" || data.type === "fan") {
+                window.location.replace("/artistProfile")
+                // window.location.replace("/fanHomePage");
               } else {
-                props.history.push("/userHomepage", { type: data.type })
+                window.location.replace("/artistProfile")
+                // props.history.push("/userHomepage", { type: data.type });
               }
             }
           )
@@ -56,11 +54,7 @@ export const login = (data, props) => {
           localStorage.setItem("name", result.data.data.firstName)
           localStorage.setItem("type", result.data.data.type)
           localStorage.setItem("id", result.data.data._id)
-          if (
-            result.data.data.type === "Fan" ||
-            data.type === "fan" ||
-            localStorage.getItem("type") == "Fan"
-          ) {
+          if (result.data.data.type === "Fan" || data.type === "fan") {
             window.location.replace("/fanHomePage")
           } else {
             props.history.push("/userHomepage", { type: result.data.type })
@@ -235,6 +229,71 @@ export const deactivateUserAccount = data => {
       })
       .catch(error => {
         console.log("error in api ", error)
+      })
+  }
+}
+
+export const addInterest = (
+  foodChoices,
+  styleChoices,
+  musicChoices,
+  fitnessChoices,
+  props
+) => {
+  // ${process.env.REACT_APP_API_URL}
+
+  console.log("foodChoices-=-=-=-", foodChoices)
+
+  console.log("styleChoices-=-=-=-", styleChoices)
+
+  console.log("musicChoices-=-=-=-", musicChoices)
+
+  console.log("fitnessChoices-=-=-=-", fitnessChoices)
+
+  return dispatch => {
+    // http://localhost:8000/
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}auth/addInterest`,
+        {
+          id: localStorage.getItem("id"),
+          food: foodChoices,
+          music: musicChoices,
+          style: styleChoices,
+          fitness: fitnessChoices,
+        },
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      )
+      .then(res => {
+        console.log("response add Interes.....", res.data)
+        let message = res.data.message.toString()
+        // console.log("message-=-=", message.toString());
+        if (res.data.success == true) {
+          swal("", "Your preferences added successfully!", "success").then(
+            () => {
+              if (
+                localStorage.getItem("type") === "Fan" ||
+                localStorage.getItem("type") === "fan"
+              ) {
+                window.location.replace("/fanHomePage")
+              } else {
+                props.history.push("/userHomepage", {
+                  type: localStorage.getItem("type"),
+                })
+              }
+            }
+          )
+        } else {
+          swal("", message.charAt(0).toUpperCase() + message.slice(1), "error")
+        }
+      })
+      .catch(error => {
+        console.log("error in api ", error)
+        // swal("Error", error.response.data.message, "error");
       })
   }
 }

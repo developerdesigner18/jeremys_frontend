@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from "react"
-import Header from "../header/Header"
+import React, { useState, useEffect, useRef } from "react";
+import Header from "../header/Header";
 import {
   getUser,
   updateProfile,
   deactivateUserAccount,
-} from "../../actions/userActions"
-import { useSelector, useDispatch } from "react-redux"
-import swal from "sweetalert"
-import { PayPalButton } from "react-paypal-button-v2"
-import "../../assets/css/profile.css"
-import axios from "axios"
-import { Link } from "react-router-dom"
+} from "../../actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
+import swal from "sweetalert";
+import { PayPalButton } from "react-paypal-button-v2";
+import "../../assets/css/profile.css";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 function UserProfile(props) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const stateData = useSelector(state => {
-    if (localStorage.getItem("token")) return state.user
-  })
+    if (localStorage.getItem("token")) return state.user;
+  });
   const [userInfo, setUserInfo] = useState({
     lastName: "",
     firstName: "",
@@ -44,25 +44,25 @@ function UserProfile(props) {
     showBannerImage: "",
     type: "",
     cvv: "",
-  })
+  });
   const useHasChanged = val => {
-    const prevVal = usePrevious(val)
-    return prevVal !== val
-  }
+    const prevVal = usePrevious(val);
+    return prevVal !== val;
+  };
 
   const usePrevious = value => {
-    const ref = useRef()
+    const ref = useRef();
     useEffect(() => {
-      ref.current = value
-    })
-    return ref.current
-  }
+      ref.current = value;
+    });
+    return ref.current;
+  };
 
-  const hasVal1Changed = useHasChanged(userInfo)
+  const hasVal1Changed = useHasChanged(userInfo);
 
   useEffect(async () => {
     if (localStorage.getItem("token")) {
-      let mounted = true
+      let mounted = true;
       axios
         .get(`${process.env.REACT_APP_API_URL}api/user/getUserData`, {
           headers: {
@@ -70,7 +70,7 @@ function UserProfile(props) {
           },
         })
         .then(result => {
-          console.log("result.data ", result)
+          console.log("result.data ", result);
           if (result.status === 201) {
             const {
               firstName,
@@ -89,8 +89,9 @@ function UserProfile(props) {
               bandName,
               contactNumber,
               profileImgURl,
+              bannerImgURl,
               type,
-            } = result.data.data
+            } = result.data.data;
 
             setUserInfo(prevState => ({
               ...prevState,
@@ -110,6 +111,7 @@ function UserProfile(props) {
               userName: userName,
               country: country,
               showImage: profileImgURl,
+              showBannerImage: bannerImgURl,
               type: type,
               paymentType: result.data.paymentData
                 ? result.data.paymentData.paymentType
@@ -124,18 +126,18 @@ function UserProfile(props) {
               preferredCarrier: result.data.paymentData
                 ? result.data.paymentData.preferredCarrier
                 : "",
-            }))
+            }));
           }
         })
-        .catch(err => console.log("error ", err))
+        .catch(err => console.log("error ", err));
     } else {
-      swal("Info", "Please do logout").then(() => props.history.push("/login"))
+      swal("Info", "Please do logout").then(() => props.history.push("/login"));
     }
-  }, [])
+  }, []);
 
   const handleChange = e => {
-    const { name, value } = e.target
-    console.log("fn called ", value)
+    const { name, value } = e.target;
+    console.log("fn called ", value);
     // if (stateData) {
     //   if (stateData.userDetail && stateData.userDetail.data) {
     //     setUserInfo(prevState => ({
@@ -148,87 +150,83 @@ function UserProfile(props) {
     setUserInfo(prevState => ({
       ...prevState,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const imageChange = event => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onload = e => {
       setUserInfo(prevState => ({
         ...prevState,
         image: event.target.files[0],
         showImage: e.target.result,
-      }))
-    }
-    reader.readAsDataURL(event.target.files[0])
-  }
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
 
   const BannerChange = event => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onload = e => {
       setUserInfo(prevState => ({
         ...prevState,
         bannerImage: event.target.files[0],
         showBannerImage: e.target.result,
-      }))
-    }
-    reader.readAsDataURL(event.target.files[0])
-  }
-
-  const goToTerms = () => {
-    props.history.push("/termsCondition")
-  }
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
 
   const callUpdate = async e => {
-    e.preventDefault()
+    e.preventDefault();
     if (stateData) {
       if (stateData.userDetail && stateData.userDetail.data) {
         setUserInfo(prevState => ({
           ...prevState,
           email: stateData.userDetail.data.emailId,
           type: stateData.userDetail.data.type,
-        }))
+        }));
       }
     }
-    console.log("usrinfo ", stateData, userInfo)
+    console.log("usrinfo ", stateData, userInfo);
     if (userInfo.image || userInfo.bannerImage) {
-      console.log("-=-=-=- inside image")
-      let fd = new FormData()
-      fd.append("firstName", userInfo.firstName)
-      fd.append("lastName", userInfo.lastName)
-      fd.append("city", userInfo.city)
-      fd.append("state", userInfo.state)
-      fd.append("country", userInfo.country)
-      fd.append("paymentType", userInfo.paymentType)
-      fd.append("cardNumber", userInfo.cardNumber)
-      fd.append("expiryDate", userInfo.expiryDate)
-      fd.append("phoneNumber", userInfo.phoneNumber)
-      fd.append("userNameHandle", userInfo.userNameHandle)
-      fd.append("startAddress", userInfo.startAddress)
-      fd.append("audienceTheme", userInfo.audienceTheme)
-      fd.append("brandName", userInfo.brandName)
-      fd.append("bandName", userInfo.bandName)
+      console.log("-=-=-=- inside image");
+      let fd = new FormData();
+      fd.append("firstName", userInfo.firstName);
+      fd.append("lastName", userInfo.lastName);
+      fd.append("city", userInfo.city);
+      fd.append("state", userInfo.state);
+      fd.append("country", userInfo.country);
+      fd.append("paymentType", userInfo.paymentType);
+      fd.append("cardNumber", userInfo.cardNumber);
+      fd.append("expiryDate", userInfo.expiryDate);
+      fd.append("phoneNumber", userInfo.phoneNumber);
+      fd.append("userNameHandle", userInfo.userNameHandle);
+      fd.append("startAddress", userInfo.startAddress);
+      fd.append("audienceTheme", userInfo.audienceTheme);
+      fd.append("brandName", userInfo.brandName);
+      fd.append("bandName", userInfo.bandName);
       // fd.append('contactNumber', userInfo.contactNumber);
-      fd.append("userName", userInfo.userName)
-      fd.append("preferredCarrier", userInfo.preferredCarrier)
-      fd.append("type", stateData.userDetail.data.type)
-      fd.append("email", stateData.userDetail.data.emailId)
-      if (userInfo.image) fd.append("image", userInfo.image)
-      if (userInfo.bannerImage) fd.append("bannerImage", userInfo.bannerImage)
-      await dispatch(updateProfile(fd))
+      fd.append("userName", userInfo.userName);
+      fd.append("preferredCarrier", userInfo.preferredCarrier);
+      fd.append("type", stateData.userDetail.data.type);
+      fd.append("email", stateData.userDetail.data.emailId);
+      if (userInfo.image) fd.append("image", userInfo.image);
+      if (userInfo.bannerImage) fd.append("bannerImage", userInfo.bannerImage);
+      await dispatch(updateProfile(fd));
     } else {
-      console.log("new user info ", userInfo)
-      await dispatch(updateProfile(userInfo))
+      console.log("new user info ", userInfo);
+      await dispatch(updateProfile(userInfo));
     }
-  }
+  };
 
   const callDeactivate = async () => {
-    console.log("callDeactivatefn called")
+    console.log("callDeactivatefn called");
     const dataToPass = {
       id: localStorage.getItem("id"),
-    }
-    await dispatch(deactivateUserAccount(dataToPass))
-  }
+    };
+    await dispatch(deactivateUserAccount(dataToPass));
+  };
 
   return (
     <div className="container mb-5  ">
@@ -309,15 +307,7 @@ function UserProfile(props) {
                   <input
                     type="text"
                     name="firstName"
-                    value={
-                      userInfo.firstName
-                        ? userInfo.firstName
-                        : stateData
-                        ? stateData.userDetail.data
-                          ? stateData.userDetail.data.firstName
-                          : userInfo.firstName
-                        : userInfo.firstName
-                    }
+                    value={userInfo.firstName}
                     onChange={e => handleChange(e)}
                   />
                 </div>
@@ -696,7 +686,7 @@ function UserProfile(props) {
         </div> */}
       </div>
     </div>
-  )
+  );
 }
 
-export default UserProfile
+export default UserProfile;

@@ -1,86 +1,90 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useHistory } from "react-router-dom"
-import "../../assets/css/homepage.css"
-import { getUser, logout } from "../../actions/userActions"
-import { useSelector, useDispatch } from "react-redux"
+import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import "../../assets/css/homepage.css";
+import { getUser, logout } from "../../actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
-      callback()
+      callback();
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener("click", handleClick)
+    document.addEventListener("click", handleClick);
 
     return () => {
-      document.removeEventListener("click", handleClick)
-    }
-  })
-}
+      document.removeEventListener("click", handleClick);
+    };
+  });
+};
 
 function Header(props) {
-  const history = useHistory()
-  const dispatch = useDispatch()
-  const stateData = useSelector(state => state.user)
-  const ref = useRef()
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const stateData = useSelector(state => state.user);
+  const ref = useRef();
 
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(async () => {
-    if (localStorage.getItem("token")) await dispatch(getUser())
-  }, [])
+    if (localStorage.getItem("token")) await dispatch(getUser());
+  }, []);
 
-  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? " show" : ""}`
+  const menuClass = `dropdown-menu dropdown-menu-right${isOpen ? " show" : ""}`;
 
   const goToRegister = () => {
-    history.push("/register")
-  }
+    history.push("/register");
+  };
 
   const goToLogin = () => {
-    history.push("/login")
-  }
+    history.push("/login");
+  };
   const goToHome = () => {
     if (localStorage.getItem("type")) {
       if (
         localStorage.getItem("type") === "Fan" ||
         localStorage.getItem("type") === "fan"
       ) {
-        history.push("/fanHomePage")
+        history.push("/fanHomePage");
       } else {
-        history.push("/userHomepage")
+        history.push("/userHomepage");
       }
     } else {
-      history.push("/")
+      history.push("/");
     }
-  }
+  };
 
   const toggleValue = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
   useOutsideClick(ref, () => {
-    setIsOpen(false)
-  })
+    setIsOpen(false);
+  });
 
   const callLogout = async () => {
-    localStorage.clear()
-    history.push("/")
+    localStorage.clear();
+    history.push("/");
     // if (stateData && stateData.userDetail) {
     // const dataToPass = {
     //   userId: stateData.userDetail.data._id,
     // };
     // await dispatch(logout(dataToPass));
     // }
-  }
+  };
 
   const goToProfile = () => {
-    history.push("/profile")
-  }
+    history.push("/profile");
+  };
 
   const goToContactUs = () => {
-    history.push("/customerService")
-  }
+    history.push("/customerService");
+  };
+
+  const goToORB = () => {
+    history.push("/ORBpage");
+  };
 
   return (
     <div className="container p-3 p-md-3 cust_home_page">
@@ -163,10 +167,15 @@ function Header(props) {
         ) : null}
         <div className="logo">
           <img
-            src={`../assets/images/logo.png`}
+            src={`../assets/images/logo_without_live.png`}
             onClick={goToHome}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+            }}
           />
+          <p className="go_live mt-1 mb-0" onClick={goToORB}>
+            Go Live!
+          </p>
         </div>
         {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === "fan" ||
@@ -193,7 +202,7 @@ function Header(props) {
       </div>
       <div className="hero_text text-center mb-4"></div>
     </div>
-  )
+  );
 }
 
-export default Header
+export default Header;
