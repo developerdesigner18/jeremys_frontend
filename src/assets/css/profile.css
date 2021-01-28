@@ -14,3 +14,11 @@
   outline: none !important;
   box-shadow: none;
 }
+.form_detail input {
+  width: 100%;
+  padding: 5px 10px;
+}
+.form_detail textarea {
+  width: 100%;
+  padding: 5px 10px;
+}

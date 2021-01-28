@@ -13,6 +13,7 @@ export const registration = (data, props) => {
           });
           swal("Info", "Registration done successfully!", "success").then(
             () => {
+<<<<<<< HEAD
               localStorage.setItem("name", result.data.data.firstName);
               localStorage.setItem("token", result.data.authToken);
               localStorage.setItem("type", result.data.data.type);
@@ -20,6 +21,14 @@ export const registration = (data, props) => {
               if (data.type === "Fan" || data.type === "fan") {
                 window.location.replace("/artistProfile");
                 // window.location.replace("/fanHomePage");
+=======
+              localStorage.setItem("name", result.data.data.firstName)
+              localStorage.setItem("token", result.data.authToken)
+              localStorage.setItem("type", result.data.data.type)
+              localStorage.setItem("id", result.data.data._id)
+              if (data.type === "Fan" || data.type === "fan" || result.data.data.type == 'Fan') {
+                window.location.replace("/fanHomePage")
+>>>>>>> 2bcab9f1aadffa097dfe82adf65e5a05a22055fd
               } else {
                 window.location.replace("/artistProfile");
                 // props.history.push("/userHomepage", { type: data.type });
@@ -49,6 +58,7 @@ export const login = (data, props) => {
           dispatch({
             type: "SIGN_IN",
             payload: result.data,
+<<<<<<< HEAD
           });
           localStorage.setItem("token", result.data.authToken);
           localStorage.setItem("name", result.data.data.firstName);
@@ -56,6 +66,15 @@ export const login = (data, props) => {
           localStorage.setItem("id", result.data.data._id);
           if (result.data.data.type === "Fan" || data.type === "fan") {
             window.location.replace("/fanHomePage");
+=======
+          })
+          localStorage.setItem("token", result.data.authToken)
+          localStorage.setItem("name", result.data.data.firstName)
+          localStorage.setItem("type", result.data.data.type)
+          localStorage.setItem("id", result.data.data._id)
+          if (result.data.data.type === "Fan" || data.type === "fan" || localStorage.getItem('type') == 'Fan') {
+            window.location.replace("/fanHomePage")
+>>>>>>> 2bcab9f1aadffa097dfe82adf65e5a05a22055fd
           } else {
             props.history.push("/userHomepage", { type: result.data.type });
           }

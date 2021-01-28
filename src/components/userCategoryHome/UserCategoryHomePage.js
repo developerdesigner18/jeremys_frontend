@@ -90,88 +90,88 @@ function UserCategoryHomePage(props) {
             <div className="category_empty"></div>
             <div className="category_video vids">
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-            </div>
-            <div className="category_video vids">
-              <div className="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div className="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div className="main_cat">
-                <video muted={true} autoplay>
-                  <source src="../assets/images/vid.mp4" />
-                </video>
-              </div>
-              <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
             </div>
             <div className="category_video vids">
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
             </div>
             <div className="category_video vids">
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
               <div className="main_cat">
-                <video muted={true} autoplay>
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+            </div>
+            <div className="category_video vids">
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
+                  <source src="../assets/images/vid.mp4" />
+                </video>
+              </div>
+              <div className="main_cat">
+                <video muted={true} autoPlay>
                   <source src="../assets/images/vid.mp4" />
                 </video>
               </div>
