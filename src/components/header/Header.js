@@ -42,7 +42,7 @@ function Header(props) {
     history.push("/login")
   }
   const goToHome = () => {
-    if(localStorage.getItem('type')) {
+    if (localStorage.getItem("type")) {
       if (
         localStorage.getItem("type") === "Fan" ||
         localStorage.getItem("type") === "fan"
@@ -51,8 +51,7 @@ function Header(props) {
       } else {
         history.push("/userHomepage")
       }
-    }
-    else {
+    } else {
       history.push("/")
     }
   }
@@ -79,6 +78,10 @@ function Header(props) {
     history.push("/profile")
   }
 
+  const goToContactUs = () => {
+    history.push("/customerService")
+  }
+
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
@@ -97,6 +100,10 @@ function Header(props) {
                 <li className="dropdown-item menu" onClick={goToProfile}>
                   <i className="fa fa-user" aria-hidden="true"></i>
                   Profile
+                </li>
+                <li className="dropdown-item menu" onClick={goToContactUs}>
+                  <i className="fa fa-file" aria-hidden="true"></i>
+                  Customer Service
                 </li>
                 <li className="dropdown-item menu">
                   <span style={{ cursor: "pointer" }} onClick={callLogout}>

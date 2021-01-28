@@ -49,6 +49,11 @@ const userReducer = (state = null, action) => {
         ...state,
       }
 
+    case "STORE_CONTACT_US":
+      return {
+        ...state,
+      }
+
     default:
       return state
   }

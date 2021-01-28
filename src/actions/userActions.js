@@ -17,7 +17,11 @@ export const registration = (data, props) => {
               localStorage.setItem("token", result.data.authToken)
               localStorage.setItem("type", result.data.data.type)
               localStorage.setItem("id", result.data.data._id)
-              if (data.type === "Fan" || data.type === "fan" || result.data.data.type == 'Fan') {
+              if (
+                data.type === "Fan" ||
+                data.type === "fan" ||
+                result.data.data.type == "Fan"
+              ) {
                 window.location.replace("/fanHomePage")
               } else {
                 props.history.push("/userHomepage", { type: data.type })
@@ -52,7 +56,11 @@ export const login = (data, props) => {
           localStorage.setItem("name", result.data.data.firstName)
           localStorage.setItem("type", result.data.data.type)
           localStorage.setItem("id", result.data.data._id)
-          if (result.data.data.type === "Fan" || data.type === "fan" || localStorage.getItem('type') == 'Fan') {
+          if (
+            result.data.data.type === "Fan" ||
+            data.type === "fan" ||
+            localStorage.getItem("type") == "Fan"
+          ) {
             window.location.replace("/fanHomePage")
           } else {
             props.history.push("/userHomepage", { type: result.data.type })
@@ -227,6 +235,36 @@ export const deactivateUserAccount = data => {
       })
       .catch(error => {
         console.log("error in api ", error)
+      })
+  }
+}
+
+export const storeContactUs = data => {
+  return dispatch => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}api/contact/storeContactUs`, data)
+      .then(result => {
+        console.log("result of api ", result)
+        if (result.status === 200) {
+          dispatch({
+            type: "STORE_CONTACT_US",
+          })
+          swal("Success", "Your Details stored successfully!", "success").then(
+            () => {
+              if (
+                localStorage.getItem("type") == "fan" ||
+                localStorage.getItem("type") == "Fan"
+              ) {
+                window.location.replace("/fanHomePage")
+              } else {
+                window.location.replace("/userHomepage")
+              }
+            }
+          )
+        }
+      })
+      .catch(error => {
+        console.log("error........", error)
       })
   }
 }

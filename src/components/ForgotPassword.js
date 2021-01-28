@@ -1,47 +1,48 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import Header from './header/Header';
-import '../assets/css/forgotPassword.css';
-import { forgotPassword } from '../actions/userActions';
-import { useDispatch } from 'react-redux';
+import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
+import Header from "./header/Header"
+import "../assets/css/forgotPassword.css"
+import { forgotPassword } from "../actions/userActions"
+import { useDispatch } from "react-redux"
 
 function ForgotPassword() {
-  const history = useHistory();
-  const dispatch = useDispatch();
+  const history = useHistory()
+  const dispatch = useDispatch()
 
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [email, setEmail] = useState("")
+  const [emailError, setEmailError] = useState("")
 
   const goToLogin = () => {
-    history.push('/login');
-  };
+    history.push("/login")
+  }
 
   const callForgot = async e => {
-    e.preventDefault();
+    e.preventDefault()
 
-    if (email=='') {
-      setEmailError('Please enter email address');
-    }else{
+    if (email == "") {
+      setEmailError("Please enter email address")
+    } else {
       const dataToPass = {
         email: email,
-      };
-      await dispatch(forgotPassword(dataToPass));
+      }
+      await dispatch(forgotPassword(dataToPass))
+      setEmail("")
     }
-  };
+  }
 
   const emailValidation = event => {
     console.log(
-      'dddss ',
+      "dddss ",
       /^[a-zA-Z0-9._\-]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(event.target.value)
-    );
+    )
     if (/^[a-zA-Z0-9._\-]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(event.target.value)) {
-      console.log('true');
-      setEmailError('');
-      setEmail(event.target.value);
+      console.log("true")
+      setEmailError("")
+      setEmail(event.target.value)
     } else {
-      setEmailError('Please enter proper email address');
+      setEmailError("Please enter proper email address")
     }
-  };
+  }
 
   return (
     <div>
@@ -57,7 +58,7 @@ function ForgotPassword() {
                 name="email"
                 onChange={e => emailValidation(e)}
               />
-              <small style={{ color: 'red' }}>{emailError}</small>
+              <small style={{ color: "red" }}>{emailError}</small>
             </div>
             <div className="row mt-3">
               <div className="col-6 forgot_button">
@@ -69,8 +70,8 @@ function ForgotPassword() {
                 <a
                   onClick={goToLogin}
                   style={{
-                    cursor: 'pointer',
-                    float: 'right',
+                    cursor: "pointer",
+                    float: "right",
                   }}>
                   Go Back To Login
                 </a>
@@ -80,7 +81,7 @@ function ForgotPassword() {
         </form>
       </div>
     </div>
-  );
+  )
 }
 
-export default ForgotPassword;
+export default ForgotPassword
