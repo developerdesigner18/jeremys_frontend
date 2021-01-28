@@ -1,0 +1,150 @@
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular.otf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular-1.otf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Bold.otf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Extrabold.otf");
+  font-weight: 700;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Black.otf");
+  font-weight: 800;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Thin.otf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Light.otf");
+  font-weight: 200;
+}
+@font-face {
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Thin.otf");
+  font-weight: 100;
+}
+@font-face {
+  font-family: mplus;
+  src: url("../fonts/mplus-2p-thin.ttf");
+}
+@font-face {
+  font-family: Avalon_Bold;
+  src: url("../fonts/Avalon_Bold.ttf");
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  background: #1b1b1b;
+  color: #ffffff;
+}
+.chef_title.text-center {
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+.upload_two input,
+.upload_one input {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  opacity: 0;
+}
+.image_upload:first-child {
+  margin-right: 10%;
+}
+.upload_container {
+  justify-content: center;
+}
+.image_upload {
+  max-width: 300px;
+  flex: 1;
+}
+.upload_one p,
+.upload_two p {
+  color: #000000;
+  margin-bottom: 0;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-align: center;
+}
+.upload_two,
+.upload_one {
+  width: 100%;
+  height: 250px;
+  border: 4px solid #fff;
+  position: relative;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cuisine_container {
+  max-width: 450px;
+  margin: auto;
+}
+.cuisine_title {
+  color: #ff0000;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 18px;
+}
+.dishes_container {
+  flex: 1;
+}
+.dishes_container label {
+  margin-left: 5px;
+  letter-spacing: 1.5px;
+}
+.dishes_container a {
+  color: #ffffff;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.create_profile button {
+  font-size: 20px;
+  font-weight: 800;
+  padding: 5px 100px;
+  border: 0;
+}
+@media (max-width: 576px) {
+  .create_profile button {
+    padding: 5px 30px;
+    margin-bottom: 20px;
+  }
+  .upload_container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .image_upload:first-child {
+    margin-right: 0;
+    margin-bottom: 25px;
+  }
+  .image_upload {
+    width: 100%;
+  }
+  .upload_two,
+  .upload_one {
+    height: 100px;
+  }
+}
