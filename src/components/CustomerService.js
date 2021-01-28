@@ -21,7 +21,7 @@ function CustomerService() {
       firstName != "" &&
       lastName != "" &&
       email != "" &&
-      phoneNumber != "" &&
+      (phoneNumber != "" || phoneNumber.match(/^[0-9]+$/)) &&
       message != ""
     ) {
       const dataToPass = {
