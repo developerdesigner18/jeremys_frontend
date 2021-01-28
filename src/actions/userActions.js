@@ -273,22 +273,22 @@ export const addInterest = (
         let message = res.data.message.toString();
         // console.log("message-=-=", message.toString());
         if (res.data.success == true) {
-          if (
-            localStorage.getItem("type") === "Fan" ||
-            localStorage.getItem("type") === "fan"
-          ) {
-            window.location.replace("/fanHomePage");
-          } else {
-            props.history.push("/userHomepage", {
-              type: localStorage.getItem("type"),
-            });
-          }
-        } else {
-          swal(
-            "",
-            message.charAt(0).toUpperCase() + message.slice(1),
-            "success"
+          swal("", "Your preferences added successfully!", "success").then(
+            () => {
+              if (
+                localStorage.getItem("type") === "Fan" ||
+                localStorage.getItem("type") === "fan"
+              ) {
+                window.location.replace("/fanHomePage");
+              } else {
+                props.history.push("/userHomepage", {
+                  type: localStorage.getItem("type"),
+                });
+              }
+            }
           );
+        } else {
+          swal("", message.charAt(0).toUpperCase() + message.slice(1), "error");
         }
       })
       .catch((error) => {
