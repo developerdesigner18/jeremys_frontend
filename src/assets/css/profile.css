@@ -28,3 +28,13 @@
   font-family: "Avalon_Bold";
   cursor: pointer;
 }
+.upload {
+  background-size: contain !important;
+}
+
+@media (max-width: 767px) {
+  .upload_profile {
+    margin-top: 20px;
+    margin-bottom: 0;
+  }
+}

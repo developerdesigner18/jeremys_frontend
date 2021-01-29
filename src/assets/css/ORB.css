@@ -4,9 +4,11 @@ body {
   box-sizing: border-box;
   font-family: proxima-nova;
   color: #ffffff;
-  background-image: url("../images/background_black.jpg");
-  background-size: cover;
-  background-position: center;
+  /* background-image: url("../images/JL-GO-LIVE.jpg") !important; */
+  background-size: 100vw 100vh !important;
+  background-repeat: no-repeat !important;
+  background-position: initial !important;
+  background-origin: content-box !important;
 }
 .main_ORB_section {
   color: #4d4d4d;
@@ -90,12 +92,24 @@ body {
 }
 .value_container {
   display: flex;
+  align-items: center;
 }
 .values {
   min-width: 200px;
 }
 .value_container:not(:last-child) {
   margin-bottom: 10px;
+}
+.ORB_video_live {
+  display: block;
+  width: 100%;
+}
+.ORB_video_live div {
+  display: block;
+  background: #242529;
+  width: 100%;
+  box-shadow: inset 3px 5px 5px #3a3a3a;
+  border-radius: 0;
 }
 .ORB_video_live:after {
   content: "live!";
@@ -107,9 +121,9 @@ body {
   width: 100%;
   color: #138236;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
-  background: linear-gradient(45deg, #0000004f, transparent);
+  /* background: linear-gradient(45deg, #0000004f, transparent); */
 }
 .title_tips {
   text-transform: uppercase;
@@ -119,10 +133,10 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
 }
-.ORB_videos_container video {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+.ORB_videos_container img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
   border-radius: 50%;
 }
 .r_image img {
@@ -151,13 +165,13 @@ body {
   text-decoration: none;
 }
 .ORB_links > a:not(:last-child) {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .progress-bar {
   background-color: gray;
 }
 .progress {
-  background-color: black;
+  background-color: #cbcbcb;
 }
 
 @media (max-width: 991px) {

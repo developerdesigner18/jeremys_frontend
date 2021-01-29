@@ -173,9 +173,7 @@ function Header(props) {
               cursor: "pointer",
             }}
           />
-          <p className="go_live mt-1 mb-0" onClick={goToORB}>
-            Go Live!
-          </p>
+          <p className="go_live mt-1 mb-0">Go Live!</p>
         </div>
         {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === "fan" ||

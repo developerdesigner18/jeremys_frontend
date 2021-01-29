@@ -1,25 +1,29 @@
-import React, { useEffect, useRef, useState } from "react"
-import "../../assets/css/fan_homepage.css"
-import Header from "../header/Header"
+import React, { useEffect, useRef, useState } from "react";
+import "../../assets/css/fan_homepage.css";
+import Header from "../header/Header";
 
 function UserCategoryHomePage(props) {
   const openCity = (evt, cityName) => {
-    var i, tabcontent, tablinks
-    tabcontent = document.getElementsByClassName("tabcontent")
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none"
+      tabcontent[i].style.display = "none";
     }
-    tablinks = document.getElementsByClassName("tablinks")
+    tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "")
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(cityName).style.display = "block"
-    evt.currentTarget.className += " active"
-  }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  };
 
   const goToHome = () => {
-    props.history.push("/")
-  }
+    props.history.push("/");
+  };
+
+  const goToORB = () => {
+    props.history.push("/ORBpage");
+  };
 
   return (
     <div className="container">
@@ -32,7 +36,10 @@ function UserCategoryHomePage(props) {
             <div className="tab2">
               <button
                 className="tablinks_responsive"
-                onClick={event => openCity(event, "food")}
+                onClick={event => {
+                  openCity(event, "food");
+                  goToORB();
+                }}
                 style={{
                   padding:
                     localStorage.getItem("type") === "Advertiser" ||
@@ -80,7 +87,10 @@ function UserCategoryHomePage(props) {
             <div className="tab3">
               <button
                 className="meet_greet_tablinks"
-                onClick={event => openCity(event, "style")}>
+                onClick={event => {
+                  openCity(event, "style");
+                  goToORB();
+                }}>
                 Meet and Greet
               </button>
             </div>
@@ -218,7 +228,7 @@ function UserCategoryHomePage(props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default UserCategoryHomePage
+export default UserCategoryHomePage;

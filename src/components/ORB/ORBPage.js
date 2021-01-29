@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
 
 function ORBPage() {
+  const [isLive, setIsLive] = useState(false);
+  const [stream, setStream] = useState(null);
+  const videoRef = useRef();
   const constraints = {
     audio: true,
     video: true,
@@ -10,15 +13,12 @@ function ORBPage() {
       mirror: true,
     },
   };
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(success)
-      .catch(failure);
-  }, []);
+  useEffect(() => {}, []);
 
   const success = stream => {
-    window.localStream = stream;
+    setStream(stream);
+    videoRef.current.srcObject = stream;
+    console.log("stream ", stream);
   };
 
   // called when getUserMedia() fails - see below
@@ -27,17 +27,41 @@ function ORBPage() {
     alert(e.toString());
   };
 
+  const callGoToLive = () => {
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(success)
+      .catch(failure);
+    setIsLive(!isLive);
+    if (isLive == false) setStream(null);
+  };
+
   return (
-    <>
-      <div className="main_ORB_section container mt-5 d-flex">
+    <div
+      style={{
+        background: isLive
+          ? "url('../assets/images/background_black.jpg')"
+          : "url('../assets/images/JL-GO-LIVE.jpg')",
+        backgroundSize: "100vw auto",
+        marginTop: "-48px",
+      }}>
+      <div style={{ display: "none" }}>hi</div>
+      <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
         </div>
         <div className="ORB_live_container d-flex">
           <div className="ORB_video_live d-flex position-relative">
-            <video autoPlay>
-              <source src="../assets/images/vid.mp4" />
-            </video>
+            {isLive ? (
+              <video ref={videoRef} controls></video>
+            ) : (
+              <div
+                style={{
+                  boxShadow: isLive
+                    ? "inset 3px 5px 5px #3a3a3a"
+                    : "inset 3px 5px 5px #595959",
+                }}></div>
+            )}
           </div>
         </div>
         <div className="ORB_tips_info d-flex">
@@ -110,107 +134,78 @@ function ORBPage() {
       </div>
       <div className="container ORB_videos_container mt-3">
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
+        </div>
+        <div
+          className="ORB_main_cat"
+          style={{ cursor: "pointer" }}
+          onClick={callGoToLive}>
+          {isLive ? (
+            <img src="../assets/images/button_bg.png" />
+          ) : (
+            <img src="../assets/images/Background.png" />
+          )}
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
-        </div>
-        <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="r_image">
-          <img src="../assets/images/r_image.png" />
+          {isLive ? (
+            <img src="../assets/images/r_image.png" />
+          ) : (
+            <img src="../assets/images/disableR.png" />
+          )}
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
         <div className="ORB_main_cat">
-          <video autoPlay="">
-            <source src="../assets/images/vid.mp4" />
-          </video>
+          <img src="../assets/images/button_bg.png" />
         </div>
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
@@ -263,7 +258,7 @@ function ORBPage() {
           </div>
         </a>
       </div>
-    </>
+    </div>
   );
 }
 

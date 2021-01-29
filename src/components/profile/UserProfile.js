@@ -280,7 +280,7 @@ function UserProfile(props) {
                                 : null
                             }") no-repeat center `,
                             color: "white",
-                            backgroundSize: "cover !important",
+                            backgroundSize: "contain",
                           }
                         : { background: "#ffff", width: "100%" }
                     }
@@ -345,7 +345,7 @@ function UserProfile(props) {
               </div>
               <div className="col-md-6 col-sm-12">
                 {/* <label style={{}}>CHANGE PROFILE PHOTO</label> */}
-                <label style={{}}>
+                <label style={{}} className="upload_profile">
                   {localStorage.getItem("type") === "Advertiser"
                     ? "BANNER 2"
                     : "CHANGE PROFILE PHOTO"}
