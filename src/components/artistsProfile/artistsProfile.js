@@ -62,22 +62,26 @@ function ArtistsProfile(props) {
     { checked: false, label: "BALLET" },
     { checked: false, label: "MARTIAL ARTS" },
   ]);
+  const [starType, setstarType] = useState([]);
   const [foodChoices, setfoodChoices] = useState([]);
   const [musicChoices, setmusicChoices] = useState([]);
   const [styleChoices, setstyleChoices] = useState([]);
   const [fitnessChoices, setfitnessChoices] = useState([]);
   const [addMorefoodChoices, setaddMorefoodChoices] = useState(false);
+  const [addMorestarType, setaddMorestarType] = useState(false);
   const [addMorestyleChoices, setaddMorestyleChoices] = useState(false);
   const [addMoremusicChoices, setaddMoremusicChoices] = useState(false);
   const [addMorefitnessChoices, setaddMorefitnessChoices] = useState(false);
   const [newfitnessChoice, setnewfitnessChoice] = useState("");
   const [newfoodChoice, setnewfoodChoice] = useState("");
+  const [newstarType, setnewstarType] = useState("");
   const [newmusicChoice, setnewmusicChoice] = useState("");
   const [newstyleChoice, setnewstyleChoice] = useState("");
   const [newfitnessError, setnewfitnessError] = useState("");
   const [newfoodError, setnewfoodError] = useState("");
   const [newmusicError, setnewmusicError] = useState("");
   const [newstyleError, setnewstyleError] = useState("");
+  const [newstarTypeError, setnewstarTypeError] = useState("");
   const addMore = (type) => {
     if (type == "food") {
       setaddMorefoodChoices(true);
@@ -90,6 +94,9 @@ function ArtistsProfile(props) {
     }
     if (type == "fitness") {
       setaddMorefitnessChoices(true);
+    }
+    if (type == "starType") {
+      setaddMorestarType(true);
     }
   };
   const addnewChoice = (type) => {
@@ -130,7 +137,7 @@ function ArtistsProfile(props) {
           ...starGenreTypes,
           { label: newmusicChoice.toUpperCase(), checked: true },
         ]);
-        setfitnessChoices([...musicChoices, newmusicChoice.toUpperCase()]);
+        setmusicChoices([...musicChoices, newmusicChoice.toUpperCase()]);
         setaddMoremusicChoices(false);
         setnewmusicError("");
       }
@@ -151,7 +158,7 @@ function ArtistsProfile(props) {
           ...stylistTypes,
           { label: newstyleChoice.toUpperCase(), checked: true },
         ]);
-        setstyleChoices([...musicChoices, newstyleChoice.toUpperCase()]);
+        setstyleChoices([...styleChoices, newstyleChoice.toUpperCase()]);
         setaddMorestyleChoices(false);
         setnewstyleError("");
       }
@@ -172,9 +179,30 @@ function ArtistsProfile(props) {
           ...trainerTypes,
           { label: newfitnessChoice.toUpperCase(), checked: true },
         ]);
-        setstyleChoices([...musicChoices, newfitnessChoice.toUpperCase()]);
+        setfitnessChoices([...fitnessChoices, newfitnessChoice.toUpperCase()]);
         setaddMorefitnessChoices(false);
         setnewfitnessError("");
+      }
+    }
+    if (type == "starType") {
+      const found = starPerformerTypes.find(
+        (element) => element.label == newstarType.toUpperCase()
+      );
+      if (found) {
+        setnewstarTypeError(
+          `${
+            newstarType.charAt(0).toUpperCase() + newstarType.slice(1)
+          } already available in the list`
+        );
+        setTimeout(() => setnewstarTypeError(""), 5000);
+      } else {
+        setstarPerformerTypes([
+          ...starPerformerTypes,
+          { label: newstarType.toUpperCase(), checked: true },
+        ]);
+        setstarType([...starType, newstarType.toUpperCase()]);
+        setaddMorestarType(false);
+        setnewstarTypeError("");
       }
     }
   };
@@ -185,12 +213,14 @@ function ArtistsProfile(props) {
         styleChoices,
         musicChoices,
         fitnessChoices,
+        starType,
         props
       )
     );
   };
   return (
     <div className="container">
+      {console.log("setstarPerformerTypes-=-==-=-=-=", starType)}
       <Header />
       <div class="container mt-5">
         {" "}
@@ -451,6 +481,16 @@ function ArtistsProfile(props) {
                             const newArr = [...starPerformerTypes];
                             newArr[i].checked = !newArr[i].checked;
                             setstarPerformerTypes(newArr);
+                            let food = [...starType];
+                            if (newArr[i].checked) {
+                              food.push(type.label);
+                            } else {
+                              let index = food.indexOf(type.label);
+                              if (index > -1) {
+                                food.splice(index, 1);
+                              }
+                            }
+                            setstarType(food);
                           }}
                         />
                         <label className="" for={type.label}>
@@ -459,7 +499,54 @@ function ArtistsProfile(props) {
                       </div>
                     ))}{" "}
                     <div>
-                      <a href="#">+ Add more</a>
+                      {addMorestarType ? (
+                        <>
+                          <div className="">
+                            <input
+                              type="text"
+                              placeholder="Add music genre"
+                              onChange={(e) => setnewstarType(e.target.value)}
+                            />
+                          </div>{" "}
+                          {newstarTypeError != "" ? (
+                            <div
+                              style={{
+                                color: "red",
+                              }}
+                            >
+                              {newstarTypeError}
+                            </div>
+                          ) : null}
+                          <div className="mt-1">
+                            <button
+                              className="create_profile "
+                              onClick={(e) => {
+                                e.preventDefault();
+                                addnewChoice("starType");
+                              }}
+                            >
+                              {" "}
+                              ADD
+                            </button>{" "}
+                            <button
+                              className="create_profile "
+                              onClick={(e) => {
+                                setaddMorestarType(false);
+                                setnewstarTypeError("");
+                              }}
+                            >
+                              CANCEL
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <a
+                          style={{ cursor: "pointer" }}
+                          onClick={() => addMore("starType")}
+                        >
+                          + Add more
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
