@@ -5,7 +5,7 @@ body {
   font-family: proxima-nova;
   color: #ffffff;
   /* background-image: url("../images/JL-GO-LIVE.jpg") !important; */
-  background-size: 100vw 100vh !important;
+  background-size: 100vw auto !important;
   background-repeat: no-repeat !important;
   background-position: initial !important;
   background-origin: content-box !important;
