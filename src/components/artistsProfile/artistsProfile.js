@@ -394,7 +394,7 @@ function ArtistsProfile(props) {
                             id={type.label}
                             checked={type.checked}
                             onChange={() => {
-                              const newArr = [...chefTypes];
+                              const newArr = [...stylistTypes];
                               stylistTypes[i].checked = !stylistTypes[i]
                                 .checked;
                               setstylistTypes(newArr);
