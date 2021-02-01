@@ -170,6 +170,12 @@ body {
 .progress-bar {
   background-color: gray;
 }
+.center_main {
+  width: 60px;
+  height: 90px;
+  border: solid 1px red;
+  border-radius: 50%;
+}
 @media (max-width: 991px) {
   .ORB_videos_container {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
