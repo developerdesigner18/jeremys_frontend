@@ -1,11 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
+import html2canvas from "html2canvas";
+import { useDispatch } from "react-redux";
+
+import { storeScreenShot } from "../../actions/orbActions";
 
 function ORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
+  const [base64Image, setBase64Image] = useState("");
   const videoRef = useRef();
+  const dispatch = useDispatch();
   const constraints = {
     audio: true,
     video: true,
@@ -13,8 +18,25 @@ function ORBPage() {
       mirror: true,
     },
   };
-  useEffect(() => {}, []);
 
+  const getImage = () => {
+    console.log("fn called");
+    html2canvas(document.querySelector("#capture"), {
+      allowTaint: true,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+    }).then(canvas => {
+      let file;
+      canvas.toBlob(async blob => {
+        file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
+        let fd = new FormData();
+        fd.append("id", localStorage.getItem("id"));
+        fd.append("image", file);
+
+        await dispatch(storeScreenShot(fd));
+      });
+    });
+  };
   const success = stream => {
     setStream(stream);
     videoRef.current.srcObject = stream;
@@ -44,8 +66,8 @@ function ORBPage() {
           : "url('../assets/images/JL-GO-LIVE.jpg')",
         backgroundSize: "100vw auto",
         marginTop: "-48px",
-      }}>
-      <div style={{ display: "none" }}>hi</div>
+      }}
+      id="capture">
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -53,7 +75,7 @@ function ORBPage() {
         <div className="ORB_live_container d-flex">
           <div className="ORB_video_live d-flex position-relative">
             {isLive ? (
-              <video ref={videoRef} controls></video>
+              <video ref={videoRef} autoPlay></video>
             ) : (
               <div
                 style={{
@@ -83,11 +105,17 @@ function ORBPage() {
           <div className="values">
             <div className="value_container">
               <span className="value_name">Timer</span>
-              <div className="progress" style={{ width: "70px" }}>
+              <div
+                className="progress"
+                style={{
+                  width: "70px",
+                }}>
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style={{ width: "100%" }}
+                  style={{
+                    width: "100%",
+                  }}
                   aria-valuenow="100"
                   aria-valuemin="0"
                   aria-valuemax="100"></div>
@@ -95,11 +123,17 @@ function ORBPage() {
             </div>
             <div className="value_container">
               <span className="value_name">Tip</span>
-              <div className="progress" style={{ width: "70px" }}>
+              <div
+                className="progress"
+                style={{
+                  width: "70px",
+                }}>
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style={{ width: "60%" }}
+                  style={{
+                    width: "60%",
+                  }}
                   aria-valuenow="100"
                   aria-valuemin="0"
                   aria-valuemax="100"></div>
@@ -107,11 +141,17 @@ function ORBPage() {
             </div>
             <div className="value_container">
               <span className="value_name">Viewers</span>
-              <div className="progress" style={{ width: "70px" }}>
+              <div
+                className="progress"
+                style={{
+                  width: "70px",
+                }}>
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style={{ width: "40%" }}
+                  style={{
+                    width: "40%",
+                  }}
                   aria-valuenow="100"
                   aria-valuemin="0"
                   aria-valuemax="100"></div>
@@ -119,11 +159,17 @@ function ORBPage() {
             </div>
             <div className="value_container">
               <span className="value_name">Ticket Sold</span>
-              <div className="progress" style={{ width: "70px" }}>
+              <div
+                className="progress"
+                style={{
+                  width: "70px",
+                }}>
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style={{ width: "100%" }}
+                  style={{
+                    width: "100%",
+                  }}
                   aria-valuenow="100"
                   aria-valuemin="0"
                   aria-valuemax="100"></div>
@@ -221,7 +267,7 @@ function ORBPage() {
             <p>Seat</p>
           </div>
         </a>
-        <a href="#">
+        <a onClick={getImage}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/take_picture.png" />
             <p>Take Picture</p>
