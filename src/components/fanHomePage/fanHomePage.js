@@ -1,24 +1,37 @@
-import React from 'react';
-import '../../assets/css/fan_homepage.css';
-import Header from '../header/Header';
+import React, { useEffect, useRef, useState } from "react";
+import "../../assets/css/fan_homepage.css";
+import Header from "../header/Header";
+import { getAllArtists } from "../../actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
 
-function fanHomePage(props) {
+function FanHomePage(props) {
+  const dispatch = useDispatch();
+  const [allArtists, setAllArtists] = useState([]);
+  const stateData = useSelector((state) => state.user);
   const openCity = (evt, cityName) => {
     var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName('tabcontent');
+    tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = 'none';
+      tabcontent[i].style.display = "none";
     }
-    tablinks = document.getElementsByClassName('tablinks');
+    tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(' active', '');
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(cityName).style.display = 'block';
-    evt.currentTarget.className += ' active';
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
   };
 
   const goToHome = () => {
-    props.history.push('/');
+    props.history.push("/");
+  };
+  useEffect(() => {
+    dispatch(getAllArtists());
+  }, []);
+
+  const getAllArtist = () => {
+    console.log("getAllArtists=--=-=-=-=-=", stateData);
+    setAllArtists(stateData.artists);
   };
 
   return (
@@ -30,14 +43,16 @@ function fanHomePage(props) {
             <div className="tab1">
               <button
                 className="tablinks active"
-                onClick={event => openCity(event, 'music')}>
+                onClick={(event) => openCity(event, "music")}
+              >
                 MUSIC
               </button>
             </div>
             <div className="tab2">
               <button
                 className="tablinks"
-                onClick={event => openCity(event, 'food')}>
+                onClick={(event) => openCity(event, "find")}
+              >
                 FOOD
               </button>
             </div>
@@ -47,14 +62,16 @@ function fanHomePage(props) {
             <div className="tab3">
               <button
                 className="tablinks"
-                onClick={event => openCity(event, 'style')}>
+                onClick={(event) => openCity(event, "style")}
+              >
                 STYLE
               </button>
             </div>
             <div className="tab4">
               <button
                 className="tablinks"
-                onClick={event => openCity(event, 'body')}>
+                onClick={(event) => openCity(event, "body")}
+              >
                 BODY
               </button>
             </div>
@@ -163,9 +180,47 @@ function fanHomePage(props) {
               </div>
             </div>
           </div>
-          <div id="food" className="tabcontent">
-            <h3>Paris</h3>
-            <p>Paris is the capital of France.</p>
+          <div id="find" className="tabcontent">
+            <div className="category">
+              <div className="cats_content">
+                <a href="#">POP</a>
+              </div>
+              <div className="cats_content">
+                <a href="#">ROCK</a>
+              </div>
+              <div className="cats_content">
+                <a href="#">BLUES</a>
+              </div>
+              <div className="cats_content">
+                <a href="#">R&B</a>
+              </div>
+            </div>
+            <div className=" row vids">
+              {allArtists.length != 0 ? (
+                allArtists.map((fan, i) => {
+                  return (
+                    <div
+                      className="profile_images col-sm-3 col-md-3  my-3"
+                      style={{ textAlign: "center" }}
+                      key={i}
+                    >
+                      <img
+                        // src={`../assets/images/fan.png`}
+                        src={
+                          fan.profileImgURl != "" && fan.profileImgURl != null
+                            ? fan.profileImgURl
+                            : "http://3.84.158.108:8000/default/profile.jpg"
+                        }
+                        alt="Profile Img"
+                      />
+                      <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>No Artists Found</div>
+              )}
+            </div>
           </div>
           <div id="style" className="tabcontent">
             <h3>Tokyo</h3>
@@ -177,13 +232,19 @@ function fanHomePage(props) {
           </div>
           <div className="main_links d-flex">
             <div className="down_links">
-              <a style={{ cursor: 'pointer' }} onClick={goToHome}>
+              <a style={{ cursor: "pointer" }} onClick={goToHome}>
                 <img src="../assets/images/1.png" />
               </a>
               <div className="link_text">Home</div>
             </div>
             <div className="down_links">
-              <a href="#">
+              <a
+                style={{ cursor: "pointer" }}
+                onClick={(event) => {
+                  openCity(event, "find");
+                  getAllArtist();
+                }}
+              >
                 <img src="../assets/images/2.png" />
               </a>
               <div className="link_text">Find</div>
@@ -207,4 +268,4 @@ function fanHomePage(props) {
   );
 }
 
-export default fanHomePage;
+export default FanHomePage;

@@ -330,3 +330,54 @@ export const storeContactUs = (data) => {
       });
   };
 };
+
+export const getAllFans = () => {
+  return (dispatch) => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}api/user/getAllFans`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then((result) => {
+        console.log("result of api ", result);
+        if (result.status === 200) {
+          dispatch({
+            type: "GET_ALL_FANS",
+            payload: result.data.message,
+          });
+          console.log("result DATA of api -=-==--==-=-=", result.data);
+        }
+      })
+      .catch((error) => {
+        console.log("error........", error);
+      });
+  };
+};
+
+export const getAllArtists = () => {
+  return (dispatch) => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}api/user/getAllArtists`, {
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then((result) => {
+        // console.log("result of api ", result);
+        if (result.status === 200) {
+          dispatch({
+            type: "GET_ALL_ARTISTS",
+            payload: result.data.message,
+          });
+          console.log(
+            "result DATA of api getAllArtists -=-==--==-=-=",
+            result.data
+          );
+        }
+      })
+      .catch((error) => {
+        console.log("error........", error);
+      });
+  };
+};
