@@ -3,35 +3,35 @@ import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import { getAllFans, getFromCommunity } from "../../actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
-import { useSwipeable } from "react-swipeable";
+
 function UserCategoryHomePage(props) {
   const dispatch = useDispatch();
   const stateData = useSelector((state) => state.user);
   const [allFans, setAllFans] = useState([]);
-  const [childRefs, setchildRefs] = useState([]);
   const [touchStart, setTouchStart] = React.useState(0);
-  const [touchEnd, setTouchEnd] = React.useState(0);
-  function handleTouchStart(e) {
-    setTouchStart(e.targetTouches[0].clientY);
-  }
 
-  function handleTouchMove(e) {
-    setTouchEnd(e.targetTouches[0].clientY);
-  }
+  const handleDragStart = (e) => {
+    var img = new Image();
+    img.src =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+    e.dataTransfer.setDragImage(img, 0, 0);
+    setTouchStart(e.clientY);
+  };
 
-  function handleTouchEnd() {
-    if (touchStart - touchEnd > 75) {
-      // do your stuff here for left swipe
-      // moveSliderRight();
+  const handleDrag = (e, fanID) => {
+    let drag = e.clientY - touchStart;
+    document.getElementById(fanID).style.transform = `translate(0,${drag}px)`;
+  };
+  const handleDragEnd = (e, fanID, profileImgURl) => {
+    document.getElementById(fanID).style.transform = `translate(0,0)`;
+    if (touchStart > e.clientY) {
       console.log("swiped UP");
     }
 
-    if (touchStart - touchEnd < -75) {
-      // do your stuff here for right swipe
-      // moveSliderLeft();
+    if (touchStart < e.clientY) {
       console.log("swiped down");
     }
-  }
+  };
   const openCity = (evt, cityName) => {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -61,32 +61,10 @@ function UserCategoryHomePage(props) {
     console.log("getALLFANS=--=-=-=-=-=", stateData);
     setAllFans(stateData.fans);
   };
-  const config = {
-    delta: 5, // min distance(px) before a swipe starts
-    preventDefaultTouchmoveEvent: true, // call e.preventDefault *See Details*
-    trackTouch: true, // track touch input
-    trackMouse: true, // track mouse input
-    rotationAngle: 0, // set a rotation angle
-  };
-  const handlers = useSwipeable({
-    onSwiped: (eventData, i) =>
-      console.log("User Swiped!", eventData, myRef.current),
-    ...config,
-  });
-  const myRef = React.useRef();
 
-  const refPassthrough = (el, i, id) => {
-    // call useSwipeable ref prop with el
-    // console.log("i-=-", i);
-    handlers.ref(el, i);
-
-    // set myRef el so you can access it yourself
-    myRef.current = el;
-  };
   return (
     <div className="userhomePage">
       <div className="container">
-        {console.log("childRefs", childRefs)}
         <div className="form_container px-3 px-md-5">
           <Header />
           <div className="tabs_image">
@@ -229,16 +207,15 @@ function UserCategoryHomePage(props) {
                         key={i}
                       >
                         <div
-                          {...handlers}
-                          id={fan._id}
-                          ref={(el) => {
-                            console.log("fan._id.....", fan._id);
-                            refPassthrough(el, i, fan._id);
-                          }}
+                        // id={fan._id}
+                        // onDragStart={(e) => handleDragStart(e)}
+                        // onDrag={(e) => handleDrag(e, fan._id)}
+                        // onDragEnd={(e) => {
+                        //   handleDragEnd(e, fan._id, fan.profileImgURl);
+                        // }}
                         >
-                          {" "}
                           <img
-                            // src={`../assets/images/fan.png`}
+                            className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
@@ -247,8 +224,9 @@ function UserCategoryHomePage(props) {
                             }
                             alt="Profile Img"
                           />
-                        </div>
-                        <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+
+                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                        </div>{" "}
                       </div>
                     );
                   })

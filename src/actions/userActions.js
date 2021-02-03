@@ -355,14 +355,31 @@ export const getAllFans = () => {
   };
 };
 
-export const getAllArtists = () => {
+export const getAllArtists = (category, subCategory) => {
   return (dispatch) => {
+    let type;
+    if (category == "music") {
+      type = "star";
+    } else if (category == "food") {
+      type = "chef";
+    } else if (category == "style") {
+      type = "stylist";
+    } else if (category == "body") {
+      type = "trainer";
+    }
     axios
-      .post(`${process.env.REACT_APP_API_URL}api/user/getAllArtists`, {
-        headers: {
-          token: localStorage.getItem("token"),
+      .post(
+        `${process.env.REACT_APP_API_URL}api/user/getAllArtists`,
+        {
+          type: type,
+          subCategory: subCategory,
         },
-      })
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((result) => {
         // console.log("result of api ", result);
         if (result.status === 200) {
@@ -401,10 +418,63 @@ export const getFromCommunity = (category, subCategory) => (dispatch) => {
     })
     .then((res) => {
       console.log("response for getFromCommunity=-=-=-", res.data);
+      dispatch({
+        type: "GET_FROM_COMMUNITY_SUCCESS",
+        payload: res.data.message,
+      });
     })
     .catch((err) => {
+      dispatch({
+        type: "GET_FROM_COMMUNITY_ERROR",
+        payload: err.response.data,
+      });
       console.log(
         "Err response for getFromCommnunity-=-=-=-=",
+        err.response.data
+      );
+    });
+};
+export const addToCommunity = (communityId) => (dispatch) => {
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/addToCommunity`, {
+      userId: localStorage.getItem("id"),
+      communityId: communityId,
+    })
+    .then((res) => {
+      dispatch({
+        type: "ADD_TO_COMMUNITY_SUCCESS",
+        payload: res.data.message.msg,
+      });
+      console.log("response for addToCommunity=-=-=-", res.data);
+    })
+    .catch((err) => {
+      dispatch({
+        type: "ADD_TO_COMMUNITY_ERROR",
+        payload: err.response.data.message,
+      });
+      console.log("Err response for addToCommunity-=-=-=-=", err.response.data);
+    });
+};
+export const removeFromCommunity = (communityId) => (dispatch) => {
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/removeFromCommunity`, {
+      userId: localStorage.getItem("id"),
+      communityId: communityId,
+    })
+    .then((res) => {
+      dispatch({
+        type: "REMOVE_FROM_COMMUNITY_SUCCESS",
+        payload: res.data.message,
+      });
+      console.log("response for remveFromCommunity=-=-=-", res.data);
+    })
+    .catch((err) => {
+      dispatch({
+        type: "REMOVE_FROM_COMMUNITY_ERROR",
+        payload: err.response.data.message,
+      });
+      console.log(
+        "Err response for remveFromCommunity-=-=-=-=",
         err.response.data
       );
     });

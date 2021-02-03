@@ -63,6 +63,9 @@ body {
   width: 70%;
   margin: auto;
 }
+.draggableImg {
+  transition: 2s;
+}
 header {
   justify-content: center;
 }
