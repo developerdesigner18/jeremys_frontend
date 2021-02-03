@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
-import { getAllArtists } from "../../actions/userActions";
+import { getAllArtists, getFromCommunity } from "../../actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
 
@@ -28,6 +28,7 @@ function FanHomePage(props) {
   };
   useEffect(() => {
     dispatch(getAllArtists());
+    dispatch(getFromCommunity("music", "POP"));
   }, []);
 
   const getAllArtist = () => {
@@ -35,11 +36,62 @@ function FanHomePage(props) {
     setAllArtists(stateData.artists);
   };
 
-  var subMusic = ["pop","rnb","jazz","ballad","disco","bossa nova","classical","orchestra","blues","country","latin","rock & roll","heavy metal"]
-  var subFood = ["italian","japanese","korean","thai","mexican","indian","vietnam","mediterraneam","european","arabian","pinoy","chinese","american bbq"]
-  var subStyle = ["clothing","collectibles","vintage","bridal","make-up Accessories"]
-  var subBody = ["yoga","zumba","body building","gymnastics","aerobics"]
-  var musicData = [{url:123,name:"M1"}, {url:123,name:"M2"}, {url:123,name:"M3"}, {url:123,name:"M4"}, {url:123,name:"M5"}, {url:123,name:"M6"}, {url:123,name:"M7"}, {url:123,name:"M8"}, {url:123,name:"M9"}, {url:123,name:"M10"}, {url:123,name:"M11"}, {url:123,name:"M12"}, {url:123,name:"M13"}, {url:123,name:"M14"},{url:123,name:"M15"}, {url:123,name:"M16"}]
+  var subMusic = [
+    "pop",
+    "rnb",
+    "jazz",
+    "ballad",
+    "disco",
+    "bossa nova",
+    "classical",
+    "orchestra",
+    "blues",
+    "country",
+    "latin",
+    "rock & roll",
+    "heavy metal",
+  ];
+  var subFood = [
+    "italian",
+    "japanese",
+    "korean",
+    "thai",
+    "mexican",
+    "indian",
+    "vietnam",
+    "mediterraneam",
+    "european",
+    "arabian",
+    "pinoy",
+    "chinese",
+    "american bbq",
+  ];
+  var subStyle = [
+    "clothing",
+    "collectibles",
+    "vintage",
+    "bridal",
+    "make-up Accessories",
+  ];
+  var subBody = ["yoga", "zumba", "body building", "gymnastics", "aerobics"];
+  var musicData = [
+    { url: 123, name: "M1" },
+    { url: 123, name: "M2" },
+    { url: 123, name: "M3" },
+    { url: 123, name: "M4" },
+    { url: 123, name: "M5" },
+    { url: 123, name: "M6" },
+    { url: 123, name: "M7" },
+    { url: 123, name: "M8" },
+    { url: 123, name: "M9" },
+    { url: 123, name: "M10" },
+    { url: 123, name: "M11" },
+    { url: 123, name: "M12" },
+    { url: 123, name: "M13" },
+    { url: 123, name: "M14" },
+    { url: 123, name: "M15" },
+    { url: 123, name: "M16" },
+  ];
 
   var settings = {
     dots: true,
@@ -51,26 +103,21 @@ function FanHomePage(props) {
 
   function showCircleDiv(array) {
     let newDiv = [];
-    for (let i = 0; i < (array.length) / 4; i++) {
-      newDiv.push(
-        <div className="category_video vids">
-          {insideDiv(i)}
-        </div>
-      )
+    for (let i = 0; i < array.length / 4; i++) {
+      newDiv.push(<div className="category_video vids">{insideDiv(i)}</div>);
     }
-    return newDiv
+    return newDiv;
   }
   function insideDiv(i) {
     let divs = [];
     for (var j = 4 * i; j < 4 * (i + 1); j++) {
       divs.push(
-        <div className="main_cat">
-          <video muted={true} autoPlay>
-            <source src="../assets/images/vid.mp4" />
-          </video>
+        <div className="profile_images">
+          <img src="http://3.84.158.108:8000/default/profile.jpg" />
+
           <p style={{ color: "white" }}>{musicData[j].name}</p>
         </div>
-      )
+      );
     }
     return divs;
   }
@@ -118,64 +165,104 @@ function FanHomePage(props) {
             </div>
           </div>
           <div id="music" className="tabcontent active">
-          <Slider {...settings} style={{ background: "#333333", marginBottom: "25px" }}>
-              {
-                subMusic.map((value, i) => {
-                  return (
-                    <div className="cats_content">
-                      <h3 style={{ color: "#ffffff", fontSize: "14px", textTransform: "uppercase", letterSpacing: "1.8px", textAlign: "center" }} >{value}</h3>
-                    </div>
-                  );
-                })}
-          </Slider>
-            {
-              showCircleDiv(musicData)
-            }
+            <Slider
+              {...settings}
+              style={{ background: "#333333", marginBottom: "25px" }}
+            >
+              {subMusic.map((value, i) => {
+                return (
+                  <div className="cats_content">
+                    <h3
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {value}
+                    </h3>
+                  </div>
+                );
+              })}
+            </Slider>
+            {showCircleDiv(musicData)}
           </div>
           <div id="food" className="tabcontent">
-          <Slider {...settings} style={{ background: "#333333", marginBottom: "25px" }}>
-              {
-                subFood.map((value, i) => {
-                  return (
-                    <div className="cats_content">
-                      <h3 style={{ color: "#ffffff", fontSize: "14px", textTransform: "uppercase", letterSpacing: "1.8px", textAlign: "center" }} >{value}</h3>
-                    </div>
-                  );
-                })}
-          </Slider>
-            {
-              showCircleDiv(musicData)
-            }
+            <Slider
+              {...settings}
+              style={{ background: "#333333", marginBottom: "25px" }}
+            >
+              {subFood.map((value, i) => {
+                return (
+                  <div className="cats_content">
+                    <h3
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {value}
+                    </h3>
+                  </div>
+                );
+              })}
+            </Slider>
+            {showCircleDiv(musicData)}
           </div>
           <div id="style" className="tabcontent">
-            <Slider {...settings} style={{ background: "#333333", marginBottom: "25px" }}>
-              {
-                subStyle.map((value, i) => {
-                  return (
-                    <div className="cats_content">
-                      <h3 style={{ color: "#ffffff", fontSize: "14px", textTransform: "uppercase", letterSpacing: "1.8px", textAlign: "center" }}>{value}</h3>
-                    </div>
-                  );
-                })}
+            <Slider
+              {...settings}
+              style={{ background: "#333333", marginBottom: "25px" }}
+            >
+              {subStyle.map((value, i) => {
+                return (
+                  <div className="cats_content">
+                    <h3
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {value}
+                    </h3>
+                  </div>
+                );
+              })}
             </Slider>
-            {
-              showCircleDiv(musicData)
-            }
+            {showCircleDiv(musicData)}
           </div>
           <div id="body" className="tabcontent">
-            <Slider {...settings} style={{ background: "#333333", marginBottom: "25px" }}>
-              {
-                subBody.map((value, i) => {
-                  return (
-                    <div className="cats_content">
-                      <h3 style={{ color: "#ffffff", fontSize: "14px", textTransform: "uppercase", letterSpacing: "1.8px", textAlign: "center" }}>{value}</h3>
-                    </div>
-                  );
-                })}
+            <Slider
+              {...settings}
+              style={{ background: "#333333", marginBottom: "25px" }}
+            >
+              {subBody.map((value, i) => {
+                return (
+                  <div className="cats_content">
+                    <h3
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {value}
+                    </h3>
+                  </div>
+                );
+              })}
             </Slider>
-            {
-              showCircleDiv(musicData)
-            }
+            {showCircleDiv(musicData)}
           </div>
           <div id="find" className="tabcontent">
             <div className="category">

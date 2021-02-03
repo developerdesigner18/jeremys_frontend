@@ -358,7 +358,7 @@ export const getAllFans = () => {
 export const getAllArtists = () => {
   return (dispatch) => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/user/getAllArtists`, {
+      .post(`${process.env.REACT_APP_API_URL}api/user/getAllArtists`, {
         headers: {
           token: localStorage.getItem("token"),
         },
@@ -380,4 +380,32 @@ export const getAllArtists = () => {
         console.log("error........", error);
       });
   };
+};
+
+export const getFromCommunity = (category, subCategory) => (dispatch) => {
+  let type;
+  if (category == "music") {
+    type = "star";
+  } else if (category == "food") {
+    type = "chef";
+  } else if (category == "style") {
+    type = "stylist";
+  } else if (category == "body") {
+    type = "trainer";
+  }
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/getCommunity`, {
+      userId: localStorage.getItem("id"),
+      type: type,
+      subCategory: subCategory,
+    })
+    .then((res) => {
+      console.log("response for getFromCommunity=-=-=-", res.data);
+    })
+    .catch((err) => {
+      console.log(
+        "Err response for getFromCommnunity-=-=-=-=",
+        err.response.data
+      );
+    });
 };
