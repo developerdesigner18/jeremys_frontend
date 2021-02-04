@@ -9,13 +9,15 @@ import {
 } from "../../actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
+import TinderCard from "react-tinder-card";
 
 function FanHomePage(props) {
   const dispatch = useDispatch();
   const [allArtists, setAllArtists] = useState([]);
   const [community, setCommunity] = useState([]);
   const [Find, setfind] = useState(false);
-  const [touchStart, setTouchStart] = React.useState(0);
+  const [touchStartY, setTouchStartY] = React.useState(0);
+  const [touchStartX, setTouchStartX] = React.useState(0);
   const stateData = useSelector((state) => state.user);
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("pop");
@@ -38,26 +40,46 @@ function FanHomePage(props) {
     img.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
     e.dataTransfer.setDragImage(img, 0, 0);
-    setTouchStart(e.clientY);
+    setTouchStartY(e.clientY);
+    setTouchStartX(e.clientX);
   };
 
   const handleDrag = (e, fanID) => {
-    console.log("handleDrag", fanID, touchStart);
-    let drag = e.clientY - touchStart;
-    document.getElementById(fanID).style.transform = `translate(0,${drag}px)`;
-    document.getElementById(fanID).style.zIndex = "99";
+    var img = new Image();
+    img.src =
+      "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+    e.dataTransfer.setDragImage(img, 0, 0);
+    let dragY = e.clientY - touchStartY;
+    let dragX = e.clientX - touchStartX;
+    if (dragY > -75) {
+      if (dragX > 0) {
+        if (dragX < 75) {
+          document.getElementById(
+            fanID
+          ).style.transform = `translate(${dragX}px,${dragY}px)`;
+          document.getElementById(fanID).style.zIndex = "99";
+        }
+      } else {
+        if (dragX > -75) {
+          document.getElementById(
+            fanID
+          ).style.transform = `translate(${dragX}px,${dragY}px)`;
+          document.getElementById(fanID).style.zIndex = "99";
+        }
+      }
+    }
   };
-  const handleDragEnd = (e, fanID, profileImgURl) => {
-    console.log("handleDragEnd", e.clientY, touchStart);
+  const handleDragEnd = async (e, fanID, profileImgURl) => {
+    let data;
     document.getElementById(fanID).style.transform = `translate(0,0)`;
-    if (touchStart > e.clientY) {
+    if (touchStartY - e.clientY > 150) {
       console.log("swiped UP");
-      dispatch(removeFromCommunity(fanID));
     }
 
-    if (touchStart < e.clientY) {
+    if (e.clientY - touchStartY > 150) {
       console.log("swiped down");
-      dispatch(addToCommunity(fanID));
+      data = dispatch(addToCommunity(fanID));
+      console.log("response=-=-=", data);
     }
   };
   const goToHome = () => {
@@ -73,15 +95,12 @@ function FanHomePage(props) {
       if (stateData.community) {
         setCommunity(stateData.community);
       }
-      // if (stateData.addcommunityError !== addToCommunityMsg) {
-      //   setaddToCommunityMsg(stateData.addcommunityError);
-      // }
-      // if (stateData.addcommunity !== addToCommunityMsg) {
-      //   setaddToCommunityMsg(stateData.addcommunity);
-      // }
-      // setTimeout(() => {
-      //   setaddToCommunityMsg("");
-      // }, 3000);
+      if (stateData.addcommunityError !== addToCommunityMsg) {
+        setaddToCommunityMsg(stateData.addcommunityError);
+      }
+      if (stateData.addcommunity !== addToCommunityMsg) {
+        setaddToCommunityMsg(stateData.addcommunity);
+      }
     }
   }, [stateData]);
 
@@ -176,7 +195,15 @@ function FanHomePage(props) {
     }
     return divs;
   }
-
+  const swiped = (direction, fanID) => {
+    console.log("direction-=-=-=", direction);
+    if (direction == "up") {
+      dispatch(removeFromCommunity(fanID));
+    }
+  };
+  const outOfFrame = (name) => {
+    dispatch(getFromCommunity(category, subcategory));
+  };
   return (
     <div className="container">
       {/* {console.log(
@@ -260,8 +287,6 @@ function FanHomePage(props) {
               </button>
             </div>
           </div>
-          {addToCommunityMsg != "" ? <div>{addToCommunityMsg}</div> : null}
-
           <div id="music" className="tabcontent active">
             <Slider
               {...settings}
@@ -272,31 +297,19 @@ function FanHomePage(props) {
                 return (
                   <div className="cats_content">
                     <h3
-                      className="py-1"
-                      style={
-                        subcategory == value
-                          ? {
-                              color: "#ffffff",
-                              borderBottom: "1.75px solid #ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              marginBottom: "0",
-                              cursor: "pointer",
-                            }
-                          : {
-                              color: "#ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              cursor: "pointer",
-                              marginBottom: "0",
-                            }
+                      className={
+                        subcategory == value ? "py-1 activeSubTab" : "py-1"
                       }
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        cursor: "pointer",
+                        marginBottom: "0",
+                      }}
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
@@ -318,91 +331,6 @@ function FanHomePage(props) {
                 );
               })}
             </Slider>
-
-            {Find ? (
-              <div className=" row vids">
-                {allArtists.length != 0 ? (
-                  allArtists.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>No {subcategory} artists found</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // showCircleDiv(musicData)
-              <div className=" row vids">
-                {community.length != 0 ? (
-                  community.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>
-                      No {subcategory} artists found in your community
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
           <div id="food" className="tabcontent">
             <Slider
@@ -413,31 +341,19 @@ function FanHomePage(props) {
                 return (
                   <div className="cats_content">
                     <h3
-                      className="py-1"
-                      style={
-                        subcategory == value
-                          ? {
-                              color: "#ffffff",
-                              borderBottom: "1.75px solid #ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              marginBottom: "0",
-                              cursor: "pointer",
-                            }
-                          : {
-                              color: "#ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              cursor: "pointer",
-                              marginBottom: "0",
-                            }
+                      className={
+                        subcategory == value ? "py-1 activeSubTab" : "py-1"
                       }
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        cursor: "pointer",
+                        marginBottom: "0",
+                      }}
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
@@ -459,89 +375,6 @@ function FanHomePage(props) {
                 );
               })}
             </Slider>
-
-            {Find ? (
-              <div className=" row vids">
-                {allArtists.length != 0 ? (
-                  allArtists.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>No {subcategory} chefs found</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // showCircleDiv(musicData)
-              <div className=" row vids">
-                {community.length != 0 ? (
-                  community.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>No {subcategory} chefs found in your community</span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
           <div id="style" className="tabcontent">
             <Slider
@@ -552,31 +385,19 @@ function FanHomePage(props) {
                 return (
                   <div className="cats_content">
                     <h3
-                      className="py-1"
-                      style={
-                        subcategory == value
-                          ? {
-                              color: "#ffffff",
-                              borderBottom: "1.75px solid #ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              marginBottom: "0",
-                              cursor: "pointer",
-                            }
-                          : {
-                              color: "#ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              cursor: "pointer",
-                              marginBottom: "0",
-                            }
+                      className={
+                        subcategory == value ? "py-1 activeSubTab" : "py-1"
                       }
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        cursor: "pointer",
+                        marginBottom: "0",
+                      }}
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
@@ -592,91 +413,6 @@ function FanHomePage(props) {
                 );
               })}
             </Slider>
-
-            {Find ? (
-              <div className=" row vids">
-                {allArtists.length != 0 ? (
-                  allArtists.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>No {subcategory} stylists found</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // showCircleDiv(musicData)
-              <div className=" row vids">
-                {community.length != 0 ? (
-                  community.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>
-                      No {subcategory} stylists found in your community
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
           <div id="body" className="tabcontent">
             <Slider
@@ -687,31 +423,19 @@ function FanHomePage(props) {
                 return (
                   <div className="cats_content">
                     <h3
-                      className="py-1"
-                      style={
-                        subcategory == value
-                          ? {
-                              color: "#ffffff",
-                              borderBottom: "1.75px solid #ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              marginBottom: "0",
-                              cursor: "pointer",
-                            }
-                          : {
-                              color: "#ffffff",
-                              fontSize: "14px",
-                              textTransform: "uppercase",
-                              letterSpacing: "1.8px",
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                              cursor: "pointer",
-                              marginBottom: "0",
-                            }
+                      className={
+                        subcategory == value ? "py-1 activeSubTab" : "py-1"
                       }
+                      style={{
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        textTransform: "uppercase",
+                        letterSpacing: "1.8px",
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                        cursor: "pointer",
+                        marginBottom: "0",
+                      }}
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
@@ -727,101 +451,125 @@ function FanHomePage(props) {
                 );
               })}
             </Slider>
-
-            {Find ? (
-              <div className=" row vids">
-                {allArtists.length != 0 ? (
-                  allArtists.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>No {subcategory} trainer found</span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // showCircleDiv(musicData)
-              <div className=" row vids">
-                {community.length != 0 ? (
-                  community.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        <div
-                          id={fan._id}
-                          onDragStart={(e) => handleDragStart(e)}
-                          onDrag={(e) => handleDrag(e, fan._id)}
-                          onDragEnd={(e) => {
-                            handleDragEnd(e, fan._id, fan.profileImgURl);
-                          }}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
-                            }
-                            alt="Profile Img"
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div style={{ margin: "auto" }}>
-                    <span>
-                      No {subcategory} trainer found in your community
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
-
+          {/* {addToCommunityMsg != "" ? <div>{addToCommunityMsg}</div> : null} */}
+          {Find ? (
+            <div className=" row vids">
+              {allArtists.length != 0 ? (
+                allArtists.map((fan, i) => {
+                  return (
+                    <div
+                      className="profile_images col-sm-3 col-md-3  my-3"
+                      style={{ textAlign: "center" }}
+                      key={i}
+                    >
+                      <div
+                        id={fan._id}
+                        onDragStart={(e) => handleDragStart(e)}
+                        onDrag={(e) => handleDrag(e, fan._id)}
+                        onDragEnd={(e) => {
+                          handleDragEnd(e, fan._id, fan.profileImgURl);
+                        }}
+                      >
+                        <img
+                          className="draggableImg"
+                          src={
+                            fan.profileImgURl != "" && fan.profileImgURl != null
+                              ? fan.profileImgURl
+                              : "http://3.84.158.108:8000/default/profile.jpg"
+                          }
+                          alt="Profile Img"
+                        />
+                        <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ margin: "auto" }}>
+                  <span>
+                    No {subcategory}{" "}
+                    {category == "music"
+                      ? "stars"
+                      : category == "body"
+                      ? "trainers"
+                      : category == "style"
+                      ? "stylists"
+                      : category == "food"
+                      ? "chefs"
+                      : "artists"}{" "}
+                    found
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className=" row vids">
+              {community.length != 0 ? (
+                community.map((fan, i) => {
+                  return (
+                    <div
+                      className="profile_images col-sm-3 col-md-3  my-3"
+                      style={{ textAlign: "center" }}
+                      key={i}
+                    >
+                      {" "}
+                      {/* <div
+                        id={fan._id}
+                        onDragStart={(e) => handleDragStart(e)}
+                        onDrag={(e) => handleDrag(e, fan._id)}
+                        onDragEnd={(e) => {
+                          handleDragEnd(e, fan._id, fan.profileImgURl);
+                        }}
+                      > */}
+                      <TinderCard
+                        // ref={this.addToRefs}
+                        // className="swipe col-md-12 "
+                        // key={index.id}
+                        onSwipe={(dir) => swiped(dir, fan._id)}
+                        onCardLeftScreen={() => outOfFrame(fan._id)}
+                        preventSwipe={["down", "left", "right"]}
+                      >
+                        <img
+                          className="draggableImg"
+                          src={
+                            fan.profileImgURl != "" && fan.profileImgURl != null
+                              ? fan.profileImgURl
+                              : "http://3.84.158.108:8000/default/profile.jpg"
+                          }
+                          alt="Profile Img"
+                        />
+                        <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                      </TinderCard>
+                      {/* </div> */}
+                    </div>
+                  );
+                })
+              ) : (
+                <div style={{ margin: "auto" }}>
+                  <span>
+                    No {subcategory}{" "}
+                    {category == "music"
+                      ? "stars"
+                      : category == "body"
+                      ? "trainers"
+                      : category == "style"
+                      ? "stylists"
+                      : category == "food"
+                      ? "chefs"
+                      : "artists"}{" "}
+                    found in your community
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
           <div className="main_links d-flex pt-5 mt-5">
             <div className="down_links">
               <a
                 onClick={(event) => {
-                  openCity(event, "music");
                   dispatch(getFromCommunity(category, subcategory));
                   setfind(false);
-                  // getAllArtist();
                 }}
               >
                 <img
@@ -829,7 +577,7 @@ function FanHomePage(props) {
                   style={
                     Find == false
                       ? {
-                          boxShadow: "0 0 8px 2px #ddd",
+                          boxShadow: "0 0 10px 2px #ddd",
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
@@ -842,7 +590,6 @@ function FanHomePage(props) {
             <div className="down_links">
               <a
                 onClick={(event) => {
-                  // openCity(event, "music");
                   setfind(true);
 
                   getAllArtist();
@@ -853,7 +600,7 @@ function FanHomePage(props) {
                   style={
                     Find == true
                       ? {
-                          boxShadow: "0 0 8px 2px #ddd",
+                          boxShadow: "0 0 10px 2px #ddd",
                           cursor: "pointer",
                           borderRadius: "100%",
                         }

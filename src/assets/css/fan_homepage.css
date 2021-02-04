@@ -176,6 +176,9 @@ button.tablinks_responsive {
 .fan_image img {
   width: 100%;
 }
+.activeSubTab {
+  border-bottom: 1.75px solid #ffffff !important;
+}
 button.tablinks.active {
   box-shadow: 0 0 14px 2px #ff0000;
 }

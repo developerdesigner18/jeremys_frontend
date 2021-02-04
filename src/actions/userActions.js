@@ -387,10 +387,10 @@ export const getAllArtists = (category, subCategory) => {
             type: "GET_ALL_ARTISTS",
             payload: result.data.message,
           });
-          console.log(
-            "result DATA of api getAllArtists -=-==--==-=-=",
-            result.data
-          );
+          // console.log(
+          //   "result DATA of api getAllArtists -=-==--==-=-=",
+          //   result.data
+          // );
         }
       })
       .catch((error) => {
@@ -417,7 +417,7 @@ export const getFromCommunity = (category, subCategory) => (dispatch) => {
       subCategory: subCategory,
     })
     .then((res) => {
-      console.log("response for getFromCommunity=-=-=-", res.data);
+      // console.log("response for getFromCommunity=-=-=-", res.data);
       dispatch({
         type: "GET_FROM_COMMUNITY_SUCCESS",
         payload: res.data.message,
@@ -428,10 +428,10 @@ export const getFromCommunity = (category, subCategory) => (dispatch) => {
         type: "GET_FROM_COMMUNITY_ERROR",
         payload: err.response.data,
       });
-      console.log(
-        "Err response for getFromCommnunity-=-=-=-=",
-        err.response.data
-      );
+      // console.log(
+      //   "Err response for getFromCommnunity-=-=-=-=",
+      //   err.response.data
+      // );
     });
 };
 export const addToCommunity = (communityId) => (dispatch) => {
@@ -445,14 +445,17 @@ export const addToCommunity = (communityId) => (dispatch) => {
         type: "ADD_TO_COMMUNITY_SUCCESS",
         payload: res.data.message.msg,
       });
-      console.log("response for addToCommunity=-=-=-", res.data);
+      swal("", res.data.message.msg, "success");
+      // console.log("response for addToCommunity=-=-=-", res.data);
     })
     .catch((err) => {
       dispatch({
         type: "ADD_TO_COMMUNITY_ERROR",
         payload: err.response.data.message,
       });
-      console.log("Err response for addToCommunity-=-=-=-=", err.response.data);
+      swal("", err.response.data.message, "warning");
+
+      // console.log("Err response for addToCommunity-=-=-=-=", err.response.data);
     });
 };
 export const removeFromCommunity = (communityId) => (dispatch) => {
@@ -466,16 +469,20 @@ export const removeFromCommunity = (communityId) => (dispatch) => {
         type: "REMOVE_FROM_COMMUNITY_SUCCESS",
         payload: res.data.message,
       });
-      console.log("response for remveFromCommunity=-=-=-", res.data);
+      swal("", res.data.message, "success");
+
+      // console.log("response for remveFromCommunity=-=-=-", res.data);
     })
     .catch((err) => {
       dispatch({
         type: "REMOVE_FROM_COMMUNITY_ERROR",
         payload: err.response.data.message,
       });
-      console.log(
-        "Err response for remveFromCommunity-=-=-=-=",
-        err.response.data
-      );
+      swal("", err.response.data.message, "warning");
+
+      // console.log(
+      //   "Err response for remveFromCommunity-=-=-=-=",
+      //   err.response.data
+      // );
     });
 };
