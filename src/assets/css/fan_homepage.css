@@ -173,6 +173,57 @@ button.tablinks_responsive {
   font-weight: 800;
   outline: none;
 }
+.loader {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  margin: auto;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+.adminPaginate {
+  display: flex;
+  justify-content: flex-end;
+}
+.adminPaginate .active {
+  color: black !important;
+  /* padding: 10px; */
+  background: #4a5568;
+}
+.adminPaginate li {
+  list-style-type: none;
+  cursor: pointer;
+  color: #4a5568;
+  padding: 8px 12px;
+  border-top: 1px solid #4a5568;
+  border-left: 1px solid #4a5568;
+  border-bottom: 1px solid #4a5568;
+  font-weight: 400;
+  font-size: 12px;
+}
+.adminPaginate li:last-child {
+  border-right: 1px solid #4a5568;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .fan_image img {
   width: 100%;
 }

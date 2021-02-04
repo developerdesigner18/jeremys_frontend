@@ -16,6 +16,7 @@ function FanHomePage(props) {
   const [allArtists, setAllArtists] = useState([]);
   const [community, setCommunity] = useState([]);
   const [Find, setfind] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
   const [touchStartY, setTouchStartY] = React.useState(0);
   const [touchStartX, setTouchStartX] = React.useState(0);
   const stateData = useSelector((state) => state.user);
@@ -94,11 +95,15 @@ function FanHomePage(props) {
       if (stateData.artists) setAllArtists(stateData.artists);
       if (stateData.community) {
         setCommunity(stateData.community);
+        setisLoading(false);
       }
       if (stateData.addcommunityError !== addToCommunityMsg) {
         setaddToCommunityMsg(stateData.addcommunityError);
+        setisLoading(false);
       }
       if (stateData.addcommunity !== addToCommunityMsg) {
+        setisLoading(false);
+
         setaddToCommunityMsg(stateData.addcommunity);
       }
     }
@@ -107,6 +112,7 @@ function FanHomePage(props) {
   const getAllArtist = () => {
     console.log("getAllArtists=--=-=-=-=-=", stateData);
     // setAllArtists(stateData.artists);
+    setisLoading(true);
     dispatch(getAllArtists(category, subcategory));
   };
 
@@ -221,6 +227,7 @@ function FanHomePage(props) {
                 onClick={(event) => {
                   openCity(event, "music");
                   setCategory("music");
+                  setisLoading(true);
                   setSubCategory(subMusic[0]);
                   if (Find) {
                     dispatch(getAllArtists("music", subMusic[0]));
@@ -237,6 +244,7 @@ function FanHomePage(props) {
                 className="tablinks"
                 onClick={(event) => {
                   setSubCategory(subFood[0]);
+                  setisLoading(true);
                   setCategory("food");
                   openCity(event, "food");
                   if (Find) {
@@ -257,6 +265,7 @@ function FanHomePage(props) {
                 className="tablinks"
                 onClick={(event) => {
                   setSubCategory(subStyle[0]);
+                  setisLoading(true);
                   openCity(event, "style");
                   setCategory("style");
                   if (Find) {
@@ -274,6 +283,7 @@ function FanHomePage(props) {
                 className="tablinks"
                 onClick={(event) => {
                   openCity(event, "body");
+                  setisLoading(true);
                   setSubCategory(subBody[0]);
                   setCategory("body");
                   if (Find) {
@@ -313,8 +323,10 @@ function FanHomePage(props) {
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
+                          setisLoading(true);
                           dispatch(getAllArtists("music", value));
                         } else {
+                          setisLoading(true);
                           dispatch(getFromCommunity("music", value));
                         }
                         {
@@ -357,8 +369,10 @@ function FanHomePage(props) {
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
+                          setisLoading(true);
                           dispatch(getAllArtists("food", value));
                         } else {
+                          setisLoading(true);
                           dispatch(getFromCommunity("food", value));
                         }
                         {
@@ -401,8 +415,10 @@ function FanHomePage(props) {
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
+                          setisLoading(true);
                           dispatch(getAllArtists("style", value));
                         } else {
+                          setisLoading(true);
                           dispatch(getFromCommunity("style", value));
                         }
                       }}
@@ -439,8 +455,10 @@ function FanHomePage(props) {
                       onClick={() => {
                         setSubCategory(value);
                         if (Find) {
+                          setisLoading(true);
                           dispatch(getAllArtists("body", value));
                         } else {
+                          setisLoading(true);
                           dispatch(getFromCommunity("body", value));
                         }
                       }}
@@ -452,8 +470,10 @@ function FanHomePage(props) {
               })}
             </Slider>
           </div>
-          {/* {addToCommunityMsg != "" ? <div>{addToCommunityMsg}</div> : null} */}
-          {Find ? (
+
+          {isLoading ? (
+            <div class="loader my-5"></div>
+          ) : Find ? (
             <div className=" row vids">
               {allArtists.length != 0 ? (
                 allArtists.map((fan, i) => {
@@ -568,6 +588,7 @@ function FanHomePage(props) {
             <div className="down_links">
               <a
                 onClick={(event) => {
+                  setisLoading(true);
                   dispatch(getFromCommunity(category, subcategory));
                   setfind(false);
                 }}

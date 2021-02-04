@@ -3,12 +3,16 @@ import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import { getAllFans, getFromCommunity } from "../../actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
+import Pagination from "react-js-pagination";
 
 function UserCategoryHomePage(props) {
   const dispatch = useDispatch();
   const stateData = useSelector((state) => state.user);
   const [allFans, setAllFans] = useState([]);
+  const [activePage, setactivePage] = useState(0);
+  const [Offset, setOffset] = useState(0);
   const [touchStart, setTouchStart] = React.useState(0);
+  const [perPage, setperPage] = React.useState(16);
 
   const handleDragStart = (e) => {
     var img = new Image();
@@ -49,6 +53,26 @@ function UserCategoryHomePage(props) {
   const goToHome = () => {
     props.history.push("/");
   };
+  const handlePageChange = (pageNumberpaginate) => {
+    const selectedPage = pageNumberpaginate - 1;
+    const offset = selectedPage * perPage;
+    console.log("pageNumberpaginate-=-=-=-==--=", pageNumberpaginate);
+    setactivePage(selectedPage);
+    setOffset(offset);
+    // this.setState(
+    //   {
+    //     activePage: selectedPage,
+    //     offset: offset,
+    //   },
+    //   () => {
+    //     console.log(
+    //       "current page-=-=-",
+    //       this.state.activePage,
+    //       this.state.offset
+    //     );
+    //   }
+    // );
+  };
 
   const goToORB = () => {
     props.history.push("/ORBpage");
@@ -61,7 +85,9 @@ function UserCategoryHomePage(props) {
     console.log("getALLFANS=--=-=-=-=-=", stateData);
     setAllFans(stateData.fans);
   };
-
+  let indexOfFirstUser = Offset;
+  let indexOfLastUser = Offset + perPage;
+  let currentFans = allFans.slice(indexOfFirstUser, indexOfLastUser);
   return (
     <div className="userhomePage">
       <div className="container">
@@ -199,21 +225,14 @@ function UserCategoryHomePage(props) {
               {console.log("allFans.length=-=-=-=-", allFans.length)}
               <div className=" row vids">
                 {allFans.length != 0 ? (
-                  allFans.map((fan, i) => {
+                  currentFans.map((fan, i) => {
                     return (
                       <div
                         className="profile_images col-md-3 col-sm-6 "
                         style={{ textAlign: "center" }}
                         key={i}
                       >
-                        <div
-                        // id={fan._id}
-                        // onDragStart={(e) => handleDragStart(e)}
-                        // onDrag={(e) => handleDrag(e, fan._id)}
-                        // onDragEnd={(e) => {
-                        //   handleDragEnd(e, fan._id, fan.profileImgURl);
-                        // }}
-                        >
+                        <div>
                           <img
                             className="draggableImg"
                             src={
@@ -234,6 +253,14 @@ function UserCategoryHomePage(props) {
                   <div>No fans Found</div>
                 )}
               </div>
+              <Pagination
+                innerClass={"adminPaginate"}
+                activePage={activePage + 1}
+                itemsCountPerPage={perPage}
+                totalItemsCount={allFans.length}
+                pageRangeDisplayed={5}
+                onChange={handlePageChange}
+              />
             </div>
             <div id="style" className="tabcontent">
               <h3>Tokyo</h3>
@@ -245,7 +272,12 @@ function UserCategoryHomePage(props) {
             </div>
             <div className="main_links d-flex">
               <div className="down_links">
-                <a style={{ cursor: "pointer" }} onClick={goToHome}>
+                <a
+                  style={{ cursor: "pointer" }}
+                  onClick={(event) => {
+                    openCity(event, "music");
+                  }}
+                >
                   <img src="../assets/images/1.png" />
                 </a>
                 <div className="link_text">Home</div>
