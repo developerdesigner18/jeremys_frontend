@@ -6,7 +6,9 @@ import {
   getFromCommunity,
   addToCommunity,
   removeFromCommunity,
+  getUserWithId,
 } from "../../actions/userActions";
+import { getFollowing } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
@@ -14,12 +16,16 @@ import TinderCard from "react-tinder-card";
 function FanHomePage(props) {
   const dispatch = useDispatch();
   const [allArtists, setAllArtists] = useState([]);
+  const [userInfo, setUserInfo] = useState();
+  const [loggedInUserFollowing, setloggedInUserFollowing] = useState(0);
+  const [starsFollowers, setstarsFollowers] = useState([]);
   const [community, setCommunity] = useState([]);
   const [Find, setfind] = useState(false);
   const [isLoading, setisLoading] = useState(true);
   const [touchStartY, setTouchStartY] = React.useState(0);
   const [touchStartX, setTouchStartX] = React.useState(0);
   const stateData = useSelector((state) => state.user);
+  const followData = useSelector((state) => state.follow);
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
@@ -55,6 +61,8 @@ function FanHomePage(props) {
     if (dragY > -75) {
       if (dragX > 0) {
         if (dragX < 75) {
+          document.getElementById(fanID).style.transitionTimingFunction =
+            "ease-in-out";
           document.getElementById(
             fanID
           ).style.transform = `translate(${dragX}px,${dragY}px)`;
@@ -72,6 +80,8 @@ function FanHomePage(props) {
   };
   const handleDragEnd = async (e, fanID, profileImgURl) => {
     let data;
+    document.getElementById(fanID).style.transitionTimingFunction =
+      "ease-in-out";
     document.getElementById(fanID).style.transform = `translate(0,0)`;
     if (touchStartY - e.clientY > 150) {
       console.log("swiped UP");
@@ -87,27 +97,51 @@ function FanHomePage(props) {
     props.history.push("/");
   };
   useEffect(() => {
+    dispatch(getUserWithId(localStorage.getItem("id")));
+
     dispatch(getAllArtists(category, subcategory));
+    dispatch(getFollowing(localStorage.getItem("id")));
     dispatch(getFromCommunity(category, subcategory));
   }, []);
   useEffect(() => {
     if (stateData) {
+      if (stateData.userInfo) {
+        setUserInfo(stateData.userInfo);
+      }
       if (stateData.artists) setAllArtists(stateData.artists);
       if (stateData.community) {
         setCommunity(stateData.community);
+        setisLoading(false);
+      }
+      if (stateData.communityError) {
+        // setCommunity([]);
         setisLoading(false);
       }
       if (stateData.addcommunityError !== addToCommunityMsg) {
         setaddToCommunityMsg(stateData.addcommunityError);
         setisLoading(false);
       }
-      if (stateData.addcommunity !== addToCommunityMsg) {
+      if (stateData.addcommunity) {
         setisLoading(false);
+        dispatch(getFollowing(localStorage.getItem("id")));
 
         setaddToCommunityMsg(stateData.addcommunity);
       }
     }
   }, [stateData]);
+  useEffect(() => {
+    if (followData) {
+      if (followData.following) {
+        if (followData.following.followerId == localStorage.getItem("id")) {
+          setloggedInUserFollowing(followData.following.message);
+        }
+      }
+      console.log(
+        "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=followData-=-=-=-=-=-=-=-=-=-=-=-=",
+        followData
+      );
+    }
+  }, [followData]);
 
   const getAllArtist = () => {
     console.log("getAllArtists=--=-=-=-=-=", stateData);
@@ -204,6 +238,7 @@ function FanHomePage(props) {
   const swiped = (direction, fanID) => {
     console.log("direction-=-=-=", direction);
     if (direction == "up") {
+      dispatch(getFollowing(localStorage.getItem("id")));
       dispatch(removeFromCommunity(fanID));
     }
   };
@@ -212,10 +247,6 @@ function FanHomePage(props) {
   };
   return (
     <div className="container">
-      {/* {console.log(
-        "stateData-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-        stateData
-      )} */}
       <div className="form_container px-3 px-md-5">
         <Header />
 
@@ -258,7 +289,27 @@ function FanHomePage(props) {
               </button>
             </div>
             <div className="fan_image">
-              <img src="../assets/images/fan.png" />
+              <div className="">
+                <img
+                  src={
+                    userInfo
+                      ? userInfo.data.profileImgURl != "" &&
+                        userInfo.data.profileImgURl != null
+                        ? userInfo.data.profileImgURl
+                        : "http://3.84.158.108:8000/default/profile.jpg"
+                      : "http://3.84.158.108:8000/default/profile.jpg"
+                  }
+                />
+                <div
+                  className="position-relative"
+                  style={{ textAlign: "center" }}
+                >
+                  <span style={{ textTransform: "capitalize" }}>
+                    <i className="fas fa-heart mr-1" style={{ color: "red" }} />{" "}
+                    FOLLOWING: {loggedInUserFollowing}
+                  </span>
+                </div>
+              </div>
             </div>
             <div className="tab3">
               <button

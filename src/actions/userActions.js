@@ -70,11 +70,17 @@ export const login = (data, props) => {
 export const getUser = () => {
   return (dispatch) => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/user/getUserData`, {
-        headers: {
-          token: localStorage.getItem("token"),
+      .get(
+        `${process.env.REACT_APP_API_URL}api/user/getUserData`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
         },
-      })
+        {
+          id: localStorage.getItem("id"),
+        }
+      )
       .then((result) => {
         if (result.status === 201) {
           dispatch({
@@ -188,22 +194,20 @@ export const logout = (data) => {
   };
 };
 
-export const getUserWithId = async (data) => {
-  return (dispatch) => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
-      .then((result) => {
-        if (result.status === 200) {
-          dispatch({
-            type: "USER_INFO",
-            payload: result.data,
-          });
-        }
-      })
-      .catch((err) => {
-        swal("Error", err.toString());
-      });
-  };
+export const getUserWithId = (data) => (dispatch) => {
+  axios
+    .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
+    .then((result) => {
+      if (result.status === 200) {
+        dispatch({
+          type: "USER_INFO",
+          payload: result.data,
+        });
+      }
+    })
+    .catch((err) => {
+      swal("Error", err.toString());
+    });
 };
 
 export const deactivateUserAccount = (data) => {

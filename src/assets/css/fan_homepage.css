@@ -226,6 +226,9 @@ button.tablinks_responsive {
 }
 .fan_image img {
   width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 30px;
 }
 .activeSubTab {
   border-bottom: 1.75px solid #ffffff !important;
@@ -419,6 +422,9 @@ button.tablinks.active {
   }
   .fan_image img {
     width: 80%;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
   }
   .tab > div {
     text-align: center;
