@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import Login from "./components/login/Login";
 import FanORBPage from "./components/ORB/FanORBPage";
 import ORBPage from "./components/ORB/ORBPage";
+import ChefORBPage from "./components/ORB/ChefORBPage";
 import Calendar from "./components/passport/CalendarShow";
 import UserProfile from "./components/profile/UserProfile";
 import UserProfileCopy from "./components/profile/UserProfile copy";
@@ -32,6 +33,7 @@ function App() {
         <Route exact path="/termsCondition" component={TermsCondition} />
         <Route exact path="/customerService" component={CustomerService} />
         <Route exact path="/ORBpage" component={ORBPage} />
+        <Route exact path="/chefORB" component={ChefORBPage} />
         <Route exact path="/fanORB" component={FanORBPage} />
         <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>
