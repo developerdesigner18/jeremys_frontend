@@ -6,6 +6,12 @@ const followReducer = (state = null, action) => {
         following: action.payload,
       };
 
+    case "GET_FOLLOWERS":
+      return {
+        ...state,
+        starFollowers: action.payload,
+      };
+
     default:
       return state;
   }

@@ -68,6 +68,11 @@ const userReducer = (state = null, action) => {
         ...state,
         communityError: action.payload,
       };
+    case "GET_ALL_FOLLOWER":
+      return {
+        ...state,
+        followers: action.payload,
+      };
     case "GET_FROM_COMMUNITY_SUCCESS":
       return {
         ...state,

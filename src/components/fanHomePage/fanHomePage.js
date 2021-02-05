@@ -299,6 +299,7 @@ function FanHomePage(props) {
                         : "http://3.84.158.108:8000/default/profile.jpg"
                       : "http://3.84.158.108:8000/default/profile.jpg"
                   }
+                onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
                 />
                 <div
                   className="position-relative"
@@ -549,7 +550,7 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "http://3.84.158.108:8000/default/profile.jpg"
                           }
-                          alt="Profile Img"
+                          onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
                       </div>
@@ -608,7 +609,7 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "http://3.84.158.108:8000/default/profile.jpg"
                           }
-                          alt="Profile Img"
+                          onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
                       </TinderCard>

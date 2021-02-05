@@ -31,9 +31,9 @@ export const getFollowers = (id) => (dispatch) => {
   axios
     .get(`${process.env.REACT_APP_API_URL}api/community/getFollowers/${id}`)
     .then((res) => {
-      console.log("following API=--=-=-=", res);
+      console.log("follower API=--=-=-=", res);
       let data = {
-        message: res.data.message.following,
+        message: res.data.message.followers,
         followingId: id,
       };
       dispatch({
