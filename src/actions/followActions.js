@@ -1,14 +1,9 @@
 import axios from "axios";
 import swal from "sweetalert";
 export const getFollowing = (id) => (dispatch) => {
-  console.log(
-    "${process.env.REACT_APP_API_URL}api/community/getFollowing/${id}",
-    `${process.env.REACT_APP_API_URL}api/community/getFollowing/${id}`
-  );
   axios
     .get(`${process.env.REACT_APP_API_URL}api/community/getFollowing/${id}`)
     .then((res) => {
-      console.log("following API=--=-=-=", res);
       let data = {
         message: res.data.message.following,
         followerId: id,
@@ -24,14 +19,9 @@ export const getFollowing = (id) => (dispatch) => {
 };
 
 export const getFollowers = (id) => (dispatch) => {
-  console.log(
-    "${process.env.REACT_APP_API_URL}api/community/getFollowing/${id}",
-    `${process.env.REACT_APP_API_URL}api/community/getFollowing/${id}`
-  );
   axios
     .get(`${process.env.REACT_APP_API_URL}api/community/getFollowers/${id}`)
     .then((res) => {
-      console.log("follower API=--=-=-=", res);
       let data = {
         message: res.data.message.followers,
         followingId: id,

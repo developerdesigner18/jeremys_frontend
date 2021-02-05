@@ -29,6 +29,7 @@ function FanHomePage(props) {
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
+
   const openCity = (evt, cityName) => {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -117,14 +118,10 @@ function FanHomePage(props) {
         // setCommunity([]);
         setisLoading(false);
       }
-      if (stateData.addcommunityError !== addToCommunityMsg) {
-        setaddToCommunityMsg(stateData.addcommunityError);
-        setisLoading(false);
-      }
+
       if (stateData.addcommunity) {
         setisLoading(false);
         dispatch(getFollowing(localStorage.getItem("id")));
-
         setaddToCommunityMsg(stateData.addcommunity);
       }
     }
@@ -136,10 +133,6 @@ function FanHomePage(props) {
           setloggedInUserFollowing(followData.following.message);
         }
       }
-      console.log(
-        "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=followData-=-=-=-=-=-=-=-=-=-=-=-=",
-        followData
-      );
     }
   }, [followData]);
 
@@ -245,6 +238,17 @@ function FanHomePage(props) {
   const outOfFrame = (name) => {
     dispatch(getFromCommunity(category, subcategory));
   };
+  const swipedFind = (direction, fanID) => {
+    console.log("direction-=-=-=", direction);
+    if (direction == "down") {
+      // setSwipedDown(false);
+      dispatch(getFollowing(localStorage.getItem("id")));
+      dispatch(addToCommunity(fanID));
+    }
+  };
+  const outOfFrameFind = async (fanID) => {
+    // setSwipedDown(true);
+  };
   return (
     <div className="container">
       <div className="form_container px-3 px-md-5">
@@ -299,7 +303,11 @@ function FanHomePage(props) {
                         : "http://3.84.158.108:8000/default/profile.jpg"
                       : "http://3.84.158.108:8000/default/profile.jpg"
                   }
-                onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "http://3.84.158.108:8000/default/profile.jpg";
+                  }}
                 />
                 <div
                   className="position-relative"
@@ -535,25 +543,39 @@ function FanHomePage(props) {
                       style={{ textAlign: "center" }}
                       key={i}
                     >
-                      <div
+                      {/* <div
                         id={fan._id}
                         onDragStart={(e) => handleDragStart(e)}
                         onDrag={(e) => handleDrag(e, fan._id)}
                         onDragEnd={(e) => {
                           handleDragEnd(e, fan._id, fan.profileImgURl);
                         }}
+                      > */}
+                      <TinderCard
+                        // ref={this.addToRefs}
+                        // className="swipe col-md-12 "
+                        // key={index.id}
+                        onSwipe={(dir) => swipedFind(dir, fan._id)}
+                        onCardLeftScreen={() => outOfFrameFind(fan._id)}
+                        preventSwipe={["left", "right", "up", "down"]}
                       >
                         <img
+                          id={fan._id}
                           className="draggableImg"
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
                               ? fan.profileImgURl
                               : "http://3.84.158.108:8000/default/profile.jpg"
                           }
-                          onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "http://3.84.158.108:8000/default/profile.jpg";
+                          }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                      </div>
+                        {/* </div> */}
+                      </TinderCard>
                     </div>
                   );
                 })
@@ -609,7 +631,11 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "http://3.84.158.108:8000/default/profile.jpg"
                           }
-                          onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "http://3.84.158.108:8000/default/profile.jpg";
+                          }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
                       </TinderCard>

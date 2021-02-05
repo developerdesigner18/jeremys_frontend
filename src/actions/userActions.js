@@ -362,7 +362,11 @@ export const getAllFans = () => {
 export const getAllFollower = () => {
   return (dispatch) => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/community/getMyFollowers/${localStorage.getItem("id")}`)
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/community/getMyFollowers/${localStorage.getItem("id")}`
+      )
       .then((result) => {
         console.log("result of api get all followers ", result);
         if (result.status === 200) {
