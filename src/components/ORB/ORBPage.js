@@ -4,11 +4,11 @@ import html2canvas from "html2canvas";
 import { useDispatch } from "react-redux";
 
 import { storeScreenShot } from "../../actions/orbActions";
+import { io } from "socket.io-client";
 
 function ORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
-  const [base64Image, setBase64Image] = useState("");
   const videoRef = useRef();
   const dispatch = useDispatch();
   const constraints = {
@@ -18,6 +18,16 @@ function ORBPage() {
       mirror: true,
     },
   };
+
+  useEffect(() => {
+    const socket = io.connect("http://127.0.0.1:8000", {
+      transports: ["websocket"],
+      reconnect: true,
+    });
+    socket.on("new-connect", arg => {
+      console.log("arg", arg);
+    });
+  });
 
   const getImage = () => {
     console.log("fn called");

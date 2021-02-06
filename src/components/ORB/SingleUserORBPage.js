@@ -5,7 +5,7 @@ import "../../assets/css/ORB.css";
 
 import { storeScreenShot } from "../../actions/orbActions";
 
-function FanORBPage() {
+function SingleUserORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
   const [base64Image, setBase64Image] = useState("");
@@ -301,4 +301,4 @@ function FanORBPage() {
   );
 }
 
-export default FanORBPage;
+export default SingleUserORBPage;

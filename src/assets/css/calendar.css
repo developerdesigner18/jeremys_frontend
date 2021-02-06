@@ -1,8 +1,19 @@
 .month_section {
-  width: 290px;
+  width: 550px;
   height: 320px;
   border-radius: 10px;
 }
 .month_heading {
   text-align: center;
+}
+.weekDays {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+}
+.singleDay {
+  flex-direction: row;
+  width: 75px;
+  text-align: center;
+  overflow: hidden;
 }
