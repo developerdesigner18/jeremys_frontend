@@ -63,6 +63,30 @@ const userReducer = (state = null, action) => {
         ...state,
         artists: action.payload,
       };
+    case "GET_FROM_COMMUNITY_ERROR":
+      return {
+        ...state,
+        communityError: action.payload,
+      };
+    case "GET_ALL_FOLLOWER":
+      return {
+        ...state,
+        followers: action.payload,
+      };
+    case "GET_FROM_COMMUNITY_SUCCESS":
+      return {
+        ...state,
+        community: action.payload,
+      };
+    case "ADD_TO_COMMUNITY_SUCCESS":
+    case "ADD_TO_COMMUNITY_ERROR":
+    case "REMOVE_FROM_COMMUNITY_SUCCESS":
+    case "REMOVE_FROM_COMMUNITY_ERROR":
+      return {
+        ...state,
+        addcommunity: action.payload,
+      };
+
     default:
       return state;
   }

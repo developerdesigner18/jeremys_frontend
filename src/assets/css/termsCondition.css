@@ -8,3 +8,6 @@ h6 {
   justify-content: center;
   text-align: justify;
 }
+.terms_body {
+  background: black !important;
+}

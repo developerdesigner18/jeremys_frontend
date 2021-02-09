@@ -70,11 +70,17 @@ export const login = (data, props) => {
 export const getUser = () => {
   return (dispatch) => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/user/getUserData`, {
-        headers: {
-          token: localStorage.getItem("token"),
+      .get(
+        `${process.env.REACT_APP_API_URL}api/user/getUserData`,
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
         },
-      })
+        {
+          id: localStorage.getItem("id"),
+        }
+      )
       .then((result) => {
         if (result.status === 201) {
           dispatch({
@@ -188,22 +194,20 @@ export const logout = (data) => {
   };
 };
 
-export const getUserWithId = async (data) => {
-  return (dispatch) => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
-      .then((result) => {
-        if (result.status === 200) {
-          dispatch({
-            type: "USER_INFO",
-            payload: result.data,
-          });
-        }
-      })
-      .catch((err) => {
-        swal("Error", err.toString());
-      });
-  };
+export const getUserWithId = (data) => (dispatch) => {
+  axios
+    .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
+    .then((result) => {
+      if (result.status === 200) {
+        dispatch({
+          type: "USER_INFO",
+          payload: result.data,
+        });
+      }
+    })
+    .catch((err) => {
+      swal("Error", err.toString());
+    });
 };
 
 export const deactivateUserAccount = (data) => {
@@ -355,14 +359,55 @@ export const getAllFans = () => {
   };
 };
 
-export const getAllArtists = () => {
+export const getAllFollower = () => {
   return (dispatch) => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/user/getAllArtists`, {
-        headers: {
-          token: localStorage.getItem("token"),
-        },
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/community/getMyFollowers/${localStorage.getItem("id")}`
+      )
+      .then((result) => {
+        console.log("result of api get all followers ", result);
+        if (result.status === 200) {
+          dispatch({
+            type: "GET_ALL_FOLLOWER",
+            payload: result.data.data,
+          });
+          console.log("result DATA of api -=-==--==-=-=", result.data);
+        }
       })
+      .catch((error) => {
+        console.log("error........", error);
+      });
+  };
+};
+
+export const getAllArtists = (category, subCategory) => {
+  return (dispatch) => {
+    let type;
+    if (category == "music") {
+      type = "star";
+    } else if (category == "food") {
+      type = "chef";
+    } else if (category == "style") {
+      type = "stylist";
+    } else if (category == "body") {
+      type = "trainer";
+    }
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/user/getAllArtists`,
+        {
+          type: type,
+          subCategory: subCategory,
+        },
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((result) => {
         // console.log("result of api ", result);
         if (result.status === 200) {
@@ -370,14 +415,102 @@ export const getAllArtists = () => {
             type: "GET_ALL_ARTISTS",
             payload: result.data.message,
           });
-          console.log(
-            "result DATA of api getAllArtists -=-==--==-=-=",
-            result.data
-          );
+          // console.log(
+          //   "result DATA of api getAllArtists -=-==--==-=-=",
+          //   result.data
+          // );
         }
       })
       .catch((error) => {
         console.log("error........", error);
       });
   };
+};
+
+export const getFromCommunity = (category, subCategory) => (dispatch) => {
+  let type;
+  if (category == "music") {
+    type = "star";
+  } else if (category == "food") {
+    type = "chef";
+  } else if (category == "style") {
+    type = "stylist";
+  } else if (category == "body") {
+    type = "trainer";
+  }
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/getCommunity`, {
+      userId: localStorage.getItem("id"),
+      type: type,
+      subCategory: subCategory,
+    })
+    .then((res) => {
+      // console.log("response for getFromCommunity=-=-=-", res.data);
+      dispatch({
+        type: "GET_FROM_COMMUNITY_SUCCESS",
+        payload: res.data.message,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: "GET_FROM_COMMUNITY_ERROR",
+        payload: err.response.data,
+      });
+      // console.log(
+      //   "Err response for getFromCommnunity-=-=-=-=",
+      //   err.response.data
+      // );
+    });
+};
+export const addToCommunity = (communityId) => (dispatch) => {
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/addToCommunity`, {
+      userId: localStorage.getItem("id"),
+      communityId: communityId,
+    })
+    .then((res) => {
+      dispatch({
+        type: "ADD_TO_COMMUNITY_SUCCESS",
+        payload: res.data.message.msg,
+      });
+      swal("", res.data.message.msg, "success");
+      // console.log("response for addToCommunity=-=-=-", res.data);
+    })
+    .catch((err) => {
+      dispatch({
+        type: "ADD_TO_COMMUNITY_ERROR",
+        payload: err.response.data.message,
+      });
+      swal("", err.response.data.message, "warning");
+
+      // console.log("Err response for addToCommunity-=-=-=-=", err.response.data);
+    });
+};
+export const removeFromCommunity = (communityId) => (dispatch) => {
+  axios
+    .post(`${process.env.REACT_APP_API_URL}api/community/removeFromCommunity`, {
+      userId: localStorage.getItem("id"),
+      communityId: communityId,
+    })
+    .then((res) => {
+      dispatch({
+        type: "REMOVE_FROM_COMMUNITY_SUCCESS",
+        payload: res.data.message,
+      });
+      swal("", res.data.message, "success");
+
+      // console.log("response for remveFromCommunity=-=-=-", res.data);
+    })
+    .catch((err) => {
+      dispatch({
+        type: "REMOVE_FROM_COMMUNITY_ERROR",
+        payload: err.response.data.message,
+      });
+      swal("", err.response.data.message, "warning");
+
+      // console.log(
+      //   "Err response for remveFromCommunity-=-=-=-=",
+      //   err.response.data
+      // );
+    });
 };
