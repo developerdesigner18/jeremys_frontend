@@ -5,7 +5,7 @@ import fanHomePage from "./components/fanHomePage/fanHomePage";
 import ForgotPassword from "./components/ForgotPassword";
 import HomePage from "./components/HomePage";
 import Login from "./components/login/Login";
-import FanORBPage from "./components/ORB/FanORBPage";
+import FanORBPage from "./components/ORB/SingleUserORBPage";
 import ORBPage from "./components/ORB/ORBPage";
 import ChefORBPage from "./components/ORB/ChefORBPage";
 import Calendar from "./components/passport/CalendarShow";
@@ -15,6 +15,7 @@ import Register from "./components/register/Register";
 import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
+import VideoChat from "./components/videoCall/VideoChat";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route exact path="/chefORB" component={ChefORBPage} />
         <Route exact path="/fanORB" component={FanORBPage} />
         <Route exact path="/myCalendar" component={Calendar} />
+        <Route exact path="/room" component={VideoChat} />
       </BrowserRouter>
     </div>
   );
