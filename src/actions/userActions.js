@@ -446,10 +446,17 @@ export const getFromCommunity = (category, subCategory) => dispatch => {
     })
     .then(res => {
       // console.log("response for getFromCommunity=-=-=-", res.data);
-      dispatch({
-        type: "GET_FROM_COMMUNITY_SUCCESS",
-        payload: res.data.message,
-      });
+      if (res.data.success == true) {
+        dispatch({
+          type: "GET_FROM_COMMUNITY_SUCCESS",
+          payload: res.data.message,
+        });
+      } else {
+        dispatch({
+          type: "GET_FROM_COMMUNITY_ERROR",
+          payload: res.data,
+        });
+      }
     })
     .catch(err => {
       dispatch({
@@ -469,12 +476,20 @@ export const addToCommunity = communityId => dispatch => {
       communityId: communityId,
     })
     .then(res => {
-      dispatch({
-        type: "ADD_TO_COMMUNITY_SUCCESS",
-        payload: res.data.message.msg,
-      });
-      swal("", res.data.message.msg, "success");
-      // console.log("response for addToCommunity=-=-=-", res.data);
+      if (res.data.success == true) {
+        dispatch({
+          type: "ADD_TO_COMMUNITY_SUCCESS",
+          payload: res.data.message.msg,
+        });
+        swal("", res.data.message.msg, "success");
+        // console.log("response for addToCommunity=-=-=-", res.data);
+      } else {
+        dispatch({
+          type: "ADD_TO_COMMUNITY_ERROR",
+          payload: res.data.message,
+        });
+        swal("", res.data.message, "warning");
+      }
     })
     .catch(err => {
       dispatch({
@@ -493,12 +508,19 @@ export const removeFromCommunity = communityId => dispatch => {
       communityId: communityId,
     })
     .then(res => {
-      dispatch({
-        type: "REMOVE_FROM_COMMUNITY_SUCCESS",
-        payload: res.data.message,
-      });
-      swal("", res.data.message, "success");
-
+      if (res.data.success == true) {
+        dispatch({
+          type: "REMOVE_FROM_COMMUNITY_SUCCESS",
+          payload: res.data.message,
+        });
+        swal("", res.data.message, "success");
+      } else {
+        dispatch({
+          type: "REMOVE_FROM_COMMUNITY_ERROR",
+          payload: res.data.message,
+        });
+        swal("", res.data.message, "warning");
+      }
       // console.log("response for remveFromCommunity=-=-=-", res.data);
     })
     .catch(err => {

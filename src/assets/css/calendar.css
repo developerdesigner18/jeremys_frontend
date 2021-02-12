@@ -1,232 +1,302 @@
 .weekDays {
-  display: flex;
-  flex-direction: row;
-  height: 40px;
-}
-.singleDay {
-  flex-direction: row;
-  width: 75px;
-  text-align: center;
-  overflow: hidden;
-}
-/* .month_section {
-  width: 290px;
-  height: 320px;
-  border-radius: 10px;
-}
-.month_heading {
-  text-align: center;
-} */
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/ProximaNova-Regular.otf");
-	font-weight: 400;
-}
-
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/ProximaNova-Regular-1.otf");
-	font-weight: 500;
-}
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Bold.otf");
-	font-weight: 600;
-}
-
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Extrabold.otf");
-	font-weight: 700;
-}
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Black.otf");
-	font-weight: 800;
-}
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Thin.otf");
-	font-weight: 300;
-}
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Alt Light.otf");
-	font-weight: 200;
-}
-@font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Alt Thin.otf");
-	font-weight: 100;
-}
-@font-face {
-	font-family: mplus;
-	src: url("../fonts/mplus-2p-thin.ttf");
-}
-@font-face {
-	font-family: Avalon_Bold;
-	src: url("../fonts/Avalon_Bold.ttf");
-}
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: #000000;
-    color: #ffffff;
-    font-family: Avalon_Bold;
-}
-.calendar_title {
-    font-size: 26px;
-    letter-spacing: 5px;
-}
-.main_calendar_container {
     display: flex;
-}
-.event_info {
-    flex: 1;
-    align-items: center;
-    margin-right: 25px;
-    padding: 15px;
-    border: 1px solid #ffffff;
-    border-radius: 15%;
-    position: relative;
-    z-index: 2;
-}
-.calndar_info {
-    flex: 1.5;
-}
-.day_title {
-    font-size: 24px;
-    letter-spacing: 3px;
-}
-.day_number {
-    font-size: 80px;
-    letter-spacing: 14px;
-    font-family: 'proxima-nova';
-    font-weight: 800;
+    flex-direction: row;
+    height: 40px;
+  }
+  .singleDay {
+    flex-direction: row;
+    width: 75px;
     text-align: center;
-}
-.what_title {
-    color: #827F7F;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-}
-.answer {
-    font-weight: 400 !important;
-    letter-spacing: 4px;
-    margin-bottom: 5px;
-    font-family: 'proxima-nova';
-}
-.action_content {
+    overflow: hidden;
+  }
+  /* .month_section {
+    width: 290px;
+    height: 320px;
+    border-radius: 10px;
+  }
+  .month_heading {
     text-align: center;
-    margin-top: 10px;
-}
-.action_content img {
-    height: 50px;
-    margin-bottom: 5px;
-    padding: 10px;
-}
-.action a:first-child div {
-    margin-right: 10px;
-}
-.action_text {
-    color: #838484;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
-.action_image {
-    position: relative;
-}
-.action_image:after {
-    position: absolute;
-    content: "";
-    background: url("../images/calendar_button.png");
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-size: cover;
-    width: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-.main_calendar_container {
-    position: relative;
-}
-.main_calendar_container:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("../images/calendar_background.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: 1;
-}
-.calndar_info > div {
-    position: relative;
-    z-index: 2;
-}
-.month {
-    color: #5d6061;
-    font-size: 26px;
-    font-weight: 800;
-    font-family: 'proxima-nova';
-    letter-spacing: 2px;
-}
-.month_change img {
-    width: 35px;
-    object-fit: contain;
-}
-.days_content > a {
-    flex: 1;
-    text-align: center;
-    color: #585a5a;
-    font-weight: 800;
-    font-family: 'proxima-nova';
-    letter-spacing: 2px;
-    font-size: 20px;
-}
-.dates_and_days_content > div {
-    margin: 20px 0;
-}
-.dates_content > a {
-    flex: 1;
-    text-align: center;
-    color: #585a5a;
-    font-weight: 800;
-    font-family: 'Avalon_Bold';
-    font-size: 24px;
-    letter-spacing: 4px;
-}
-.days_content {
-    margin-top: 30px !important;
-}
-.date_content.active {
-    color: white;
-}
-
-@media (max-width: 768px){
-.calndar_info {
-    flex: 2;
-}
-}
-
-@media (max-width: 545px){
-.main_calendar_container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.event_info {
-    width: 100%;
-    margin-right: 0;
-}
-.calndar_info {	
-    margin-top: 25px;
-}
-}
+  } */
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/ProximaNova-Regular.otf");
+      font-weight: 400;
+  }
+  
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/ProximaNova-Regular-1.otf");
+      font-weight: 500;
+  }
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Bold.otf");
+      font-weight: 600;
+  }
+  
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Extrabold.otf");
+      font-weight: 700;
+  }
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Black.otf");
+      font-weight: 800;
+  }
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Thin.otf");
+      font-weight: 300;
+  }
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Alt Light.otf");
+      font-weight: 200;
+  }
+  @font-face {
+      font-family: proxima-nova;
+      src: url("../fonts/Proxima Nova Alt Thin.otf");
+      font-weight: 100;
+  }
+  @font-face {
+      font-family: mplus;
+      src: url("../fonts/mplus-2p-thin.ttf");
+  }
+  @font-face {
+      font-family: Avalon_Bold;
+      src: url("../fonts/Avalon_Bold.ttf");
+  }
+  body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #000000;
+      color: #ffffff;
+      font-family: Avalon_Bold;
+  }
+  .calendar_title {
+      font-size: 26px;
+      letter-spacing: 5px;
+  }
+  .main_calendar_container {
+      display: flex;
+  }
+  .event_info {
+      flex: 1;
+      align-items: center;
+      margin-right: 25px;
+      padding: 15px;
+      border: 1px solid #ffffff;
+      border-radius: 15%;
+      position: relative;
+      z-index: 2;
+  }
+  .calndar_info {
+      flex: 1.5;
+  }
+  .day_title {
+      font-size: 24px;
+      letter-spacing: 3px;
+  }
+  .day_number {
+      font-size: 80px;
+      letter-spacing: 14px;
+      font-family: 'proxima-nova';
+      font-weight: 800;
+      text-align: center;
+  }
+  .what_title {
+      color: #827F7F;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+  }
+  .answer {
+      font-weight: 400 !important;
+      letter-spacing: 4px;
+      margin-bottom: 5px;
+      font-family: 'proxima-nova';
+  }
+  .action_content {
+      text-align: center;
+      margin-top: 10px;
+  }
+  .action_content img {
+      height: 50px;
+      margin-bottom: 5px;
+      padding: 10px;
+  }
+  .action a:first-child div {
+      margin-right: 10px;
+  }
+  .action_text {
+      color: #838484;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+  }
+  .action_image {
+      position: relative;
+  }
+  .action_image:after {
+      position: absolute;
+      content: "";
+      background: url("../images/calendar_button.png");
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-size: cover;
+      width: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+  }
+  .main_calendar_container {
+      position: relative;
+  }
+  .main_calendar_container:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("../images/calendar_background.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+  }
+  .calndar_info > div {
+      position: relative;
+      z-index: 2;
+  }
+  .month {
+      color: #5d6061;
+      font-size: 26px;
+      font-weight: 800;
+      font-family: 'proxima-nova';
+      letter-spacing: 2px;
+  }
+  .month_change img {
+      width: 35px;
+      object-fit: contain;
+  }
+  .days_content > a {
+      flex: 1;
+      text-align: center;
+      color: #585a5a;
+      font-weight: 800;
+      font-family: 'proxima-nova';
+      letter-spacing: 2px;
+      font-size: 20px;
+  }
+  .dates_and_days_content > div {
+      margin: 20px 0;
+  }
+  .dates_content > a {
+      flex: 1;
+      text-align: center;
+      color: #585a5a;
+      font-weight: 800;
+      font-family: 'Avalon_Bold';
+      font-size: 24px;
+      letter-spacing: 4px;
+  }
+  .days_content {
+      margin-top: 30px !important;
+  }
+  .date_content.active {
+      color: white;
+  }
+  .react-calendar__month-view__days > button {
+      background: transparent;
+      border: 0;
+      color: #585a5a;
+      padding: 15px 0;
+      font-weight: 800;
+      font-family: 'Avalon_Bold';
+      font-size: 24px;
+      outline: none;
+  }
+  .react-calendar__tile--active,.react-calendar__tile--hasActive {
+      color: white !important;
+  }
+  .calndar_info button{
+      outline: none;
+  }
+  .react-calendar .react-calendar__viewContainer button {
+      background: none;
+      border: 0;
+      text-align: center;
+      color: #585a5a;
+      font-weight: 800;
+      font-family: 'Avalon_Bold';
+      font-size: 22px;
+  }
+  .react-calendar__month-view__weekdays__weekday abbr {
+      text-decoration: none;
+      font-weight: 800;
+      font-family: 'Avalon_Bold';
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #585a5a;
+  }
+  .react-calendar__month-view__weekdays__weekday {
+      font-weight: 800 !important;
+      font-family: 'proxima-nova';
+      letter-spacing: 2px;
+      font-size: 20px;
+      text-align: center;
+  }
+  button.react-calendar__navigation__label {
+      color: #5d6061;
+      font-size: 26px;
+      font-weight: 600;
+      font-family: 'proxima-nova';
+      letter-spacing: 2px;
+      background: none;
+      border: 0;
+      text-transform: uppercase;
+  }
+  .react-calendar__navigation {
+      margin-bottom: 25px;
+  }
+  button.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button,button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button,button.react-calendar__navigation__arrow.react-calendar__navigation__next-button,button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button{
+      border: 0;
+      width: 40px;
+      height: 40px;
+      background: #5D6061;
+      color: #161a1b;
+      font-size: 50px;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 40px;
+      border-radius: 10px;
+      outline: none;
+  }
+  button.react-calendar__navigation__arrow.react-calendar__navigation__prev-button,button.react-calendar__navigation__arrow.react-calendar__navigation__next2-button  {
+      margin-left: 10px;
+  }
+  @media (max-width: 768px){
+  .calndar_info {
+      flex: 2;
+  }
+  }
+  
+  @media (max-width: 545px){
+  .main_calendar_container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+  .event_info {
+      width: 100%;
+      margin-right: 0;
+  }
+  .calndar_info {	
+      margin-top: 25px;
+  }
+  }

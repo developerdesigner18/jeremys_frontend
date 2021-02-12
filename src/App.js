@@ -54,8 +54,8 @@ function App() {
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
-        {/* 
-        <Route exact path="/myCalendar" component={Calendar} /> */}
+        
+        <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>
     </div>
   );
