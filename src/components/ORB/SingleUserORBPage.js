@@ -395,8 +395,12 @@ function SingleUserORBPage() {
           <img src="../assets/images/button_bg.png" />
         </div>
       </div>
+<<<<<<< HEAD
        */}
       {/* <div className="container justify-content-center d-flex ORB_links mt-5">
+=======
+      <div className="container justify-content-center d-flex ORB_links mt-5">
+>>>>>>> b692baf0adb2ada869f7536048d544f641654cca
         <a href="#">
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />

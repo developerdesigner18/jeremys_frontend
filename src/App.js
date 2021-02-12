@@ -1,11 +1,12 @@
-import { BrowserRouter, Route } from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import ArtistsProfile from "./components/artistsProfile/artistsProfile";
 import CustomerService from "./components/CustomerService";
 import fanHomePage from "./components/fanHomePage/fanHomePage";
 import ForgotPassword from "./components/ForgotPassword";
 import HomePage from "./components/HomePage";
 import Login from "./components/login/Login";
-import FanORBPage from "./components/ORB/SingleUserORBPage";
+import SingleUserORBPage from "./components/ORB/SingleUserORBPage";
 import ORBPage from "./components/ORB/ORBPage";
 import ChefORBPage from "./components/ORB/ChefORBPage";
 import Calendar from "./components/passport/CalendarShow";
@@ -15,32 +16,95 @@ import Register from "./components/register/Register";
 import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
-import VideoChat from "./components/videoCall/VideoChat";
+import VideoChat from "./components/videoCall/videoCallHost";
+import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-        <Route exact path="/" component={HomePage} />
-        <Route exact path="/register" component={Register} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/profile" component={UserProfile} />
-        <Route exact path="/profile1" component={UserProfileCopy} />
-        <Route exact path="/fanHomePage" component={fanHomePage} />
-        <Route exact path="/forgotPassword" component={ForgotPassword} />
-        <Route exact path="/resetPassword" component={ResetPassword} />
-        <Route exact path="/artistProfile" component={ArtistsProfile} />
-        <Route exact path="/userHomepage" component={UserCategoryHomePage} />
-        <Route exact path="/termsCondition" component={TermsCondition} />
-        <Route exact path="/customerService" component={CustomerService} />
-        <Route exact path="/ORBpage" component={ORBPage} />
-        <Route exact path="/chefORB" component={ChefORBPage} />
-        <Route exact path="/fanORB" component={FanORBPage} />
-        <Route exact path="/myCalendar" component={Calendar} />
-        <Route exact path="/room" component={VideoChat} />
+        <Route
+          exact
+          path="/"
+          render={() =>
+            localStorage.getItem("id") ? (
+              localStorage.getItem("type") == "fan" ||
+              localStorage.getItem("type") == "Fan" ? (
+                <Redirect to="/fanHomePage" />
+              ) : (
+                <Redirect to="/userHomepage" />
+              )
+            ) : (
+              <Redirect to="/home" />
+            )
+          }
+        />
+        <Route path="/home" component={HomePage} />
+        <PublicRoute path="/login" component={Login} />
+        <PublicRoute path="/register" component={Register} />
+        <Route path="/termsCondition" component={TermsCondition} />
+        <PublicRoute path="/forgotPassword" component={ForgotPassword} />
+        <PublicRoute path="/resetPassword" component={ResetPassword} />
+        <PrivateRoute path="/profile" component={UserProfile} />
+        <PrivateRoute path="/fanHomePage" component={fanHomePage} />
+        <PrivateRoute path="/userHomepage" component={UserCategoryHomePage} />
+        <PrivateRoute path="/customerService" component={CustomerService} />
+        <PrivateRoute path="/ORBpage" component={ORBPage} />
+        <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
+        <PrivateRoute path="/chefORB" component={ChefORBPage} />
+        <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
+        <PrivateRoute path="/videoChatHost" component={VideoChat} />
+        <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
+        {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
+        {/* 
+        <Route exact path="/myCalendar" component={Calendar} /> */}
       </BrowserRouter>
     </div>
   );
+
+  function PrivateRoute({ component: Component, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          localStorage.getItem("id") ? (
+            <Component {...props} />
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+
+  function PublicRoute({ component, ...rest }) {
+    return (
+      <Route
+        {...rest}
+        render={(props) =>
+          !localStorage.getItem("id") ? (
+            React.createElement(component, props)
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
 }
 
 export default App;

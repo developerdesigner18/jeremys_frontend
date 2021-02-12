@@ -241,9 +241,21 @@ button.tablinks.active {
   background: #333333 !important;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: -3rem;
-  margin-right: -3rem;
-  height: 25px;
+  margin-left: 0;
+  margin-right: 0;
+  justify-content: flex-end;
+  border: 0;
+  padding: 5px 10px;
+  width: 100%;
+}
+.category_empty input::placeholder {
+  padding-left: 3px;
+  color: black;
+}
+.category_empty input {
+  border: 2px solid #000000 !important;
+  padding: 5px 10px;
+  outline: none;
 }
 .category {
   display: flex;
@@ -335,6 +347,29 @@ button.tablinks.active {
 .main_links {
   justify-content: center;
   margin: 20px 0;
+}
+.more_list {
+  color: white;
+  margin: 8px;
+}
+.down_links li {
+  cursor: pointer;
+}
+.down_links .dropdown-item.active,
+.down_links .dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: none !important;
+}
+.down_links .dropdown-item:focus,
+.down_links .dropdown-item:hover {
+  color: white;
+  text-decoration: underline !important;
+  border: none;
+  background: none !important;
+}
+.menu_item {
+  padding-left: 0px;
 }
 @media (max-width: 1024px) {
   .form_container {

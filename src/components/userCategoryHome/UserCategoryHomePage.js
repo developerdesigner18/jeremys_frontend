@@ -15,6 +15,7 @@ function UserCategoryHomePage(props) {
   const [allFans, setAllFans] = useState([]);
   const [starsFollowers, setstarsFollowers] = useState([]);
   const [allFollower, setAllFollower] = useState([]);
+  const [searchFollower, setSearchFollower] = useState([]);
   const [activePage, setactivePage] = useState(0);
   const [activeFollowerPage, setactiveFollowerPage] = useState(0);
   const [Offset, setOffset] = useState(0);
@@ -78,6 +79,12 @@ function UserCategoryHomePage(props) {
   const goToORB = () => {
     props.history.push("/ORBpage");
   };
+  const searchInputChange = (value) => {
+    console.log(allFollower);
+    var data = allFollower.filter(event=>event.lastName.toLowerCase().includes(value.toLowerCase())||event.firstName.toLowerCase().includes(value.toLowerCase()))
+    console.log("data",data);
+    setSearchFollower(data)
+  };
 
   useEffect(async () => {
     dispatch(getFromCommunity("music", "jazz"));
@@ -93,7 +100,10 @@ function UserCategoryHomePage(props) {
     if(stateData.followers){
     dispatch(getFollowers(localStorage.getItem("id")));
     setCurrentUserdata(stateData.userDetail)
+    console.log("use effect chage state data");
     setAllFollower(stateData.followers);
+    setSearchFollower(stateData.followers);
+
   }}}, [stateData]);
 
   useEffect(() => {
@@ -117,6 +127,7 @@ function UserCategoryHomePage(props) {
   const clickOnHome  = () => {
     console.log("getALLFANS=--=-=-=-=-=", stateData);
     setAllFollower(stateData.followers);
+    setSearchFollower(stateData.followers);
   };
   let indexOfFirstUser = Offset;
   let indexOfLastUser = Offset + perPage;
@@ -124,7 +135,7 @@ function UserCategoryHomePage(props) {
   
   let indexOfFirst = OffsetFollowers;
   let indexOfLast = OffsetFollowers + perPage;
-  let currentFollower = allFollower.slice(indexOfFirst, indexOfLast);
+  let currentFollower = searchFollower.slice(indexOfFirst, indexOfLast);
   return (
     <div className="userhomePage">
       <div className="container">
@@ -213,9 +224,11 @@ function UserCategoryHomePage(props) {
               <div className="tab4"></div>
             </div>
             <div id="music" className="tabcontent active">
-            <div className="category_empty"></div>
+            <div className="category_empty" style={{height:Find?"40px":"20px"}}>
+              <input type="search" placeholder="Search.." style={{display:Find?"block":"none"}} onChange={(e)=>searchInputChange(e.target.value)} />
+            </div>
               <div className=" row vids">
-                {allFollower.length != 0 ? (
+                {searchFollower.length != 0 ? (
                   currentFollower.map((fan, i) => {
                     return (
                       <div
@@ -241,14 +254,14 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                    <div>No fans Found</div>
-                  )}
+                    <div style={{marginLeft:"10px"}}>No fans Found</div>
+                )}
               </div>
               <Pagination
                 innerClass={"adminPaginate"}
                 activePage={activeFollowerPage + 1}
                 itemsCountPerPage={perPage}
-                totalItemsCount={allFollower.length}
+                totalItemsCount={searchFollower.length}
                 pageRangeDisplayed={5}
                 onChange={handleFollowerPageChange}
               />
@@ -337,9 +350,9 @@ function UserCategoryHomePage(props) {
                       : { cursor: "pointer" }
                   }
                   onClick={(event) => {
-                    openCity(event, "find");
+                    // openCity(event, "find");
                     setfind(true);
-                    getAllfans();
+                    // getAllfans();
                   }}
                 >
                   <img src="../assets/images/2.png" />

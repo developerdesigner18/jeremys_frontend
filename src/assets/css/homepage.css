@@ -1,52 +1,52 @@
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/ProximaNova-Regular.otf');
+  src: url("../fonts/ProximaNova-Regular.otf");
   font-weight: 400;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/ProximaNova-Regular-1.otf');
+  src: url("../fonts/ProximaNova-Regular-1.otf");
   font-weight: 500;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Bold.otf');
+  src: url("../fonts/Proxima Nova Bold.otf");
   font-weight: 600;
 }
 
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Extrabold.otf');
+  src: url("../fonts/Proxima Nova Extrabold.otf");
   font-weight: 700;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Black.otf');
+  src: url("../fonts/Proxima Nova Black.otf");
   font-weight: 800;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Thin.otf');
+  src: url("../fonts/Proxima Nova Thin.otf");
   font-weight: 300;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Alt Light.otf');
+  src: url("../fonts/Proxima Nova Alt Light.otf");
   font-weight: 200;
 }
 @font-face {
   font-family: proxima-nova;
-  src: url('../fonts/Proxima Nova Alt Thin.otf');
+  src: url("../fonts/Proxima Nova Alt Thin.otf");
   font-weight: 100;
 }
 @font-face {
   font-family: mplus;
-  src: url('../fonts/mplus-2p-thin.ttf');
+  src: url("../fonts/mplus-2p-thin.ttf");
 }
 @font-face {
   font-family: Avalon_Bold;
-  src: url('../fonts/Avalon_Bold.ttf');
+  src: url("../fonts/Avalon_Bold.ttf");
 }
 body {
   margin: 0;
@@ -181,7 +181,7 @@ video {
   /* box-shadow: 2px -2px 107px 200px #000; */
 }
 .float_button:after {
-  content: 'music';
+  content: "music";
   position: absolute;
   z-index: 2;
   color: #ffffff;
@@ -193,13 +193,13 @@ video {
   font-weight: 400;
 }
 .food .float_button:after {
-  content: 'food';
+  content: "food";
 }
 .style .float_button:after {
-  content: 'style';
+  content: "style";
 }
 .body .float_button:after {
-  content: 'body';
+  content: "body";
 }
 
 .float_button {
@@ -211,7 +211,7 @@ video {
   justify-content: center;
   align-items: center;
   font-size: 104px;
-  font-family: 'Kodchasan', sans-serif;
+  font-family: "Kodchasan", sans-serif;
   font-weight: 900;
   color: #343434;
   opacity: 0.8;
@@ -219,7 +219,7 @@ video {
   z-index: 4;
 }
 .videos_container:after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

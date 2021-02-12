@@ -1,221 +1,230 @@
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/ProximaNova-Regular.otf");
-	font-weight: 400;
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular.otf");
+  font-weight: 400;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/ProximaNova-Regular-1.otf");
-	font-weight: 500;
+  font-family: proxima-nova;
+  src: url("../fonts/ProximaNova-Regular-1.otf");
+  font-weight: 500;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Bold.otf");
-	font-weight: 600;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Bold.otf");
+  font-weight: 600;
 }
 
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Extrabold.otf");
-	font-weight: 700;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Extrabold.otf");
+  font-weight: 700;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Black.otf");
-	font-weight: 800;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Black.otf");
+  font-weight: 800;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Thin.otf");
-	font-weight: 300;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Thin.otf");
+  font-weight: 300;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Alt Light.otf");
-	font-weight: 200;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Light.otf");
+  font-weight: 200;
 }
 @font-face {
-	font-family: proxima-nova;
-	src: url("../fonts/Proxima Nova Alt Thin.otf");
-	font-weight: 100;
+  font-family: proxima-nova;
+  src: url("../fonts/Proxima Nova Alt Thin.otf");
+  font-weight: 100;
 }
 @font-face {
-	font-family: mplus;
-	src: url("../fonts/mplus-2p-thin.ttf");
+  font-family: mplus;
+  src: url("../fonts/mplus-2p-thin.ttf");
 }
 @font-face {
-	font-family: Avalon_Bold;
-	src: url("../fonts/Avalon_Bold.ttf");
+  font-family: Avalon_Bold;
+  src: url("../fonts/Avalon_Bold.ttf");
 }
 body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: proxima-nova;
-    color: #ffffff;
-    background-image: url("../images/background_black.jpg");
-    background-size: cover;
-    background-position: center;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: proxima-nova;
+  color: #ffffff;
+  background-size: 100vw auto !important;
+  background-repeat: no-repeat !important;
+  background-position: initial !important;
+  background-origin: content-box !important;
 }
-a:hover{
-    text-decoration: none;
+.go_live_logo {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  z-index: 2;
 }
-.main_section{
-	color: #4D4D4D;
+a:hover {
+  text-decoration: none;
+}
+.main_section {
+  color: #4d4d4d;
 }
 .main_section > div {
-    flex: 1;
+  flex: 1;
 }
 .live_container video {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: flex;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: flex;
 }
 .logo {
-    text-align: center;
+  text-align: center;
 }
 .video_live:after {
-    content: "live!";
-    position: absolute;
-    bottom: 0px;
-    display: block;
-    text-align: center;
-    left: 0;
-    width: 100%;
-    color: #138236;
-    font-size: 24px;
-    font-weight: 800;
-    text-transform: uppercase;
-    background: linear-gradient(45deg
-, #0000004f, transparent);
+  content: "live!";
+  position: absolute;
+  bottom: 0px;
+  display: block;
+  text-align: center;
+  left: 0;
+  width: 100%;
+  color: #138236;
+  font-size: 24px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #0000004f, transparent);
 }
 .top_section > div {
-    flex: 1;
+  flex: 1;
 }
 .rectangle_video img {
-    width: 100%;
+  width: 100%;
 }
 .top_section > div:first-child {
-    margin-right: 10%;
+  margin-right: 10%;
 }
 .round_video img {
-    height: 600px;
-    object-fit: contain;
+  height: 600px;
+  object-fit: contain;
 }
 .round_video {
-    position: absolute;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  top: 25px;
 }
 .video_contents:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 30px;
-    background: #00DD86;
-    height: 12px;
-    width: 12px;
-    margin: auto;
-    border-radius: 50%;
-    border: 2px solid #07E5C4;
-    box-shadow: inset 0 0 6px 2px #08e1c1;
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 30px;
+  background: #00dd86;
+  height: 12px;
+  width: 12px;
+  margin: auto;
+  border-radius: 50%;
+  border: 2px solid #07e5c4;
+  box-shadow: inset 0 0 6px 2px #08e1c1;
 }
 img.black_logo_img {
-    height: auto;
-    position: absolute;
-    bottom: 25px;
-    left: 0;
-    right: 0;
-    margin: auto;
+  height: auto;
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 .items_links {
-    display: flex;
-    align-items: flex-end;
+  display: flex;
+  align-items: flex-end;
 }
-.items_links .item{
-    flex: 1;
+.items_links .item {
+  flex: 1;
 }
 .items_links .links {
-    flex: 2;
+  flex: 2;
 }
-.link img{
-    object-fit: none;
-    height: 55px;
-    width: 55px;
-    padding: 5px;
-    background-color: #424242;
-    border-radius: 50%;
+.link img {
+  object-fit: none;
+  height: 55px;
+  width: 55px;
+  padding: 5px;
+  background-color: #424242;
+  border-radius: 50%;
 }
-.items_links .item img{
-    width: 100%;
+.items_links .item img {
+  width: 100%;
 }
 .links {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .link {
-    margin: 0 10px;
-    color: #9399a9;
-    align-items: center;
+  margin: 0 10px;
+  color: #9399a9;
+  align-items: center;
 }
-.link p{
-    margin-top: 5px;
-    margin-bottom: 0;
+.link p {
+  margin-top: 5px;
+  margin-bottom: 0;
 }
 .price_item {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    display: inline-flex;
-    flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-flex;
+  flex-direction: column;
 }
 .price {
-    background-image: url("../images/style_price_button.png");
-    height: 80px;
-    width: 80px;
-    background-size: contain;
-    display: flex;
-    background-repeat: no-repeat;
-    align-items: center;
-    justify-content: center;
-    color: #B2B2B2;
-    font-size: 22px;
-    margin: auto;
+  background-image: url("../images/style_price_button.png");
+  height: 80px;
+  width: 80px;
+  background-size: contain;
+  display: flex;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+  color: #b2b2b2;
+  font-size: 22px;
+  margin: auto;
 }
 .price_item .item {
-    background-image: url("../images/button.png");
-    height: 40px;
-    width: 85%;
-    background-size: contain;
-    display: flex;
-    background-repeat: no-repeat;
-    align-items: center;
-    justify-content: center;
-    color: #B2B2B2;
-    font-size: 22px;
-    margin: 5px auto;
+  background-image: url("../images/button.png");
+  height: 40px;
+  width: 85%;
+  background-size: contain;
+  display: flex;
+  background-repeat: no-repeat;
+  align-items: center;
+  justify-content: center;
+  color: #b2b2b2;
+  font-size: 22px;
+  margin: 5px auto;
 }
 
-@media (max-width: 1024px){
-    .round_video img {
-        height: auto;
-}
+@media (max-width: 1024px) {
+  .round_video img {
+    height: auto;
+  }
 }
 
-@media (max-width: 991px){
-    .items_links .links {
+@media (max-width: 991px) {
+  .items_links .links {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     flex: 1;
-}
-.price_item .item {
+  }
+  .price_item .item {
     background-size: cover;
-}
+  }
 }
