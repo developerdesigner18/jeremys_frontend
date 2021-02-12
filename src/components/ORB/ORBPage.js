@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../../assets/css/ORB.css";
 import html2canvas from "html2canvas";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { storeScreenShot } from "../../actions/orbActions";
-import { io } from "socket.io-client";
 
 function ORBPage() {
   const [isLive, setIsLive] = useState(false);
@@ -19,15 +18,9 @@ function ORBPage() {
     },
   };
 
-  useEffect(() => {
-    const socket = io.connect("http://127.0.0.1:8000", {
-      transports: ["websocket"],
-      reconnect: true,
-    });
-    socket.on("new-connect", arg => {
-      console.log("arg", arg);
-    });
-  });
+  const stateData = useSelector(state => state.ORB);
+
+  useEffect(async () => {}, []);
 
   const getImage = () => {
     console.log("fn called");
@@ -60,12 +53,10 @@ function ORBPage() {
   };
 
   const callGoToLive = () => {
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(success)
-      .catch(failure);
-    setIsLive(!isLive);
-    if (isLive == false) setStream(null);
+    // navigator.mediaDevices
+    //   .getUserMedia(constraints)
+    //   .then(success)
+    //   .catch(failure);
   };
 
   return (
@@ -83,7 +74,9 @@ function ORBPage() {
           <img src="../assets/images/grey_logo.png" />
         </div>
         <div className="ORB_live_container d-flex">
-          <div className="ORB_video_live d-flex position-relative">
+          <div
+            className="ORB_video_live d-flex position-relative"
+            id="performerId">
             {isLive ? (
               <video ref={videoRef} autoPlay></video>
             ) : (
@@ -121,7 +114,7 @@ function ORBPage() {
                   width: "70px",
                 }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "100%",
@@ -139,7 +132,7 @@ function ORBPage() {
                   width: "70px",
                 }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "60%",
@@ -157,7 +150,7 @@ function ORBPage() {
                   width: "70px",
                 }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "40%",
@@ -175,7 +168,7 @@ function ORBPage() {
                   width: "70px",
                 }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "100%",
@@ -265,49 +258,59 @@ function ORBPage() {
         </div>
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />
             <p>Ticket</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/seat.png" />
             <p>Seat</p>
           </div>
         </a>
-        <a onClick={getImage}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/take_picture.png" />
-            <p>Take Picture</p>
-          </div>
-        </a>
-        <a href="#">
+        {isLive ? (
+          <a onClick={getImage}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/take_picture.png" />
+              <p>Take Picture</p>
+            </div>
+          </a>
+        ) : (
+          <a style={{ cursor: "no-drop" }}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/take_picture.png" />
+              <p>Take Picture</p>
+            </div>
+          </a>
+        )}
+
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>Time</p>
           </div>
         </a>
-        <a href="#">
+        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/short_break.png" />
             <p>Short Break</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/share.png" />
             <p>Share</p>
           </div>
         </a>
-        <a href="#">
+        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
             <p>Tip</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/exit.png" />
             <p>Exit</p>

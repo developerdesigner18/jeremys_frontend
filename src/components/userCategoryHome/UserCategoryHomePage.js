@@ -1,16 +1,36 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
-import { getAllFans,getAllFollower, getFromCommunity } from "../../actions/userActions";
+import {
+  getAllFans,
+  getAllFollower,
+  getFromCommunity,
+} from "../../actions/userActions";
 import { getFollowers } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
 
+const useOutsideClick = (ref, callback) => {
+  const handleClick = e => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
+};
+
 function UserCategoryHomePage(props) {
   const dispatch = useDispatch();
   const [currentUserdata, setCurrentUserdata] = useState();
-  const stateData = useSelector((state) => state.user);
-  const followData = useSelector((state) => state.follow);
+  const stateData = useSelector(state => state.user);
+  const followData = useSelector(state => state.follow);
   const [Find, setfind] = useState(false);
   const [allFans, setAllFans] = useState([]);
   const [starsFollowers, setstarsFollowers] = useState([]);
@@ -22,8 +42,17 @@ function UserCategoryHomePage(props) {
   const [OffsetFollowers, setOffsetFollowers] = useState(0);
   const [touchStart, setTouchStart] = React.useState(0);
   const [perPage, setperPage] = React.useState(16);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleDragStart = (e) => {
+  const ref = useRef();
+
+  const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
+
+  useOutsideClick(ref, () => {
+    setIsOpen(false);
+  });
+
+  const handleDragStart = e => {
     var img = new Image();
     img.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
@@ -62,14 +91,14 @@ function UserCategoryHomePage(props) {
   const goToHome = () => {
     props.history.push("/");
   };
-  const handlePageChange = (pageNumberpaginate) => {
+  const handlePageChange = pageNumberpaginate => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     console.log("pageNumberpaginate-=-=-=-==--=", pageNumberpaginate);
     setactivePage(selectedPage);
     setOffset(offset);
   };
-  const handleFollowerPageChange = (pageNumberpaginate) => {
+  const handleFollowerPageChange = pageNumberpaginate => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     setactiveFollowerPage(selectedPage);
@@ -77,40 +106,57 @@ function UserCategoryHomePage(props) {
   };
 
   const goToORB = () => {
-    props.history.push("/ORBpage");
+    if (
+      localStorage.getItem("type") == "chef" ||
+      localStorage.getItem("type") == "Chef"
+    ) {
+      props.history.push("/chefORB");
+    } else if (
+      localStorage.getItem("type") == "Stylist" ||
+      localStorage.getItem("type") == "stylist"
+    ) {
+      props.history.push("/stylistORB");
+    } else {
+      props.history.push("/ORBpage");
+    }
   };
-  const searchInputChange = (value) => {
+  const searchInputChange = value => {
     console.log(allFollower);
-    var data = allFollower.filter(event=>event.lastName.toLowerCase().includes(value.toLowerCase())||event.firstName.toLowerCase().includes(value.toLowerCase()))
-    console.log("data",data);
-    setSearchFollower(data)
+    var data = allFollower.filter(
+      event =>
+        event.lastName.toLowerCase().includes(value.toLowerCase()) ||
+        event.firstName.toLowerCase().includes(value.toLowerCase())
+    );
+    console.log("data", data);
+    setSearchFollower(data);
   };
 
   useEffect(async () => {
     dispatch(getFromCommunity("music", "jazz"));
-    dispatch(getAllFollower())
+    dispatch(getAllFollower());
     dispatch(getAllFans());
     dispatch(getFollowers(localStorage.getItem("id")));
-    console.log("stateData",stateData);
+    console.log("stateData", stateData);
   }, []);
 
   useEffect(async () => {
-    if(stateData){
-    console.log("stateData",stateData);
-    if(stateData.followers){
-    dispatch(getFollowers(localStorage.getItem("id")));
-    setCurrentUserdata(stateData.userDetail)
-    console.log("use effect chage state data");
-    setAllFollower(stateData.followers);
-    setSearchFollower(stateData.followers);
-
-  }}}, [stateData]);
+    if (stateData) {
+      console.log("stateData", stateData);
+      if (stateData.followers) {
+        dispatch(getFollowers(localStorage.getItem("id")));
+        setCurrentUserdata(stateData.userDetail);
+        console.log("use effect chage state data");
+        setAllFollower(stateData.followers);
+        setSearchFollower(stateData.followers);
+      }
+    }
+  }, [stateData]);
 
   useEffect(() => {
     if (followData) {
       if (followData.starFollowers) {
         // if (followData.followers.followerId == localStorage.getItem("id")) {
-          setstarsFollowers(followData.starFollowers.message);
+        setstarsFollowers(followData.starFollowers.message);
         // }
       }
       console.log(
@@ -124,7 +170,7 @@ function UserCategoryHomePage(props) {
     setAllFans(stateData.fans);
   };
 
-  const clickOnHome  = () => {
+  const clickOnHome = () => {
     console.log("getALLFANS=--=-=-=-=-=", stateData);
     setAllFollower(stateData.followers);
     setSearchFollower(stateData.followers);
@@ -132,10 +178,22 @@ function UserCategoryHomePage(props) {
   let indexOfFirstUser = Offset;
   let indexOfLastUser = Offset + perPage;
   let currentFans = allFans.slice(indexOfFirstUser, indexOfLastUser);
-  
+
   let indexOfFirst = OffsetFollowers;
   let indexOfLast = OffsetFollowers + perPage;
   let currentFollower = searchFollower.slice(indexOfFirst, indexOfLast);
+
+  const setMoreIcon = () => {
+    setIsOpen(!isOpen);
+    setfind(false);
+    console.log("fn called ", Find);
+  };
+
+  const callLogout = () => {
+    localStorage.clear();
+    props.history.push("/");
+  };
+
   return (
     <div className="userhomePage">
       <div className="container">
@@ -147,14 +205,14 @@ function UserCategoryHomePage(props) {
               <div className="tab2">
                 <button
                   className="tablinks_responsive"
-                  onClick={(event) => {
+                  onClick={event => {
                     openCity(event, "food");
                     goToORB();
                   }}
                   style={{
                     padding:
                       localStorage.getItem("type") === "Advertiser" ||
-                        localStorage.getItem("type") === "advertiser"
+                      localStorage.getItem("type") === "advertiser"
                         ? "10px"
                         : "25px",
                     // fontSize:
@@ -163,70 +221,82 @@ function UserCategoryHomePage(props) {
                     //   localStorage.getItem("type") === "advertiser"
                     //     ? "7px"
                     //     : "10px",
-                  }}
-                >
+                  }}>
                   {localStorage.getItem("type") === "Chef" ||
-                    localStorage.getItem("type") === "chef"
+                  localStorage.getItem("type") === "chef"
                     ? "Chef's Table"
                     : localStorage.getItem("type") === "Advertiser" ||
                       localStorage.getItem("type") === "advertiser"
-                      ? "Published Ad"
-                      : localStorage.getItem("type") === "trainer" ||
-                        localStorage.getItem("type") === "Trainer"
-                        ? "Studio Live!"
-                        : localStorage.getItem("type") === "Stylist" ||
-                          localStorage.getItem("type") === "stylist"
-                          ? "Stylist"
-                          : localStorage.getItem("type") === "Star" ||
-                            localStorage.getItem("type") === "star"
-                            ? "Stage"
-                            : localStorage.getItem("type") === "artist" ||
-                              localStorage.getItem("type") === "Artist"
-                              ? "Stage"
-                              : ""}
+                    ? "Published Ad"
+                    : localStorage.getItem("type") === "trainer" ||
+                      localStorage.getItem("type") === "Trainer"
+                    ? "Studio Live!"
+                    : localStorage.getItem("type") === "Stylist" ||
+                      localStorage.getItem("type") === "stylist"
+                    ? "Stylist"
+                    : localStorage.getItem("type") === "Star" ||
+                      localStorage.getItem("type") === "star"
+                    ? "Stage"
+                    : localStorage.getItem("type") === "artist" ||
+                      localStorage.getItem("type") === "Artist"
+                    ? "Stage"
+                    : ""}
                 </button>
               </div>
               <div className="fan_image">
                 <div>
-                <img
-                  // src={`../assets/images/fan.png`}
-                  src={
-                    currentUserdata?
-                    currentUserdata.data.profileImgURl != "" &&
-                    currentUserdata.data.profileImgURl != null
-                      ? currentUserdata.data.profileImgURl
-                      : "http://3.84.158.108:8000/default/profile.jpg":"http://3.84.158.108:8000/default/profile.jpg"
-                  }
-                  onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
-                />
-                <div
-                  className="position-relative"
-                  style={{ textAlign: "center" }}
-                >
-                  <span style={{ textTransform: "capitalize" }}>
-                    <i className="fas fa-heart mr-1" style={{ color: "red" }} />{" "}
-                    FOLLOWERS: {starsFollowers}
-                  </span>
-                </div>
+                  <img
+                    // src={`../assets/images/fan.png`}
+                    src={
+                      currentUserdata
+                        ? currentUserdata.data.profileImgURl != "" &&
+                          currentUserdata.data.profileImgURl != null
+                          ? currentUserdata.data.profileImgURl
+                          : "http://3.84.158.108:8000/default/profile.jpg"
+                        : "http://3.84.158.108:8000/default/profile.jpg"
+                    }
+                    onError={e => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "http://3.84.158.108:8000/default/profile.jpg";
+                    }}
+                  />
+                  <div
+                    className="position-relative"
+                    style={{ textAlign: "center" }}>
+                    <span style={{ textTransform: "capitalize" }}>
+                      <i
+                        className="fas fa-heart mr-1"
+                        style={{ color: "red" }}
+                      />{" "}
+                      FOLLOWERS: {starsFollowers}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="tab3">
                 <button
                   className="meet_greet_tablinks"
-                  onClick={(event) => {
+                  onClick={event => {
                     // openCity(event, "style");
                     goToORB();
-                  }}
-                >
+                  }}>
                   Meet and Greet
                 </button>
               </div>
               <div className="tab4"></div>
             </div>
             <div id="music" className="tabcontent active">
-            <div className="category_empty" style={{height:Find?"40px":"20px"}}>
-              <input type="search" placeholder="Search.." style={{display:Find?"block":"none"}} onChange={(e)=>searchInputChange(e.target.value)} />
-            </div>
+              <div
+                className="category_empty"
+                style={{ height: Find ? "40px" : "20px" }}>
+                <input
+                  type="search"
+                  placeholder="Search.."
+                  style={{ display: Find ? "block" : "none" }}
+                  onChange={e => searchInputChange(e.target.value)}
+                />
+              </div>
               <div className=" row vids">
                 {searchFollower.length != 0 ? (
                   currentFollower.map((fan, i) => {
@@ -234,18 +304,21 @@ function UserCategoryHomePage(props) {
                       <div
                         className="profile_images col-md-3 col-sm-6 "
                         style={{ textAlign: "center" }}
-                        key={i}
-                      >
+                        key={i}>
                         <div>
                           <img
                             className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
-                                fan.profileImgURl != null
+                              fan.profileImgURl != null
                                 ? fan.profileImgURl
                                 : "http://3.84.158.108:8000/default/profile.jpg"
                             }
-                            onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
+                            onError={e => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "http://3.84.158.108:8000/default/profile.jpg";
+                            }}
                           />
 
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -254,7 +327,7 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                    <div style={{marginLeft:"10px"}}>No fans Found</div>
+                  <div style={{ marginLeft: "10px" }}>No fans Found</div>
                 )}
               </div>
               <Pagination
@@ -276,18 +349,21 @@ function UserCategoryHomePage(props) {
                       <div
                         className="profile_images col-md-3 col-sm-6 "
                         style={{ textAlign: "center" }}
-                        key={i}
-                      >
+                        key={i}>
                         <div>
                           <img
                             className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
-                                fan.profileImgURl != null
+                              fan.profileImgURl != null
                                 ? fan.profileImgURl
                                 : "http://3.84.158.108:8000/default/profile.jpg"
                             }
-                            onError={(e)=>{e.target.onerror = null; e.target.src="http://3.84.158.108:8000/default/profile.jpg"}}
+                            onError={e => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "http://3.84.158.108:8000/default/profile.jpg";
+                            }}
                           />
 
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -296,7 +372,7 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                    <div>No fans Found</div>
+                  <div>No fans Found</div>
                 )}
               </div>
               <Pagination
@@ -320,20 +396,19 @@ function UserCategoryHomePage(props) {
               <div className="down_links">
                 <a
                   style={
-                    Find == false
+                    Find == false && !isOpen
                       ? {
-                        boxShadow: "0 0 10px 2px #ddd",
-                        cursor: "pointer",
-                        borderRadius: "100%",
-                      }
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
                       : { cursor: "pointer" }
                   }
-                  onClick={(event) => {
+                  onClick={event => {
                     setfind(false);
                     openCity(event, "music");
                     clickOnHome();
-                  }}
-                >
+                  }}>
                   <img src="../assets/images/1.png" />
                 </a>
                 <div className="link_text">Home</div>
@@ -343,27 +418,68 @@ function UserCategoryHomePage(props) {
                   style={
                     Find == true
                       ? {
-                        boxShadow: "0 0 10px 2px #ddd",
-                        cursor: "pointer",
-                        borderRadius: "100%",
-                      }
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
                       : { cursor: "pointer" }
                   }
-                  onClick={(event) => {
+                  onClick={event => {
                     // openCity(event, "find");
                     setfind(true);
                     // getAllfans();
-                  }}
-                >
+                  }}>
                   <img src="../assets/images/2.png" />
                 </a>
                 <div className="link_text">Find</div>
               </div>
-              <div className="down_links">
-                <a href="#">
-                  <img src="../assets/images/3.png" />
+              <div
+                className="down_links dropup"
+                onClick={() => setMoreIcon()}
+                ref={ref}>
+                <a
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+                  <img
+                    src="../assets/images/3.png"
+                    style={
+                      isOpen
+                        ? {
+                            boxShadow: "0 0 10px 2px #ddd",
+                            cursor: "pointer",
+                            borderRadius: "100%",
+                          }
+                        : { cursor: "pointer" }
+                    }
+                  />
                 </a>
-                <div className="link_text">More</div>
+                <div className="link_text mt-2">More</div>
+                <div className={menuClass} style={{ background: "#333333" }}>
+                  <ul className="menu_item">
+                    <li
+                      className="dropdown-item menu more_list"
+                      onClick={() => props.history.push("/profile")}>
+                      PROFILE
+                    </li>
+                    <li className="dropdown-item menu more_list">MY STORY</li>
+                    <li className="dropdown-item menu more_list">MY JOURNAL</li>
+                    <li className="dropdown-item menu more_list">
+                      MY RATINGS AND REVIWS
+                    </li>
+                    <li
+                      className="dropdown-item menu more_list"
+                      onClick={() => props.history.push("/termsCondition")}>
+                      TERMS AND CONDITION
+                    </li>
+                    <li
+                      className="dropdown-item menu more_list"
+                      onClick={callLogout}>
+                      LOGOUT
+                    </li>
+                    <li className="dropdown-item menu more_list">CONTACT US</li>
+                  </ul>
+                </div>
               </div>
               <div className="down_links">
                 <a href="#">

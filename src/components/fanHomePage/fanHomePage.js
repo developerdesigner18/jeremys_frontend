@@ -278,6 +278,12 @@ function FanHomePage(props) {
     // setSwipedDown(true);
   };
 
+  const setMoreIcon = () => {
+    setIsOpen(!isOpen);
+    setfind(false);
+    console.log("fn called ", Find);
+  };
+
   const callLogout = () => {
     localStorage.clear();
     props.history.push("/");
@@ -690,7 +696,7 @@ function FanHomePage(props) {
                 <img
                   src="../assets/images/1.png"
                   style={
-                    Find == false
+                    Find == false && !isOpen
                       ? {
                           boxShadow: "0 0 10px 2px #ddd",
                           cursor: "pointer",
@@ -726,13 +732,24 @@ function FanHomePage(props) {
             </div>
             <div
               className="down_links dropup"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setMoreIcon()}
               ref={ref}>
               <a
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false">
-                <img src="../assets/images/3.png" />
+                <img
+                  src="../assets/images/3.png"
+                  style={
+                    isOpen
+                      ? {
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
+                      : { cursor: "pointer" }
+                  }
+                />
               </a>
               <div className="link_text mt-2">More</div>
               <div className={menuClass} style={{ background: "#333333" }}>

@@ -18,6 +18,7 @@ import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
 import VideoChat from "./components/videoCall/videoCallHost";
 import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
+import { isAuthenticate } from "./utill";
 
 function App() {
   return (
@@ -52,11 +53,12 @@ function App() {
         <PrivateRoute path="/ORBpage" component={ORBPage} />
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
+        <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <PrivateRoute path="/videoChatHost" component={VideoChat} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
-        
+
         <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>
     </div>

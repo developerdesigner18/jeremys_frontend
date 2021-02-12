@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import moment from "moment";
-import Calendar from 'react-calendar';
+import Calendar from "react-calendar";
 import "../../assets/css/calendar.css";
 
 function CalendarShow() {
   const currentDate = moment();
-  var weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const startWeek = currentDate.clone().startOf("isoWeek");
   const endWeek = currentDate.clone().endOf("isoWeek");
   let days = [];
@@ -29,45 +37,45 @@ function CalendarShow() {
     //   </div>
     // </div>
     <div class="container mt-5">
-		<div class="calendar_title text-center mb-5">MY CALENDAR</div>
-		<div class="main_calendar_container py-5 px-3 mb-3">
-			<div class="event_info d-flex flex-column">
-				<div class="day_title">{weekdays[value.getDay()]}</div>
-				<div class="day_number">{value.getDate()}</div>
-				<div class="what_title">TIME</div>
-				<div class="answer">19:00 EST</div>
-				<div class="what_title">Duration</div>
-				<div class="answer">2 hours</div>
-				<div class="what_title">seats</div>
-				<div class="answer">100</div>
-				<div class="what_title">Ticket</div>
-				<div class="answer">$ 75</div>
-				<div class="action d-flex align-items-center">
-					<a href="#">
-						<div class="action_content">
-							<div class="action_image">
-								<img src="../assets/images/share.png" />
-							</div>
-							<div class="action_text">Share</div>
-						</div>
-					</a>
-					<a href="#">
-						<div class="action_content">
-							<div class="action_image">
-								<img src="../assets/images/ticket.png" />
-							</div>
-							<div class="action_text">Ticket</div>
-						</div>
-					</a>
-				</div>
-			</div>
-			<div class="calndar_info">
-				<Calendar
-				onChange={onChange}
-				value={value}
-				showNeighboringMonth={false}
-				/>
-				{/* <div class="month_change d-flex align-items-center justify-content-between px-4">
+      <div class="calendar_title text-center mb-5">MY CALENDAR</div>
+      <div class="main_calendar_container py-5 px-3 mb-3">
+        <div class="event_info d-flex flex-column">
+          <div class="day_title">{weekdays[value.getDay()]}</div>
+          <div class="day_number">{value.getDate()}</div>
+          <div class="what_title">TIME</div>
+          <div class="answer">19:00 EST</div>
+          <div class="what_title">Duration</div>
+          <div class="answer">2 hours</div>
+          <div class="what_title">seats</div>
+          <div class="answer">100</div>
+          <div class="what_title">Ticket</div>
+          <div class="answer">$ 75</div>
+          <div class="action d-flex align-items-center">
+            <a href="#">
+              <div class="action_content">
+                <div class="action_image">
+                  <img src="../assets/images/share.png" />
+                </div>
+                <div class="action_text">Share</div>
+              </div>
+            </a>
+            <a href="#">
+              <div class="action_content">
+                <div class="action_image">
+                  <img src="../assets/images/ticket.png" />
+                </div>
+                <div class="action_text">Ticket</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="calndar_info">
+          <Calendar
+            onChange={onChange}
+            value={value}
+            showNeighboringMonth={false}
+          />
+          {/* <div class="month_change d-flex align-items-center justify-content-between px-4">
 					<a href="#"><img src="../assets/images/left_calendar_arrow.png" /></a>
 					<div class="month">OCTOBER</div>
 					<a href="#"><img src="../assets/images/right_calendar_arrow.png" /></a>
@@ -212,9 +220,9 @@ function CalendarShow() {
 						</a>
 					</div>
 				</div> */}
-			</div>
-		</div>
-	</div>
+        </div>
+      </div>
+    </div>
   );
 }
 
