@@ -16,6 +16,7 @@ import Register from "./components/register/Register";
 import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
+import { isAuthenticate } from "./utill";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <PrivateRoute path="/ORBpage" component={ORBPage} />
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
+        <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
         {/* 

@@ -258,49 +258,59 @@ function ORBPage() {
         </div>
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />
             <p>Ticket</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/seat.png" />
             <p>Seat</p>
           </div>
         </a>
-        <a onClick={getImage}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/take_picture.png" />
-            <p>Take Picture</p>
-          </div>
-        </a>
-        <a href="#">
+        {isLive ? (
+          <a onClick={getImage}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/take_picture.png" />
+              <p>Take Picture</p>
+            </div>
+          </a>
+        ) : (
+          <a style={{ cursor: "no-drop" }}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/take_picture.png" />
+              <p>Take Picture</p>
+            </div>
+          </a>
+        )}
+
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>Time</p>
           </div>
         </a>
-        <a href="#">
+        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/short_break.png" />
             <p>Short Break</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/share.png" />
             <p>Share</p>
           </div>
         </a>
-        <a href="#">
+        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
             <p>Tip</p>
           </div>
         </a>
-        <a href="#">
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/exit.png" />
             <p>Exit</p>
