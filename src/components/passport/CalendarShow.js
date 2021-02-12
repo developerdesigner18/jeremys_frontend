@@ -5,6 +5,7 @@ import "../../assets/css/calendar.css";
 
 function CalendarShow() {
   const currentDate = moment();
+  var weekdays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const startWeek = currentDate.clone().startOf("isoWeek");
   const endWeek = currentDate.clone().endOf("isoWeek");
   let days = [];
@@ -31,8 +32,8 @@ function CalendarShow() {
 		<div class="calendar_title text-center mb-5">MY CALENDAR</div>
 		<div class="main_calendar_container py-5 px-3 mb-3">
 			<div class="event_info d-flex flex-column">
-				<div class="day_title">MONDAY</div>
-				<div class="day_number">19</div>
+				<div class="day_title">{weekdays[value.getDay()]}</div>
+				<div class="day_number">{value.getDate()}</div>
 				<div class="what_title">TIME</div>
 				<div class="answer">19:00 EST</div>
 				<div class="what_title">Duration</div>
@@ -61,11 +62,12 @@ function CalendarShow() {
 				</div>
 			</div>
 			<div class="calndar_info">
-        {/* <Calendar
-          onChange={onChange}
-          value={value}
-        /> */}
-				<div class="month_change d-flex align-items-center justify-content-between px-4">
+				<Calendar
+				onChange={onChange}
+				value={value}
+				showNeighboringMonth={false}
+				/>
+				{/* <div class="month_change d-flex align-items-center justify-content-between px-4">
 					<a href="#"><img src="../assets/images/left_calendar_arrow.png" /></a>
 					<div class="month">OCTOBER</div>
 					<a href="#"><img src="../assets/images/right_calendar_arrow.png" /></a>
@@ -209,7 +211,7 @@ function CalendarShow() {
 							<div class="date_content">31</div>
 						</a>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	</div>

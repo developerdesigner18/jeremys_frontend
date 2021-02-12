@@ -56,8 +56,8 @@ function App() {
         <PrivateRoute path="/videoChatHost" component={VideoChat} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
-        {/* 
-        <Route exact path="/myCalendar" component={Calendar} /> */}
+        
+        <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>
     </div>
   );
