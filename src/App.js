@@ -17,6 +17,7 @@ import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
 import { isAuthenticate } from "./utill";
+import DemoWithVonage from "./components/ORB/DemoWithVonage";
 
 function App() {
   return (
@@ -53,8 +54,8 @@ function App() {
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
-        {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
-        
+        <Route exact path="/demoWithVonage" component={DemoWithVonage} />
+
         <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>
     </div>

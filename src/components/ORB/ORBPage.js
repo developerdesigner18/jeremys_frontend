@@ -20,8 +20,6 @@ function ORBPage() {
 
   const stateData = useSelector(state => state.ORB);
 
-  useEffect(async () => {}, []);
-
   const getImage = () => {
     console.log("fn called");
     html2canvas(document.querySelector("#capture"), {
@@ -73,22 +71,21 @@ function ORBPage() {
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
         </div>
-        <div className="ORB_live_container d-flex">
-          <div
-            className="ORB_video_live d-flex position-relative"
-            id="performerId">
-            {isLive ? (
-              <video ref={videoRef} autoPlay></video>
-            ) : (
+        {isLive ? (
+          <div id="performerId"></div>
+        ) : (
+          <div className="ORB_live_container d-flex">
+            <div className="ORB_video_live d-flex position-relative">
               <div
                 style={{
                   boxShadow: isLive
                     ? "inset 3px 5px 5px #3a3a3a"
                     : "inset 3px 5px 5px #595959",
                 }}></div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
+
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
             <div className="lights">

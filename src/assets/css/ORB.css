@@ -10,6 +10,16 @@ body {
   background-position: initial !important;
   background-origin: content-box !important;
 }
+#performerId {
+  width: 100%;
+  height: 210px;
+  border: solid 1px red;
+}
+#orb_publish {
+  width: 100%;
+  height: 210px;
+  border: solid 1px red;
+}
 .main_ORB_section {
   color: #4d4d4d;
 }
