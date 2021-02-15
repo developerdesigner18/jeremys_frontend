@@ -42,10 +42,12 @@ function FanHomePage(props) {
   const [touchStartX, setTouchStartX] = React.useState(0);
   const stateData = useSelector(state => state.user);
   const followData = useSelector(state => state.follow);
+  const ORBState = useSelector(state => state.ORB);
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isLive, setIsLive] = useState(false);
   const ref = useRef();
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
@@ -163,6 +165,13 @@ function FanHomePage(props) {
       }
     }
   }, [followData]);
+
+  useEffect(() => {
+    console.log("ORBState", ORBState);
+    if (ORBState) {
+      setIsLive(ORBState.goLiveStatus);
+    }
+  }, [ORBState]);
 
   const getAllArtist = () => {
     console.log("getAllArtists=--=-=-=-=-=", stateData);
@@ -298,6 +307,7 @@ function FanHomePage(props) {
           <div className="tab">
             <div className="tab1">
               <button
+                disabled={!isLive}
                 className="tablinks active"
                 onClick={event => {
                   openCity(event, "music");
@@ -315,6 +325,7 @@ function FanHomePage(props) {
             </div>
             <div className="tab2">
               <button
+                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   setSubCategory(subFood[0]);
@@ -359,6 +370,7 @@ function FanHomePage(props) {
             </div>
             <div className="tab3">
               <button
+                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   setSubCategory(subStyle[0]);
@@ -376,6 +388,7 @@ function FanHomePage(props) {
             </div>
             <div className="tab4">
               <button
+                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   openCity(event, "body");
@@ -559,7 +572,7 @@ function FanHomePage(props) {
           </div>
 
           {isLoading ? (
-            <div class="loader my-5"></div>
+            <div className="loader my-5"></div>
           ) : Find ? (
             <div className=" row vids">
               {allArtists.length != 0 ? (

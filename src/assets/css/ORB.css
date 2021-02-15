@@ -143,6 +143,11 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
 }
+/* .ORB_videos_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr 1fr 1fr;
+  grid-gap: 20px;
+} */
 .ORB_videos_container img {
   width: 120px;
   height: 120px;
@@ -154,6 +159,8 @@ body {
 }
 .ORB_main_cat {
   text-align: center;
+  padding: 0px;
+  margin-bottom: 20px;
 }
 .ORB_link img {
   object-fit: none;
@@ -181,7 +188,7 @@ body {
   background-color: gray;
 }
 .center_main {
-  width: 60px;
+  width: 90px;
   height: 90px;
   border: solid 1px red;
   border-radius: 50%;

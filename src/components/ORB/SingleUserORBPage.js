@@ -19,14 +19,14 @@ function SingleUserORBPage() {
     },
   };
 
-  const success = stream => {
+  const success = (stream) => {
     setStream(stream);
     videoRef.current.srcObject = stream;
     console.log("stream ", stream);
   };
 
   // called when getUserMedia() fails - see below
-  const failure = e => {
+  const failure = (e) => {
     console.log("getUserMedia Error: ", e);
     alert(e.toString());
   };
@@ -46,9 +46,9 @@ function SingleUserORBPage() {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -64,10 +64,12 @@ function SingleUserORBPage() {
         background: isLive
           ? "url('../assets/images/background_black.jpg')"
           : "url('../assets/images/JL-GO-LIVE.jpg')",
-        backgroundSize: "100vw auto",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -82,7 +84,8 @@ function SingleUserORBPage() {
                   boxShadow: isLive
                     ? "inset 3px 5px 5px #3a3a3a"
                     : "inset 3px 5px 5px #595959",
-                }}></div>
+                }}
+              ></div>
             )}
           </div>
         </div>
@@ -109,7 +112,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   class="progress-bar"
                   role="progressbar"
@@ -118,7 +122,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -127,7 +132,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   class="progress-bar"
                   role="progressbar"
@@ -136,7 +142,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -145,7 +152,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   class="progress-bar"
                   role="progressbar"
@@ -154,7 +162,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -163,7 +172,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   class="progress-bar"
                   role="progressbar"
@@ -172,13 +182,151 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="container ORB_videos_container mt-3">
+      <div className="  row justify-content-center mx-auto  mt-5">
+        <div className="row p-0 col-md-3">
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+        </div>
+        <div className="col-md-6 text-center">
+          <div
+            className="border border-light rounded-circle mx-auto mb-3"
+            style={{ height: "500px", width: "500px" }}
+          ></div>
+          <div className="r_image">
+            {isLive ? (
+              <img
+                src="../assets/images/r_image.png"
+                style={{ height: "80px", width: "80px" }}
+                te
+              />
+            ) : (
+              <img
+                src="../assets/images/disableR.png"
+                style={{ height: "80px", width: "80px" }}
+              />
+            )}
+          </div>
+          <div className="container justify-content-center d-flex ORB_links mt-5">
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/ticket.png" />
+                <p>Ticket</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/seat.png" />
+                <p>Seat</p>
+              </div>
+            </a>
+            <a onClick={getImage} style={{ cursor: "pointer" }}>
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/take_picture.png" />
+                <p>Take Picture</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/time.png" />
+                <p>Time</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/short_break.png" />
+                <p>Short Break</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/share.png" />
+                <p>Share</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/tip.png" />
+                <p>Tip</p>
+              </div>
+            </a>
+            <a href="#">
+              <div className="ORB_link d-flex flex-column">
+                <img src="../assets/images/exit.png" />
+                <p>Exit</p>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div className="row p-0 col-md-3">
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>{" "}
+          <div className="col-md-6 ORB_main_cat">
+            <img src="../assets/images/button_bg.png" />
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="container ORB_videos_container mt-3">
         <div className="ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
@@ -247,7 +395,12 @@ function SingleUserORBPage() {
           <img src="../assets/images/button_bg.png" />
         </div>
       </div>
+<<<<<<< HEAD
+       */}
+      {/* <div className="container justify-content-center d-flex ORB_links mt-5">
+=======
       <div className="container justify-content-center d-flex ORB_links mt-5">
+>>>>>>> b692baf0adb2ada869f7536048d544f641654cca
         <a href="#">
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />
@@ -296,7 +449,7 @@ function SingleUserORBPage() {
             <p>Exit</p>
           </div>
         </a>
-      </div>
+      </div>*/}
     </div>
   );
 }

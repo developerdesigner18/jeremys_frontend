@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import "../../assets/css/homepage.css";
 import { getUser, logout } from "../../actions/userActions";
 import { useSelector, useDispatch } from "react-redux";
+import { storeFanStatus } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -82,8 +83,8 @@ function Header(props) {
     history.push("/customerService");
   };
 
-  const goToORB = () => {
-    history.push("/ORBpage");
+  const changeStatus = async () => {
+    await dispatch(storeFanStatus(true));
   };
 
   return (
@@ -173,7 +174,17 @@ function Header(props) {
               cursor: "pointer",
             }}
           />
-          <p className="go_live mt-1 mb-0">Go Live!</p>
+          {localStorage.getItem("type") === "Fan" ||
+          localStorage.getItem("type") === "fan" ? (
+            <p
+              className="go_live mt-1 mb-0"
+              style={{ cursor: "pointer" }}
+              onClick={changeStatus}>
+              Go Live!
+            </p>
+          ) : (
+            <p className="go_live mt-1 mb-0">Go Live!</p>
+          )}
         </div>
         {stateData && stateData.userDetail ? (
           stateData.userDetail.data.type === "fan" ||

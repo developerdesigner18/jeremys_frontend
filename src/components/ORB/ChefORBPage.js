@@ -8,8 +8,15 @@ import { getUserWithId } from "../../actions/userActions";
 
 function ChefORBPage(props) {
   const [isLive, setIsLive] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const [item1, setItem1] = useState("Item 1");
+  const [item1Image, setItem1Image] = useState("");
+  const [item2, setItem2] = useState("Item 2");
+  const [item2Image, setItem2Image] = useState("");
+  const [price, setPrice] = useState("$ ");
+  const [price2, setPrice2] = useState("$ ");
   const dispatch = useDispatch();
-  const stateData = useSelector(state => {
+  const stateData = useSelector((state) => {
     // console.log("state.... ", state.user);
     return state.user;
   });
@@ -20,9 +27,9 @@ function ChefORBPage(props) {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -32,14 +39,42 @@ function ChefORBPage(props) {
       });
     });
   };
-
+  const BannerChange = (event) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      setUserInfo((prevState) => ({
+        ...prevState,
+        bannerImg: event.target.files[0],
+        bannerImgURl: e.target.result,
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+  const FoodImageChange = (e, item) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      if (item == "1") {
+        setItem1Image(e.target.result);
+      } else {
+        setItem2Image(e.target.result);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  const handleChange = (e) => {
+    setPrice(e.target.value);
+  };
   useEffect(async () => {
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
   }, []);
 
   useEffect(() => {
-    console.log("userInfo", stateData);
+    if (stateData) {
+      if (stateData.userInfo) {
+        setUserInfo(stateData.userInfo.data);
+      }
+    }
   }, [stateData]);
 
   return (
@@ -48,12 +83,13 @@ function ChefORBPage(props) {
         background: isLive
           ? "url('../assets/images/background_black.jpg')"
           : "url('../assets/images/JL-GO-LIVE.jpg')",
-        backgroundSize: "auto 100vw",
+        backgroundSize: " cover",
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
         marginBottom: "-16px",
       }}
-      id="capture">
+      id="capture"
+    >
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
@@ -71,14 +107,58 @@ function ChefORBPage(props) {
         <div className="container mt-5 d-flex top_section position-relative">
           <div
             className="rectangle_video"
-            style={
-              {
-                // background: `url("${stateData.userInfo.bannerImage}") no-repeat center `,
-              }
-            }></div>
+            style={{
+              backgroundImage: `url("${userInfo.bannerImgURl}") `,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              borderRadius: "20%",
+              zIndex: "1",
+              cursor: "pointer",
+              height: "500px",
+            }}
+            method="POST"
+          >
+            <input
+              type="file"
+              onChange={(e) => BannerChange(e)}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                margin: "0",
+                padding: "0",
+                height: "100%",
+                outline: "none",
+                opacity: "0",
+              }}
+            />
+          </div>
 
-          <div className="rectangle_video">
-            <img src="../assets/images/style_fan_orb.png" alt="logo" />
+          <div
+            className="rectangle_video"
+            style={{
+              backgroundImage: `url("${userInfo.bannerImgURl}") `,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              borderRadius: "20%",
+              zIndex: "1",
+              cursor: "pointer",
+              height: "500px",
+            }}
+            method="POST"
+          >
+            <input
+              type="file"
+              onChange={(e) => BannerChange(e)}
+              style={{
+                position: "absolute",
+                margin: "0",
+                padding: "0",
+                height: "100%",
+                outline: "none",
+                cursor: "pointer",
+                opacity: "0",
+              }}
+            />
           </div>
           <div className="justify-content-center go_live_logo">
             {isLive ? null : (
@@ -91,7 +171,10 @@ function ChefORBPage(props) {
             )}
           </div>
           <div className="round_video" style={{ top: isLive ? "0" : "25px" }}>
-            <div className="video_contents position-relative">
+            <div
+              className="video_contents position-relative"
+              style={{ zIndex: "2" }}
+            >
               <img src="../assets/images/style_rounded.png" alt="logo" />
               <img
                 className="black_logo_img"
@@ -102,15 +185,79 @@ function ChefORBPage(props) {
           </div>
         </div>
         <div className="container items_links px-5 my-3 py-1">
-          <div className="item position-relative">
-            <img src="../assets/images/style_fan_orb.png" alt="logo" />
+          <div
+            className="item position-relative"
+            style={{
+              backgroundImage: `url("${
+                item1Image != ""
+                  ? item1Image
+                  : "../assets/images/style_fan_orb.png"
+              }") `,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              borderRadius: "20%",
+              zIndex: "1",
+              cursor: "pointer",
+              height: "250px",
+            }}
+            method="POST"
+          >
+            <input
+              type="file"
+              onChange={(e) => FoodImageChange(e, "1")}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                margin: "0",
+                padding: "0",
+                height: "100%",
+                outline: "none",
+                width: "100%",
+                opacity: "0",
+              }}
+            />
+            {/* <img src="../assets/images/style_fan_orb.png" alt="logo" /> */}
             <div className="price_item">
-              <a href="#">
-                <div className="price">$ 40</div>
-              </a>
-              <a href="#">
-                <div className="item">Item 1</div>
-              </a>
+              {/* <a href="#"> */}
+              <div className="price">
+                <input
+                  type="text"
+                  value={`${price}`}
+                  onChange={handleChange}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    height: "100%",
+                    borderRadius: "100%",
+                  }}
+                />
+              </div>
+              {/* </a> */}
+              {/* <a href="#"> */}
+              <div className="item">
+                <input
+                  type="text"
+                  onChange={(e) => {
+                    setItem1(e.target.value);
+                  }}
+                  value={item1}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+
+                    borderRadius: "100%",
+                  }}
+                />
+              </div>
+              {/* </a> */}
             </div>
           </div>
           <div className="links">
@@ -149,22 +296,87 @@ function ChefORBPage(props) {
             </a>
             <a
               style={{ cursor: "pointer" }}
-              onClick={() => props.history.goBack()}>
+              onClick={() => props.history.goBack()}
+            >
               <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
               </div>
             </a>
           </div>
-          <div className="item position-relative">
-            <img src="../assets/images/style_fan_orb.png" alt="logo" />
+          <div
+            className="item position-relative"
+            style={{
+              backgroundImage: `url("${
+                item2Image != ""
+                  ? item2Image
+                  : "../assets/images/style_fan_orb.png"
+              }") `,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              borderRadius: "20%",
+              zIndex: "1",
+              cursor: "pointer",
+              height: "250px",
+            }}
+            method="POST"
+          >
+            <input
+              type="file"
+              onChange={(e) => FoodImageChange(e, "2")}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                margin: "0",
+                padding: "0",
+                height: "100%",
+                width: "100%",
+                outline: "none",
+                opacity: "0",
+              }}
+            />
             <div className="price_item">
-              <a href="#">
-                <div className="price">$ 40</div>
-              </a>
-              <a href="#">
-                <div className="item">Item 2</div>
-              </a>
+              <div className="price">
+                {" "}
+                <input
+                  type="text"
+                  onChange={(e) => {
+                    setPrice2(e.target.value);
+                  }}
+                  value={`${price2}`}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    height: "100%",
+                    borderRadius: "100%",
+                  }}
+                />
+              </div>
+
+              <div className="item">
+                {" "}
+                <input
+                  type="text"
+                  onChange={(e) => {
+                    setItem2(e.target.value);
+                  }}
+                  value={item2}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+
+                    borderRadius: "100%",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -16,6 +16,8 @@ import Register from "./components/register/Register";
 import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
+import VideoChat from "./components/videoCall/videoCallHost";
+import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
 import { isAuthenticate } from "./utill";
 import DemoWithVonage from "./components/ORB/DemoWithVonage";
 
@@ -55,6 +57,9 @@ function App() {
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <Route exact path="/demoWithVonage" component={DemoWithVonage} />
+        <PrivateRoute path="/videoChatHost" component={VideoChat} />
+        <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
+        {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
 
         <Route exact path="/myCalendar" component={Calendar} />
       </BrowserRouter>

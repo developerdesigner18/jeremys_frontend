@@ -20,3 +20,12 @@ export const storeScreenShot = data => {
       .catch(error => console.log("error while storing ss", error));
   };
 };
+
+export const storeFanStatus = data => {
+  return dispatch => {
+    dispatch({
+      type: "FAN_GO_LIVE",
+      payload: data,
+    });
+  };
+};
