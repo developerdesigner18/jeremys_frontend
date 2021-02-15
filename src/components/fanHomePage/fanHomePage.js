@@ -257,7 +257,7 @@ function FanHomePage(props) {
     for (var j = 4 * i; j < 4 * (i + 1); j++) {
       divs.push(
         <div className="profile_images">
-          <img src="http://3.84.158.108:8000/default/profile.jpg" />
+          <img src="http://54.236.46.101:8000/default/profile.jpg" />
 
           <p style={{ color: "white" }}>{musicData[j].name}</p>
         </div>
@@ -349,13 +349,13 @@ function FanHomePage(props) {
                       ? userInfo.data.profileImgURl != "" &&
                         userInfo.data.profileImgURl != null
                         ? userInfo.data.profileImgURl
-                        : "http://3.84.158.108:8000/default/profile.jpg"
-                      : "http://3.84.158.108:8000/default/profile.jpg"
+                        : "http://54.236.46.101:8000/default/profile.jpg"
+                      : "http://54.236.46.101:8000/default/profile.jpg"
                   }
                   onError={e => {
                     e.target.onerror = null;
                     e.target.src =
-                      "http://3.84.158.108:8000/default/profile.jpg";
+                      "http://54.236.46.101:8000/default/profile.jpg";
                   }}
                 />
                 <div
@@ -603,12 +603,12 @@ function FanHomePage(props) {
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
                               ? fan.profileImgURl
-                              : "http://3.84.158.108:8000/default/profile.jpg"
+                              : "http://54.236.46.101:8000/default/profile.jpg"
                           }
                           onError={e => {
                             e.target.onerror = null;
                             e.target.src =
-                              "http://3.84.158.108:8000/default/profile.jpg";
+                              "http://54.236.46.101:8000/default/profile.jpg";
                           }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -665,12 +665,12 @@ function FanHomePage(props) {
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
                               ? fan.profileImgURl
-                              : "http://3.84.158.108:8000/default/profile.jpg"
+                              : "http://54.236.46.101:8000/default/profile.jpg"
                           }
                           onError={e => {
                             e.target.onerror = null;
                             e.target.src =
-                              "http://3.84.158.108:8000/default/profile.jpg";
+                              "http://54.236.46.101:8000/default/profile.jpg";
                           }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
