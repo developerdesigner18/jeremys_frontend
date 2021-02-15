@@ -71,14 +71,13 @@ export const getUser = () => {
   return dispatch => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}api/user/getUserData`,
+        `${
+          process.env.REACT_APP_API_URL
+        }api/user/getUserData?id=${localStorage.getItem("id")}`,
         {
           headers: {
             token: localStorage.getItem("token"),
           },
-        },
-        {
-          id: localStorage.getItem("id"),
         }
       )
       .then(result => {
