@@ -2,23 +2,30 @@ import React, { useEffect, useState } from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
-import { storeScreenShot } from "../../actions/orbActions";
+import { storeScreenShot , storeChefOrbDetails } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
 
 function ChefORBPage(props) {
   const [isLive, setIsLive] = useState(false);
   const [userInfo, setUserInfo] = useState({});
+  const [banner1Img, setBanner1Img] = useState({});
+  const [banner2Img, setBanner2Img] = useState({});
   const [item1, setItem1] = useState("Item 1");
-  const [item1Image, setItem1Image] = useState("");
+  const [item1Image, setItem1Image] = useState({});
   const [item2, setItem2] = useState("Item 2");
-  const [item2Image, setItem2Image] = useState("");
-  const [price, setPrice] = useState("$ ");
-  const [price2, setPrice2] = useState("$ ");
+  const [item2Image, setItem2Image] = useState({});
+  const [price, setPrice] = useState("");
+  const [price2, setPrice2] = useState("");
   const dispatch = useDispatch();
   const stateData = useSelector((state) => {
     // console.log("state.... ", state.user);
     return state.user;
+  });
+  const ORBData = useSelector(state => {
+    // console.log("state.... ", state.user);
+    return state.ORB;
   });
 
   const getImage = () => {
@@ -39,10 +46,50 @@ function ChefORBPage(props) {
       });
     });
   };
-  const BannerChange = (event) => {
+  const goToLivePage = async() => {
+    console.log("fn called");
+    let fd = new FormData();
+
+    fd.append('name1',item1 );
+    fd.append('name2',item2 );
+    fd.append('userId',localStorage.getItem('id') );
+    fd.append('userType',localStorage.getItem('type') );
+    fd.append('price1', price);
+    fd.append('price2', price2);
+    fd.append('banner1', banner1Img.bannerImg);
+    fd.append('banner2', banner2Img.bannerImg);
+    fd.append('item1Img', item1Image.itemImg);
+    fd.append('item2Img', item2Image.itemImg);
+
+    await dispatch(storeChefOrbDetails(fd));
+    setIsLive(true)
+
+    // axios
+    // .post(
+    //   `${process.env.REACT_APP_API_URL}api/stream/addDetailsChefStream`,
+    //   fd
+    // )
+    // .then(result => {
+    //   console.log("result.data ", result);
+    //   setIsLive(true)
+    // })
+    // .catch(err => console.log("error ", err));
+  };
+  // const BannerChange = (event) => {
+  //   let reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     setUserInfo((prevState) => ({
+  //       ...prevState,
+  //       bannerImg: event.target.files[0],
+  //       bannerImgURl: e.target.result,
+  //     }));
+  //   };
+  //   reader.readAsDataURL(event.target.files[0]);
+  // };
+  const Banner1Change = (event) => {
     let reader = new FileReader();
     reader.onload = (e) => {
-      setUserInfo((prevState) => ({
+      setBanner1Img((prevState) => ({
         ...prevState,
         bannerImg: event.target.files[0],
         bannerImgURl: e.target.result,
@@ -50,16 +97,38 @@ function ChefORBPage(props) {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
-  const FoodImageChange = (e, item) => {
+  const Banner2Change = (event) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      setBanner2Img((prevState) => ({
+        ...prevState,
+        bannerImg: event.target.files[0],
+        bannerImgURl: e.target.result,
+      }));
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
+  const FoodImageChange = (event, item) => {
     let reader = new FileReader();
     reader.onload = (e) => {
       if (item == "1") {
-        setItem1Image(e.target.result);
+        // setItem1Image(e.target.result);
+        setItem1Image((prevState) => ({
+          ...prevState,
+          itemImg: event.target.files[0],
+          itemImgURl: e.target.result,
+        }));
       } else {
-        setItem2Image(e.target.result);
+        // setItem2Image(e.target.result);
+        setItem2Image((prevState) => ({
+          ...prevState,
+          itemImg: event.target.files[0],
+          itemImgURl: e.target.result,
+        }));
       }
     };
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(event.target.files[0]);
   };
   const handleChange = (e) => {
     setPrice(e.target.value);
@@ -108,7 +177,12 @@ function ChefORBPage(props) {
           <div
             className="rectangle_video"
             style={{
-              backgroundImage: `url("${userInfo.bannerImgURl}") `,
+              // backgroundImage: `url("${banner1Img.bannerImgURl}") `,
+              backgroundImage: `url("${
+                banner1Img.bannerImgURl != undefined
+                  ? banner1Img.bannerImgURl
+                  : "../assets/images/style_fan_orb.png"
+              }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               borderRadius: "20%",
@@ -120,7 +194,7 @@ function ChefORBPage(props) {
           >
             <input
               type="file"
-              onChange={(e) => BannerChange(e)}
+              onChange={(e) => Banner1Change(e)}
               style={{
                 cursor: "pointer",
                 position: "absolute",
@@ -129,6 +203,7 @@ function ChefORBPage(props) {
                 height: "100%",
                 outline: "none",
                 opacity: "0",
+                width: "44%"
               }}
             />
           </div>
@@ -136,19 +211,23 @@ function ChefORBPage(props) {
           <div
             className="rectangle_video"
             style={{
-              backgroundImage: `url("${userInfo.bannerImgURl}") `,
+              // backgroundImage: `url("${banner2Img.bannerImgURl}") `,
+              backgroundImage: `url("${
+                banner2Img.bannerImgURl != undefined
+                  ? banner2Img.bannerImgURl
+                  : "../assets/images/style_fan_orb.png"
+              }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               borderRadius: "20%",
               zIndex: "1",
-              cursor: "pointer",
               height: "500px",
             }}
             method="POST"
           >
             <input
               type="file"
-              onChange={(e) => BannerChange(e)}
+              onChange={(e) => Banner2Change(e)}
               style={{
                 position: "absolute",
                 margin: "0",
@@ -157,6 +236,7 @@ function ChefORBPage(props) {
                 outline: "none",
                 cursor: "pointer",
                 opacity: "0",
+                width: "44%"
               }}
             />
           </div>
@@ -166,7 +246,8 @@ function ChefORBPage(props) {
                 src="../assets/images/go_live_chef_stylist.png"
                 alt="go_live"
                 style={{ cursor: "pointer" }}
-                onClick={() => setIsLive(!isLive)}
+                // onClick={() => setIsLive(!isLive)}
+                onClick={() => goToLivePage()}
               />
             )}
           </div>
@@ -189,8 +270,8 @@ function ChefORBPage(props) {
             className="item position-relative"
             style={{
               backgroundImage: `url("${
-                item1Image != ""
-                  ? item1Image
+                item1Image.itemImgURl != undefined
+                  ? item1Image.itemImgURl
                   : "../assets/images/style_fan_orb.png"
               }") `,
               backgroundSize: "cover",
@@ -220,8 +301,9 @@ function ChefORBPage(props) {
             <div className="price_item">
               {/* <a href="#"> */}
               <div className="price">
+                <p style={{marginTop:"15px"}}>$</p>
                 <input
-                  type="text"
+                  type="number"
                   value={`${price}`}
                   onChange={handleChange}
                   style={{
@@ -234,7 +316,7 @@ function ChefORBPage(props) {
                     height: "100%",
                     borderRadius: "100%",
                   }}
-                />
+                ></input>
               </div>
               {/* </a> */}
               {/* <a href="#"> */}
@@ -308,8 +390,8 @@ function ChefORBPage(props) {
             className="item position-relative"
             style={{
               backgroundImage: `url("${
-                item2Image != ""
-                  ? item2Image
+                item2Image.itemImgURl != undefined
+                  ? item2Image.itemImgURl
                   : "../assets/images/style_fan_orb.png"
               }") `,
               backgroundSize: "cover",
@@ -337,9 +419,10 @@ function ChefORBPage(props) {
             />
             <div className="price_item">
               <div className="price">
+              <p style={{marginTop:"15px"}}>$</p>
                 {" "}
                 <input
-                  type="text"
+                  type="number"
                   onChange={(e) => {
                     setPrice2(e.target.value);
                   }}

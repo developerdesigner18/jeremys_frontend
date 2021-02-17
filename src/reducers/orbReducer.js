@@ -4,6 +4,11 @@ export const orbReducer = (state = null, action) => {
       return {
         ...state,
       };
+    case "STORE_CHEF_ORB_DETAILS":
+        return {
+          ...state,
+          response: action.payload,
+        };
     case "FAN_GO_LIVE":
       return {
         ...state,
