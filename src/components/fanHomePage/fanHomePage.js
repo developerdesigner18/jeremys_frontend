@@ -47,7 +47,6 @@ function FanHomePage(props) {
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [isLive, setIsLive] = useState(false);
   const ref = useRef();
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
@@ -165,13 +164,6 @@ function FanHomePage(props) {
       }
     }
   }, [followData]);
-
-  useEffect(() => {
-    console.log("ORBState", ORBState);
-    if (ORBState) {
-      setIsLive(ORBState.goLiveStatus);
-    }
-  }, [ORBState]);
 
   const getAllArtist = () => {
     console.log("getAllArtists=--=-=-=-=-=", stateData);
@@ -307,7 +299,6 @@ function FanHomePage(props) {
           <div className="tab">
             <div className="tab1">
               <button
-                disabled={!isLive}
                 className="tablinks active"
                 onClick={event => {
                   openCity(event, "music");
@@ -325,7 +316,6 @@ function FanHomePage(props) {
             </div>
             <div className="tab2">
               <button
-                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   setSubCategory(subFood[0]);
@@ -370,7 +360,6 @@ function FanHomePage(props) {
             </div>
             <div className="tab3">
               <button
-                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   setSubCategory(subStyle[0]);
@@ -388,7 +377,6 @@ function FanHomePage(props) {
             </div>
             <div className="tab4">
               <button
-                disabled={!isLive}
                 className="tablinks"
                 onClick={event => {
                   openCity(event, "body");
@@ -784,18 +772,22 @@ function FanHomePage(props) {
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={callLogout}>
-                    LOGOUT
+                    onClick={() => {
+                      props.history.push("/customerService");
+                    }}>
+                    CONTACT US
                   </li>
-                  <li className="dropdown-item menu more_list">CONTACT US</li>
                 </ul>
               </div>
             </div>
-            <div className="down_links">
-              <a href="#">
+            <div
+              className="down_links"
+              onClick={callLogout}
+              style={{ cursor: "pointer" }}>
+              <a>
                 <img src="../assets/images/4.png" />
               </a>
-              <div className="link_text mt-2">About</div>
+              <div className="link_text mt-2">Log Out</div>
             </div>
           </div>
         </div>

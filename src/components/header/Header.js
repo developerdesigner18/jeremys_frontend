@@ -84,40 +84,15 @@ function Header(props) {
   };
 
   const changeStatus = async () => {
-    await dispatch(storeFanStatus(true));
+    // await dispatch(storeFanStatus(true));
   };
 
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
         {localStorage.getItem("token") ? (
-          <span
-            style={{ cursor: "pointer", position: "relative" }}
-            className="dropdown-toggle"
-            data-toggle="dropdown"
-            id="dropdownMenuButton"
-            onClick={toggleValue}
-            ref={ref}>
+          <span style={{ position: "relative" }} ref={ref}>
             {"welcome " + localStorage.getItem("name")}
-
-            <div className={menuClass} aria-labelledby="dropdownMenuButton">
-              <ul className="menu_item">
-                <li className="dropdown-item menu" onClick={goToProfile}>
-                  <i className="fa fa-user" aria-hidden="true"></i>
-                  Profile
-                </li>
-                <li className="dropdown-item menu" onClick={goToContactUs}>
-                  <i className="fa fa-file" aria-hidden="true"></i>
-                  Customer Service
-                </li>
-                <li className="dropdown-item menu">
-                  <span style={{ cursor: "pointer" }} onClick={callLogout}>
-                    <i className="fa fa-power-off" aria-hidden="true"></i>{" "}
-                    Logout
-                  </span>
-                </li>
-              </ul>
-            </div>
           </span>
         ) : (
           <div>

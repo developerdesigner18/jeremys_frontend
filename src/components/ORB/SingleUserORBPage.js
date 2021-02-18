@@ -1,14 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
+import AgoraRTC from "agora-rtc-sdk-ng";
+import axios from "axios";
+import io from "socket.io-client";
 
-import { storeScreenShot } from "../../actions/orbActions";
+import { storeScreenShot, getUserToken } from "../../actions/orbActions";
 
 function SingleUserORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
-  const [base64Image, setBase64Image] = useState("");
   const videoRef = useRef();
   const dispatch = useDispatch();
   const constraints = {
@@ -18,26 +20,103 @@ function SingleUserORBPage() {
       mirror: true,
     },
   };
+  const [options, setOptions] = useState({
+    appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
+    channel: "Artist",
+    token: null,
+    role: "audience",
+  });
+  const orbState = useSelector(state => state.ORB);
 
-  const success = (stream) => {
+  useEffect(async () => {
+    await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
+    console.log("use efffect called");
+    const socket = io("http://localhost:8000");
+
+    socket.emit("hello", "world");
+    socket.on("ID", id => console.log("socket id ", id));
+
+    socket.emit("backToMap", "123");
+
+    socket.on("returnData", data => console.log("return val ", data));
+  }, []);
+
+  useEffect(async () => {
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(success)
+      .catch(failure);
+
+    // const socket = io.connect("http://localhost:8000");
+
+    // socket.on("hello", arg => {
+    //   console.log(arg);
+    // });
+
+    if (orbState) {
+      const remoteUsers = {};
+      const rtc = {
+        client: null,
+        localAudioTrack: null,
+        localVideoTrack: null,
+      };
+      rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+      await rtc.client.setClientRole(options.role);
+      const uid = await rtc.client.join(
+        options.appId,
+        options.channel,
+        orbState.userToken.agoraToken,
+        null
+      );
+      console.log("Meeting Joined-==-=-=", rtc.client);
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("handleUserPublished-==-=-=", user.uid);
+        const id = user.uid;
+        remoteUsers[id] = user;
+        //   subscribe(user, mediaType);
+        await rtc.client.subscribe(user, mediaType);
+        console.log("subscribe success-=-=-=-=-=-=-=-=-=");
+        if (mediaType === "video") {
+          let playerWrapper = document.createElement("div");
+          playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
+          let player = document.createElement("div");
+          player.setAttribute("id", `player-${user.uid}`);
+          playerWrapper.appendChild(player);
+
+          document
+            .getElementById("remote-playerlist")
+            .appendChild(playerWrapper);
+          console.log(
+            "nest sibling ",
+            document.getElementById(`player-wrapper-${user.uid}`).nextSibling
+          );
+          // document.getElementById(
+          //   `player-wrapper-${user.uid}`
+          // ).nextSibling.style.borderRadius = "100%";
+          user.videoTrack.play(`remote-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+      rtc.client.on("user-unpublished", async (user, mediaType) => {
+        console.log("handleUserUnpublished-==-=-=", user.uid);
+        const id = user.uid;
+        delete remoteUsers[id];
+      });
+    }
+  }, [orbState]);
+
+  const success = stream => {
     setStream(stream);
     videoRef.current.srcObject = stream;
     console.log("stream ", stream);
   };
 
   // called when getUserMedia() fails - see below
-  const failure = (e) => {
+  const failure = e => {
     console.log("getUserMedia Error: ", e);
     alert(e.toString());
-  };
-
-  const callGoToLive = () => {
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(success)
-      .catch(failure);
-    setIsLive(!isLive);
-    if (isLive == false) setStream(null);
   };
 
   const getImage = () => {
@@ -46,9 +125,9 @@ function SingleUserORBPage() {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then((canvas) => {
+    }).then(canvas => {
       let file;
-      canvas.toBlob(async (blob) => {
+      canvas.toBlob(async blob => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -61,32 +140,23 @@ function SingleUserORBPage() {
   return (
     <div
       style={{
-        background: isLive
-          ? "url('../assets/images/background_black.jpg')"
-          : "url('../assets/images/JL-GO-LIVE.jpg')",
+        background: "url('../assets/images/background_black.jpg')",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture"
-    >
+      id="capture">
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
         </div>
         <div className="ORB_live_container d-flex">
-          <div className="ORB_video_live d-flex position-relative">
-            {isLive ? (
-              <video ref={videoRef} autoPlay></video>
-            ) : (
-              <div
-                style={{
-                  boxShadow: isLive
-                    ? "inset 3px 5px 5px #3a3a3a"
-                    : "inset 3px 5px 5px #595959",
-                }}
-              ></div>
-            )}
+          <div
+            className="FAN_ORB_video_live d-flex position-relative"
+            style={{
+              boxShadow: "inset 3px 5px 5px #595959",
+            }}>
+            <video ref={videoRef} autoPlay></video>
           </div>
         </div>
         <div className="ORB_tips_info d-flex">
@@ -112,18 +182,16 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}
-              >
+                }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "100%",
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
+                  aria-valuemax="100"></div>
               </div>
             </div>
             <div className="value_container">
@@ -132,18 +200,16 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}
-              >
+                }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "60%",
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
+                  aria-valuemax="100"></div>
               </div>
             </div>
             <div className="value_container">
@@ -152,18 +218,16 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}
-              >
+                }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "40%",
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
+                  aria-valuemax="100"></div>
               </div>
             </div>
             <div className="value_container">
@@ -172,18 +236,16 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}
-              >
+                }}>
                 <div
-                  class="progress-bar"
+                  className="progress-bar"
                   role="progressbar"
                   style={{
                     width: "100%",
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"
-                ></div>
+                  aria-valuemax="100"></div>
               </div>
             </div>
           </div>
@@ -225,8 +287,12 @@ function SingleUserORBPage() {
         <div className="col-md-6 text-center">
           <div
             className="border border-light rounded-circle mx-auto mb-3"
-            style={{ height: "500px", width: "500px" }}
-          ></div>
+            id="remote-playerlist"
+            style={{
+              height: "500px",
+              width: "500px",
+              borderRadius: "100%",
+            }}></div>
           <div className="r_image">
             {isLive ? (
               <img

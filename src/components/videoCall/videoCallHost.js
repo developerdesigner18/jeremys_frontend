@@ -21,20 +21,15 @@ function VideoCall() {
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${localStorage.getItem("id")}`,
-        {
-          headers: {
-            token: localStorage.getItem("token"),
-          },
-        }
+        }api/agora/generateRtcToken?channelName=${localStorage.getItem("id")}`
       )
-      .then((result) => {
+      .then(result => {
         console.log("result-==-=--=", result.data.key);
         localStorage.setItem("videoToken", result.data.key);
         setOptions({ ...options, token: result.data.key });
         token = result.data.key;
       })
-      .catch((err) => console.log("error ", err));
+      .catch(err => console.log("error ", err));
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
@@ -119,8 +114,7 @@ function VideoCall() {
       <div
         id="local-player"
         class="player"
-        style={{ borderRadius: "100%", height: "300px", width: "300px" }}
-      >
+        style={{ borderRadius: "100%", height: "300px", width: "300px" }}>
         {/* <video
           ref={videoRef}
           autoPlay={true}
@@ -131,8 +125,7 @@ function VideoCall() {
       <div
         id="remote-playerlist"
         class="player mt-5"
-        style={{ borderRadius: "100%", height: "450px", width: "300px" }}
-      ></div>
+        style={{ borderRadius: "100%", height: "450px", width: "300px" }}></div>
     </div>
   );
 }

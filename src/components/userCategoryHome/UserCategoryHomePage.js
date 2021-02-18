@@ -252,13 +252,13 @@ function UserCategoryHomePage(props) {
                         ? currentUserdata.data.profileImgURl != "" &&
                           currentUserdata.data.profileImgURl != null
                           ? currentUserdata.data.profileImgURl
-                          : "http://3.84.158.108:8000/default/profile.jpg"
-                        : "http://3.84.158.108:8000/default/profile.jpg"
+                          : "http://54.236.46.101:8000/default/profile.jpg"
+                        : "http://54.236.46.101:8000/default/profile.jpg"
                     }
                     onError={e => {
                       e.target.onerror = null;
                       e.target.src =
-                        "http://3.84.158.108:8000/default/profile.jpg";
+                        "http://54.236.46.101:8000/default/profile.jpg";
                     }}
                   />
                   <div
@@ -312,12 +312,12 @@ function UserCategoryHomePage(props) {
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
                                 ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
+                                : "http://54.236.46.101:8000/default/profile.jpg"
                             }
                             onError={e => {
                               e.target.onerror = null;
                               e.target.src =
-                                "http://3.84.158.108:8000/default/profile.jpg";
+                                "http://54.236.46.101:8000/default/profile.jpg";
                             }}
                           />
 
@@ -357,12 +357,12 @@ function UserCategoryHomePage(props) {
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
                                 ? fan.profileImgURl
-                                : "http://3.84.158.108:8000/default/profile.jpg"
+                                : "http://54.236.46.101:8000/default/profile.jpg"
                             }
                             onError={e => {
                               e.target.onerror = null;
                               e.target.src =
-                                "http://3.84.158.108:8000/default/profile.jpg";
+                                "http://54.236.46.101:8000/default/profile.jpg";
                             }}
                           />
 
@@ -474,18 +474,22 @@ function UserCategoryHomePage(props) {
                     </li>
                     <li
                       className="dropdown-item menu more_list"
-                      onClick={callLogout}>
-                      LOGOUT
+                      onClick={() => {
+                        props.history.push("/customerService");
+                      }}>
+                      CONTACT US
                     </li>
-                    <li className="dropdown-item menu more_list">CONTACT US</li>
                   </ul>
                 </div>
               </div>
-              <div className="down_links">
-                <a href="#">
+              <div
+                className="down_links"
+                onClick={callLogout}
+                style={{ cursor: "pointer" }}>
+                <a>
                   <img src="../assets/images/4.png" />
                 </a>
-                <div className="link_text">About</div>
+                <div className="link_text">Log Out</div>
               </div>
             </div>
           </div>

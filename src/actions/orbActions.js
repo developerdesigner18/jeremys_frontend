@@ -21,11 +21,48 @@ export const storeScreenShot = data => {
   };
 };
 
+export const storeChefOrbDetails = data => {
+  return dispatch => {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/stream/addDetailsChefStream`,
+        data
+      )
+      .then(result => {
+        console.log("result ", result.data);
+        if (result.status === 201) {
+          dispatch({
+            type: "STORE_CHEF_ORB_DETAILS",
+            payload: result.data,
+          });
+        }
+      })
+      .catch(error => console.log("error while storing ss", error));
+  };
+};
+
 export const storeFanStatus = data => {
   return dispatch => {
     dispatch({
       type: "FAN_GO_LIVE",
       payload: data,
     });
+  };
+};
+
+export const getUserToken = data => {
+  return dispatch => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${data}`)
+      .then(result => {
+        console.log("api response ", result);
+        if (result.data.code == 201) {
+          dispatch({
+            type: "USER_TOKEN",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("error while fetching data", error));
   };
 };

@@ -112,7 +112,11 @@ body {
 }
 .ORB_video_live {
   display: block;
-  width: 100%;
+  /* width: 100%; */
+}
+.FAN_ORB_video_live {
+  display: block;
+  /* width: 100%; */
 }
 .ORB_video_live div {
   display: block;
@@ -121,8 +125,29 @@ body {
   box-shadow: inset 3px 5px 5px #3a3a3a;
   border-radius: 0;
 }
+.FAN_ORB_video_live div {
+  display: block;
+  background: #242529;
+  width: 100%;
+  box-shadow: inset 3px 5px 5px #3a3a3a;
+  border-radius: 0;
+}
 .ORB_video_live:after {
-  content: "live!";
+  /* content: "live!"; */
+  position: absolute;
+  bottom: 10px;
+  display: block;
+  text-align: center;
+  left: 0;
+  width: 100%;
+  color: #138236;
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  /* background: linear-gradient(45deg, #0000004f, transparent); */
+}
+.FAN_ORB_video_live:after {
+  /* content: "live!"; */
   position: absolute;
   bottom: 10px;
   display: block;
@@ -191,6 +216,9 @@ body {
   width: 90px;
   height: 90px;
   border: solid 1px red;
+  border-radius: 50%;
+}
+#remote-playerlist .agora_video_player {
   border-radius: 50%;
 }
 @media (max-width: 991px) {
