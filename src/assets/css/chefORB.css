@@ -217,6 +217,16 @@ img.black_logo_img {
   font-size: 22px;
   margin: 5px auto;
 }
+.tips_info .timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+  margin: auto;
+}
+.userVideo{
+  height: auto !important;
+}
 
 @media (max-width: 1024px) {
   .round_video img {

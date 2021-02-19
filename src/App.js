@@ -20,6 +20,8 @@ import VideoChat from "./components/videoCall/videoCallHost";
 import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
 import { isAuthenticate } from "./utill";
 import DemoWithVonage from "./components/ORB/DemoWithVonage";
+import MyStory from "./components/placeholder/myStory";
+import FanChefORB from "./components/ORB/fanChefORBPage";
 
 function App() {
   return (
@@ -54,6 +56,7 @@ function App() {
         <PrivateRoute path="/ORBpage" component={ORBPage} />
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
+        <PrivateRoute path="/fanChefORB" component={FanChefORB} />
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <Route exact path="/demoWithVonage" component={DemoWithVonage} />
@@ -62,6 +65,7 @@ function App() {
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
 
         <Route exact path="/myCalendar" component={Calendar} />
+        <PrivateRoute path="/myStory" component={MyStory} />
       </BrowserRouter>
     </div>
   );
