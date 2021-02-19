@@ -4,6 +4,7 @@ import html2canvas from "html2canvas";
 import { useDispatch, useSelector } from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
+import io from "socket.io-client";
 
 import { storeScreenShot, storeChefOrbDetails } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
@@ -28,6 +29,7 @@ function ChefORBPage(props) {
     // console.log("state.... ", state.user);
     return state.ORB;
   });
+  const socket = io("http://localhost:8000");
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -78,22 +80,25 @@ function ChefORBPage(props) {
       localVideoTrack: null,
     };
     let token;
+
+    socket.emit("storeUser", localStorage.getItem("id"));
     await axios
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${localStorage.getItem("name")}`
+        }api/agora/generateRtcToken?channelName=${localStorage.getItem(
+          "name"
+        )}&userId=${localStorage.getItem("id")}`
       )
       .then(result => {
         console.log("result-==-=--=", result.data.key);
-        localStorage.setItem("videoToken", result.data.key);
         setOptions({ ...options, token: result.data.key });
         token = result.data.key;
       })
       .catch(err => console.log("error ", err));
 
-    rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-    await rtc.client.setClientRole(options.role);
+    rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    // await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
       options.appId,
       options.channel,
@@ -215,6 +220,12 @@ function ChefORBPage(props) {
       }
     }
   }, [stateData]);
+
+  const callExit = () => {
+    console.log("exit mtd called");
+
+    socket.disconnect();
+  };
 
   return (
     <div
@@ -445,7 +456,7 @@ function ChefORBPage(props) {
             <a
               style={{ cursor: "pointer" }}
               onClick={() => props.history.goBack()}>
-              <div className="link d-flex flex-column">
+              <div className="link d-flex flex-column" onClick={callExit}>
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
               </div>

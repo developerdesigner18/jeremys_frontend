@@ -30,15 +30,11 @@ function SingleUserORBPage() {
 
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
-    console.log("use efffect called");
-    const socket = io("http://localhost:8000");
+    const socket = io.connect("http://localhost:8000");
 
-    socket.emit("hello", "world");
-    socket.on("ID", id => console.log("socket id ", id));
-
-    socket.emit("backToMap", "123");
-
-    socket.on("returnData", data => console.log("return val ", data));
+    socket.on("listOnlineUser", arg => {
+      console.log("list ", arg);
+    });
   }, []);
 
   useEffect(async () => {
@@ -46,12 +42,6 @@ function SingleUserORBPage() {
       .getUserMedia(constraints)
       .then(success)
       .catch(failure);
-
-    // const socket = io.connect("http://localhost:8000");
-
-    // socket.on("hello", arg => {
-    //   console.log(arg);
-    // });
 
     if (orbState) {
       const remoteUsers = {};

@@ -4,6 +4,7 @@ import html2canvas from "html2canvas";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import io from "socket.io-client";
 
 import { storeScreenShot } from "../../actions/orbActions";
 
@@ -19,6 +20,7 @@ function ORBPage() {
       mirror: true,
     },
   };
+  const socket = io("http://localhost:8000");
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -56,6 +58,9 @@ function ORBPage() {
       localVideoTrack: null,
     };
     let token;
+
+    socket.emit("storeUser", localStorage.getItem("id"));
+
     await axios
       .get(
         `${
@@ -137,6 +142,12 @@ function ORBPage() {
     }
     return hosts;
   }
+
+  const callExit = () => {
+    console.log("exit mtd called");
+
+    socket.disconnect();
+  };
 
   return (
     <div
@@ -391,7 +402,7 @@ function ORBPage() {
           </div>
         </a>
         <a>
-          <div className="ORB_link d-flex flex-column">
+          <div className="ORB_link d-flex flex-column" onClick={callExit}>
             <img src="../assets/images/exit.png" />
             <p>Exit</p>
           </div>

@@ -12,6 +12,7 @@ import { getFollowing } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
+import io from "socket.io-client";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -47,15 +48,20 @@ function FanHomePage(props) {
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [onlineCheck, setOnlineCheck] = useState(true);
+
   const ref = useRef();
+  const _isMounted = useRef(true);
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
+  const socket = io("http://localhost:8000");
 
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
 
-  const openCity = (evt, cityName) => {
+  function openCity(evt, eventName) {
+    console.log("fn called", category, subcategory);
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -65,9 +71,34 @@ function FanHomePage(props) {
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    document.getElementById(cityName).style.display = "block";
+    document.getElementById(eventName).style.display = "block";
     evt.currentTarget.className += " active";
-  };
+
+    if (eventName == "food") {
+      socket.emit("chekCategory", eventName, subFood[0]);
+    } else if (eventName == "style") {
+      socket.emit("chekCategory", eventName, subStyle[0]);
+    } else if (eventName == "body") {
+      socket.emit("chekCategory", eventName, subBody[0]);
+    } else {
+      socket.emit("chekCategory", eventName, subMusic[0]);
+    }
+
+    socket.on("onlineUsers", userList => {
+      console.log("userlist ", userList);
+      if (userList.length) {
+        userList = userList.filter(
+          (value, index, array) =>
+            index === array.findIndex(data => value._id == data._id)
+        );
+        setCommunity(userList);
+        setOnlineCheck(true);
+      } else {
+        setOnlineCheck(false);
+        setCommunity(userList);
+      }
+    });
+  }
   const handleDragStart = e => {
     var img = new Image();
     img.src =
@@ -127,11 +158,37 @@ function FanHomePage(props) {
     } else {
       props.history.push("/");
     }
+
+    socket.emit("chekCategory", category, subcategory);
+
+    socket.on("onlineUsers", userList => {
+      if (userList.length) {
+        userList = userList.filter(
+          (value, index, array) =>
+            index === array.findIndex(data => value._id == data._id)
+        );
+        setCommunity(userList);
+        setOnlineCheck(true);
+      } else {
+        setOnlineCheck(false);
+        setCommunity(userList);
+      }
+    });
     dispatch(getUserWithId(localStorage.getItem("id")));
 
     dispatch(getAllArtists(category, subcategory));
     dispatch(getFollowing(localStorage.getItem("id")));
     dispatch(getFromCommunity(category, subcategory));
+
+    return () => {
+      // ComponentWillUnmount in Class Component
+
+      socket.on("disconnect", () => {
+        console.log("disconnect from client side called");
+        localStorage.getItem("id");
+      });
+      _isMounted.current = false;
+    };
   }, []);
   useEffect(() => {
     if (stateData) {
@@ -140,7 +197,10 @@ function FanHomePage(props) {
       }
       if (stateData.artists) setAllArtists(stateData.artists);
       if (stateData.community) {
-        setCommunity(stateData.community);
+        if (community.length == 0) {
+          setOnlineCheck(false);
+          setCommunity(stateData.community);
+        }
         setisLoading(false);
       }
       if (stateData.communityError) {
@@ -290,6 +350,26 @@ function FanHomePage(props) {
     props.history.push("/");
   };
 
+  const callSubCategory = (category, value) => {
+    setSubCategory(value);
+    socket.emit("chekCategory", category, value);
+
+    socket.on("onlineUsers", userList => {
+      console.log("userlist ", userList);
+      if (userList.length) {
+        userList = userList.filter(
+          (value, index, array) =>
+            index === array.findIndex(data => value._id == data._id)
+        );
+        setCommunity(userList);
+        setOnlineCheck(true);
+      } else {
+        setOnlineCheck(false);
+        setCommunity(userList);
+      }
+    });
+  };
+
   return (
     <div className="container">
       <div className="form_container px-3 px-md-5">
@@ -319,8 +399,8 @@ function FanHomePage(props) {
                 className="tablinks"
                 onClick={event => {
                   setSubCategory(subFood[0]);
-                  setisLoading(true);
                   setCategory("food");
+                  setisLoading(true);
                   openCity(event, "food");
                   if (Find) {
                     dispatch(getAllArtists("food", subFood[0]));
@@ -379,9 +459,9 @@ function FanHomePage(props) {
               <button
                 className="tablinks"
                 onClick={event => {
-                  openCity(event, "body");
                   setisLoading(true);
                   setSubCategory(subBody[0]);
+                  openCity(event, "body");
                   setCategory("body");
                   if (Find) {
                     dispatch(getAllArtists("body", subBody[0]));
@@ -416,7 +496,7 @@ function FanHomePage(props) {
                         marginBottom: "0",
                       }}
                       onClick={() => {
-                        setSubCategory(value);
+                        callSubCategory("music", value);
                         if (Find) {
                           setisLoading(true);
                           dispatch(getAllArtists("music", value));
@@ -460,7 +540,7 @@ function FanHomePage(props) {
                         marginBottom: "0",
                       }}
                       onClick={() => {
-                        setSubCategory(value);
+                        callSubCategory("food", value);
                         if (Find) {
                           setisLoading(true);
                           dispatch(getAllArtists("food", value));
@@ -504,7 +584,7 @@ function FanHomePage(props) {
                         marginBottom: "0",
                       }}
                       onClick={() => {
-                        setSubCategory(value);
+                        callSubCategory("style", value);
                         if (Find) {
                           setisLoading(true);
                           dispatch(getAllArtists("style", value));
@@ -542,7 +622,7 @@ function FanHomePage(props) {
                         marginBottom: "0",
                       }}
                       onClick={() => {
-                        setSubCategory(value);
+                        callSubCategory("body", value);
                         if (Find) {
                           setisLoading(true);
                           dispatch(getAllArtists("body", value));
@@ -559,6 +639,25 @@ function FanHomePage(props) {
             </Slider>
           </div>
 
+          <div
+            style={{
+              alignItems: "right",
+              display: "flex",
+              flexDirection: "row-reverse",
+            }}>
+            <span>
+              {onlineCheck ? "Currently Online" : "Currently Offline"}
+            </span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                value={onlineCheck}
+                checked={onlineCheck}
+                onChange={() => setOnlineCheck(!onlineCheck)}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
           {isLoading ? (
             <div className="loader my-5"></div>
           ) : Find ? (
@@ -625,7 +724,68 @@ function FanHomePage(props) {
             </div>
           ) : (
             <div className=" row vids">
-              {community.length != 0 ? (
+              {onlineCheck ? (
+                community.length != 0 ? (
+                  community.map((fan, i) => {
+                    return (
+                      <div
+                        className="profile_images col-sm-3 col-md-3  my-3"
+                        style={{ textAlign: "center" }}
+                        key={i}>
+                        {" "}
+                        {/* <div
+                        id={fan._id}
+                        onDragStart={(e) => handleDragStart(e)}
+                        onDrag={(e) => handleDrag(e, fan._id)}
+                        onDragEnd={(e) => {
+                          handleDragEnd(e, fan._id, fan.profileImgURl);
+                        }}
+                      > */}
+                        <TinderCard
+                          // ref={this.addToRefs}
+                          // className="swipe col-md-12 "
+                          // key={index.id}
+                          onSwipe={dir => swiped(dir, fan._id)}
+                          onCardLeftScreen={() => outOfFrame(fan._id)}
+                          preventSwipe={["down", "left", "right"]}>
+                          <img
+                            className="draggableImg"
+                            src={
+                              fan.profileImgURl != "" &&
+                              fan.profileImgURl != null
+                                ? fan.profileImgURl
+                                : "http://54.236.46.101:8000/default/profile.jpg"
+                            }
+                            onError={e => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "http://54.236.46.101:8000/default/profile.jpg";
+                            }}
+                          />
+                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                        </TinderCard>
+                        {/* </div> */}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div style={{ margin: "auto" }}>
+                    <span>
+                      No {subcategory}{" "}
+                      {category == "music"
+                        ? "stars"
+                        : category == "body"
+                        ? "trainers"
+                        : category == "style"
+                        ? "stylists"
+                        : category == "food"
+                        ? "chefs"
+                        : "artists"}{" "}
+                      found in your community
+                    </span>
+                  </div>
+                )
+              ) : community.length != 0 ? (
                 community.map((fan, i) => {
                   return (
                     <div
