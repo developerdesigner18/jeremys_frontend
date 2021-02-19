@@ -66,3 +66,20 @@ export const getUserToken = data => {
       .catch(error => console.log("error while fetching data", error));
   };
 };
+
+export const getStreamDetails = data => {
+  return dispatch => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}api/stream/getStreamdata`, data)
+      .then(result => {
+        console.log("result ",result.data);
+        if (result.status === 201) {
+          dispatch({
+            type: "GET_STREAM_DETAILS",
+            payload: result.data
+          });
+        }
+      })
+      .catch(error => console.log("error while storing ss", error));
+  };
+};

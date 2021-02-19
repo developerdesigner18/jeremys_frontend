@@ -14,6 +14,12 @@ export const orbReducer = (state = null, action) => {
         ...state,
         goLiveStatus: action.payload,
       };
+    
+    case "GET_STREAM_DETAILS":
+        return {
+          ...state,
+          streamData: action.payload,
+    };
 
     case "USER_TOKEN":
       return {

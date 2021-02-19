@@ -12,6 +12,7 @@ import { getFollowing } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
+import { useHistory } from "react-router-dom"
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -31,6 +32,7 @@ const useOutsideClick = (ref, callback) => {
 
 function FanHomePage(props) {
   const dispatch = useDispatch();
+  const history = useHistory()
   const [allArtists, setAllArtists] = useState([]);
   const [userInfo, setUserInfo] = useState();
   const [loggedInUserFollowing, setloggedInUserFollowing] = useState(0);
@@ -760,7 +762,7 @@ function FanHomePage(props) {
                     onClick={() => props.history.push("/profile")}>
                     PROFILE
                   </li>
-                  <li className="dropdown-item menu more_list">MY STORY</li>
+                  <li className="dropdown-item menu more_list" onClick={()=>history.push('/myStory')}>MY STORY</li>
                   <li className="dropdown-item menu more_list">MY JOURNAL</li>
                   <li className="dropdown-item menu more_list">
                     MY RATINGS AND REVIWS

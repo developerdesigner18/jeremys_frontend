@@ -462,10 +462,10 @@ function UserCategoryHomePage(props) {
                       onClick={() => props.history.push("/profile")}>
                       PROFILE
                     </li>
-                    <li className="dropdown-item menu more_list">MY STORY</li>
+                    <li className="dropdown-item menu more_list" onClick={() => props.history.push("/myStory")}>MY STORY</li>
                     <li className="dropdown-item menu more_list">MY JOURNAL</li>
                     <li className="dropdown-item menu more_list">
-                      MY RATINGS AND REVIWS
+                      MY RATINGS AND REVIEWS
                     </li>
                     <li
                       className="dropdown-item menu more_list"
