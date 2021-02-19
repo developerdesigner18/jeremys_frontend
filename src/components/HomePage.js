@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
-import '../assets/css/homepage.css';
-import Header from './header/Header';
+import React, { useEffect } from "react";
+import "../assets/css/homepage.css";
+import Header from "./header/Header";
 
 function HomePage(props) {
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+  }, []);
   return (
     <>
       <Header />

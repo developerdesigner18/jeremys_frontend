@@ -19,7 +19,6 @@ import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHome
 import VideoChat from "./components/videoCall/videoCallHost";
 import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
 import { isAuthenticate } from "./utill";
-import DemoWithVonage from "./components/ORB/DemoWithVonage";
 import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
 
@@ -59,7 +58,6 @@ function App() {
         <PrivateRoute path="/fanChefORB" component={FanChefORB} />
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
-        <Route exact path="/demoWithVonage" component={DemoWithVonage} />
         <PrivateRoute path="/videoChatHost" component={VideoChat} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}

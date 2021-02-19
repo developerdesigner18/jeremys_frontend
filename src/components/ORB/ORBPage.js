@@ -20,6 +20,10 @@ function ORBPage() {
       mirror: true,
     },
   };
+
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+  }, []);
   const socket = io("http://localhost:8000");
 
   const [options, setOptions] = useState({

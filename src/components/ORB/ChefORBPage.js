@@ -209,6 +209,7 @@ function ChefORBPage(props) {
     setPrice(e.target.value);
   };
   useEffect(async () => {
+    document.documentElement.scrollTop = 0;
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
   }, []);
