@@ -8,11 +8,36 @@ import io from "socket.io-client";
 
 import { storeScreenShot, getUserToken } from "../../actions/orbActions";
 
+const useOutsideClick = (ref, callback) => {
+  const handleClick = (e) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
+};
+
 function SingleUserORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
   const videoRef = useRef();
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef();
+  const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
+  const setMoreIcon = () => {
+    setIsOpen(!isOpen);
+  };
+  let encodedURL = encodeURI(
+    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+  );
   const constraints = {
     audio: true,
     video: true,
@@ -26,13 +51,15 @@ function SingleUserORBPage() {
     token: null,
     role: "audience",
   });
-  const orbState = useSelector(state => state.ORB);
-
+  const orbState = useSelector((state) => state.ORB);
+  useOutsideClick(ref, () => {
+    setIsOpen(false);
+  });
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
     const socket = io.connect("http://localhost:8000");
 
-    socket.on("listOnlineUser", arg => {
+    socket.on("listOnlineUser", (arg) => {
       console.log("list ", arg);
     });
   }, []);
@@ -97,14 +124,14 @@ function SingleUserORBPage() {
     }
   }, [orbState]);
 
-  const success = stream => {
+  const success = (stream) => {
     setStream(stream);
     videoRef.current.srcObject = stream;
     console.log("stream ", stream);
   };
 
   // called when getUserMedia() fails - see below
-  const failure = e => {
+  const failure = (e) => {
     console.log("getUserMedia Error: ", e);
     alert(e.toString());
   };
@@ -115,9 +142,9 @@ function SingleUserORBPage() {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -135,7 +162,8 @@ function SingleUserORBPage() {
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -145,7 +173,8 @@ function SingleUserORBPage() {
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}>
+            }}
+          >
             <video ref={videoRef} autoPlay></video>
           </div>
         </div>
@@ -172,7 +201,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -181,7 +211,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -190,7 +221,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -199,7 +231,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -208,7 +241,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -217,7 +251,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -226,7 +261,8 @@ function SingleUserORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -235,7 +271,8 @@ function SingleUserORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
           </div>
@@ -282,7 +319,8 @@ function SingleUserORBPage() {
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-            }}></div>
+            }}
+          ></div>
           <div className="r_image">
             {isLive ? (
               <img
@@ -328,12 +366,72 @@ function SingleUserORBPage() {
                 <p>Short Break</p>
               </div>
             </a>
-            <a href="#">
-              <div className="ORB_link d-flex flex-column">
-                <img src="../assets/images/share.png" />
+            <a ref={ref}>
+              <div
+                className="ORB_link d-flex flex-column dropup"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                onClick={() => setMoreIcon()}
+              >
+                <img
+                  src="../assets/images/share.png"
+                  style={
+                    isOpen
+                      ? {
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
+                      : { cursor: "pointer" }
+                  }
+                />
                 <p>Share</p>
+                <div
+                  className={menuClass}
+                  style={{
+                    background: "#333333",
+                    borderRadius: "10px",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
+                    {" "}
+                    <li
+                      className="menu more_list "
+                      style={{ listStyleType: "none" }}
+                      // onClick={() => props.history.push("/profile")}
+                    >
+                      <a
+                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}
+                      >
+                        {" "}
+                        <span
+                          className="fab fa-facebook-square"
+                          style={{ fontSize: "25px" }}
+                        ></span>
+                      </a>
+                    </li>
+                    <li
+                      className="menu more_list"
+                      style={{ listStyleType: "none" }}
+                      // onClick={() => props.history.push("/myStory")}
+                    >
+                      {" "}
+                      <a
+                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}
+                      >
+                        <span
+                          className="fab fa-twitter-square"
+                          style={{ fontSize: "25px" }}
+                        ></span>{" "}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </a>
+
             <a href="#">
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
