@@ -3,7 +3,6 @@ import html2canvas from "html2canvas";
 import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
-import axios from "axios";
 import io from "socket.io-client";
 
 import { storeScreenShot, getUserToken } from "../../actions/orbActions";
@@ -27,6 +26,12 @@ function SingleUserORBPage() {
     role: "audience",
   });
   const orbState = useSelector(state => state.ORB);
+  const remoteUsers = {};
+  const rtc = {
+    client: null,
+    localAudioTrack: null,
+    localVideoTrack: null,
+  };
 
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
@@ -44,12 +49,6 @@ function SingleUserORBPage() {
       .catch(failure);
 
     if (orbState) {
-      const remoteUsers = {};
-      const rtc = {
-        client: null,
-        localAudioTrack: null,
-        localVideoTrack: null,
-      };
       rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
       await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
@@ -76,13 +75,6 @@ function SingleUserORBPage() {
           document
             .getElementById("remote-playerlist")
             .appendChild(playerWrapper);
-          console.log(
-            "nest sibling ",
-            document.getElementById(`player-wrapper-${user.uid}`).nextSibling
-          );
-          // document.getElementById(
-          //   `player-wrapper-${user.uid}`
-          // ).nextSibling.style.borderRadius = "100%";
           user.videoTrack.play(`remote-playerlist`);
         }
         if (mediaType === "audio") {
@@ -127,6 +119,24 @@ function SingleUserORBPage() {
       });
     });
   };
+
+  async function leaveCall() {
+    // Destroy the local audio and video tracks.
+    rtc.localAudioTrack.close();
+    rtc.localVideoTrack.close();
+
+    // Traverse all remote users.
+    rtc.client.remoteUsers.forEach(user => {
+      // Destroy the dynamically created DIV container.
+      const playerContainer = document.getElementById(
+        `player-wrapper-${user.uid}`
+      );
+      playerContainer && playerContainer.remove();
+    });
+
+    // Leave the channel.
+    await rtc.client.leave();
+  }
   return (
     <div
       style={{

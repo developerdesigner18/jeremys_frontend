@@ -20,6 +20,7 @@ function ChefORBPage(props) {
   const [item2Image, setItem2Image] = useState({});
   const [price, setPrice] = useState("");
   const [price2, setPrice2] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
     // console.log("state.... ", state.user);
@@ -37,6 +38,11 @@ function ChefORBPage(props) {
     token: null,
     role: "host",
   });
+  const rtc = {
+    client: null,
+    localAudioTrack: null,
+    localVideoTrack: null,
+  };
 
   const getImage = () => {
     console.log("fn called");
@@ -74,11 +80,6 @@ function ChefORBPage(props) {
     await dispatch(storeChefOrbDetails(fd));
     setIsLive(true);
 
-    const rtc = {
-      client: null,
-      localAudioTrack: null,
-      localVideoTrack: null,
-    };
     let token;
 
     socket.emit("storeUser", localStorage.getItem("id"));
@@ -106,6 +107,14 @@ function ChefORBPage(props) {
       null
     );
 
+    // Create an audio track from the audio sampled by a microphone.
+    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    // Create a video track from the video captured by a camera.
+    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+
+    // Publish the local audio and video tracks to the channel.
+    await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+
     rtc.client.on("user-published", async (user, mediaType) => {
       console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
@@ -113,43 +122,51 @@ function ChefORBPage(props) {
       await rtc.client.subscribe(user, mediaType);
       console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-      if (mediaType === "video" || mediaType === "all") {
+      if (mediaType === "video") {
+        setSubscribed(true);
         let playerWrapper = document.createElement("div");
         playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
 
         let player = document.createElement("div");
         player.setAttribute("id", `player-${user.uid}`);
+        player.setAttribute("style", "border-radius: 50%");
         playerWrapper.appendChild(player);
 
         document.getElementById("remote-playerlist").appendChild(playerWrapper);
         user.videoTrack.play(`remote-playerlist`);
       }
-      if (mediaType === "audio" || mediaType === "all") {
+      if (mediaType === "audio") {
         user.audioTrack.play();
       }
     });
     rtc.client.on("user-unpublished", async (user, mediaType) => {
       console.log("handleUserUnpublished-==-=-=", user.uid);
       const id = user.uid;
+      setIsLive(false);
+      setSubscribed(false);
     });
-    // Create an audio track from the audio sampled by a microphone.
-    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    // Create a video track from the video captured by a camera.
-    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    const player = document.getElementsByClassName("player");
-    console.log(
-      "localVideoTrack success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-      rtc.localVideoTrack
-    );
 
     rtc.localVideoTrack.play("local-player");
     rtc.localAudioTrack.play();
-
-    // Publish the local audio and video tracks to the channel.
-    await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
-
     console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
   };
+
+  async function leaveCall() {
+    console.log("leave call fn called in chef page");
+    // Destroy the local audio and video tracks.
+    rtc.localAudioTrack.close();
+    rtc.localVideoTrack.close();
+
+    // Traverse all remote users.
+    rtc.client.remoteUsers.forEach(user => {
+      // Destroy the dynamically created DIV container.
+      const playerContainer = document.getElementById(user.uid);
+      playerContainer && playerContainer.remove();
+    });
+
+    // Leave the channel.
+    await rtc.client.leave();
+  }
   // const BannerChange = (event) => {
   //   let reader = new FileReader();
   //   reader.onload = (e) => {
@@ -289,7 +306,6 @@ function ChefORBPage(props) {
               }}
             />
           </div>
-
           <div
             className="rectangle_video"
             style={{
@@ -331,17 +347,29 @@ function ChefORBPage(props) {
               />
             )}
           </div>
-          <div className="round_video" style={{ top: isLive ? "0" : "25px" }}>
+
+          <div
+            className="round_video"
+            style={{
+              top: isLive ? "0" : "25px",
+            }}>
             <div
-              id="remote-playerlist"
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
-              <img src="../assets/images/style_rounded.png" alt="logo" />
-              <img
-                className="black_logo_img"
-                src="../assets/images/black_logo.png"
-                alt="logo"
-              />
+              {subscribed ? (
+                <div id="remote-playerlist"></div>
+              ) : (
+                <>
+                  <img src="../assets/images/style_rounded.png" alt="logo" />
+                  <img
+                    className="black_logo_img"
+                    src="../assets/images/black_logo.png"
+                    alt="logo"
+                  />
+                </>
+              )}
+
+              {/* {isLive ? <></> : <></>} */}
             </div>
           </div>
         </div>
@@ -457,7 +485,12 @@ function ChefORBPage(props) {
             <a
               style={{ cursor: "pointer" }}
               onClick={() => props.history.goBack()}>
-              <div className="link d-flex flex-column" onClick={callExit}>
+              <div
+                className="link d-flex flex-column"
+                onClick={() => {
+                  leaveCall();
+                  callExit();
+                }}>
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
               </div>
