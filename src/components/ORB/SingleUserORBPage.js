@@ -7,11 +7,36 @@ import io from "socket.io-client";
 
 import { storeScreenShot, getUserToken } from "../../actions/orbActions";
 
+const useOutsideClick = (ref, callback) => {
+  const handleClick = e => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
+};
+
 function SingleUserORBPage() {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
   const videoRef = useRef();
   const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef();
+  const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
+  const setMoreIcon = () => {
+    setIsOpen(!isOpen);
+  };
+  let encodedURL = encodeURI(
+    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+  );
   const constraints = {
     audio: true,
     video: true,
@@ -33,6 +58,9 @@ function SingleUserORBPage() {
     localVideoTrack: null,
   };
 
+  useOutsideClick(ref, () => {
+    setIsOpen(false);
+  });
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
     const socket = io.connect("http://localhost:8000");
@@ -338,12 +366,66 @@ function SingleUserORBPage() {
                 <p>Short Break</p>
               </div>
             </a>
-            <a href="#">
-              <div className="ORB_link d-flex flex-column">
-                <img src="../assets/images/share.png" />
+            <a ref={ref}>
+              <div
+                className="ORB_link d-flex flex-column dropup"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                onClick={() => setMoreIcon()}>
+                <img
+                  src="../assets/images/share.png"
+                  style={
+                    isOpen
+                      ? {
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
+                      : { cursor: "pointer" }
+                  }
+                />
                 <p>Share</p>
+                <div
+                  className={menuClass}
+                  style={{
+                    background: "#333333",
+                    borderRadius: "10px",
+                    verticalAlign: "middle",
+                  }}>
+                  <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
+                    {" "}
+                    <li
+                      className="menu more_list "
+                      style={{ listStyleType: "none" }}
+                      // onClick={() => props.history.push("/profile")}
+                    >
+                      <a
+                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}>
+                        {" "}
+                        <span
+                          className="fab fa-facebook-square"
+                          style={{ fontSize: "25px" }}></span>
+                      </a>
+                    </li>
+                    <li
+                      className="menu more_list"
+                      style={{ listStyleType: "none" }}
+                      // onClick={() => props.history.push("/myStory")}
+                    >
+                      {" "}
+                      <a
+                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
+                        <span
+                          className="fab fa-twitter-square"
+                          style={{ fontSize: "25px" }}></span>{" "}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </a>
+
             <a href="#">
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
@@ -461,12 +543,8 @@ function SingleUserORBPage() {
           <img src="../assets/images/button_bg.png" />
         </div>
       </div>
-<<<<<<< HEAD
        */}
       {/* <div className="container justify-content-center d-flex ORB_links mt-5">
-=======
-      <div className="container justify-content-center d-flex ORB_links mt-5">
->>>>>>> b692baf0adb2ada869f7536048d544f641654cca
         <a href="#">
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />

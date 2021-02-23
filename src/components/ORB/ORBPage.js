@@ -8,8 +8,26 @@ import io from "socket.io-client";
 
 import { storeScreenShot } from "../../actions/orbActions";
 
+const useOutsideClick = (ref, callback) => {
+  const handleClick = (e) => {
+    if (ref.current && !ref.current.contains(e.target)) {
+      callback();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
+};
+
 function ORBPage() {
   const [isLive, setIsLive] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef();
   const [stream, setStream] = useState(null);
   const videoRef = useRef();
   const dispatch = useDispatch();
@@ -20,7 +38,10 @@ function ORBPage() {
       mirror: true,
     },
   };
-
+  const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
+  useOutsideClick(ref, () => {
+    setIsOpen(false);
+  });
   useEffect(() => {
     document.documentElement.scrollTop = 0;
   }, []);
@@ -33,7 +54,7 @@ function ORBPage() {
     role: "host",
   });
 
-  const stateData = useSelector(state => state.ORB);
+  const stateData = useSelector((state) => state.ORB);
 
   const getImage = () => {
     console.log("fn called");
@@ -41,9 +62,9 @@ function ORBPage() {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -52,6 +73,9 @@ function ORBPage() {
         await dispatch(storeScreenShot(fd));
       });
     });
+  };
+  const setMoreIcon = () => {
+    setIsOpen(!isOpen);
   };
 
   const callGoToLive = async () => {
@@ -73,12 +97,12 @@ function ORBPage() {
           "name"
         )}&userId=${localStorage.getItem("id")}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result-==-=--=", result.data.key);
         setOptions({ ...options, token: result.data.key });
         token = result.data.key;
       })
-      .catch(err => console.log("error ", err));
+      .catch((err) => console.log("error ", err));
 
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     await rtc.client.setClientRole(options.role);
@@ -152,7 +176,9 @@ function ORBPage() {
 
     socket.disconnect();
   };
-
+  let encodedURL = encodeURI(
+    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+  );
   return (
     <div
       style={{
@@ -162,7 +188,8 @@ function ORBPage() {
         backgroundSize: "100vw auto",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -175,7 +202,8 @@ function ORBPage() {
               ? "inset 3px 5px 5px #3a3a3a"
               : "rgb(89 89 89) 3px 5px 5px 8px inset",
             backgroundColor: "#424242",
-          }}>
+          }}
+        >
           {/* <div className="ORB_video_live d-flex position-relative">
             <div></div>
           </div> */}
@@ -204,7 +232,8 @@ function ORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -213,7 +242,8 @@ function ORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -222,7 +252,8 @@ function ORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -231,7 +262,8 @@ function ORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -240,7 +272,8 @@ function ORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -249,7 +282,8 @@ function ORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -258,7 +292,8 @@ function ORBPage() {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -267,7 +302,8 @@ function ORBPage() {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
           </div>
@@ -277,7 +313,8 @@ function ORBPage() {
         <div
           className="ORB_main_cat"
           id="remote-playerlist"
-          style={{ borderRadius: "50%" }}>
+          style={{ borderRadius: "50%" }}
+        >
           {isLive ? <></> : <img src="../assets/images/button_bg.png" />}
         </div>
         <div className="ORB_main_cat">
@@ -289,7 +326,8 @@ function ORBPage() {
         <div
           className="ORB_main_cat"
           style={{ cursor: isLive ? "auto" : "pointer" }}
-          onClick={callGoToLive}>
+          onClick={callGoToLive}
+        >
           {isLive ? (
             <img src="../assets/images/button_bg.png" />
           ) : (
@@ -393,12 +431,72 @@ function ORBPage() {
             <p>Short Break</p>
           </div>
         </a>
-        <a>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/share.png" />
+        <a ref={ref}>
+          <div
+            className="ORB_link d-flex flex-column dropup"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            onClick={() => setMoreIcon()}
+          >
+            <img
+              src="../assets/images/share.png"
+              style={
+                isOpen
+                  ? {
+                      boxShadow: "0 0 10px 2px #ddd",
+                      cursor: "pointer",
+                      borderRadius: "100%",
+                    }
+                  : { cursor: "pointer" }
+              }
+            />
             <p>Share</p>
+            <div
+              className={menuClass}
+              style={{
+                background: "#333333",
+                borderRadius: "10px",
+                verticalAlign: "middle",
+              }}
+            >
+              <ul className="menu_item d-flex m-0 justify-content-between px-3 align-items-center">
+                {" "}
+                <li
+                  className="menu more_list "
+                  style={{ listStyleType: "none" }}
+                  // onClick={() => props.history.push("/profile")}
+                >
+                  <a
+                    href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}
+                  >
+                    {" "}
+                    <span
+                      className="fab fa-facebook-square"
+                      style={{ fontSize: "25px" }}
+                    ></span>
+                  </a>
+                </li>
+                <li
+                  className="menu more_list"
+                  style={{ listStyleType: "none" }}
+                  // onClick={() => props.history.push("/myStory")}
+                >
+                  {" "}
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodedURL}`}
+                  >
+                    <span
+                      className="fab fa-twitter-square"
+                      style={{ fontSize: "25px" }}
+                    ></span>{" "}
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </a>
+
         <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
