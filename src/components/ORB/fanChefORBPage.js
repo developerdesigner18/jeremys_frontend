@@ -22,6 +22,8 @@ function FanChefORB(props) {
   const [banner2Img, setBanner2Img] = useState("");
   const [item1Image, setItem1Image] = useState("");
   const [item2Image, setItem2Image] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
     return state.user;
@@ -132,6 +134,7 @@ function FanChefORB(props) {
           console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
           if (mediaType === "video") {
+            setSubscribed(true);
             let playerWrapper = document.createElement("div");
             playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
 
@@ -151,6 +154,7 @@ function FanChefORB(props) {
         rtc.client.on("user-unpublished", async (user, mediaType) => {
           console.log("handleUserUnpublished-==-=-=", user.uid);
           const id = user.uid;
+          setSubscribed(false);
         });
 
         rtc.localVideoTrack.play("local-player");
@@ -248,14 +252,19 @@ function FanChefORB(props) {
           <div className="round_video" style={{ top: "25px" }}>
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}
-              id="remote-playerlist">
-              <img src="../assets/images/style_rounded.png" alt="logo" />
-              <img
-                className="black_logo_img"
-                src="../assets/images/black_logo.png"
-                alt="logo"
-              />
+              style={{ zIndex: "2" }}>
+              {subscribed ? (
+                <div id="remote-playerlist"></div>
+              ) : (
+                <>
+                  <img src="../assets/images/style_rounded.png" alt="logo" />
+                  <img
+                    className="black_logo_img"
+                    src="../assets/images/black_logo.png"
+                    alt="logo"
+                  />
+                </>
+              )}
             </div>
           </div>
           {/* <div id="remote-playerlist"></div> */}
