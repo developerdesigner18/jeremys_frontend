@@ -141,7 +141,7 @@ button.meet_greet_tablinks {
 }
 button.tablinks {
   background-image: url("../images/button_bg.png");
-  padding: 25px;
+  /* padding: 25px; */
   background-color: transparent;
   border-radius: 50%;
   background-repeat: no-repeat;

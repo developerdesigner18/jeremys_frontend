@@ -126,7 +126,7 @@ input::-webkit-inner-spin-button {
   justify-content: center;
   top: 25px;
 }
-.video_contents:before {
+/* .video_contents:before {
   content: "";
   position: absolute;
   top: 0;
@@ -139,7 +139,7 @@ input::-webkit-inner-spin-button {
   border-radius: 50%;
   border: 2px solid #07e5c4;
   box-shadow: inset 0 0 6px 2px #08e1c1;
-}
+} */
 img.black_logo_img {
   height: auto;
   position: absolute;
@@ -224,10 +224,12 @@ img.black_logo_img {
   margin-bottom: 0;
   margin: auto;
 }
-.userVideo{
+.userVideo {
   height: auto !important;
 }
-
+#remote-playerlist .agora_video_player {
+  position: relative !important;
+}
 @media (max-width: 1024px) {
   .round_video img {
     height: auto;
