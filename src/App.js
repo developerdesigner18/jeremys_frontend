@@ -50,6 +50,11 @@ function App() {
         <PublicRoute path="/resetPassword" component={ResetPassword} />
         <PrivateRoute path="/profile" component={UserProfile} />
         <PrivateRoute path="/fanHomePage" component={fanHomePage} />
+        {/* <Route
+          path="/fanHomePage"
+          exact
+          component={(props) => <FanHomePage socket={socket} />}
+        /> */}
         <PrivateRoute path="/userHomepage" component={UserCategoryHomePage} />
         <PrivateRoute path="/customerService" component={CustomerService} />
         <PrivateRoute path="/ORBpage" component={ORBPage} />
@@ -72,7 +77,7 @@ function App() {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           localStorage.getItem("id") ? (
             <Component {...props} />
           ) : (
@@ -94,7 +99,7 @@ function App() {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           !localStorage.getItem("id") ? (
             React.createElement(component, props)
           ) : (
