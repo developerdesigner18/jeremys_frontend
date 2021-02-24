@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import io from "socket.io-client";
+import { socket } from "../../socketIO";
 
 import { storeScreenShot } from "../../actions/orbActions";
 
@@ -55,7 +55,6 @@ function ORBPage(props) {
   useEffect(() => {
     document.documentElement.scrollTop = 0;
   }, []);
-  const socket = io("http://localhost:8000");
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -128,7 +127,7 @@ function ORBPage(props) {
       console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
       if (mediaType === "video" || mediaType === "all") {
-        user.videoTrack.play(`remote-playerlist`);
+        user.videoTrack.play(`fan-remote-playerlist`);
       }
       if (mediaType === "audio" || mediaType === "all") {
         user.audioTrack.play();
@@ -169,7 +168,7 @@ function ORBPage(props) {
     let hosts = [];
     for (let i = 1; i <= 15; i++) {
       hosts.push(
-        <div className="ORB_main_cat" id="remote-playerlist">
+        <div className="ORB_main_cat" id="fan-remote-playerlist">
           {isLive ? <></> : <img src="../assets/images/button_bg.png" />}
         </div>
       );
@@ -316,7 +315,7 @@ function ORBPage(props) {
       <div className="container ORB_videos_container mt-3 player">
         <div
           className="ORB_main_cat"
-          id="remote-playerlist"
+          id="fan-remote-playerlist"
           style={{ borderRadius: "50%" }}>
           {isLive ? <></> : <img src="../assets/images/button_bg.png" />}
         </div>

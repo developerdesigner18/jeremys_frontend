@@ -100,7 +100,7 @@ function SingleUserORBPage(props) {
         await rtc.client.subscribe(user, mediaType);
         console.log("subscribe success-=-=-=-=-=-=-=-=-=");
         if (mediaType === "video") {
-          user.videoTrack.play(`remote-playerlist`);
+          user.videoTrack.play(`user-remote-playerlist`);
         }
         if (mediaType === "audio") {
           user.audioTrack.play();
@@ -307,7 +307,7 @@ function SingleUserORBPage(props) {
         <div className="col-md-6 text-center">
           <div
             className="border border-light rounded-circle mx-auto mb-3"
-            id="remote-playerlist"
+            id="user-remote-playerlist"
             style={{
               height: "500px",
               width: "500px",

@@ -227,10 +227,17 @@ img.black_logo_img {
 .userVideo {
   height: auto !important;
 }
-#remote-playerlist .agora_video_player {
+#fan-playerlist .agora_video_player {
   position: relative !important;
   width: 600px !important;
   height: 600px !important;
+  border-radius: 50% !important;
+}
+#chef-remote-playerlist .agora_video_player {
+  position: relative !important;
+  width: 600px !important;
+  height: 600px !important;
+  border-radius: 50% !important;
 }
 @media (max-width: 1024px) {
   .round_video img {

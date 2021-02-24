@@ -177,7 +177,7 @@ function FanChefORB(props) {
 
           if (mediaType === "video") {
             setSubscribed(true);
-            user.videoTrack.play(`remote-playerlist`);
+            user.videoTrack.play(`fan-playerlist`);
           }
           if (mediaType === "audio") {
             user.audioTrack.play();
@@ -293,7 +293,7 @@ function FanChefORB(props) {
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
               {subscribed ? (
-                <div id="remote-playerlist"></div>
+                <div id="fan-playerlist"></div>
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
@@ -306,7 +306,7 @@ function FanChefORB(props) {
               )}
             </div>
           </div>
-          {/* <div id="remote-playerlist"></div> */}
+          {/* <div id="fan-playerlist"></div> */}
         </div>
         <div className="container items_links px-5 my-3 py-1">
           <div

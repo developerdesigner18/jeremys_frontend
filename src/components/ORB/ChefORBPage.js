@@ -4,7 +4,7 @@ import html2canvas from "html2canvas";
 import { useDispatch, useSelector } from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import io from "socket.io-client";
+import { socket } from "../../socketIO";
 
 import { storeScreenShot, storeChefOrbDetails } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
@@ -62,7 +62,6 @@ function ChefORBPage(props) {
     // console.log("state.... ", state.user);
     return state.ORB;
   });
-  const socket = io("http://localhost:8000");
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -164,16 +163,7 @@ function ChefORBPage(props) {
 
       if (mediaType === "video") {
         setSubscribed(true);
-        let playerWrapper = document.createElement("div");
-        playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-
-        let player = document.createElement("div");
-        player.setAttribute("id", `player-${user.uid}`);
-        player.setAttribute("style", "border-radius: 50%");
-        playerWrapper.appendChild(player);
-
-        document.getElementById("remote-playerlist").appendChild(playerWrapper);
-        user.videoTrack.play(`remote-playerlist`);
+        user.videoTrack.play(`chef-remote-playerlist`);
       }
       if (mediaType === "audio") {
         user.audioTrack.play();
@@ -388,7 +378,7 @@ function ChefORBPage(props) {
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
               {subscribed ? (
-                <div id="remote-playerlist"></div>
+                <div id="chef-remote-playerlist"></div>
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
