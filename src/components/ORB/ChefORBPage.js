@@ -37,6 +37,11 @@ function ChefORBPage(props) {
   const [price2, setPrice2] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [RTC, setRTC] = useState({
+    client: null,
+    localAudioTrack: null,
+    localVideoTrack: null,
+  });
   const ref = useRef();
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -126,7 +131,7 @@ function ChefORBPage(props) {
       .catch(err => console.log("error ", err));
 
     rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    // await rtc.client.setClientRole(options.role);
+    setRTC(prevState => ({ ...prevState, client: rtc.client }));
     const uid = await rtc.client.join(
       options.appId,
       options.channel,
@@ -136,8 +141,16 @@ function ChefORBPage(props) {
 
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    setRTC(prevState => ({
+      ...prevState,
+      localAudioTrack: rtc.localAudioTrack,
+    }));
     // Create a video track from the video captured by a camera.
     rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setRTC(prevState => ({
+      ...prevState,
+      localVideoTrack: rtc.localVideoTrack,
+    }));
 
     // Publish the local audio and video tracks to the channel.
     await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
@@ -167,10 +180,10 @@ function ChefORBPage(props) {
       }
     });
     rtc.client.on("user-unpublished", async (user, mediaType) => {
-      console.log("handleUserUnpublished-==-=-=", user.uid);
+      console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
       const id = user.uid;
-      setIsLive(false);
-      setSubscribed(false);
+      // setIsLive(false);
+      // setSubscribed(false);
     });
 
     rtc.localVideoTrack.play("local-player");
@@ -181,18 +194,15 @@ function ChefORBPage(props) {
   async function leaveCall() {
     console.log("leave call fn called in chef page");
     // Destroy the local audio and video tracks.
-    rtc.localAudioTrack.close();
-    rtc.localVideoTrack.close();
+    if (RTC.client && RTC.localVideoTrack && RTC.localAudioTrack) {
+      RTC.localAudioTrack.close();
+      RTC.localVideoTrack.close();
 
-    // Traverse all remote users.
-    rtc.client.remoteUsers.forEach(user => {
-      // Destroy the dynamically created DIV container.
-      const playerContainer = document.getElementById(user.uid);
-      playerContainer && playerContainer.remove();
-    });
-
-    // Leave the channel.
-    await rtc.client.leave();
+      // Leave the channel.
+      await RTC.client.leave();
+    }
+    socket.disconnect();
+    props.history.push("/userHomepage");
   }
   // const BannerChange = (event) => {
   //   let reader = new FileReader();
@@ -265,12 +275,6 @@ function ChefORBPage(props) {
       }
     }
   }, [stateData]);
-
-  const callExit = () => {
-    console.log("exit mtd called");
-
-    socket.disconnect();
-  };
 
   return (
     <div
@@ -563,15 +567,8 @@ function ChefORBPage(props) {
               </div>
             </a>
 
-            <a
-              style={{ cursor: "pointer" }}
-              onClick={() => props.history.goBack()}>
-              <div
-                className="link d-flex flex-column"
-                onClick={() => {
-                  leaveCall();
-                  callExit();
-                }}>
+            <a style={{ cursor: "pointer" }} onClick={() => leaveCall()}>
+              <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
               </div>

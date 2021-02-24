@@ -229,6 +229,8 @@ img.black_logo_img {
 }
 #remote-playerlist .agora_video_player {
   position: relative !important;
+  width: 600px !important;
+  height: 600px !important;
 }
 @media (max-width: 1024px) {
   .round_video img {

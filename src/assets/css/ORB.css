@@ -219,7 +219,7 @@ body {
   border-radius: 50%;
 }
 #remote-playerlist .agora_video_player {
-  border-radius: 50%;
+  border-radius: 50% !important;
 }
 @media (max-width: 991px) {
   .ORB_videos_container {
