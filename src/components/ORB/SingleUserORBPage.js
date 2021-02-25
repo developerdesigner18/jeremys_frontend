@@ -23,7 +23,7 @@ const useOutsideClick = (ref, callback) => {
   });
 };
 
-function SingleUserORBPage() {
+function SingleUserORBPage(props) {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
   const videoRef = useRef();
@@ -34,6 +34,11 @@ function SingleUserORBPage() {
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
+  const [fanRTC, setFanRTC] = useState({
+    client: null,
+    localAudioTrack: null,
+    localVideoTrack: null,
+  });
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
   );
@@ -57,13 +62,13 @@ function SingleUserORBPage() {
     localAudioTrack: null,
     localVideoTrack: null,
   };
+  const socket = io.connect("http://localhost:8000");
 
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
-    const socket = io.connect("http://localhost:8000");
 
     socket.on("listOnlineUser", arg => {
       console.log("list ", arg);
@@ -78,6 +83,7 @@ function SingleUserORBPage() {
 
     if (orbState) {
       rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+      setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
       await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
         options.appId,
@@ -94,16 +100,7 @@ function SingleUserORBPage() {
         await rtc.client.subscribe(user, mediaType);
         console.log("subscribe success-=-=-=-=-=-=-=-=-=");
         if (mediaType === "video") {
-          let playerWrapper = document.createElement("div");
-          playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-          let player = document.createElement("div");
-          player.setAttribute("id", `player-${user.uid}`);
-          playerWrapper.appendChild(player);
-
-          document
-            .getElementById("remote-playerlist")
-            .appendChild(playerWrapper);
-          user.videoTrack.play(`remote-playerlist`);
+          user.videoTrack.play(`user-remote-playerlist`);
         }
         if (mediaType === "audio") {
           user.audioTrack.play();
@@ -150,20 +147,15 @@ function SingleUserORBPage() {
 
   async function leaveCall() {
     // Destroy the local audio and video tracks.
-    rtc.localAudioTrack.close();
-    rtc.localVideoTrack.close();
-
-    // Traverse all remote users.
-    rtc.client.remoteUsers.forEach(user => {
-      // Destroy the dynamically created DIV container.
-      const playerContainer = document.getElementById(
-        `player-wrapper-${user.uid}`
-      );
-      playerContainer && playerContainer.remove();
-    });
+    // rtc.localAudioTrack.close();
+    // rtc.localVideoTrack.close();
 
     // Leave the channel.
-    await rtc.client.leave();
+    if (fanRTC.client) {
+      await fanRTC.client.leave();
+    }
+    socket.disconnect();
+    props.history.push("/fanHomepage");
   }
   return (
     <div
@@ -315,7 +307,7 @@ function SingleUserORBPage() {
         <div className="col-md-6 text-center">
           <div
             className="border border-light rounded-circle mx-auto mb-3"
-            id="remote-playerlist"
+            id="user-remote-playerlist"
             style={{
               height: "500px",
               width: "500px",
@@ -433,7 +425,9 @@ function SingleUserORBPage() {
               </div>
             </a>
             <a href="#">
-              <div className="ORB_link d-flex flex-column">
+              <div
+                className="ORB_link d-flex flex-column"
+                onClick={() => leaveCall()}>
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
               </div>

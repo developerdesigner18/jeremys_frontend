@@ -218,8 +218,14 @@ body {
   border: solid 1px red;
   border-radius: 50%;
 }
-#remote-playerlist .agora_video_player {
-  border-radius: 50%;
+#fan-remote-playerlist .agora_video_player {
+  border-radius: 50% !important;
+  position: relative !important;
+}
+
+#user-remote-playerlist .agora_video_player {
+  border-radius: 50% !important;
+  position: relative !important;
 }
 @media (max-width: 991px) {
   .ORB_videos_container {

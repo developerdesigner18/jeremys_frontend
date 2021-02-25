@@ -61,6 +61,11 @@ function FanChefORB(props) {
   const [stream, setStream] = useState(false);
 
   const remoteUsers = {};
+  const [chefRTC, setChefRTC] = useState({
+    client: null,
+    localAudioTrack: null,
+    localVideoTrack: null,
+  });
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -134,7 +139,8 @@ function FanChefORB(props) {
       if (StreamData && StreamData.userToken && StreamData.streamData) {
         console.log("StreamData", StreamData.userToken.agoraToken);
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-        // await rtc.client.setClientRole(options.role);
+
+        setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
         const uid = await rtc.client.join(
           options.appId,
           options.channel,
@@ -144,8 +150,16 @@ function FanChefORB(props) {
 
         // Create an audio track from the audio sampled by a microphone.
         rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setChefRTC(prevState => ({
+          ...prevState,
+          localAudioTrack: rtc.localAudioTrack,
+        }));
         // Create a video track from the video captured by a camera.
         rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+        setChefRTC(prevState => ({
+          ...prevState,
+          localVideoTrack: rtc.localVideoTrack,
+        }));
 
         // Publish the local audio and video tracks to the channel.
         rtc.client
@@ -155,6 +169,7 @@ function FanChefORB(props) {
         // Subscribe to a remote user
         rtc.client.on("user-published", async (user, mediaType) => {
           console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+          remoteUsers[user.id] = user;
 
           // Subscribe to a remote user.
           await rtc.client.subscribe(user, mediaType);
@@ -162,26 +177,19 @@ function FanChefORB(props) {
 
           if (mediaType === "video") {
             setSubscribed(true);
-            let playerWrapper = document.createElement("div");
-            playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-
-            let player = document.createElement("div");
-            player.setAttribute("id", `player-${user.uid}`);
-            playerWrapper.appendChild(player);
-
-            document
-              .getElementById("remote-playerlist")
-              .appendChild(playerWrapper);
-            user.videoTrack.play(`remote-playerlist`);
+            user.videoTrack.play(`fan-playerlist`);
           }
           if (mediaType === "audio") {
             user.audioTrack.play();
           }
         });
         rtc.client.on("user-unpublished", async (user, mediaType) => {
-          console.log("handleUserUnpublished-==-=-=", user.uid);
+          console.log("handleUserUnpublished at fan side-==-=-=", user.uid);
           const id = user.uid;
+          delete remoteUsers[id];
           setSubscribed(false);
+
+          await rtc.client.leave();
         });
 
         rtc.localVideoTrack.play("local-player");
@@ -193,18 +201,17 @@ function FanChefORB(props) {
   }, [StreamData]);
 
   async function leaveCall() {
-    // console.log("leave call fn called in fan orb page of chef");
-    // // Destroy the local audio and video tracks.
-    // rtc.localAudioTrack.close();
-    // rtc.localVideoTrack.close();
-    // // Traverse all remote users.
-    // rtc.client.remoteUsers.forEach(user => {
-    //   // Destroy the dynamically created DIV container.
-    //   const playerContainer = document.getElementById(user.uid);
-    //   playerContainer && playerContainer.remove();
-    // });
-    // // Leave the channel.
-    // await rtc.client.leave();
+    console.log("leave call fn called in fan orb page of chef");
+    // Destroy the local audio and video tracks.
+    console.log("rtc.. ", chefRTC);
+    if (chefRTC.client && chefRTC.localVideoTrack && chefRTC.localAudioTrack) {
+      chefRTC.localAudioTrack.close();
+      chefRTC.localVideoTrack.close();
+
+      // Leave the channel.
+      await chefRTC.client.leave();
+    }
+    props.history.push("/fanHomePage");
   }
 
   return (
@@ -217,7 +224,12 @@ function FanChefORB(props) {
         marginBottom: "-16px",
       }}
       id="capture1">
-      {console.log("rebcbzxcblzkxcb", streamDetails)}
+      {console.log(
+        "rebcbzxcblzkxcb",
+        chefRTC,
+        rtc.localAudioTrack,
+        rtc.localVideoTrack
+      )}
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
@@ -281,7 +293,7 @@ function FanChefORB(props) {
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
               {subscribed ? (
-                <div id="remote-playerlist"></div>
+                <div id="fan-playerlist"></div>
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
@@ -294,7 +306,7 @@ function FanChefORB(props) {
               )}
             </div>
           </div>
-          {/* <div id="remote-playerlist"></div> */}
+          {/* <div id="fan-playerlist"></div> */}
         </div>
         <div className="container items_links px-5 my-3 py-1">
           <div
@@ -418,7 +430,6 @@ function FanChefORB(props) {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 leaveCall();
-                history.push("/");
               }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
