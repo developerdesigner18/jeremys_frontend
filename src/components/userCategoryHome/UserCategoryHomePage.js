@@ -136,19 +136,18 @@ function UserCategoryHomePage(props) {
     dispatch(getAllFollower());
     dispatch(getAllFans());
     dispatch(getFollowers(localStorage.getItem("id")));
-    console.log("stateData", stateData);
   }, []);
 
   useEffect(async () => {
     if (stateData) {
       console.log("stateData", stateData);
       if (stateData.followers) {
-        dispatch(getFollowers(localStorage.getItem("id")));
-        setCurrentUserdata(stateData.userDetail);
+        await dispatch(getFollowers(localStorage.getItem("id")));
         console.log("use effect chage state data");
         setAllFollower(stateData.followers);
         setSearchFollower(stateData.followers);
       }
+      if (stateData.userDetail) setCurrentUserdata(stateData.userDetail);
     }
   }, [stateData]);
 
@@ -245,6 +244,7 @@ function UserCategoryHomePage(props) {
               </div>
               <div className="fan_image">
                 <div>
+                  {console.log("image ", currentUserdata)}
                   <img
                     // src={`../assets/images/fan.png`}
                     src={
@@ -462,7 +462,11 @@ function UserCategoryHomePage(props) {
                       onClick={() => props.history.push("/profile")}>
                       PROFILE
                     </li>
-                    <li className="dropdown-item menu more_list" onClick={() => props.history.push("/myStory")}>MY STORY</li>
+                    <li
+                      className="dropdown-item menu more_list"
+                      onClick={() => props.history.push("/myStory")}>
+                      MY STORY
+                    </li>
                     <li className="dropdown-item menu more_list">MY JOURNAL</li>
                     <li className="dropdown-item menu more_list">
                       MY RATINGS AND REVIEWS
