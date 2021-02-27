@@ -141,13 +141,13 @@ function UserCategoryHomePage(props) {
   useEffect(async () => {
     if (stateData) {
       console.log("stateData", stateData);
+      if (stateData.userDetail) setCurrentUserdata(stateData.userDetail);
       if (stateData.followers) {
         await dispatch(getFollowers(localStorage.getItem("id")));
         console.log("use effect chage state data");
         setAllFollower(stateData.followers);
         setSearchFollower(stateData.followers);
       }
-      if (stateData.userDetail) setCurrentUserdata(stateData.userDetail);
     }
   }, [stateData]);
 
