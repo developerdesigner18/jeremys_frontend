@@ -178,6 +178,16 @@ function MyStory(props) {
                                     <div className="ref">My shout-out: Ric Brad</div>
                                 </div>
                             </div>
+                            <div className="live_text_div">
+                                <h1 className="live_text_h1">LIVE</h1>
+                            </div>
+                            <div className="golive_logo">
+                                <img src="../assets/images/Background.png" onClick={()=>history.push('/fanChefORB',{name:userInfo ? userInfo.data.firstName?userInfo.data.firstName : "chef":"",id:userInfo ?userInfo.data._id:""})}></img>
+                            </div>
+                            {/* <div className="join_logo">
+                                <img src="../assets/images/button_bg_small.png"></img>
+                                <p>JOIN</p>
+                            </div> */}
                             <div className="down_chef_links position-absolute">
                                 <div className="mystory_option" onClick={() => setRightPart(1)} style={{ fontWeight: rightPart === 1 ? "600" : "" }} >Pages and Places</div>
                                 <div className="mystory_option" onClick={() => setRightPart(2)} style={{ fontWeight: rightPart === 2 ? "600" : "" }}>Reviews and Comments</div>
