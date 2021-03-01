@@ -374,6 +374,11 @@ function FanHomePage(props) {
     });
   };
 
+  const showProfileDetails = (Id) => {
+    console.log('id ', Id);
+    history.push('/myStory', { pageNumber: 1, userId: Id, isMystory: false })
+  };
+
   return (
     <div className="container">
       <div className="form_container px-3 px-md-5">
@@ -702,11 +707,13 @@ function FanHomePage(props) {
                         // ref={this.addToRefs}
                         // className="swipe col-md-12 "
                         // key={index.id}
+
                         onSwipe={(dir) => swipedFind(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrameFind(fan._id)}
                         preventSwipe={["left", "right", "up", "down"]}
                       >
                         <img
+                          onClick={() => showProfileDetails(fan._id)}
                           id={fan._id}
                           className="draggableImg"
                           src={
@@ -727,98 +734,36 @@ function FanHomePage(props) {
                   );
                 })
               ) : (
-                <div style={{ margin: "auto" }}>
-                  <span>
-                    No {subcategory}{" "}
-                    {category == "music"
-                      ? "stars"
-                      : category == "body"
-                      ? "trainers"
-                      : category == "style"
-                      ? "stylists"
-                      : category == "food"
-                      ? "chefs"
-                      : "artists"}{" "}
-                    found
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className=" row vids">
-              {onlineCheck ? (
-                communityOnline.length != 0 ? (
-                  communityOnline.map((fan, i) => {
-                    return (
-                      <div
-                        className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
-                        {" "}
-                        {/* <div
-                        id={fan._id}
-                        onDragStart={(e) => handleDragStart(e)}
-                        onDrag={(e) => handleDrag(e, fan._id)}
-                        onDragEnd={(e) => {
-                          handleDragEnd(e, fan._id, fan.profileImgURl);
-                        }}
-                      > */}
-                        <TinderCard
-                          // ref={this.addToRefs}
-                          // className="swipe col-md-12 "
-                          // key={index.id}
-                          onSwipe={(dir) => swiped(dir, fan._id)}
-                          onCardLeftScreen={() => outOfFrame(fan._id)}
-                          preventSwipe={["down", "left", "right"]}
-                        >
-                          <img
-                            className="draggableImg"
-                            src={
-                              fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
-                                ? fan.profileImgURl
-                                : "http://54.236.46.101:8000/default/profile.jpg"
-                            }
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src =
-                                "http://54.236.46.101:8000/default/profile.jpg";
-                            }}
-                          />
-                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </TinderCard>
-                        {/* </div> */}
-                      </div>
-                    );
-                  })
-                ) : (
                   <div style={{ margin: "auto" }}>
                     <span>
                       No {subcategory}{" "}
                       {category == "music"
                         ? "stars"
                         : category == "body"
-                        ? "trainers"
-                        : category == "style"
-                        ? "stylists"
-                        : category == "food"
-                        ? "chefs"
-                        : "artists"}{" "}
-                      found online in your community
-                    </span>
+                          ? "trainers"
+                          : category == "style"
+                            ? "stylists"
+                            : category == "food"
+                              ? "chefs"
+                              : "artists"}{" "}
+                    found
+                  </span>
                   </div>
-                )
-              ) : community.length != 0 ? (
-                community.map((fan, i) => {
-                  return (
-                    <div
-                      className="profile_images col-sm-3 col-md-3  my-3"
-                      style={{ textAlign: "center" }}
-                      key={i}
-                    >
-                      {" "}
-                      {/* <div
+                )}
+            </div>
+          ) : (
+                <div className=" row vids">
+                  {onlineCheck ? (
+                    communityOnline.length != 0 ? (
+                      communityOnline.map((fan, i) => {
+                        return (
+                          <div
+                            className="profile_images col-sm-3 col-md-3  my-3"
+                            style={{ textAlign: "center" }}
+                            key={i}
+                          >
+                            {" "}
+                            {/* <div
                         id={fan._id}
                         onDragStart={(e) => handleDragStart(e)}
                         onDrag={(e) => handleDrag(e, fan._id)}
@@ -826,52 +771,117 @@ function FanHomePage(props) {
                           handleDragEnd(e, fan._id, fan.profileImgURl);
                         }}
                       > */}
-                      <TinderCard
-                        // ref={this.addToRefs}
-                        // className="swipe col-md-12 "
-                        // key={index.id}
-                        onSwipe={(dir) => swiped(dir, fan._id)}
-                        onCardLeftScreen={() => outOfFrame(fan._id)}
-                        preventSwipe={["down", "left", "right"]}
-                      >
-                        <img
-                          className="draggableImg"
-                          src={
-                            fan.profileImgURl != "" && fan.profileImgURl != null
-                              ? fan.profileImgURl
-                              : "http://54.236.46.101:8000/default/profile.jpg"
-                          }
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src =
-                              "http://54.236.46.101:8000/default/profile.jpg";
-                          }}
-                        />
-                        <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                      </TinderCard>
-                      {/* </div> */}
-                    </div>
-                  );
-                })
-              ) : (
-                <div style={{ margin: "auto" }}>
-                  <span>
-                    No {subcategory}{" "}
-                    {category == "music"
-                      ? "stars"
-                      : category == "body"
-                      ? "trainers"
-                      : category == "style"
-                      ? "stylists"
-                      : category == "food"
-                      ? "chefs"
-                      : "artists"}{" "}
+                            <TinderCard
+                              // ref={this.addToRefs}
+                              // className="swipe col-md-12 "
+                              // key={index.id}
+                              
+                              onSwipe={(dir) => swiped(dir, fan._id)}
+                              onCardLeftScreen={() => outOfFrame(fan._id)}
+                              preventSwipe={["down", "left", "right"]}
+                            >
+                              <img
+                                onClick={() => showProfileDetails(fan._id)}
+                                className="draggableImg"
+                                src={
+                                  fan.profileImgURl != "" &&
+                                    fan.profileImgURl != null
+                                    ? fan.profileImgURl
+                                    : "http://54.236.46.101:8000/default/profile.jpg"
+                                }
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src =
+                                    "http://54.236.46.101:8000/default/profile.jpg";
+                                }}
+                              />
+                              <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                            </TinderCard>
+                            {/* </div> */}
+                          </div>
+                        );
+                      })
+                    ) : (
+                        <div style={{ margin: "auto" }}>
+                          <span>
+                            No {subcategory}{" "}
+                            {category == "music"
+                              ? "stars"
+                              : category == "body"
+                                ? "trainers"
+                                : category == "style"
+                                  ? "stylists"
+                                  : category == "food"
+                                    ? "chefs"
+                                    : "artists"}{" "}
+                      found online in your community
+                    </span>
+                        </div>
+                      )
+                  ) : community.length != 0 ? (
+                    community.map((fan, i) => {
+                      return (
+                        <div
+                          className="profile_images col-sm-3 col-md-3  my-3"
+                          style={{ textAlign: "center" }}
+                          key={i}
+                        >
+                          {" "}
+                          {/* <div
+                        id={fan._id}
+                        onDragStart={(e) => handleDragStart(e)}
+                        onDrag={(e) => handleDrag(e, fan._id)}
+                        onDragEnd={(e) => {
+                          handleDragEnd(e, fan._id, fan.profileImgURl);
+                        }}
+                      > */}
+                          <TinderCard
+                            // ref={this.addToRefs}
+                            // className="swipe col-md-12 "
+                            // key={index.id}
+                            onSwipe={(dir) => swiped(dir, fan._id)}
+                            onCardLeftScreen={() => outOfFrame(fan._id)}
+                            preventSwipe={["down", "left", "right"]}
+                          >
+                            <img
+                              onClick={() => showProfileDetails(fan._id)}
+                              className="draggableImg"
+                              src={
+                                fan.profileImgURl != "" && fan.profileImgURl != null
+                                  ? fan.profileImgURl
+                                  : "http://54.236.46.101:8000/default/profile.jpg"
+                              }
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src =
+                                  "http://54.236.46.101:8000/default/profile.jpg";
+                              }}
+                            />
+                            <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                          </TinderCard>
+                          {/* </div> */}
+                        </div>
+                      );
+                    })
+                  ) : (
+                        <div style={{ margin: "auto" }}>
+                          <span>
+                            No {subcategory}{" "}
+                            {category == "music"
+                              ? "stars"
+                              : category == "body"
+                                ? "trainers"
+                                : category == "style"
+                                  ? "stylists"
+                                  : category == "food"
+                                    ? "chefs"
+                                    : "artists"}{" "}
                     found in your community
                   </span>
+                        </div>
+                      )}
                 </div>
               )}
-            </div>
-          )}
           <div className="main_links d-flex pt-5 mt-5">
             <div className="down_links">
               <a
@@ -886,10 +896,10 @@ function FanHomePage(props) {
                   style={
                     Find == false && !isOpen
                       ? {
-                          boxShadow: "0 0 10px 2px #ddd",
-                          cursor: "pointer",
-                          borderRadius: "100%",
-                        }
+                        boxShadow: "0 0 10px 2px #ddd",
+                        cursor: "pointer",
+                        borderRadius: "100%",
+                      }
                       : { cursor: "pointer" }
                   }
                 />
@@ -909,10 +919,10 @@ function FanHomePage(props) {
                   style={
                     Find == true
                       ? {
-                          boxShadow: "0 0 10px 2px #ddd",
-                          cursor: "pointer",
-                          borderRadius: "100%",
-                        }
+                        boxShadow: "0 0 10px 2px #ddd",
+                        cursor: "pointer",
+                        borderRadius: "100%",
+                      }
                       : { cursor: "pointer" }
                   }
                 />
@@ -934,10 +944,10 @@ function FanHomePage(props) {
                   style={
                     isOpen
                       ? {
-                          boxShadow: "0 0 10px 2px #ddd",
-                          cursor: "pointer",
-                          borderRadius: "100%",
-                        }
+                        boxShadow: "0 0 10px 2px #ddd",
+                        cursor: "pointer",
+                        borderRadius: "100%",
+                      }
                       : { cursor: "pointer" }
                   }
                 />
@@ -947,32 +957,24 @@ function FanHomePage(props) {
                 <ul className="menu_item">
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/profile")}
-                  >
+                    onClick={() => props.history.push("/profile")}>
                     PROFILE
                   </li>
-                  <li
-                    className="dropdown-item menu more_list"
-                    onClick={() => history.push("/myStory")}
-                  >
-                    MY STORY
-                  </li>
-                  <li className="dropdown-item menu more_list">MY JOURNAL</li>
-                  <li className="dropdown-item menu more_list">
+                  <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 1, userId: localStorage.getItem('id'), isMystory: true })}>MY STORY</li>
+                  <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 3, userId: localStorage.getItem('id'), isMystory: true })}>MY JOURNAL</li>
+                  <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 2, userId: localStorage.getItem('id'), isMystory: true })}>
                     MY RATINGS AND REVIWS
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/termsCondition")}
-                  >
+                    onClick={() => props.history.push("/termsCondition")}>
                     TERMS AND CONDITION
                   </li>
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => {
                       props.history.push("/customerService");
-                    }}
-                  >
+                    }}>
                     CONTACT US
                   </li>
                 </ul>

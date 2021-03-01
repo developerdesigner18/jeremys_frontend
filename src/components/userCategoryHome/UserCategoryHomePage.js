@@ -9,6 +9,7 @@ import {
 import { getFollowers } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
+import { useHistory } from "react-router-dom"
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -27,6 +28,7 @@ const useOutsideClick = (ref, callback) => {
 };
 
 function UserCategoryHomePage(props) {
+  const history = useHistory()
   const dispatch = useDispatch();
   const [currentUserdata, setCurrentUserdata] = useState();
   const stateData = useSelector(state => state.user);
@@ -211,7 +213,7 @@ function UserCategoryHomePage(props) {
                   style={{
                     padding:
                       localStorage.getItem("type") === "Advertiser" ||
-                      localStorage.getItem("type") === "advertiser"
+                        localStorage.getItem("type") === "advertiser"
                         ? "10px"
                         : "25px",
                     // fontSize:
@@ -222,24 +224,24 @@ function UserCategoryHomePage(props) {
                     //     : "10px",
                   }}>
                   {localStorage.getItem("type") === "Chef" ||
-                  localStorage.getItem("type") === "chef"
+                    localStorage.getItem("type") === "chef"
                     ? "Chef's Table"
                     : localStorage.getItem("type") === "Advertiser" ||
                       localStorage.getItem("type") === "advertiser"
-                    ? "Published Ad"
-                    : localStorage.getItem("type") === "trainer" ||
-                      localStorage.getItem("type") === "Trainer"
-                    ? "Studio Live!"
-                    : localStorage.getItem("type") === "Stylist" ||
-                      localStorage.getItem("type") === "stylist"
-                    ? "Stylist"
-                    : localStorage.getItem("type") === "Star" ||
-                      localStorage.getItem("type") === "star"
-                    ? "Stage"
-                    : localStorage.getItem("type") === "artist" ||
-                      localStorage.getItem("type") === "Artist"
-                    ? "Stage"
-                    : ""}
+                      ? "Published Ad"
+                      : localStorage.getItem("type") === "trainer" ||
+                        localStorage.getItem("type") === "Trainer"
+                        ? "Studio Live!"
+                        : localStorage.getItem("type") === "Stylist" ||
+                          localStorage.getItem("type") === "stylist"
+                          ? "Stylist"
+                          : localStorage.getItem("type") === "Star" ||
+                            localStorage.getItem("type") === "star"
+                            ? "Stage"
+                            : localStorage.getItem("type") === "artist" ||
+                              localStorage.getItem("type") === "Artist"
+                              ? "Stage"
+                              : ""}
                 </button>
               </div>
               <div className="fan_image">
@@ -310,7 +312,7 @@ function UserCategoryHomePage(props) {
                             className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
+                                fan.profileImgURl != null
                                 ? fan.profileImgURl
                                 : "http://54.236.46.101:8000/default/profile.jpg"
                             }
@@ -319,6 +321,7 @@ function UserCategoryHomePage(props) {
                               e.target.src =
                                 "http://54.236.46.101:8000/default/profile.jpg";
                             }}
+                            onClick={() => history.push('/myStory', { pageNumber: 1, userId: fan._id, isMystory: false })}
                           />
 
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -327,8 +330,8 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ marginLeft: "10px" }}>No fans Found</div>
-                )}
+                    <div style={{ marginLeft: "10px" }}>No fans Found</div>
+                  )}
               </div>
               <Pagination
                 innerClass={"adminPaginate"}
@@ -355,7 +358,7 @@ function UserCategoryHomePage(props) {
                             className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
-                              fan.profileImgURl != null
+                                fan.profileImgURl != null
                                 ? fan.profileImgURl
                                 : "http://54.236.46.101:8000/default/profile.jpg"
                             }
@@ -372,8 +375,8 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                  <div>No fans Found</div>
-                )}
+                    <div>No fans Found</div>
+                  )}
               </div>
               <Pagination
                 innerClass={"adminPaginate"}
@@ -398,10 +401,10 @@ function UserCategoryHomePage(props) {
                   style={
                     Find == false && !isOpen
                       ? {
-                          boxShadow: "0 0 10px 2px #ddd",
-                          cursor: "pointer",
-                          borderRadius: "100%",
-                        }
+                        boxShadow: "0 0 10px 2px #ddd",
+                        cursor: "pointer",
+                        borderRadius: "100%",
+                      }
                       : { cursor: "pointer" }
                   }
                   onClick={event => {
@@ -418,10 +421,10 @@ function UserCategoryHomePage(props) {
                   style={
                     Find == true
                       ? {
-                          boxShadow: "0 0 10px 2px #ddd",
-                          cursor: "pointer",
-                          borderRadius: "100%",
-                        }
+                        boxShadow: "0 0 10px 2px #ddd",
+                        cursor: "pointer",
+                        borderRadius: "100%",
+                      }
                       : { cursor: "pointer" }
                   }
                   onClick={event => {
@@ -446,10 +449,10 @@ function UserCategoryHomePage(props) {
                     style={
                       isOpen
                         ? {
-                            boxShadow: "0 0 10px 2px #ddd",
-                            cursor: "pointer",
-                            borderRadius: "100%",
-                          }
+                          boxShadow: "0 0 10px 2px #ddd",
+                          cursor: "pointer",
+                          borderRadius: "100%",
+                        }
                         : { cursor: "pointer" }
                     }
                   />
@@ -462,13 +465,9 @@ function UserCategoryHomePage(props) {
                       onClick={() => props.history.push("/profile")}>
                       PROFILE
                     </li>
-                    <li
-                      className="dropdown-item menu more_list"
-                      onClick={() => props.history.push("/myStory")}>
-                      MY STORY
-                    </li>
-                    <li className="dropdown-item menu more_list">MY JOURNAL</li>
-                    <li className="dropdown-item menu more_list">
+                    <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 1, userId: localStorage.getItem('id'), isMystory: true })}>MY STORY</li>
+                    <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 3, userId: localStorage.getItem('id'), isMystory: true })}>MY JOURNAL</li>
+                    <li className="dropdown-item menu more_list" onClick={() => history.push('/myStory', { pageNumber: 2, userId: localStorage.getItem('id'), isMystory: true })}>
                       MY RATINGS AND REVIEWS
                     </li>
                     <li

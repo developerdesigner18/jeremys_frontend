@@ -197,12 +197,169 @@ body {
     color: black;
     font-weight: 600;
 }
-.journal_sec img{
+.journal_sec img {
     padding-left: 25px;
     padding-top: 25px;
-    height: 80vh;
+    height: 65vh;
     object-fit: cover;
     object-position: top;
     padding-bottom: 25px;
     padding-right: 15px;
+    padding: 0 15px 0 0;
+}
+.storysub2 {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+}
+.storyHeader {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 25px 0;
+}
+.storyHeader > div > p:first-child {
+    font-size: 22px !important;
+    margin-bottom: 0;
+}
+.storysub2 input {
+    margin-right: 5px;
+}
+p.headerJournal {
+    text-align: right;
+}
+table.tableJournal {
+    width: 100%;
+    text-align: center;
+}
+.mainDivJournal {
+    width: 100%;
+    margin-right: 20px;
+    margin-top: 25px;
+}
+.journal_sec.position-relative {
+    align-items: baseline;
+}
+table.tableJournal th, table.tableJournal td {
+    padding-bottom: 50px;
+}
+
+.reviewHeader img {
+    width: 80px;
+    height: 80px;
+    padding-right: 0;
+    border-radius: 20px;
+    object-fit: cover;
+}   
+.reviewContainer {
+    margin-top: 15px;
+    width: 100%;
+}
+p.titleReview {
+    text-align: right;
+    margin-right: 25px;
+    text-transform: uppercase;
+}
+.reviewHeader {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 0 20px;
+    margin-top: inherit;
+}
+.reviewHeader .bodyRiview {
+    flex: 2.5;
+}
+.review_image{
+    flex: 1;
+}
+.bodyRiview .name{
+    text-decoration: underline;
+}
+
+.paginate_mystory {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    bottom: 5px;
+    right: 30px;
+}
+.paginate_mystory .active {
+    color: black !important;
+    /* padding: 10px; */
+    background: #4a5568;
+  }
+  .paginate_mystory li {
+    list-style-type: none;
+    cursor: pointer;
+    color: #4a5568;
+    padding: 8px 12px;
+    border-top: 1px solid #4a5568;
+    border-left: 1px solid #4a5568;
+    border-bottom: 1px solid #4a5568;
+    font-weight: 400;
+    font-size: 12px;
+  }
+  .paginate_mystory li:last-child {
+    border-right: 1px solid #4a5568;
+  }
+
+  .mystory_option{
+      width: 40%;
+      margin: auto;
+      cursor: pointer;
+  }
+  table.tableJournal img {
+    height: 70px;
+    width: 80px;
+    border-radius: 25px;
+}
+.fanJurnalMain{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fanJurnalMain p:last-child {
+    margin-left: 10px;
+}
+tr.fanJurnalTable td {
+    padding-bottom: 25px;
+}
+p.fanReviewTable_time {
+    font-size: 12px;
+    text-align: left;
+}
+.fanReviewTable_time_name P:first-child {
+    margin-right: 10px;
+}
+.fanReviewTable_time_name {
+    display: flex;
+    align-items: center;
+}
+p.fanReviewTable_comment {
+    text-align: left;
+}
+tr.fanReviewTable p {
+    margin-bottom: 5px;
+}
+tr.fanReviewTable img{
+height: 90px;
+width: 90px;
+border-radius: 25px;
+padding-right: 0;
+}
+tr.fanReviewTable > td:nth-child(2) {
+    max-width: 225px;
+}
+tr.fanReviewTable td {
+    padding-bottom: 10px;
+}
+.fanReviewTable_hide input {
+    margin-right: 5px;
+    vertical-align: inherit;
+}
+
+.paggination_mystory{
+    position: absolute;
+    bottom: 35px;
+    right: 25px;
 }

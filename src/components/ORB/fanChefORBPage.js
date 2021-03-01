@@ -103,6 +103,7 @@ function FanChefORB(props) {
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
         fd.append("image", file);
+        fd.append("starName", "starName");
 
         await dispatch(storeScreenShot(fd));
       });
