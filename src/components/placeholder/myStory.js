@@ -210,7 +210,12 @@ function MyStory(props) {
 
   const goToORB = () => {
     console.log("fn called");
-    if (userInfo.data.type === "chef" || userInfo.data.type === "Chef") {
+    if (
+      userInfo.data.type === "chef" ||
+      userInfo.data.type === "Chef" ||
+      userInfo.data.type === "stylist" ||
+      userInfo.data.type === "Stylist"
+    ) {
       history.push("/fanChefORB", {
         name: userInfo
           ? userInfo.data.firstName
@@ -219,20 +224,21 @@ function MyStory(props) {
           : "",
         id: userInfo ? userInfo.data._id : "",
       });
-    } else if (
-      userInfo.data.type === "stylist" ||
-      userInfo.data.type === "Stylist"
-    ) {
-      console.log("in else if ");
-      history.push("/fanStylistORB", {
-        name: userInfo
-          ? userInfo.data.firstName
-            ? userInfo.data.firstName
-            : "stylist"
-          : "",
-        id: userInfo ? userInfo.data._id : "",
-      });
     }
+    // else if (
+    //   userInfo.data.type === "stylist" ||
+    //   userInfo.data.type === "Stylist"
+    // ) {
+    //   console.log("in else if ");
+    //   history.push("/fanStylistORB", {
+    //     name: userInfo
+    //       ? userInfo.data.firstName
+    //         ? userInfo.data.firstName
+    //         : "stylist"
+    //       : "",
+    //     id: userInfo ? userInfo.data._id : "",
+    //   });
+    // }
   };
 
   return (
