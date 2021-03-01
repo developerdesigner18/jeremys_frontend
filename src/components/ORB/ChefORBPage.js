@@ -292,6 +292,7 @@ function ChefORBPage(props) {
                 ? "inset 3px 5px 5px #3a3a3a"
                 : "rgb(89 89 89) 3px 5px 5px 8px inset",
               backgroundColor: "#424242",
+              content: isLive ? "" : "LIVE",
             }}></div>
           <div className="tips_info d-flex"></div>
         </div>

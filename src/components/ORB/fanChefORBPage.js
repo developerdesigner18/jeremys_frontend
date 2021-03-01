@@ -52,7 +52,10 @@ function FanChefORB(props) {
   const stateData = useSelector(state => {
     return state.user;
   });
-  const StreamData = useSelector(state => state.ORB);
+  const StreamData = useSelector(state => {
+    console.log("state.orb ", state.ORB);
+    return state.ORB;
+  });
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
@@ -74,7 +77,7 @@ function FanChefORB(props) {
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
-    channel: "Chef",
+    channel: null,
     token: null,
     role: "audience",
   });
@@ -84,9 +87,13 @@ function FanChefORB(props) {
       setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
-      swal("oops!", "Please pay for enjoy full live streaming", "warning");
+      swal(
+        "oops!",
+        "Please pay for enjoy full live streaming",
+        "warning"
+      ).then(() => leaveCall());
     }
-  }, []);
+  });
 
   const getImage = () => {
     console.log("fn called");
@@ -111,11 +118,17 @@ function FanChefORB(props) {
   };
 
   useEffect(async () => {
-    await dispatch(getUserToken("5ff6fd76b710942b8831af88"));
+    console.log("props ", props.location.state.id);
+    await dispatch(getUserToken(props.location.state.id));
+    let channelName = props.location.state.name;
+    setOptions(prevState => ({
+      ...prevState,
+      channel: channelName,
+    }));
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
-    await dispatch(getStreamDetails({ userId: "6010fc2edd4e4d03ac048b0a" }));
-  }, []);
+    await dispatch(getStreamDetails({ userId: props.location.state.id }));
+  }, [props.location.state.id || props.location.state.name]);
 
   useEffect(async () => {
     if (stateData) {
@@ -138,7 +151,7 @@ function FanChefORB(props) {
   useEffect(async () => {
     if (StreamData) {
       if (StreamData && StreamData.userToken && StreamData.streamData) {
-        console.log("StreamData", StreamData.userToken.agoraToken);
+        console.log("StreamData", StreamData.userToken.agoraToken, options);
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
         setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
@@ -225,12 +238,6 @@ function FanChefORB(props) {
         marginBottom: "-16px",
       }}
       id="capture1">
-      {console.log(
-        "rebcbzxcblzkxcb",
-        chefRTC,
-        rtc.localAudioTrack,
-        rtc.localVideoTrack
-      )}
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
