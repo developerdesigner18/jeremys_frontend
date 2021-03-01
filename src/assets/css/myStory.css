@@ -363,3 +363,42 @@ tr.fanReviewTable td {
     bottom: 35px;
     right: 25px;
 }
+.live_text_div {
+    position: absolute;
+    top: 70px;
+    right: 70px;
+}
+.live_text_h1 {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+}
+.golive_logo img {
+    width: 60px;
+}
+.golive_logo {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    right: 30px; 
+    display: flex;
+    align-items: center;
+}
+.join_logo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    right: 30px;
+}
+.join_logo img {
+    width: 90px;
+    object-fit: contain;
+}
+.join_logo p{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 0;
+}
