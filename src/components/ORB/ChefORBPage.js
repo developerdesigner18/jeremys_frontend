@@ -87,6 +87,7 @@ function ChefORBPage(props) {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
+        fd.append("starName", "starName");
         fd.append("image", file);
 
         await dispatch(storeScreenShot(fd));

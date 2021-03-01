@@ -375,6 +375,11 @@ function FanHomePage(props) {
     });
   };
 
+  const showProfileDetails = Id => {
+    console.log("id ", Id);
+    history.push("/myStory", { pageNumber: 1, userId: Id, isMystory: false });
+  };
+
   return (
     <div className="container">
       <div className="form_container px-3 px-md-5">
@@ -692,6 +697,7 @@ function FanHomePage(props) {
                         onCardLeftScreen={() => outOfFrameFind(fan._id)}
                         preventSwipe={["left", "right", "up", "down"]}>
                         <img
+                          onClick={() => showProfileDetails(fan._id)}
                           id={fan._id}
                           className="draggableImg"
                           src={
@@ -752,10 +758,12 @@ function FanHomePage(props) {
                           // ref={this.addToRefs}
                           // className="swipe col-md-12 "
                           // key={index.id}
+
                           onSwipe={dir => swiped(dir, fan._id)}
                           onCardLeftScreen={() => outOfFrame(fan._id)}
                           preventSwipe={["down", "left", "right"]}>
                           <img
+                            onClick={() => showProfileDetails(fan._id)}
                             className="draggableImg"
                             src={
                               fan.profileImgURl != "" &&
@@ -816,6 +824,7 @@ function FanHomePage(props) {
                         onCardLeftScreen={() => outOfFrame(fan._id)}
                         preventSwipe={["down", "left", "right"]}>
                         <img
+                          onClick={() => showProfileDetails(fan._id)}
                           className="draggableImg"
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
@@ -929,11 +938,35 @@ function FanHomePage(props) {
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => history.push("/myStory")}>
+                    onClick={() =>
+                      history.push("/myStory", {
+                        pageNumber: 1,
+                        userId: localStorage.getItem("id"),
+                        isMystory: true,
+                      })
+                    }>
                     MY STORY
                   </li>
-                  <li className="dropdown-item menu more_list">MY JOURNAL</li>
-                  <li className="dropdown-item menu more_list">
+                  <li
+                    className="dropdown-item menu more_list"
+                    onClick={() =>
+                      history.push("/myStory", {
+                        pageNumber: 3,
+                        userId: localStorage.getItem("id"),
+                        isMystory: true,
+                      })
+                    }>
+                    MY JOURNAL
+                  </li>
+                  <li
+                    className="dropdown-item menu more_list"
+                    onClick={() =>
+                      history.push("/myStory", {
+                        pageNumber: 2,
+                        userId: localStorage.getItem("id"),
+                        isMystory: true,
+                      })
+                    }>
                     MY RATINGS AND REVIWS
                   </li>
                   <li

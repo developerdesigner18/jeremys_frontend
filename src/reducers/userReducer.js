@@ -73,6 +73,28 @@ const userReducer = (state = null, action) => {
         ...state,
         followers: action.payload,
       };
+
+    case "HIDE_THE_STORY":
+      return {
+        ...state,
+        updatedValue: action.payload
+      };
+
+    case "GET_REVIEW_FAN":
+      return {
+        ...state,
+        reviewOfFan: action.payload,
+      };
+    case "GET_REVIEW_ARTIST":
+      return {
+        ...state,
+        reviewOfArtist: action.payload,
+      };
+    case "HIDE_REVIEW":
+      return {
+        ...state,
+      };
+
     case "GET_FROM_COMMUNITY_SUCCESS":
       return {
         ...state,
