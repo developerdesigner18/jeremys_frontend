@@ -223,6 +223,7 @@ function MyStory(props) {
       userInfo.data.type === "stylist" ||
       userInfo.data.type === "Stylist"
     ) {
+      console.log("in else if ");
       history.push("/fanStylistORB", {
         name: userInfo
           ? userInfo.data.firstName
