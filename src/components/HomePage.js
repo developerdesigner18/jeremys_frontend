@@ -15,7 +15,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/1-star%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/1-star%20(1).mp4"
                 type="video/mp4"
               />
             </video>
@@ -23,7 +23,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/2-fan%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/2-fan%20(1).mp4"
                 type="video/mp4"
               />
             </video>
@@ -36,7 +36,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/3-chef%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/3-chef%20(1).mp4"
                 type="video/mp4"
               />
             </video>
@@ -44,7 +44,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/4-food%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/4-food%20(1).mp4"
                 type="video/mp4"
               />
             </video>
@@ -57,7 +57,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/5-style%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/5-style%20(1).mp4"
                 type="video/mp4"
               />
             </video>
@@ -65,7 +65,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/6-shopping.mp4"
+                src="https://s3.amazonaws.com/jl-s3/6-shopping.mp4"
                 type="video/mp4"
               />
             </video>
@@ -78,7 +78,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/7-trainer.mp4"
+                src="https://s3.amazonaws.com/jl-s3/7-trainer.mp4"
                 type="video/mp4"
               />
             </video>
@@ -86,7 +86,7 @@ function HomePage(props) {
           <div className="video_content">
             <video controls="" autoPlay={true} loop={true} muted={true}>
               <source
-                src="http://s3.amazonaws.com/jl-s3/8-athlete%20(1).mp4"
+                src="https://s3.amazonaws.com/jl-s3/8-athlete%20(1).mp4"
                 type="video/mp4"
               />
             </video>
