@@ -238,6 +238,7 @@ function FanHomePage(props) {
   };
 
   var subMusic = [
+    "ALL",
     "pop",
     "rnb",
     "jazz",
@@ -253,6 +254,7 @@ function FanHomePage(props) {
     "heavy metal",
   ];
   var subFood = [
+    "ALL",
     "italian",
     "japanese",
     "korean",
@@ -268,13 +270,21 @@ function FanHomePage(props) {
     "american bbq",
   ];
   var subStyle = [
+    "ALL",
     "clothing",
     "collectibles",
     "vintage",
     "bridal",
     "make-up Accessories",
   ];
-  var subBody = ["yoga", "zumba", "body building", "gymnastics", "aerobics"];
+  var subBody = [
+    "ALL",
+    "yoga",
+    "zumba",
+    "body building",
+    "gymnastics",
+    "aerobics",
+  ];
   var musicData = [
     { url: 123, name: "M1" },
     { url: 123, name: "M2" },
@@ -314,7 +324,7 @@ function FanHomePage(props) {
     for (var j = 4 * i; j < 4 * (i + 1); j++) {
       divs.push(
         <div className="profile_images">
-          <img src="http://54.236.46.101:8000/default/profile.jpg" />
+          <img src="https://artsiam.com:8000/default/profile.jpg" />
 
           <p style={{ color: "white" }}>{musicData[j].name}</p>
         </div>
@@ -429,13 +439,13 @@ function FanHomePage(props) {
                       ? userInfo.data.profileImgURl != "" &&
                         userInfo.data.profileImgURl != null
                         ? userInfo.data.profileImgURl
-                        : "http://54.236.46.101:8000/default/profile.jpg"
-                      : "http://54.236.46.101:8000/default/profile.jpg"
+                        : "https://artsiam.com:8000/default/profile.jpg"
+                      : "https://artsiam.com:8000/default/profile.jpg"
                   }
                   onError={e => {
                     e.target.onerror = null;
                     e.target.src =
-                      "http://54.236.46.101:8000/default/profile.jpg";
+                      "https://artsiam.com:8000/default/profile.jpg";
                   }}
                 />
                 <div
@@ -703,12 +713,12 @@ function FanHomePage(props) {
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
                               ? fan.profileImgURl
-                              : "http://54.236.46.101:8000/default/profile.jpg"
+                              : "https://artsiam.com:8000/default/profile.jpg"
                           }
                           onError={e => {
                             e.target.onerror = null;
                             e.target.src =
-                              "http://54.236.46.101:8000/default/profile.jpg";
+                              "https://artsiam.com:8000/default/profile.jpg";
                           }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -769,12 +779,12 @@ function FanHomePage(props) {
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
                                 ? fan.profileImgURl
-                                : "http://54.236.46.101:8000/default/profile.jpg"
+                                : "https://artsiam.com:8000/default/profile.jpg"
                             }
                             onError={e => {
                               e.target.onerror = null;
                               e.target.src =
-                                "http://54.236.46.101:8000/default/profile.jpg";
+                                "https://artsiam.com:8000/default/profile.jpg";
                             }}
                           />
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
@@ -829,12 +839,12 @@ function FanHomePage(props) {
                           src={
                             fan.profileImgURl != "" && fan.profileImgURl != null
                               ? fan.profileImgURl
-                              : "http://54.236.46.101:8000/default/profile.jpg"
+                              : "https://artsiam.com:8000/default/profile.jpg"
                           }
                           onError={e => {
                             e.target.onerror = null;
                             e.target.src =
-                              "http://54.236.46.101:8000/default/profile.jpg";
+                              "https://artsiam.com:8000/default/profile.jpg";
                           }}
                         />
                         <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>

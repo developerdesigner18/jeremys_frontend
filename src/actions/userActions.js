@@ -541,17 +541,20 @@ export const hideTheStory = data => {
   return dispatch => {
     console.log("hideTheStory ", data);
     axios
-      .post(`${process.env.REACT_APP_API_URL}api/user/setScreenShotPrivate`, data)
+      .post(
+        `${process.env.REACT_APP_API_URL}api/user/setScreenShotPrivate`,
+        data
+      )
       .then(result => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
             type: "HIDE_THE_STORY",
-            payload: result.data.message
+            payload: result.data.message,
           });
-          swal("Success",result.data.message , "success");
+          swal("Success", result.data.message, "success");
         } else {
-          swal("Error",result.data.message , "error");
+          swal("Error", result.data.message, "error");
         }
       })
       .catch(error => {
@@ -569,11 +572,11 @@ export const hideReview = data => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
-            type: "HIDE_REVIEW"
+            type: "HIDE_REVIEW",
           });
-          swal("Success",result.data.message , "success");
+          swal("Success", result.data.message, "success");
         } else {
-          swal("Error",result.data.message , "error");
+          swal("Error", result.data.message, "error");
         }
       })
       .catch(error => {
@@ -592,10 +595,10 @@ export const getReviewOfFan = data => {
         if (result.data.success === true) {
           dispatch({
             type: "GET_REVIEW_FAN",
-            payload: result.data.message
+            payload: result.data.message,
           });
         } else {
-          swal("Error",result.data.message , "error");
+          swal("Error", result.data.message, "error");
         }
       })
       .catch(error => {
@@ -608,16 +611,18 @@ export const getReviewOfArtist = data => {
   return dispatch => {
     console.log("getArtistReviews ", data);
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/reviews/getArtistReviews/${data}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}api/reviews/getArtistReviews/${data}`
+      )
       .then(result => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
             type: "GET_REVIEW_ARTIST",
-            payload: result.data.message
+            payload: result.data.message,
           });
         } else {
-          swal("Error",result.data.message , "error");
+          swal("Error", result.data.message, "error");
         }
       })
       .catch(error => {
