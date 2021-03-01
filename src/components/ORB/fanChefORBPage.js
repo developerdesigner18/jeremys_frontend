@@ -128,6 +128,7 @@ function FanChefORB(props) {
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
     await dispatch(getStreamDetails({ userId: props.location.state.id }));
+    window.location.reload();
   }, [props.location.state.id || props.location.state.name]);
 
   useEffect(async () => {
