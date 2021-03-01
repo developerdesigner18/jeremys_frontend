@@ -119,28 +119,6 @@ function Header(props) {
         )}
       </header>
       <div className="main_sec custom_main_sec">
-        {stateData && stateData.userDetail ? (
-          stateData.userDetail.data.type === "fan" ||
-          stateData.userDetail.data.type === "Fan" ||
-          window.location.pathname == "/forgotPassword" ? (
-            <div className="links left_links">
-              <ul>
-                <li>
-                  <a href="#">stars</a>
-                </li>
-                <li>
-                  <a href="#">chef</a>
-                </li>
-                <li>
-                  <a href="#">style</a>
-                </li>
-                <li>
-                  <a href="#">trainer</a>
-                </li>
-              </ul>
-            </div>
-          ) : null
-        ) : null}
         <div className="logo">
           <img
             src={`../assets/images/logo_without_live.png`}
@@ -161,28 +139,6 @@ function Header(props) {
             <p className="go_live mt-1 mb-0">Go Live!</p>
           )}
         </div>
-        {stateData && stateData.userDetail ? (
-          stateData.userDetail.data.type === "fan" ||
-          stateData.userDetail.data.type === "Fan" ||
-          window.location.pathname == "/forgotPassword" ? (
-            <div className="links right_links">
-              <ul>
-                <li>
-                  <a href="#">fans</a>
-                </li>
-                <li>
-                  <a href="#">food</a>
-                </li>
-                <li>
-                  <a href="#">shopping</a>
-                </li>
-                <li>
-                  <a href="#">athlete</a>
-                </li>
-              </ul>
-            </div>
-          ) : null
-        ) : null}
       </div>
       <div className="hero_text text-center mb-4"></div>
     </div>

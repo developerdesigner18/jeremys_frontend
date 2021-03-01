@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { useDispatch, useSelector } from "react-redux";
-import "../../assets/css/ORB.css";
+import "../../assets/css/fanORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { socket } from "../../socketIO";
 
@@ -23,13 +23,12 @@ const useOutsideClick = (ref, callback) => {
   });
 };
 
-function SingleUserORBPage(props) {
+function FanOrbForUser(props) {
   const [isLive, setIsLive] = useState(false);
   const [stream, setStream] = useState(null);
   const videoRef = useRef();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [availableList, setAvailableList] = useState([]);
   const ref = useRef();
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -43,12 +42,18 @@ function SingleUserORBPage(props) {
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
   );
-
+  const constraints = {
+    audio: true,
+    video: true,
+    options: {
+      mirror: true,
+    },
+  };
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
     channel: "Artist",
     token: null,
-    role: availableList.length === 0 ? "host" : "audience",
+    role: "host",
   });
   const orbState = useSelector(state => state.ORB);
   const remoteUsers = {};
@@ -62,24 +67,20 @@ function SingleUserORBPage(props) {
     setIsOpen(false);
   });
   useEffect(async () => {
-    socket.emit("storeLiveFans", localStorage.getItem("id"));
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
+
+    socket.on("listOnlineFans", arg => {
+      console.log("list ", arg);
+    });
   }, []);
 
   useEffect(async () => {
+    // navigator.mediaDevices
+    //   .getUserMedia(constraints)
+    //   .then(success)
+    //   .catch(failure);
+
     if (orbState) {
-      let role = "";
-      socket.on("listOnlineFans", fanList => {
-        console.log("fanlist in orb page", fanList);
-        setAvailableList(fanList);
-        if (fanList.length && fanList.length <= 15) {
-          role = "host";
-        } else {
-          role = fanList.length === 0 ? "host" : "audience";
-        }
-      });
-      console.log("role ", options);
-      setOptions(prevState => ({ ...prevState, role: role }));
       rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
       setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
       await rtc.client.setClientRole(options.role);
@@ -97,33 +98,43 @@ function SingleUserORBPage(props) {
         //   subscribe(user, mediaType);
         await rtc.client.subscribe(user, mediaType);
         console.log("subscribe success-=-=-=-=-=-=-=-=-=");
-
         if (mediaType === "video") {
           user.videoTrack.play(`user-remote-playerlist`);
-          // user.videoTrack.play(`other-fan-remote`);
         }
         if (mediaType === "audio") {
           user.audioTrack.play();
         }
       });
+
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+
+      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+
       rtc.client.on("user-unpublished", async (user, mediaType) => {
         console.log("handleUserUnpublished-==-=-=", user.uid);
         const id = user.uid;
         delete remoteUsers[id];
       });
 
-      // Create an audio track from the audio sampled by a microphone.
-      // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      // Create a video track from the video captured by a camera.
-      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-
       rtc.localVideoTrack.play("local-player");
-      // rtc.localAudioTrack.play();
+      rtc.localAudioTrack.play();
 
       // Publish the local audio and video tracks to the channel.
-      await rtc.client.publish([rtc.localVideoTrack]);
+      await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
     }
   }, [orbState]);
+
+  const success = stream => {
+    setStream(stream);
+    videoRef.current.srcObject = stream;
+    console.log("stream ", stream);
+  };
+
+  // called when getUserMedia() fails - see below
+  const failure = e => {
+    console.log("getUserMedia Error: ", e);
+    alert(e.toString());
+  };
 
   const getImage = () => {
     console.log("fn called");
@@ -170,13 +181,13 @@ function SingleUserORBPage(props) {
           <img src="../assets/images/grey_logo.png" />
         </div>
         <div className="ORB_live_container d-flex" id="local-player">
-          <div
+          {/* <div
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}>
-            {/* <video ref={videoRef} autoPlay></video> */}
-          </div>
+            }} id="local-player"> */}
+          {/* <video ref={videoRef} autoPlay></video> */}
+          {/* </div> */}
         </div>
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
@@ -272,7 +283,7 @@ function SingleUserORBPage(props) {
       </div>
       <div className="  row justify-content-center mx-auto  mt-5">
         <div className="row p-0 col-md-3">
-          <div className="col-md-6 ORB_main_cat" id="other-fan-remote">
+          <div className="col-md-6 ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
           <div className="col-md-6 ORB_main_cat">
@@ -466,129 +477,8 @@ function SingleUserORBPage(props) {
           </div>
         </div>
       </div>
-
-      {/* <div className="container ORB_videos_container mt-3">
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="center_main"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat"></div>
-
-        <div className="r_image">
-          {isLive ? (
-            <img src="../assets/images/r_image.png" />
-          ) : (
-            <img src="../assets/images/disableR.png" />
-          )}
-        </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-      </div>
-       */}
-      {/* <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/ticket.png" />
-            <p>Ticket</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/seat.png" />
-            <p>Seat</p>
-          </div>
-        </a>
-        <a onClick={getImage}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/take_picture.png" />
-            <p>Take Picture</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/time.png" />
-            <p>Time</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/short_break.png" />
-            <p>Short Break</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/share.png" />
-            <p>Share</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/tip.png" />
-            <p>Tip</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/exit.png" />
-            <p>Exit</p>
-          </div>
-        </a>
-      </div>*/}
     </div>
   );
 }
 
-export default SingleUserORBPage;
+export default FanOrbForUser;

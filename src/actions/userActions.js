@@ -205,6 +205,7 @@ export const getUserWithId = data => dispatch => {
       }
     })
     .catch(err => {
+      console.log("error in get user with id", err);
       swal("Error", err.toString());
     });
 };

@@ -21,6 +21,7 @@ import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
 import { isAuthenticate } from "./utill";
 import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
+import FanOrbForUser from "./components/ORB/FanOrbForUser";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <PrivateRoute path="/videoChatHost" component={VideoChat} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
+        <PrivateRoute path="/userORB" component={FanOrbForUser} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
 
         <Route exact path="/myCalendar" component={Calendar} />
@@ -77,7 +79,7 @@ function App() {
     return (
       <Route
         {...rest}
-        render={(props) =>
+        render={props =>
           localStorage.getItem("id") ? (
             <Component {...props} />
           ) : (
@@ -99,7 +101,7 @@ function App() {
     return (
       <Route
         {...rest}
-        render={(props) =>
+        render={props =>
           !localStorage.getItem("id") ? (
             React.createElement(component, props)
           ) : (

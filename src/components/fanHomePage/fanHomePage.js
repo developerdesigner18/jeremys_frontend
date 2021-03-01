@@ -16,7 +16,7 @@ import { socket } from "../../socketIO";
 import { useHistory } from "react-router-dom";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -45,9 +45,9 @@ function FanHomePage(props) {
   const [isLoading, setisLoading] = useState(true);
   const [touchStartY, setTouchStartY] = React.useState(0);
   const [touchStartX, setTouchStartX] = React.useState(0);
-  const stateData = useSelector((state) => state.user);
-  const followData = useSelector((state) => state.follow);
-  const ORBState = useSelector((state) => state.ORB);
+  const stateData = useSelector(state => state.user);
+  const followData = useSelector(state => state.follow);
+  const ORBState = useSelector(state => state.ORB);
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("pop");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
@@ -87,12 +87,12 @@ function FanHomePage(props) {
       socket.emit("chekCategory", eventName, subMusic[0]);
     }
 
-    socket.on("onlineUsers", (userList) => {
+    socket.on("onlineUsers", userList => {
       console.log("userlist ", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
         // setOnlineCheck(true);
@@ -102,7 +102,7 @@ function FanHomePage(props) {
       }
     });
   }
-  const handleDragStart = (e) => {
+  const handleDragStart = e => {
     var img = new Image();
     img.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
@@ -161,14 +161,15 @@ function FanHomePage(props) {
     } else {
       props.history.push("/");
     }
-
     socket.emit("chekCategory", category, subcategory);
 
-    socket.on("onlineUsers", (userList) => {
+    socket.emit("storeLiveFans", localStorage.getItem("id"));
+
+    socket.on("onlineUsers", userList => {
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
         // setOnlineCheck(true);
@@ -328,7 +329,7 @@ function FanHomePage(props) {
       dispatch(removeFromCommunity(fanID));
     }
   };
-  const outOfFrame = (name) => {
+  const outOfFrame = name => {
     dispatch(getFromCommunity(category, subcategory));
   };
   const swipedFind = (direction, fanID) => {
@@ -339,7 +340,7 @@ function FanHomePage(props) {
       dispatch(addToCommunity(fanID));
     }
   };
-  const outOfFrameFind = async (fanID) => {
+  const outOfFrameFind = async fanID => {
     // setSwipedDown(true);
   };
 
@@ -358,12 +359,12 @@ function FanHomePage(props) {
     setSubCategory(value);
     socket.emit("chekCategory", category, value);
 
-    socket.on("onlineUsers", (userList) => {
+    socket.on("onlineUsers", userList => {
       console.log("userlist ", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
         // setOnlineCheck(true);
@@ -384,7 +385,7 @@ function FanHomePage(props) {
             <div className="tab1">
               <button
                 className="tablinks active"
-                onClick={(event) => {
+                onClick={event => {
                   openCity(event, "music");
                   setCategory("music");
                   setisLoading(true);
@@ -394,15 +395,14 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("music", subMusic[0]));
                   }
-                }}
-              >
+                }}>
                 MUSIC
               </button>
             </div>
             <div className="tab2">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setSubCategory(subFood[0]);
                   setCategory("food");
                   setisLoading(true);
@@ -412,8 +412,7 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("food", subFood[0]));
                   }
-                }}
-              >
+                }}>
                 FOOD
               </button>
             </div>
@@ -428,7 +427,7 @@ function FanHomePage(props) {
                         : "http://54.236.46.101:8000/default/profile.jpg"
                       : "http://54.236.46.101:8000/default/profile.jpg"
                   }
-                  onError={(e) => {
+                  onError={e => {
                     e.target.onerror = null;
                     e.target.src =
                       "http://54.236.46.101:8000/default/profile.jpg";
@@ -436,8 +435,7 @@ function FanHomePage(props) {
                 />
                 <div
                   className="position-relative"
-                  style={{ textAlign: "center" }}
-                >
+                  style={{ textAlign: "center" }}>
                   <span style={{ textTransform: "capitalize" }}>
                     <i className="fas fa-heart mr-1" style={{ color: "red" }} />{" "}
                     FOLLOWING: {loggedInUserFollowing}
@@ -448,7 +446,7 @@ function FanHomePage(props) {
             <div className="tab3">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setSubCategory(subStyle[0]);
                   setisLoading(true);
                   openCity(event, "style");
@@ -458,15 +456,14 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("style", subStyle[0]));
                   }
-                }}
-              >
+                }}>
                 STYLE
               </button>
             </div>
             <div className="tab4">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setisLoading(true);
                   setSubCategory(subBody[0]);
                   openCity(event, "body");
@@ -476,8 +473,7 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("body", subBody[0]));
                   }
-                }}
-              >
+                }}>
                 BODY
               </button>
             </div>
@@ -486,8 +482,7 @@ function FanHomePage(props) {
             <Slider
               {...settings}
               className="mb-4"
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{ background: "#333333", marginBottom: "25px" }}>
               {subMusic.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -520,8 +515,7 @@ function FanHomePage(props) {
                             subcategory == value
                           );
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -532,8 +526,7 @@ function FanHomePage(props) {
           <div id="food" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{ background: "#333333", marginBottom: "25px" }}>
               {subFood.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -566,8 +559,7 @@ function FanHomePage(props) {
                             subcategory == value
                           );
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -578,8 +570,7 @@ function FanHomePage(props) {
           <div id="style" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{ background: "#333333", marginBottom: "25px" }}>
               {subStyle.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -606,8 +597,7 @@ function FanHomePage(props) {
                           setisLoading(true);
                           dispatch(getFromCommunity("style", value));
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -618,8 +608,7 @@ function FanHomePage(props) {
           <div id="body" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{ background: "#333333", marginBottom: "25px" }}>
               {subBody.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -646,8 +635,7 @@ function FanHomePage(props) {
                           setisLoading(true);
                           dispatch(getFromCommunity("body", value));
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -661,8 +649,7 @@ function FanHomePage(props) {
               alignItems: "right",
               display: "flex",
               flexDirection: "row-reverse",
-            }}
-          >
+            }}>
             <span>
               {onlineCheck ? "Currently Online" : "Currently Offline"}
             </span>
@@ -688,8 +675,7 @@ function FanHomePage(props) {
                       onClick={() => console.log("Clicked-=-=-=")}
                       className="profile_images col-sm-3 col-md-3  my-3"
                       style={{ textAlign: "center", cursor: "pointer" }}
-                      key={i}
-                    >
+                      key={i}>
                       {/* <div
                         id={fan._id}
                         onDragStart={(e) => handleDragStart(e)}
@@ -702,10 +688,9 @@ function FanHomePage(props) {
                         // ref={this.addToRefs}
                         // className="swipe col-md-12 "
                         // key={index.id}
-                        onSwipe={(dir) => swipedFind(dir, fan._id)}
+                        onSwipe={dir => swipedFind(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrameFind(fan._id)}
-                        preventSwipe={["left", "right", "up", "down"]}
-                      >
+                        preventSwipe={["left", "right", "up", "down"]}>
                         <img
                           id={fan._id}
                           className="draggableImg"
@@ -714,7 +699,7 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "http://54.236.46.101:8000/default/profile.jpg"
                           }
-                          onError={(e) => {
+                          onError={e => {
                             e.target.onerror = null;
                             e.target.src =
                               "http://54.236.46.101:8000/default/profile.jpg";
@@ -753,8 +738,7 @@ function FanHomePage(props) {
                       <div
                         className="profile_images col-sm-3 col-md-3  my-3"
                         style={{ textAlign: "center" }}
-                        key={i}
-                      >
+                        key={i}>
                         {" "}
                         {/* <div
                         id={fan._id}
@@ -768,10 +752,9 @@ function FanHomePage(props) {
                           // ref={this.addToRefs}
                           // className="swipe col-md-12 "
                           // key={index.id}
-                          onSwipe={(dir) => swiped(dir, fan._id)}
+                          onSwipe={dir => swiped(dir, fan._id)}
                           onCardLeftScreen={() => outOfFrame(fan._id)}
-                          preventSwipe={["down", "left", "right"]}
-                        >
+                          preventSwipe={["down", "left", "right"]}>
                           <img
                             className="draggableImg"
                             src={
@@ -780,7 +763,7 @@ function FanHomePage(props) {
                                 ? fan.profileImgURl
                                 : "http://54.236.46.101:8000/default/profile.jpg"
                             }
-                            onError={(e) => {
+                            onError={e => {
                               e.target.onerror = null;
                               e.target.src =
                                 "http://54.236.46.101:8000/default/profile.jpg";
@@ -815,8 +798,7 @@ function FanHomePage(props) {
                     <div
                       className="profile_images col-sm-3 col-md-3  my-3"
                       style={{ textAlign: "center" }}
-                      key={i}
-                    >
+                      key={i}>
                       {" "}
                       {/* <div
                         id={fan._id}
@@ -830,10 +812,9 @@ function FanHomePage(props) {
                         // ref={this.addToRefs}
                         // className="swipe col-md-12 "
                         // key={index.id}
-                        onSwipe={(dir) => swiped(dir, fan._id)}
+                        onSwipe={dir => swiped(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrame(fan._id)}
-                        preventSwipe={["down", "left", "right"]}
-                      >
+                        preventSwipe={["down", "left", "right"]}>
                         <img
                           className="draggableImg"
                           src={
@@ -841,7 +822,7 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "http://54.236.46.101:8000/default/profile.jpg"
                           }
-                          onError={(e) => {
+                          onError={e => {
                             e.target.onerror = null;
                             e.target.src =
                               "http://54.236.46.101:8000/default/profile.jpg";
@@ -875,12 +856,11 @@ function FanHomePage(props) {
           <div className="main_links d-flex pt-5 mt-5">
             <div className="down_links">
               <a
-                onClick={(event) => {
+                onClick={event => {
                   setisLoading(true);
                   dispatch(getFromCommunity(category, subcategory));
                   setfind(false);
-                }}
-              >
+                }}>
                 <img
                   src="../assets/images/1.png"
                   style={
@@ -898,12 +878,11 @@ function FanHomePage(props) {
             </div>
             <div className="down_links">
               <a
-                onClick={(event) => {
+                onClick={event => {
                   setfind(true);
 
                   getAllArtist();
-                }}
-              >
+                }}>
                 <img
                   src="../assets/images/2.png"
                   style={
@@ -922,13 +901,11 @@ function FanHomePage(props) {
             <div
               className="down_links dropup"
               onClick={() => setMoreIcon()}
-              ref={ref}
-            >
+              ref={ref}>
               <a
                 data-toggle="dropdown"
                 aria-haspopup="true"
-                aria-expanded="false"
-              >
+                aria-expanded="false">
                 <img
                   src="../assets/images/3.png"
                   style={
@@ -947,14 +924,12 @@ function FanHomePage(props) {
                 <ul className="menu_item">
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/profile")}
-                  >
+                    onClick={() => props.history.push("/profile")}>
                     PROFILE
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => history.push("/myStory")}
-                  >
+                    onClick={() => history.push("/myStory")}>
                     MY STORY
                   </li>
                   <li className="dropdown-item menu more_list">MY JOURNAL</li>
@@ -963,16 +938,14 @@ function FanHomePage(props) {
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/termsCondition")}
-                  >
+                    onClick={() => props.history.push("/termsCondition")}>
                     TERMS AND CONDITION
                   </li>
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => {
                       props.history.push("/customerService");
-                    }}
-                  >
+                    }}>
                     CONTACT US
                   </li>
                 </ul>
@@ -981,8 +954,7 @@ function FanHomePage(props) {
             <div
               className="down_links"
               onClick={callLogout}
-              style={{ cursor: "pointer" }}
-            >
+              style={{ cursor: "pointer" }}>
               <a>
                 <img src="../assets/images/4.png" />
               </a>
