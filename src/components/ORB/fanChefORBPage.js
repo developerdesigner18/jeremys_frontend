@@ -228,10 +228,6 @@ function FanChefORB(props) {
     props.history.push("/fanHomePage");
   }
 
-  useEffect(() => {
-    window.location.reload();
-  }, []);
-
   return (
     <div
       style={{
