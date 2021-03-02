@@ -124,13 +124,15 @@ function UserCategoryHomePage(props) {
     }
   };
   const searchInputChange = value => {
-    var data = allFollower.filter(
-      event =>
+    var data = allFans.filter(event => {
+      return (
         event.lastName.toLowerCase().includes(value.toLowerCase()) ||
         event.firstName.toLowerCase().includes(value.toLowerCase())
-    );
-    console.log("data", data);
-    setSearchFollower(data);
+      );
+    });
+    console.log("search data", data);
+    let searchedData = [...data];
+    setAllFans(searchedData);
   };
 
   useEffect(async () => {
@@ -172,6 +174,7 @@ function UserCategoryHomePage(props) {
   }, [followData]);
 
   const getAllfans = () => {
+    setfind(true);
     setAllFans(stateData.fans);
   };
 
@@ -354,7 +357,16 @@ function UserCategoryHomePage(props) {
               />
             </div>
             <div id="find" className="tabcontent">
-              <div className="category_empty" style={{ height: "20px" }}></div>
+              <div
+                className="category_empty"
+                style={{ height: Find ? "40px" : "20px" }}>
+                <input
+                  type="search"
+                  placeholder="Search.."
+                  style={{ display: Find ? "block" : "none" }}
+                  onChange={e => searchInputChange(e.target.value)}
+                />
+              </div>
               <div className=" row vids">
                 {allFans.length != 0 ? (
                   currentFans.map((fan, i) => {
@@ -439,7 +451,7 @@ function UserCategoryHomePage(props) {
                   }
                   onClick={event => {
                     openCity(event, "find");
-                    setfind(true);
+
                     getAllfans();
                   }}>
                   <img src="../assets/images/2.png" />
