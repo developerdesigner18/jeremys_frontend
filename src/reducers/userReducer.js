@@ -77,7 +77,7 @@ const userReducer = (state = null, action) => {
     case "HIDE_THE_STORY":
       return {
         ...state,
-        updatedValue: action.payload
+        updatedValue: action.payload,
       };
 
     case "GET_REVIEW_FAN":
@@ -107,6 +107,12 @@ const userReducer = (state = null, action) => {
       return {
         ...state,
         addcommunity: action.payload,
+      };
+
+    case "FAN_LIST":
+      return {
+        ...state,
+        fanList: action.payload,
       };
 
     default:

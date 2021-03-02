@@ -49,7 +49,7 @@ function FanHomePage(props) {
   const followData = useSelector(state => state.follow);
   const ORBState = useSelector(state => state.ORB);
   const [category, setCategory] = useState("music");
-  const [subcategory, setSubCategory] = useState("pop");
+  const [subcategory, setSubCategory] = useState("ALL");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [onlineCheck, setOnlineCheck] = useState(true);

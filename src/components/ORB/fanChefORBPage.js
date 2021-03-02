@@ -151,7 +151,7 @@ function FanChefORB(props) {
   useEffect(async () => {
     if (StreamData) {
       if (StreamData && StreamData.userToken && StreamData.streamData) {
-        console.log("StreamData", StreamData.userToken.agoraToken, options);
+        console.log("StreamData", StreamData);
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
         setChefRTC(prevState => ({ ...prevState, client: rtc.client }));

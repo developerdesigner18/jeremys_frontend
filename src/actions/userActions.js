@@ -428,6 +428,7 @@ export const getAllArtists = (category, subCategory) => {
 };
 
 export const getFromCommunity = (category, subCategory) => dispatch => {
+  console.log("get from community parameter ", category, subCategory);
   let type;
   if (category == "music") {
     type = "star";
@@ -628,5 +629,26 @@ export const getReviewOfArtist = data => {
       .catch(error => {
         console.log("error in api ", error);
       });
+  };
+};
+
+export const getFanList = () => {
+  return dispatch => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/community/getFanList?id=${localStorage.getItem("id")}`
+      )
+      .then(result => {
+        console.log("result of get fan list ", result.data);
+        if (result.data.success) {
+          dispatch({
+            type: "FAN_LIST",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("error get fan list ", error));
   };
 };

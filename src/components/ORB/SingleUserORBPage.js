@@ -273,34 +273,34 @@ function SingleUserORBPage(props) {
       </div>
       <div className="  row justify-content-center mx-auto  mt-5">
         <div className="row p-0 col-md-3">
-          <div className="col-md-6 ORB_main_cat" id="other-fan-remote">
+          <div className="col-md-6 fan_ORB_main_cat" id="other-fan-remote">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
         </div>
@@ -435,92 +435,92 @@ function SingleUserORBPage(props) {
           </div>
         </div>
         <div className="row p-0 col-md-3">
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>{" "}
-          <div className="col-md-6 ORB_main_cat">
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
         </div>
       </div>
 
       {/* <div className="container ORB_videos_container mt-3">
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
         <div className="center_main"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat"></div>
 
         <div className="r_image">
           {isLive ? (
@@ -529,11 +529,11 @@ function SingleUserORBPage(props) {
             <img src="../assets/images/disableR.png" />
           )}
         </div>
-        <div className="ORB_main_cat"></div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat"></div>
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
-        <div className="ORB_main_cat">
+        <div className="fan_ORB_main_cat">
           <img src="../assets/images/button_bg.png" />
         </div>
       </div>

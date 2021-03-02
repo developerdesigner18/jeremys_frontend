@@ -5,6 +5,7 @@ import {
   getAllFans,
   getAllFollower,
   getFromCommunity,
+  getFanList,
 } from "../../actions/userActions";
 import { getFollowers } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
@@ -123,7 +124,6 @@ function UserCategoryHomePage(props) {
     }
   };
   const searchInputChange = value => {
-    console.log(allFollower);
     var data = allFollower.filter(
       event =>
         event.lastName.toLowerCase().includes(value.toLowerCase()) ||
@@ -134,22 +134,26 @@ function UserCategoryHomePage(props) {
   };
 
   useEffect(async () => {
-    dispatch(getFromCommunity("music", "jazz"));
-    dispatch(getAllFollower());
-    dispatch(getAllFans());
-    dispatch(getFollowers(localStorage.getItem("id")));
+    await dispatch(getFanList());
+    await dispatch(getAllFollower());
+    await dispatch(getAllFans());
+    await dispatch(getFollowers(localStorage.getItem("id")));
   }, []);
 
   useEffect(async () => {
     if (stateData) {
-      console.log("stateData", stateData);
+      // console.log("stateData", stateData);
       if (stateData.userDetail) setCurrentUserdata(stateData.userDetail);
       if (stateData.followers) {
         await dispatch(getFollowers(localStorage.getItem("id")));
         console.log("use effect chage state data");
         setAllFollower(stateData.followers);
-        setSearchFollower(stateData.followers);
+        // setSearchFollower(stateData.followers);
       }
+      if (stateData.fanList) {
+        setSearchFollower(stateData.fanList);
+      }
+      if (stateData.fans) console.log("get all fans");
     }
   }, [stateData]);
 
@@ -174,7 +178,8 @@ function UserCategoryHomePage(props) {
   const clickOnHome = () => {
     console.log("getALLFANS=--=-=-=-=-=", stateData);
     setAllFollower(stateData.followers);
-    setSearchFollower(stateData.followers);
+    // setSearchFollower(stateData.followers);
+    setSearchFollower(stateData.fanList);
   };
   let indexOfFirstUser = Offset;
   let indexOfLastUser = Offset + perPage;
@@ -349,8 +354,7 @@ function UserCategoryHomePage(props) {
               />
             </div>
             <div id="find" className="tabcontent">
-              <div className="category_empty"></div>
-              {console.log("allFans.length=-=-=-=-", allFans.length)}
+              <div className="category_empty" style={{ height: "20px" }}></div>
               <div className=" row vids">
                 {allFans.length != 0 ? (
                   currentFans.map((fan, i) => {
@@ -376,7 +380,7 @@ function UserCategoryHomePage(props) {
                           />
 
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
-                        </div>{" "}
+                        </div>
                       </div>
                     );
                   })
@@ -434,9 +438,9 @@ function UserCategoryHomePage(props) {
                       : { cursor: "pointer" }
                   }
                   onClick={event => {
-                    // openCity(event, "find");
+                    openCity(event, "find");
                     setfind(true);
-                    // getAllfans();
+                    getAllfans();
                   }}>
                   <img src="../assets/images/2.png" />
                 </a>

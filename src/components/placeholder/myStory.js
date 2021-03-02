@@ -225,6 +225,21 @@ function MyStory(props) {
         id: userInfo ? userInfo.data._id : "",
       });
     }
+    if (
+      userInfo.data.type === "star" ||
+      userInfo.data.type === "Star" ||
+      userInfo.data.type === "trainer" ||
+      userInfo.data.type === "Trainer"
+    ) {
+      history.push("/fanORB", {
+        name: userInfo
+          ? userInfo.data.firstName
+            ? userInfo.data.firstName
+            : "chef"
+          : "",
+        id: userInfo ? userInfo.data._id : "",
+      });
+    }
     // else if (
     //   userInfo.data.type === "stylist" ||
     //   userInfo.data.type === "Stylist"

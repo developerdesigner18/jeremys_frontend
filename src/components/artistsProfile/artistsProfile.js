@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../assets/css/artistsProfile.css";
 import Header from "../header/Header";
 import { useSelector, useDispatch } from "react-redux";
 import { addInterest } from "../../actions/userActions";
+
 function ArtistsProfile(props) {
+  const stateData = useSelector(state => state.user);
   const dispatch = useDispatch();
   const [artistType, setArtistType] = useState(localStorage.getItem("type"));
   //   setArtistType(localStorage.getItem("type"));
@@ -82,7 +84,77 @@ function ArtistsProfile(props) {
   const [newmusicError, setnewmusicError] = useState("");
   const [newstyleError, setnewstyleError] = useState("");
   const [newstarTypeError, setnewstarTypeError] = useState("");
-  const addMore = (type) => {
+  const [updateBool, setUpdateBool] = useState(false);
+
+  useEffect(() => {
+    if (stateData) {
+      if (stateData.userDetail) {
+        console.log("statedata.userdetails ", stateData.userDetail, props);
+        if (props && props.location)
+          setUpdateBool(props.location.state.forUpdate);
+        if (
+          stateData.userDetail.data.foodChoices &&
+          stateData.userDetail.data.foodChoices.length
+        ) {
+          let food = [...chefTypes];
+          food.forEach(singleFood => {
+            if (
+              stateData.userDetail.data.foodChoices.includes(singleFood.label)
+            ) {
+              singleFood.checked = true;
+            }
+          });
+          setchefTypes(food);
+        }
+        if (
+          stateData.userDetail.data.musicChoices &&
+          stateData.userDetail.data.musicChoices.length
+        ) {
+          let star = [...starGenreTypes];
+          starGenreTypes.forEach(singleItem => {
+            if (
+              stateData.userDetail.data.musicChoices.includes(singleItem.label)
+            ) {
+              singleItem.checked = true;
+            }
+          });
+          setstarGenreTypes(star);
+        }
+        if (
+          stateData.userDetail.data.styleChoices &&
+          stateData.userDetail.data.styleChoices.length
+        ) {
+          let style = [...stylistTypes];
+          stylistTypes.forEach(singleItem => {
+            if (
+              stateData.userDetail.data.styleChoices.includes(singleItem.label)
+            ) {
+              singleItem.checked = true;
+            }
+          });
+          setstylistTypes(style);
+        }
+        if (
+          stateData.userDetail.data.fitnessChoices &&
+          stateData.userDetail.data.fitnessChoices.length
+        ) {
+          let trainer = [...trainerTypes];
+          trainerTypes.forEach(singletItem => {
+            if (
+              stateData.userDetail.data.fitnessChoices.includes(
+                singletItem.label
+              )
+            ) {
+              singletItem.checked = true;
+            }
+          });
+          settrainerTypes(trainer);
+        }
+      }
+    }
+  }, [stateData]);
+
+  const addMore = type => {
     if (type == "food") {
       setaddMorefoodChoices(true);
     }
@@ -99,10 +171,10 @@ function ArtistsProfile(props) {
       setaddMorestarType(true);
     }
   };
-  const addnewChoice = (type) => {
+  const addnewChoice = type => {
     if (type == "food") {
       const found = chefTypes.find(
-        (element) => element.label == newfoodChoice.toUpperCase()
+        element => element.label == newfoodChoice.toUpperCase()
       );
       if (found) {
         setnewfoodError(
@@ -123,7 +195,7 @@ function ArtistsProfile(props) {
     }
     if (type == "music") {
       const found = starGenreTypes.find(
-        (element) => element.label == newmusicChoice.toUpperCase()
+        element => element.label == newmusicChoice.toUpperCase()
       );
       if (found) {
         setnewmusicError(
@@ -144,7 +216,7 @@ function ArtistsProfile(props) {
     }
     if (type == "style") {
       const found = stylistTypes.find(
-        (element) => element.label == newstyleChoice.toUpperCase()
+        element => element.label == newstyleChoice.toUpperCase()
       );
       if (found) {
         setnewstyleError(
@@ -165,7 +237,7 @@ function ArtistsProfile(props) {
     }
     if (type == "fitness") {
       const found = trainerTypes.find(
-        (element) => element.label == newfitnessChoice.toUpperCase()
+        element => element.label == newfitnessChoice.toUpperCase()
       );
       if (found) {
         setnewfitnessError(
@@ -186,7 +258,7 @@ function ArtistsProfile(props) {
     }
     if (type == "starType") {
       const found = starPerformerTypes.find(
-        (element) => element.label == newstarType.toUpperCase()
+        element => element.label == newstarType.toUpperCase()
       );
       if (found) {
         setnewstarTypeError(
@@ -218,6 +290,7 @@ function ArtistsProfile(props) {
       )
     );
   };
+
   return (
     <div className="container">
       {console.log("setstarPerformerTypes-=-==-=-=-=", starType)}
@@ -300,15 +373,14 @@ function ArtistsProfile(props) {
                           <input
                             type="text"
                             placeholder="Add cuisine"
-                            onChange={(e) => setnewfoodChoice(e.target.value)}
+                            onChange={e => setnewfoodChoice(e.target.value)}
                           />
                         </div>
                         {newfoodError != "" ? (
                           <div
                             style={{
                               color: "red",
-                            }}
-                          >
+                            }}>
                             {newfoodError}
                           </div>
                         ) : null}
@@ -316,20 +388,18 @@ function ArtistsProfile(props) {
                         <div className="mt-1">
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               e.preventDefault();
                               addnewChoice("food");
-                            }}
-                          >
+                            }}>
                             ADD
                           </button>{" "}
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               setaddMorefoodChoices(false);
                               setnewfoodError("");
-                            }}
-                          >
+                            }}>
                             CANCEL
                           </button>
                         </div>
@@ -337,8 +407,7 @@ function ArtistsProfile(props) {
                     ) : (
                       <a
                         style={{ cursor: "pointer" }}
-                        onClick={() => addMore("food")}
-                      >
+                        onClick={() => addMore("food")}>
                         + Add more
                       </a>
                     )}{" "}
@@ -414,37 +483,32 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add your style"
-                              onChange={(e) =>
-                                setnewstyleChoice(e.target.value)
-                              }
+                              onChange={e => setnewstyleChoice(e.target.value)}
                             />
                           </div>{" "}
                           {newstyleError != "" ? (
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newstyleError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("style");
-                              }}
-                            >
+                              }}>
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMorestyleChoices(false);
                                 setnewstyleError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -452,8 +516,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("style")}
-                        >
+                          onClick={() => addMore("style")}>
                           + Add more
                         </a>
                       )}
@@ -505,36 +568,33 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add music genre"
-                              onChange={(e) => setnewstarType(e.target.value)}
+                              onChange={e => setnewstarType(e.target.value)}
                             />
                           </div>{" "}
                           {newstarTypeError != "" ? (
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newstarTypeError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("starType");
-                              }}
-                            >
+                              }}>
                               {" "}
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMorestarType(false);
                                 setnewstarTypeError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -542,8 +602,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("starType")}
-                        >
+                          onClick={() => addMore("starType")}>
                           + Add more
                         </a>
                       )}
@@ -622,36 +681,33 @@ function ArtistsProfile(props) {
                           <input
                             type="text"
                             placeholder="Add music genre"
-                            onChange={(e) => setnewmusicChoice(e.target.value)}
+                            onChange={e => setnewmusicChoice(e.target.value)}
                           />
                         </div>{" "}
                         {newmusicError != "" ? (
                           <div
                             style={{
                               color: "red",
-                            }}
-                          >
+                            }}>
                             {newmusicError}
                           </div>
                         ) : null}
                         <div className="mt-1">
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               e.preventDefault();
                               addnewChoice("music");
-                            }}
-                          >
+                            }}>
                             {" "}
                             ADD
                           </button>{" "}
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               setaddMoremusicChoices(false);
                               setnewmusicError("");
-                            }}
-                          >
+                            }}>
                             CANCEL
                           </button>
                         </div>
@@ -659,8 +715,7 @@ function ArtistsProfile(props) {
                     ) : (
                       <a
                         style={{ cursor: "pointer" }}
-                        onClick={() => addMore("music")}
-                      >
+                        onClick={() => addMore("music")}>
                         + Add more
                       </a>
                     )}
@@ -711,7 +766,7 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add fitness type"
-                              onChange={(e) =>
+                              onChange={e =>
                                 setnewfitnessChoice(e.target.value)
                               }
                             />{" "}
@@ -720,28 +775,25 @@ function ArtistsProfile(props) {
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newfitnessError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("fitness");
-                              }}
-                            >
+                              }}>
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMorefitnessChoices(false);
                                 setnewfitnessError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -749,8 +801,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("fitness")}
-                        >
+                          onClick={() => addMore("fitness")}>
                           + Add more
                         </a>
                       )}
@@ -835,15 +886,14 @@ function ArtistsProfile(props) {
                           <input
                             type="text"
                             placeholder="Add cuisine"
-                            onChange={(e) => setnewfoodChoice(e.target.value)}
+                            onChange={e => setnewfoodChoice(e.target.value)}
                           />
                         </div>
                         {newfoodError != "" ? (
                           <div
                             style={{
                               color: "red",
-                            }}
-                          >
+                            }}>
                             {newfoodError}
                           </div>
                         ) : null}
@@ -851,20 +901,18 @@ function ArtistsProfile(props) {
                         <div className="mt-1">
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               e.preventDefault();
                               addnewChoice("food");
-                            }}
-                          >
+                            }}>
                             ADD
                           </button>{" "}
                           <button
                             className="create_profile "
-                            onClick={(e) => {
+                            onClick={e => {
                               setaddMorefoodChoices(false);
                               setnewfoodError("");
-                            }}
-                          >
+                            }}>
                             CANCEL
                           </button>
                         </div>
@@ -872,8 +920,7 @@ function ArtistsProfile(props) {
                     ) : (
                       <a
                         style={{ cursor: "pointer" }}
-                        onClick={() => addMore("food")}
-                      >
+                        onClick={() => addMore("food")}>
                         + Add more
                       </a>
                     )}
@@ -953,38 +1000,33 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add music genre"
-                              onChange={(e) =>
-                                setnewmusicChoice(e.target.value)
-                              }
+                              onChange={e => setnewmusicChoice(e.target.value)}
                             />
                           </div>{" "}
                           {newmusicError != "" ? (
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newmusicError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("music");
-                              }}
-                            >
+                              }}>
                               {" "}
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMoremusicChoices(false);
                                 setnewmusicError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -992,8 +1034,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("music")}
-                        >
+                          onClick={() => addMore("music")}>
                           + Add more
                         </a>
                       )}
@@ -1042,37 +1083,32 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add your style"
-                              onChange={(e) =>
-                                setnewstyleChoice(e.target.value)
-                              }
+                              onChange={e => setnewstyleChoice(e.target.value)}
                             />
                           </div>{" "}
                           {newstyleError != "" ? (
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newstyleError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("style");
-                              }}
-                            >
+                              }}>
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMorestyleChoices(false);
                                 setnewstyleError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -1080,8 +1116,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("style")}
-                        >
+                          onClick={() => addMore("style")}>
                           + Add more
                         </a>
                       )}
@@ -1131,7 +1166,7 @@ function ArtistsProfile(props) {
                             <input
                               type="text"
                               placeholder="Add fitness type"
-                              onChange={(e) =>
+                              onChange={e =>
                                 setnewfitnessChoice(e.target.value)
                               }
                             />{" "}
@@ -1140,28 +1175,25 @@ function ArtistsProfile(props) {
                             <div
                               style={{
                                 color: "red",
-                              }}
-                            >
+                              }}>
                               {newfitnessError}
                             </div>
                           ) : null}
                           <div className="mt-1">
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 addnewChoice("fitness");
-                              }}
-                            >
+                              }}>
                               ADD
                             </button>{" "}
                             <button
                               className="create_profile "
-                              onClick={(e) => {
+                              onClick={e => {
                                 setaddMorefitnessChoices(false);
                                 setnewfitnessError("");
-                              }}
-                            >
+                              }}>
                               CANCEL
                             </button>
                           </div>
@@ -1169,8 +1201,7 @@ function ArtistsProfile(props) {
                       ) : (
                         <a
                           style={{ cursor: "pointer" }}
-                          onClick={() => addMore("fitness")}
-                        >
+                          onClick={() => addMore("fitness")}>
                           + Add more
                         </a>
                       )}
@@ -1182,7 +1213,11 @@ function ArtistsProfile(props) {
           </>
         ) : null}
         <div class="create_profile my-5 text-center">
-          <button onClick={() => createProfile()}>Create Profile</button>
+          {updateBool ? (
+            <button onClick={() => createProfile()}>Update Profile</button>
+          ) : (
+            <button onClick={() => createProfile()}>Create Profile</button>
+          )}
         </div>
       </div>
     </div>

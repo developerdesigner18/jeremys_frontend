@@ -62,6 +62,7 @@ function App() {
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
         <PrivateRoute path="/fanChefORB" component={FanChefORB} />
+        <PrivateRoute path="/fanStylistORB" component={FanChefORB} />
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <PrivateRoute path="/videoChatHost" component={VideoChat} />

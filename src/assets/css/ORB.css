@@ -199,6 +199,10 @@ body {
   /* width: 100%;
   height: 100%; */
 }
+.fan_ORB_main_cat {
+  display: flex;
+  padding: 20px;
+}
 .ORB_link img {
   object-fit: none;
   height: 55px;

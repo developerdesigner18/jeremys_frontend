@@ -233,6 +233,11 @@ function UserProfile(props) {
     await dispatch(deactivateUserAccount(dataToPass));
   };
 
+  const goToUserProfile = () => {
+    console.log("go to user profile fn called");
+    props.history.push("/artistProfile", { forUpdate: true });
+  };
+
   return (
     <div className="container mb-5  ">
       <Header />
@@ -241,13 +246,24 @@ function UserProfile(props) {
           USER INFORMATION
         </div>
 
-        <div className="mb-4 deactivate">
-          <button
-            className="btn btn-default btn_submit"
-            type="button"
-            onClick={callDeactivate}>
-            Deactivate Account
-          </button>
+        <div className="row">
+          <div className="mb-4 deactivate col-6">
+            <button
+              className="btn btn-default btn_submit"
+              type="button"
+              onClick={callDeactivate}>
+              Deactivate Account
+            </button>
+          </div>
+
+          <div className="mb-4 deactivate col-6">
+            <button
+              className="btn btn-default btn_submit"
+              type="button"
+              onClick={goToUserProfile}>
+              Edit Profile
+            </button>
+          </div>
         </div>
 
         <form method="post" onSubmit={e => callUpdate(e)}>
