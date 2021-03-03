@@ -152,7 +152,7 @@ function FanChefORB(props) {
         StreamData && StreamData.userToken && StreamData.streamData
       );
       if (StreamData && StreamData.userToken && StreamData.streamData) {
-        console.log("StreamData", StreamData);
+        console.log("inside if condition ", StreamData);
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
         setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
