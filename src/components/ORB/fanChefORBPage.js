@@ -52,10 +52,7 @@ function FanChefORB(props) {
   const stateData = useSelector(state => {
     return state.user;
   });
-  const StreamData = useSelector(state => {
-    console.log("state.orb ", state.ORB);
-    return state.ORB;
-  });
+  const StreamData = useSelector(state => state.ORB);
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
@@ -93,7 +90,7 @@ function FanChefORB(props) {
         "warning"
       ).then(() => leaveCall());
     }
-  });
+  }, []);
 
   const getImage = () => {
     console.log("fn called");
@@ -150,6 +147,10 @@ function FanChefORB(props) {
 
   useEffect(async () => {
     if (StreamData) {
+      console.log(
+        "StreamData && StreamData.userToken && StreamData.streamData",
+        StreamData && StreamData.userToken && StreamData.streamData
+      );
       if (StreamData && StreamData.userToken && StreamData.streamData) {
         console.log("StreamData", StreamData);
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
@@ -357,25 +358,25 @@ function FanChefORB(props) {
             </div>
           </div>
           <div className="links">
-            <a style={{ cursor: "pointer" }}>
+            <a href style={{ cursor: "pointer" }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>
               </div>
             </a>
-            <a style={{ cursor: "pointer" }}>
+            <a href style={{ cursor: "pointer" }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
                 <p>Tip</p>
               </div>
             </a>
-            <a onClick={getImage}>
+            <a href onClick={getImage}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>
               </div>
             </a>
-            <a ref={ref}>
+            <a ref={ref} href>
               <div
                 className="ORB_link d-flex flex-column dropup"
                 data-toggle="dropdown"
