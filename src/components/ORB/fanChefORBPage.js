@@ -213,7 +213,7 @@ function FanChefORB(props) {
         console.log("publish success!");
       }
     }
-  }, [StreamData]);
+  }, [StreamData && StreamData.userToken]);
 
   async function leaveCall() {
     console.log("leave call fn called in fan orb page of chef");
