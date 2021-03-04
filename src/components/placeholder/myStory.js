@@ -279,7 +279,13 @@ function MyStory(props) {
             <div className="position-relative chef_image_sec">
               <img
                 className="w-100"
-                src={userInfo ? userInfo.data.profileImgURl : ""}
+                src={
+                  userInfo
+                    ? userInfo.data.profileImgURl
+                      ? userInfo.data.profileImgURl
+                      : "https://artsiam.com:8000/default/profile.jpg"
+                    : "https://artsiam.com:8000/default/profile.jpg"
+                }
               />
               <div className="top_chef_details position-absolute d-flex">
                 <div className="grey_logo">
@@ -323,12 +329,16 @@ function MyStory(props) {
                   style={{ fontWeight: rightPart === 2 ? "600" : "" }}>
                   Reviews and Comments
                 </div>
-                <div
-                  className="mystory_option"
-                  onClick={() => setRightPart(3)}
-                  style={{ fontWeight: rightPart === 3 ? "600" : "" }}>
-                  Journals
-                </div>
+                {isMyStory ? (
+                  <div
+                    className="mystory_option"
+                    onClick={() => setRightPart(3)}
+                    style={{ fontWeight: rightPart === 3 ? "600" : "" }}>
+                    Journals
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="bottom_action position-absolute d-flex">
                 <div className="heart_image">

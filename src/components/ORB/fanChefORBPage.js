@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
-import axios from "axios";
 
 import {
   storeScreenShot,
@@ -146,68 +145,60 @@ function FanChefORB(props) {
   }, [stateData]);
 
   useEffect(async () => {
-    if (StreamData) {
-      console.log(
-        "StreamData && StreamData.userToken && StreamData.streamData",
-        StreamData && StreamData.userToken
+    if (StreamData && StreamData.userToken && StreamData.streamData) {
+      console.log("inside if condition for agora");
+      rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+
+      setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
+      await rtc.client.join(
+        options.appId,
+        options.channel,
+        StreamData.userToken.agoraToken,
+        null
       );
-      if (StreamData && StreamData.userToken) {
-        console.log("inside if condition for agora");
-        rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
-        setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
-        await rtc.client.join(
-          options.appId,
-          options.channel,
-          StreamData.userToken.agoraToken,
-          null
-        );
+      // Create an audio track from the audio sampled by a microphone.
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setChefRTC(prevState => ({
+        ...prevState,
+        localAudioTrack: rtc.localAudioTrack,
+      }));
 
-        // Create an audio track from the audio sampled by a microphone.
-        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setChefRTC(prevState => ({
-          ...prevState,
-          localAudioTrack: rtc.localAudioTrack,
-        }));
+      // Create a video track from the video captured by a camera.
+      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setChefRTC(prevState => ({
+        ...prevState,
+        localVideoTrack: rtc.localVideoTrack,
+      }));
 
-        // Create a video track from the video captured by a camera.
-        rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-        setChefRTC(prevState => ({
-          ...prevState,
-          localVideoTrack: rtc.localVideoTrack,
-        }));
+      // Publish the local audio and video tracks to the channel.
+      rtc.client
+        .publish([rtc.localAudioTrack, rtc.localVideoTrack])
+        .then(() => console.log("published succeed!"));
 
-        // Publish the local audio and video tracks to the channel.
-        await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+      rtc.localVideoTrack.play("local-player");
+      rtc.localAudioTrack.play();
+      // Subscribe to a remote user
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        console.log("rtc.client ", rtc.client);
-        // Subscribe to a remote user
-        rtc.client.on("user-published", async (user, mediaType) => {
-          console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        // Subscribe to a remote user.
+        await rtc.client.subscribe(user, mediaType);
+        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-          // Subscribe to a remote user.
-          await rtc.client.subscribe(user, mediaType);
-          console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-
-          if (mediaType === "video") {
-            setSubscribed(true);
-            user.videoTrack.play(`fan-playerlist`);
-          }
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-          }
-        });
-        rtc.client.on("user-unpublished", async (user, mediaType) => {
-          console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-          const id = user.uid;
-          setSubscribed(false);
-        });
-
-        rtc.localVideoTrack.play("local-player");
-        rtc.localAudioTrack.play();
-
-        console.log("publish success!");
-      }
+        if (mediaType === "video") {
+          setSubscribed(true);
+          user.videoTrack.play(`fan-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+      rtc.client.on("user-unpublished", async (user, mediaType) => {
+        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+        const id = user.uid;
+        setSubscribed(false);
+      });
     }
   }, [StreamData]);
 
@@ -475,6 +466,48 @@ function FanChefORB(props) {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <form id="ratingForm">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Give Rating
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>body</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal">
+                  Close
+                </button>
+
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

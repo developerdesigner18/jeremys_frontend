@@ -239,6 +239,15 @@ img.black_logo_img {
   height: 600px !important;
   border-radius: 50% !important;
 }
+
+#fan-playerlist > div {
+  background-color: none;
+}
+
+#chef-remote-playerlist > div {
+  background-color: none;
+}
+
 @media (max-width: 1024px) {
   .round_video img {
     height: auto;

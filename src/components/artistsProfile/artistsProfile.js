@@ -90,7 +90,7 @@ function ArtistsProfile(props) {
     if (stateData) {
       if (stateData.userDetail) {
         console.log("statedata.userdetails ", stateData.userDetail, props);
-        if (props && props.location)
+        if (props && props.location && props.location.state)
           setUpdateBool(props.location.state.forUpdate);
         if (
           stateData.userDetail.data.foodChoices &&

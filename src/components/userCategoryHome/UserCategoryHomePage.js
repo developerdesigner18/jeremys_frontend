@@ -389,6 +389,13 @@ function UserCategoryHomePage(props) {
                               e.target.src =
                                 "https://artsiam.com:8000/default/profile.jpg";
                             }}
+                            onClick={() =>
+                              history.push("/myStory", {
+                                pageNumber: 1,
+                                userId: fan._id,
+                                isMystory: false,
+                              })
+                            }
                           />
 
                           <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
