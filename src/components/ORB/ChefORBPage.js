@@ -172,7 +172,6 @@ function ChefORBPage(props) {
     });
     rtc.client.on("user-unpublished", async (user, mediaType) => {
       console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-      const id = user.uid;
       // setIsLive(false);
       // setSubscribed(false);
     });
