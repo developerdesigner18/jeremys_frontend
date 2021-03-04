@@ -241,11 +241,11 @@ img.black_logo_img {
 }
 
 #fan-playerlist > div {
-  background-color: none;
+  background: none !important;
 }
 
 #chef-remote-playerlist > div {
-  background-color: none;
+  background: none !important;
 }
 
 @media (max-width: 1024px) {
