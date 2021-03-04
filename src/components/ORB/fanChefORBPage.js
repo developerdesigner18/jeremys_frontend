@@ -149,14 +149,14 @@ function FanChefORB(props) {
     if (StreamData) {
       console.log(
         "StreamData && StreamData.userToken && StreamData.streamData",
-        StreamData && StreamData.userToken && StreamData.streamData
+        StreamData && StreamData.userToken
       );
-      if (StreamData && StreamData.userToken && StreamData.streamData) {
-        console.log("inside if condition for agora", StreamData);
+      if (StreamData && StreamData.userToken) {
+        console.log("inside if condition for agora");
         rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
         setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
-        const uid = await rtc.client.join(
+        await rtc.client.join(
           options.appId,
           options.channel,
           StreamData.userToken.agoraToken,
@@ -169,6 +169,7 @@ function FanChefORB(props) {
           ...prevState,
           localAudioTrack: rtc.localAudioTrack,
         }));
+
         // Create a video track from the video captured by a camera.
         rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
         setChefRTC(prevState => ({
@@ -177,14 +178,12 @@ function FanChefORB(props) {
         }));
 
         // Publish the local audio and video tracks to the channel.
-        rtc.client
-          .publish([rtc.localAudioTrack, rtc.localVideoTrack])
-          .then(() => console.log("published!!!!!!!!!!!!!!!!!!!!!!"));
+        await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
+        console.log("rtc.client ", rtc.client);
         // Subscribe to a remote user
         rtc.client.on("user-published", async (user, mediaType) => {
           console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-          remoteUsers[user.id] = user;
 
           // Subscribe to a remote user.
           await rtc.client.subscribe(user, mediaType);
@@ -199,12 +198,9 @@ function FanChefORB(props) {
           }
         });
         rtc.client.on("user-unpublished", async (user, mediaType) => {
-          console.log("handleUserUnpublished at fan side-==-=-=", user.uid);
+          console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
           const id = user.uid;
-          delete remoteUsers[id];
           setSubscribed(false);
-
-          await rtc.client.leave();
         });
 
         rtc.localVideoTrack.play("local-player");
@@ -213,7 +209,7 @@ function FanChefORB(props) {
         console.log("publish success!");
       }
     }
-  }, [StreamData && StreamData.userToken]);
+  }, [StreamData]);
 
   async function leaveCall() {
     console.log("leave call fn called in fan orb page of chef");
@@ -315,7 +311,6 @@ function FanChefORB(props) {
               )}
             </div>
           </div>
-          {/* <div id="fan-playerlist"></div> */}
         </div>
         <div className="container items_links px-5 my-3 py-1">
           <div
