@@ -145,7 +145,7 @@ function FanChefORB(props) {
   }, [stateData]);
 
   useEffect(async () => {
-    if (StreamData && StreamData.userToken && StreamData.streamData) {
+    if (StreamData && StreamData.userToken) {
       console.log("inside if condition for agora");
       rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
@@ -176,29 +176,31 @@ function FanChefORB(props) {
         .publish([rtc.localAudioTrack, rtc.localVideoTrack])
         .then(() => console.log("published succeed!"));
 
-      rtc.localVideoTrack.play("local-player");
-      rtc.localAudioTrack.play();
-      // Subscribe to a remote user
-      rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      if (!subscribed) {
+        rtc.localVideoTrack.play("local-player");
+        rtc.localAudioTrack.play();
+        // Subscribe to a remote user
+        rtc.client.on("user-published", async (user, mediaType) => {
+          console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        // Subscribe to a remote user.
-        await rtc.client.subscribe(user, mediaType);
-        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+          // Subscribe to a remote user.
+          await rtc.client.subscribe(user, mediaType);
+          console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        if (mediaType === "video") {
-          setSubscribed(true);
-          user.videoTrack.play(`fan-playerlist`);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
-      rtc.client.on("user-unpublished", async (user, mediaType) => {
-        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-        const id = user.uid;
-        setSubscribed(false);
-      });
+          if (mediaType === "video") {
+            setSubscribed(true);
+            user.videoTrack.play(`fan-playerlist`);
+          }
+          if (mediaType === "audio") {
+            user.audioTrack.play();
+          }
+        });
+        rtc.client.on("user-unpublished", async (user, mediaType) => {
+          console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+          const id = user.uid;
+          setSubscribed(false);
+        });
+      }
     }
   }, [StreamData]);
 
@@ -466,48 +468,6 @@ function FanChefORB(props) {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <form id="ratingForm">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Give Rating
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <p>body</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-dismiss="modal">
-                  Close
-                </button>
-
-                <button type="submit" className="btn btn-primary">
-                  Submit
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       </div>
