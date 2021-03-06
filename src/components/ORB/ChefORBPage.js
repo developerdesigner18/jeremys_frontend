@@ -152,29 +152,27 @@ function ChefORBPage(props) {
       localVideoTrack: rtc.localVideoTrack,
     }));
 
-    if (!subscribed) {
-      // Publish the local audio and video tracks to the channel.
-      await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+    // Publish the local audio and video tracks to the channel.
+    await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
-      rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    rtc.client.on("user-published", async (user, mediaType) => {
+      console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        // Subscribe to a remote user.
-        await rtc.client.subscribe(user, mediaType);
-        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      // Subscribe to a remote user.
+      await rtc.client.subscribe(user, mediaType);
+      console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        if (mediaType === "video") {
-          setSubscribed(true);
-          user.videoTrack.play(`chef-remote-playerlist`);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
-      rtc.client.on("user-unpublished", async (user, mediaType) => {
-        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-      });
-    }
+      if (mediaType === "video") {
+        setSubscribed(true);
+        user.videoTrack.play(`chef-remote-playerlist`);
+      }
+      if (mediaType === "audio") {
+        user.audioTrack.play();
+      }
+    });
+    rtc.client.on("user-unpublished", async (user, mediaType) => {
+      console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+    });
 
     rtc.localVideoTrack.play("local-player");
     rtc.localAudioTrack.play();

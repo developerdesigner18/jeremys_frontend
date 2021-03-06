@@ -148,7 +148,7 @@ function FanChefORB(props) {
 
   useEffect(async () => {
     if (StreamData && StreamData.userToken) {
-      console.log("inside if condition for agora");
+      console.log("inside if of StreamData && StreamData.streamData");
       rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
       setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
@@ -178,33 +178,38 @@ function FanChefORB(props) {
         .publish([rtc.localAudioTrack, rtc.localVideoTrack])
         .then(() => console.log("published succeed!"));
 
-      if (!subscribed) {
-        rtc.localVideoTrack.play("local-player");
-        rtc.localAudioTrack.play();
-        // Subscribe to a remote user
-        rtc.client.on("user-published", async (user, mediaType) => {
-          console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      // if (subscribed === false) {
+      console.log("inside if", subscribed);
+      rtc.localVideoTrack.play("local-player");
+      rtc.localAudioTrack.play();
+      // Subscribe to a remote user
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-          // Subscribe to a remote user.
-          await rtc.client.subscribe(user, mediaType);
-          console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        // Subscribe to a remote user.
+        rtc.client
+          .subscribe(user, mediaType)
+          .then(() =>
+            console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+          )
+          .catch(err => console.log("error while subscribing ", err));
 
-          if (mediaType === "video") {
-            setSubscribed(true);
-            user.videoTrack.play(`fan-playerlist`);
-          }
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-          }
-        });
-      }
+        if (mediaType === "video") {
+          setSubscribed(true);
+          user.videoTrack.play(`fan-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
       rtc.client.on("user-unpublished", async (user, mediaType) => {
         console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
         const id = user.uid;
         setSubscribed(false);
       });
+      // }
     }
-  }, [StreamData]);
+  }, [StreamData && StreamData.userToken]);
 
   async function leaveCall() {
     console.log("leave call fn called in fan orb page of chef");
