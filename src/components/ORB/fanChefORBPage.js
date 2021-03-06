@@ -147,7 +147,7 @@ function FanChefORB(props) {
   }, [stateData]);
 
   useEffect(async () => {
-    if (StreamData && StreamData.userToken && StreamData.streamData) {
+    if (StreamData && StreamData.userToken) {
       console.log("inside if condition for agora");
       rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
