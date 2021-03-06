@@ -178,24 +178,26 @@ function FanChefORB(props) {
         .publish([rtc.localAudioTrack, rtc.localVideoTrack])
         .then(() => console.log("published succeed!"));
 
-      rtc.localVideoTrack.play("local-player");
-      rtc.localAudioTrack.play();
-      // Subscribe to a remote user
-      rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      if (!subscribed) {
+        rtc.localVideoTrack.play("local-player");
+        rtc.localAudioTrack.play();
+        // Subscribe to a remote user
+        rtc.client.on("user-published", async (user, mediaType) => {
+          console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        // Subscribe to a remote user.
-        await rtc.client.subscribe(user, mediaType);
-        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+          // Subscribe to a remote user.
+          await rtc.client.subscribe(user, mediaType);
+          console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-        if (mediaType === "video") {
-          setSubscribed(true);
-          user.videoTrack.play(`fan-playerlist`);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
+          if (mediaType === "video") {
+            setSubscribed(true);
+            user.videoTrack.play(`fan-playerlist`);
+          }
+          if (mediaType === "audio") {
+            user.audioTrack.play();
+          }
+        });
+      }
       rtc.client.on("user-unpublished", async (user, mediaType) => {
         console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
         const id = user.uid;
