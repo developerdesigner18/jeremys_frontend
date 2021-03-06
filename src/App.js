@@ -22,6 +22,7 @@ import { isAuthenticate } from "./utill";
 import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
 import FanOrbForUser from "./components/ORB/FanOrbForUser";
+import Ticket from "./components/Ticket/Ticket";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           }
         />
         <Route path="/home" component={HomePage} />
+        <PrivateRoute path="/ticket" component={Ticket} />
         <PublicRoute path="/login" component={Login} />
         <PublicRoute path="/register" component={Register} />
         <Route path="/termsCondition" component={TermsCondition} />

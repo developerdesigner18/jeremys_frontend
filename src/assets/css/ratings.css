@@ -1,0 +1,31 @@
+.review_form {
+  background: black;
+  flex-direction: column !important;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.review_text {
+  overflow: visible;
+  min-width: 500px;
+  margin-bottom: 15px;
+}
+
+.submit_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.btn_submit {
+  background: #ffffff;
+  color: #ff1414;
+  margin-top: 10px;
+}
+.rate {
+  margin-bottom: 0;
+}
+.rating_title h3 {
+  text-align: center;
+  font-weight: 500;
+}

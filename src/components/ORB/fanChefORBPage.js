@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
+import AddRating from "../Rating/AddRating";
 
 import {
   storeScreenShot,
@@ -37,6 +38,7 @@ function FanChefORB(props) {
   const [item1Image, setItem1Image] = useState("");
   const [item2Image, setItem2Image] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [showRating, setShowRating] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef();
@@ -89,7 +91,7 @@ function FanChefORB(props) {
         "warning"
       ).then(() => leaveCall());
     }
-  }, []);
+  });
 
   const getImage = () => {
     console.log("fn called");
@@ -145,7 +147,7 @@ function FanChefORB(props) {
   }, [stateData]);
 
   useEffect(async () => {
-    if (StreamData && StreamData.userToken) {
+    if (StreamData && StreamData.userToken && StreamData.streamData) {
       console.log("inside if condition for agora");
       rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
@@ -176,31 +178,29 @@ function FanChefORB(props) {
         .publish([rtc.localAudioTrack, rtc.localVideoTrack])
         .then(() => console.log("published succeed!"));
 
-      if (!subscribed) {
-        rtc.localVideoTrack.play("local-player");
-        rtc.localAudioTrack.play();
-        // Subscribe to a remote user
-        rtc.client.on("user-published", async (user, mediaType) => {
-          console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      rtc.localVideoTrack.play("local-player");
+      rtc.localAudioTrack.play();
+      // Subscribe to a remote user
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-          // Subscribe to a remote user.
-          await rtc.client.subscribe(user, mediaType);
-          console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        // Subscribe to a remote user.
+        await rtc.client.subscribe(user, mediaType);
+        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-          if (mediaType === "video") {
-            setSubscribed(true);
-            user.videoTrack.play(`fan-playerlist`);
-          }
-          if (mediaType === "audio") {
-            user.audioTrack.play();
-          }
-        });
-        rtc.client.on("user-unpublished", async (user, mediaType) => {
-          console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-          const id = user.uid;
-          setSubscribed(false);
-        });
-      }
+        if (mediaType === "video") {
+          setSubscribed(true);
+          user.videoTrack.play(`fan-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+      rtc.client.on("user-unpublished", async (user, mediaType) => {
+        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+        const id = user.uid;
+        setSubscribed(false);
+      });
     }
   }, [StreamData]);
 
@@ -215,7 +215,8 @@ function FanChefORB(props) {
       // Leave the channel.
       await chefRTC.client.leave();
     }
-    props.history.push("/fanHomePage");
+    // props.history.push("/fanHomePage");
+    setShowRating(true);
   }
 
   return (
@@ -239,7 +240,7 @@ function FanChefORB(props) {
             </div> */}
           </div>
           <div className="tips_info d-flex">
-            <div className="timer">
+            <div className="timer" style={{ color: "#626262" }}>
               <p>Timer</p>
               <p>
                 {Math.floor(time / 60) < 10
@@ -471,6 +472,56 @@ function FanChefORB(props) {
           </div>
         </div>
       </div>
+
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <form id="ratingForm">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Give Rating
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <p>body</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal">
+                  Close
+                </button>
+
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {showRating ? (
+        <div className="review">
+          <AddRating
+            userId={props.location.state.id}
+            itemDetail={StreamData.streamData.message}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

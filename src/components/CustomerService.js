@@ -1,21 +1,35 @@
-import React, { useState } from "react"
-import "../assets/css/profile.css"
-import Header from "./header/Header"
-import { storeContactUs } from "../actions/userActions"
-import { useDispatch } from "react-redux"
-import swal from "sweetalert"
+import React, { useState, useEffect } from "react";
+import "../assets/css/profile.css";
+import Header from "./header/Header";
+import { storeContactUs } from "../actions/userActions";
+import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
+import { getUserWithId } from "../actions/userActions";
 
 function CustomerService() {
-  const dispatch = useDispatch()
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phoneNumber, setphoneNumber] = useState("")
-  const [numberError, setNumberError] = useState("")
-  const [message, setMessage] = useState("")
+  const dispatch = useDispatch();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setphoneNumber] = useState("");
+  const [numberError, setNumberError] = useState("");
+  const [message, setMessage] = useState("");
+
+  const stateData = useSelector(state => state.user);
+
+  useEffect(async () => {
+    await dispatch(getUserWithId(localStorage.getItem("id")));
+  }, []);
+
+  useEffect(() => {
+    if (stateData && stateData.userInfo) {
+      console.log("stateData.userInfo", stateData.userInfo);
+      setEmail(stateData.userInfo.data.emailId);
+    }
+  }, [stateData]);
 
   const submitContactUs = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (
       firstName != "" &&
@@ -30,21 +44,21 @@ function CustomerService() {
         email,
         phoneNumber,
         message,
-      }
-      await dispatch(storeContactUs(dataToPass))
+      };
+      await dispatch(storeContactUs(dataToPass));
     } else {
-      swal("Error", "All fields are required!", "error")
+      swal("Error", "All fields are required!", "error");
     }
-  }
+  };
 
   const numberCheck = value => {
     if (value.match(/^[0-9]+$/)) {
-      setphoneNumber(value)
-      setNumberError("")
+      setphoneNumber(value);
+      setNumberError("");
     } else {
-      setNumberError("Only Numbers are allowed")
+      setNumberError("Only Numbers are allowed");
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -69,6 +83,8 @@ function CustomerService() {
                   type="email"
                   name="email"
                   onChange={e => setEmail(e.target.value)}
+                  value={email}
+                  disabled
                 />
               </div>
               <div className="form_detail">
@@ -106,7 +122,7 @@ function CustomerService() {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default CustomerService
+export default CustomerService;

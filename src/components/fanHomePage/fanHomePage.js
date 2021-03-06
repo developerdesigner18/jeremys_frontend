@@ -332,15 +332,26 @@ function FanHomePage(props) {
     }
     return divs;
   }
-  const swiped = (direction, fanID) => {
+  const swiped = async (direction, fanID) => {
     console.log("direction-=-=-=", direction);
     if (direction == "up") {
       dispatch(getFollowing(localStorage.getItem("id")));
-      dispatch(removeFromCommunity(fanID));
+      await dispatch(removeFromCommunity(fanID));
     }
   };
   const outOfFrame = name => {
-    dispatch(getFromCommunity(category, subcategory));
+    console.log("name-=-=-=-=-=", name);
+    let index = community
+      .map(function (e) {
+        return e._id;
+      })
+      .indexOf(name);
+
+    if (index > -1) {
+      community.splice(index, 1);
+      // console.log("true", filteredData);
+    }
+    // dispatch(getFromCommunity(category, subcategory));
   };
   const swipedFind = (direction, fanID) => {
     console.log("direction-=-=-=", direction);
@@ -394,7 +405,10 @@ function FanHomePage(props) {
     <div className="container">
       <div className="form_container px-3 px-md-5">
         <Header />
-
+        {console.log(
+          "-=-=-=-=-=-=-=-=-=-=-=-=-=-=community-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
+          community
+        )}
         <div className="tabs_image">
           <div className="tab">
             <div className="tab1">
@@ -810,13 +824,13 @@ function FanHomePage(props) {
                     </span>
                   </div>
                 )
-              ) : community.length != 0 ? (
+              ) : community.length ? (
                 community.map((fan, i) => {
                   return (
                     <div
                       className="profile_images col-sm-3 col-md-3  my-3"
                       style={{ textAlign: "center" }}
-                      key={i}>
+                      key={fan._id}>
                       {" "}
                       {/* <div
                         id={fan._id}
