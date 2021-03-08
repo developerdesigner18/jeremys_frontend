@@ -115,13 +115,14 @@ function ChefORBPage(props) {
     let token;
 
     socket.emit("storeUser", localStorage.getItem("id"));
+    let userId = localStorage.getItem("name").toString();
     await axios
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${localStorage.getItem(
-          "name"
-        )}&userId=${localStorage.getItem("id")}`
+        }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
+          "id"
+        )}`
       )
       .then(result => {
         console.log("result-==-=--=", result.data.key);

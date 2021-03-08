@@ -23,6 +23,8 @@ import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
 import FanOrbForUser from "./components/ORB/FanOrbForUser";
 import Ticket from "./components/Ticket/Ticket";
+import VideoCallBasicCall from "./components/videoCall/VideoCallBasicCall";
+import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
 
 function App() {
   return (
@@ -73,6 +75,8 @@ function App() {
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
 
         <Route exact path="/myCalendar" component={Calendar} />
+        <Route path="/one-to-one" component={VideoCallBasicCall} />
+        <Route path="/one-to-one-1" component={VideoCallBasicCall1} />
         <PrivateRoute path="/myStory" component={MyStory} />
       </BrowserRouter>
     </div>

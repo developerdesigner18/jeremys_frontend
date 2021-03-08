@@ -220,7 +220,7 @@ function MyStory(props) {
         name: userInfo
           ? userInfo.data.firstName
             ? userInfo.data.firstName
-            : "chef"
+            : ""
           : "",
         id: userInfo ? userInfo.data._id : "",
       });

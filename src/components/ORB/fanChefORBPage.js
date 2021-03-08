@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
+import axios from "axios";
 import AddRating from "../Rating/AddRating";
 
 import {
@@ -116,9 +117,8 @@ function FanChefORB(props) {
   };
 
   useEffect(async () => {
-    console.log("props ", props.location.state.id);
-    await dispatch(getUserToken(props.location.state.id));
     let channelName = props.location.state.name;
+    let token;
     setOptions(prevState => ({
       ...prevState,
       channel: channelName,
@@ -127,6 +127,76 @@ function FanChefORB(props) {
       await dispatch(getUserWithId(localStorage.getItem("id")));
     await dispatch(getStreamDetails({ userId: props.location.state.id }));
   }, [props.location.state.id || props.location.state.name]);
+
+  useEffect(async () => {
+    let token;
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${props.location.state.id}`
+      )
+      .then(result => {
+        console.log("result-==-=--=", result.data.data);
+        setOptions({ ...options, token: result.data.data.agoraToken });
+        token = result.data.data.agoraToken;
+      })
+      .catch(err => console.log("error ", err));
+
+    console.log("options.. ", options, token);
+    rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+
+    setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
+    await rtc.client.join(
+      options.appId,
+      props.location.state.name.trim(),
+      token,
+      null
+    );
+
+    // Create an audio track from the audio sampled by a microphone.
+    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    setChefRTC(prevState => ({
+      ...prevState,
+      localAudioTrack: rtc.localAudioTrack,
+    }));
+
+    // Create a video track from the video captured by a camera.
+    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    setChefRTC(prevState => ({
+      ...prevState,
+      localVideoTrack: rtc.localVideoTrack,
+    }));
+
+    // Publish the local audio and video tracks to the channel.
+    rtc.client
+      .publish([rtc.localAudioTrack, rtc.localVideoTrack])
+      .then(() => console.log("published succeed!"));
+
+    // Subscribe to a remote user
+    rtc.client.on("user-published", async (user, mediaType) => {
+      console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ", user);
+
+      // Subscribe to a remote user.
+      await rtc.client.subscribe(user, mediaType);
+      console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
+      if (mediaType === "video") {
+        setSubscribed(true);
+        user.videoTrack.play("fan-playerlist");
+      }
+      if (mediaType === "audio") {
+        user.audioTrack.play();
+      }
+    });
+
+    rtc.client.on("user-unpublished", async (user, mediaType) => {
+      console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+      const id = user.uid;
+      setSubscribed(false);
+    });
+
+    rtc.localVideoTrack.play("local-player");
+    rtc.localAudioTrack.play();
+  }, []);
 
   useEffect(async () => {
     if (stateData) {
@@ -145,71 +215,6 @@ function FanChefORB(props) {
       }
     }
   }, [stateData]);
-
-  useEffect(async () => {
-    if (StreamData && StreamData.userToken) {
-      console.log("inside if of StreamData && StreamData.streamData");
-      rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-
-      setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
-      await rtc.client.join(
-        options.appId,
-        options.channel,
-        StreamData.userToken.agoraToken,
-        null
-      );
-
-      // Create an audio track from the audio sampled by a microphone.
-      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      setChefRTC(prevState => ({
-        ...prevState,
-        localAudioTrack: rtc.localAudioTrack,
-      }));
-
-      // Create a video track from the video captured by a camera.
-      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setChefRTC(prevState => ({
-        ...prevState,
-        localVideoTrack: rtc.localVideoTrack,
-      }));
-
-      // Publish the local audio and video tracks to the channel.
-      rtc.client
-        .publish([rtc.localAudioTrack, rtc.localVideoTrack])
-        .then(() => console.log("published succeed!"));
-
-      // if (subscribed === false) {
-      console.log("inside if", subscribed);
-      rtc.localVideoTrack.play("local-player");
-      rtc.localAudioTrack.play();
-      // Subscribe to a remote user
-      rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-
-        // Subscribe to a remote user.
-        rtc.client
-          .subscribe(user, mediaType)
-          .then(() =>
-            console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-          )
-          .catch(err => console.log("error while subscribing ", err));
-
-        if (mediaType === "video") {
-          setSubscribed(true);
-          user.videoTrack.play(`fan-playerlist`);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
-      rtc.client.on("user-unpublished", async (user, mediaType) => {
-        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-        const id = user.uid;
-        setSubscribed(false);
-      });
-      // }
-    }
-  }, [StreamData && StreamData.userToken]);
 
   async function leaveCall() {
     console.log("leave call fn called in fan orb page of chef");
