@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 
-function VideoCall() {
+function VideoCall1() {
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
     channel: localStorage.getItem("id"),
@@ -21,44 +21,41 @@ function VideoCall() {
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${localStorage.getItem(
-          "id"
-        )}&userId=${localStorage.getItem("id")}`
+        }api/agora/getUserToken?id=${localStorage.getItem("id")}`
       )
       .then(result => {
-        console.log("result-==-=--=", result.data.key);
-        localStorage.setItem("videoToken", result.data.key);
-        setOptions({ ...options, token: result.data.key });
-        token = result.data.key;
+        console.log("result-==-=--=", result.data.data);
+        setOptions({ ...options, token: result.data.data.agoraToken });
+        token = result.data.data.agoraToken;
       })
       .catch(err => console.log("error ", err));
     // rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    // await rtc.client.setClientRole(options.role);
+    // // await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
       options.appId,
       options.channel,
       token,
       null
     );
-    // // await rtc.client.enableDualStream();
-    // // Create an audio track from the audio sampled by a microphone.
-    // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    // // Create a video track from the video captured by a camera.
-    // rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    // const player = document.getElementsByClassName("player");
-    // console.log(
-    //   "localVideoTrack success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-    //   rtc.localVideoTrack
-    // );
+    // // // await rtc.client.enableDualStream();
+    // // // Create an audio track from the audio sampled by a microphone.
+    // // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    // // // Create a video track from the video captured by a camera.
+    // // rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+    // // const player = document.getElementsByClassName("player");
+    // // console.log(
+    // //   "localVideoTrack success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
+    // //   rtc.localVideoTrack
+    // // );
 
-    // rtc.localVideoTrack.play("local-player");
-    // rtc.localAudioTrack.play();
+    // // rtc.localVideoTrack.play("local-player");
+    // // rtc.localAudioTrack.play();
 
-    // // Publish the local audio and video tracks to the channel.
-    // await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+    // // // Publish the local audio and video tracks to the channel.
+    // // await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
-    // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    // // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
     rtc.client.on("user-published", async (user, mediaType) => {
       console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
@@ -92,16 +89,16 @@ function VideoCall() {
 
       // document.getElementById(`player-wrapper-${user.uid}`).remove();
     });
-    // await rtc.client.enableDualStream();
+    // // await rtc.client.enableDualStream();
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     // Create a video track from the video captured by a camera.
     rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    const player = document.getElementsByClassName("player");
-    console.log(
-      "localVideoTrack success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-      rtc.localVideoTrack
-    );
+    // const player = document.getElementsByClassName("player");
+    // console.log(
+    //   "localVideoTrack success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
+    //   rtc.localVideoTrack
+    // );
 
     rtc.localVideoTrack.play("local-player");
     rtc.localAudioTrack.play();
@@ -109,7 +106,7 @@ function VideoCall() {
     // Publish the local audio and video tracks to the channel.
     await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
-    console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
   }, []);
   return (
     <div>
@@ -133,4 +130,4 @@ function VideoCall() {
   );
 }
 
-export default VideoCall;
+export default VideoCall1;

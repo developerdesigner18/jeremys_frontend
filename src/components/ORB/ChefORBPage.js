@@ -115,7 +115,7 @@ function ChefORBPage(props) {
     let token;
 
     socket.emit("storeUser", localStorage.getItem("id"));
-    let userId = localStorage.getItem("name").toString();
+    let userId = localStorage.getItem("id").toString();
     await axios
       .get(
         `${
@@ -133,12 +133,7 @@ function ChefORBPage(props) {
 
     rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
     setRTC(prevState => ({ ...prevState, client: rtc.client }));
-    const uid = await rtc.client.join(
-      options.appId,
-      options.channel,
-      token,
-      null
-    );
+    await rtc.client.join(options.appId, userId, token, null);
 
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -164,6 +159,7 @@ function ChefORBPage(props) {
       console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
       if (mediaType === "video") {
+        console.log("video track!!!!!!!!");
         setSubscribed(true);
         user.videoTrack.play(`chef-remote-playerlist`);
       }
@@ -173,6 +169,11 @@ function ChefORBPage(props) {
     });
     rtc.client.on("user-unpublished", async (user, mediaType) => {
       console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+    });
+
+    rtc.client.on("stream-added", evt => {
+      console.log("Stream added", evt);
+      // evt.stream.play("fan-playerlist");
     });
 
     rtc.localVideoTrack.play("local-player");

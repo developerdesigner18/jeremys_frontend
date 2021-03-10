@@ -25,6 +25,7 @@ import FanOrbForUser from "./components/ORB/FanOrbForUser";
 import Ticket from "./components/Ticket/Ticket";
 import VideoCallBasicCall from "./components/videoCall/VideoCallBasicCall";
 import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
+import VideoCall1 from "./components/videoCall/videoCallHost copy";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
         <PrivateRoute path="/videoChatHost" component={VideoChat} />
+        <PrivateRoute path="/videoCallBasic" component={VideoCall1} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         <PrivateRoute path="/userORB" component={FanOrbForUser} />
         {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}

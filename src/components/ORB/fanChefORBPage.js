@@ -8,12 +8,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
 
-import {
-  storeScreenShot,
-  storeChefOrbDetails,
-  getStreamDetails,
-  getUserToken,
-} from "../../actions/orbActions";
+import { storeScreenShot, getStreamDetails } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -73,7 +68,6 @@ function FanChefORB(props) {
     localAudioTrack: null,
     localVideoTrack: null,
   };
-
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
     channel: null,
@@ -92,7 +86,7 @@ function FanChefORB(props) {
         "warning"
       ).then(() => leaveCall());
     }
-  });
+  }, []);
 
   const getImage = () => {
     console.log("fn called");
@@ -117,86 +111,79 @@ function FanChefORB(props) {
   };
 
   useEffect(async () => {
-    let channelName = props.location.state.name;
-    let token;
-    setOptions(prevState => ({
-      ...prevState,
-      channel: channelName,
-    }));
+    let id, name;
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
-    await dispatch(getStreamDetails({ userId: props.location.state.id }));
-  }, [props.location.state.id || props.location.state.name]);
+    if (props.location.state.name && props.location.state.id) {
+      id = props.location.state.id;
+      name = props.location.state.name;
+      await dispatch(getStreamDetails({ userId: id }));
+    }
 
-  useEffect(async () => {
-    let token;
+    // if (props.location.state.name) {
     await axios
-      .get(
-        `${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${props.location.state.id}`
-      )
-      .then(result => {
-        console.log("result-==-=--=", result.data.data);
+      .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
+      .then(async result => {
         setOptions({ ...options, token: result.data.data.agoraToken });
-        token = result.data.data.agoraToken;
+        if (result.data.data.agoraToken) {
+          const token = result.data.data.agoraToken;
+          rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+          console.log("agora token ", token);
+          await rtc.client.join(
+            process.env.REACT_APP_AGORA_APP_ID,
+            id,
+            token,
+            null
+          );
+          setChefRTC(prevState => ({
+            ...prevState,
+            client: rtc.client,
+          }));
+
+          rtc.client.on("user-published", async (user, mediaType) => {
+            console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
+            // Subscribe to a remote user.
+            await rtc.client.subscribe(user, mediaType);
+            console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
+            if (mediaType === "video") {
+              setSubscribed(true);
+              user.videoTrack.play(`fan-playerlist`);
+            }
+            if (mediaType === "audio") {
+              user.audioTrack.play();
+            }
+          });
+
+          rtc.client.on("user-unpublished", async (user, mediaType) => {
+            console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+          });
+
+          // Create an audio track from the audio sampled by a microphone.
+          rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+          setChefRTC(prevState => ({
+            ...prevState,
+            localAudioTrack: rtc.localAudioTrack,
+          }));
+
+          // Create a video track from the video captured by a camera.
+          rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+          setChefRTC(prevState => ({
+            ...prevState,
+            localVideoTrack: rtc.localVideoTrack,
+          }));
+
+          rtc.localVideoTrack.play("local-player");
+          rtc.localAudioTrack.play();
+
+          // Publish the local audio and video tracks to the channel.
+          await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+        }
       })
       .catch(err => console.log("error ", err));
-
-    console.log("options.. ", options, token);
-    rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-
-    setChefRTC(prevState => ({ ...prevState, client: rtc.client }));
-    await rtc.client.join(
-      options.appId,
-      props.location.state.name.trim(),
-      token,
-      null
-    );
-
-    // Create an audio track from the audio sampled by a microphone.
-    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setChefRTC(prevState => ({
-      ...prevState,
-      localAudioTrack: rtc.localAudioTrack,
-    }));
-
-    // Create a video track from the video captured by a camera.
-    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setChefRTC(prevState => ({
-      ...prevState,
-      localVideoTrack: rtc.localVideoTrack,
-    }));
-
-    // Publish the local audio and video tracks to the channel.
-    rtc.client
-      .publish([rtc.localAudioTrack, rtc.localVideoTrack])
-      .then(() => console.log("published succeed!"));
-
-    // Subscribe to a remote user
-    rtc.client.on("user-published", async (user, mediaType) => {
-      console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ", user);
-
-      // Subscribe to a remote user.
-      await rtc.client.subscribe(user, mediaType);
-      console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-
-      if (mediaType === "video") {
-        setSubscribed(true);
-        user.videoTrack.play("fan-playerlist");
-      }
-      if (mediaType === "audio") {
-        user.audioTrack.play();
-      }
-    });
-
-    rtc.client.on("user-unpublished", async (user, mediaType) => {
-      console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-      const id = user.uid;
-      setSubscribed(false);
-    });
-
-    rtc.localVideoTrack.play("local-player");
-    rtc.localAudioTrack.play();
-  }, []);
+    // }
+  }, [props.location.state.id && props.location.state.name]);
 
   useEffect(async () => {
     if (stateData) {
@@ -227,7 +214,7 @@ function FanChefORB(props) {
       // Leave the channel.
       await chefRTC.client.leave();
     }
-    // props.history.push("/fanHomePage");
+    props.history.push("/fanHomePage");
     setShowRating(true);
   }
 
@@ -528,10 +515,10 @@ function FanChefORB(props) {
       </div>
       {showRating ? (
         <div className="review">
-          <AddRating
+          {/* <AddRating
             userId={props.location.state.id}
             itemDetail={StreamData.streamData.message}
-          />
+          /> */}
         </div>
       ) : null}
     </div>
