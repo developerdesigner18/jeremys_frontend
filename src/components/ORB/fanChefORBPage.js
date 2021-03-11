@@ -112,6 +112,7 @@ function FanChefORB(props) {
   };
 
   useEffect(async () => {
+    document.documentElement.scrollTop = 0;
     let id, name;
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));

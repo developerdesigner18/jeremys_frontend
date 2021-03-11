@@ -14,6 +14,8 @@ import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
 import { socket } from "../../socketIO";
 import { useHistory } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import swal from "sweetalert";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -56,6 +58,10 @@ function FanHomePage(props) {
 
   const ref = useRef();
   const _isMounted = useRef(true);
+
+  const isMobileDevice = useMediaQuery({
+    query: "(max-device-width: 767px)",
+  });
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
 
@@ -424,6 +430,13 @@ function FanHomePage(props) {
     <div className="container fan_container">
       <div className="form_container px-3 px-md-5">
         <Header />
+        {isMobileDevice
+          ? swal(
+              "Info",
+              "If you want to go with live streaming use the mobile App!",
+              "info"
+            )
+          : null}
         <div className="tabs_image">
           <div className="tab">
             <div className="tab1">
