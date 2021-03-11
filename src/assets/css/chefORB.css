@@ -281,3 +281,22 @@ img.black_logo_img {
     background-size: cover;
   }
 }
+
+@media (max-width: 545px) {
+  .price_item {
+    position: static;
+    width: 100%;
+    padding: 25px 0;
+  }
+  .items_links {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px !important;
+  }
+  .price_item_main {
+    width: 100% !important;
+    height: 300px !important;
+    margin-bottom: 25px !important;
+  }
+}

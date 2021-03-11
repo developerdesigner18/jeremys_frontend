@@ -35,6 +35,7 @@ function FanChefORB(props) {
   const [item2Image, setItem2Image] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [showRating, setShowRating] = useState(false);
+  const [closeModalBool, setCloseModalBool] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef();
@@ -80,13 +81,13 @@ function FanChefORB(props) {
       setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
-      swal(
-        "oops!",
-        "Please pay for enjoy full live streaming",
-        "warning"
-      ).then(() => leaveCall());
+      swal("oops!", "Please pay for enjoy full live streaming", "warning").then(
+        () => {
+          if (closeModalBool === false) leaveCall();
+        }
+      );
     }
-  }, []);
+  });
 
   const getImage = () => {
     console.log("fn called");
@@ -158,6 +159,20 @@ function FanChefORB(props) {
 
           rtc.client.on("user-unpublished", async (user, mediaType) => {
             console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+
+            // if (
+            //   chefRTC.client &&
+            //   chefRTC.localVideoTrack &&
+            //   chefRTC.localAudioTrack
+            // ) {
+            //   chefRTC.localAudioTrack.close();
+            //   chefRTC.localVideoTrack.close();
+
+            //   // Leave the channel.
+            //   await chefRTC.client.leave();
+            // }
+
+            // props.history.push("/fanHomePage");
           });
 
           // Create an audio track from the audio sampled by a microphone.
@@ -214,9 +229,16 @@ function FanChefORB(props) {
       // Leave the channel.
       await chefRTC.client.leave();
     }
-    props.history.push("/fanHomePage");
+    // props.history.push("/fanHomePage");
     setShowRating(true);
   }
+
+  const closeModal = () => {
+    console.log("close modal.......");
+    setShowRating(false);
+    setCloseModalBool(true);
+    props.history.push("/fanHomePage");
+  };
 
   return (
     <div
@@ -307,7 +329,7 @@ function FanChefORB(props) {
         </div>
         <div className="container items_links px-5 my-3 py-1">
           <div
-            className="item position-relative"
+            className="item position-relative price_item_main"
             style={{
               backgroundImage: `url("${
                 item1Image != ""
@@ -320,8 +342,7 @@ function FanChefORB(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-            method="POST">
+            }}>
             {/* <img src="../assets/images/style_fan_orb.png" alt="logo" /> */}
             <div className="price_item">
               {/* <a href="#"> */}
@@ -435,7 +456,7 @@ function FanChefORB(props) {
             </a>
           </div>
           <div
-            className="item position-relative"
+            className="item position-relative price_item_main"
             style={{
               backgroundImage: `url("${
                 item2Image != ""
@@ -448,8 +469,7 @@ function FanChefORB(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-            method="POST">
+            }}>
             <div className="price_item">
               <div className="price">
                 <p style={{ marginTop: "15px" }}>
@@ -471,54 +491,13 @@ function FanChefORB(props) {
           </div>
         </div>
       </div>
-
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <form id="ratingForm">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Give Rating
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close">
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <p>body</p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-dismiss="modal">
-                  Close
-                </button>
-
-                <button type="submit" className="btn btn-primary">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
       {showRating ? (
         <div className="review">
-          {/* <AddRating
+          <AddRating
             userId={props.location.state.id}
             itemDetail={StreamData.streamData.message}
-          /> */}
+            closeModal={closeModal}
+          />
         </div>
       ) : null}
     </div>

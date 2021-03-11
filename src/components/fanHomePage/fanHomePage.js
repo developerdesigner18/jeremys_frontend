@@ -166,6 +166,7 @@ function FanHomePage(props) {
     socket.emit("storeLiveFans", localStorage.getItem("id"));
 
     socket.on("onlineUsers", userList => {
+      console.log("userlist in use effect", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
@@ -310,6 +311,24 @@ function FanHomePage(props) {
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 2,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   function showCircleDiv(array) {
@@ -402,13 +421,9 @@ function FanHomePage(props) {
   };
 
   return (
-    <div className="container">
+    <div className="container fan_container">
       <div className="form_container px-3 px-md-5">
         <Header />
-        {console.log(
-          "-=-=-=-=-=-=-=-=-=-=-=-=-=-=community-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-          community
-        )}
         <div className="tabs_image">
           <div className="tab">
             <div className="tab1">
@@ -720,22 +735,25 @@ function FanHomePage(props) {
                         onSwipe={dir => swipedFind(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrameFind(fan._id)}
                         preventSwipe={["left", "right", "up", "down"]}>
-                        <img
-                          onClick={() => showProfileDetails(fan._id)}
-                          id={fan._id}
-                          className="draggableImg"
-                          src={
-                            fan.profileImgURl != "" && fan.profileImgURl != null
-                              ? fan.profileImgURl
-                              : "https://artsiam.com:8000/default/profile.jpg"
-                          }
-                          onError={e => {
-                            e.target.onerror = null;
-                            e.target.src =
-                              "https://artsiam.com:8000/default/profile.jpg";
-                          }}
-                        />
-                        <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                        <div>
+                          <img
+                            onClick={() => showProfileDetails(fan._id)}
+                            id={fan._id}
+                            className="draggableImg"
+                            src={
+                              fan.profileImgURl != "" &&
+                              fan.profileImgURl != null
+                                ? fan.profileImgURl
+                                : "https://artsiam.com:8000/default/profile.jpg"
+                            }
+                            onError={e => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "https://artsiam.com:8000/default/profile.jpg";
+                            }}
+                          />
+                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                        </div>
                         {/* </div> */}
                       </TinderCard>
                     </div>

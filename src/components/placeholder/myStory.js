@@ -82,18 +82,6 @@ function MyStory(props) {
   const [activeReviewPage, setactiveReviewPage] = useState(0);
   const [OffsetReview, setOffsetReview] = useState(0);
 
-  const [options, setOptions] = useState({
-    appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
-    channel: null,
-    token: null,
-    role: "audience",
-  });
-  const rtc = {
-    client: null,
-    localAudioTrack: null,
-    localVideoTrack: null,
-  };
-
   useEffect(() => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));

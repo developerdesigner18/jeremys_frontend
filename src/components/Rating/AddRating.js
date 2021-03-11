@@ -3,6 +3,7 @@ import StarRatings from "react-star-ratings";
 import "../../assets/css/ratings.css";
 import { storeRateReview } from "../../actions/orbActions";
 import { useDispatch, useSelector } from "react-redux";
+// import {} from "../../assets/images/";
 
 function AddRating(props) {
   const [review, setReview] = useState("");
@@ -10,6 +11,22 @@ function AddRating(props) {
 
   const dispatch = useDispatch();
   const stateData = useSelector(state => state.ORB);
+
+  const escFunction = event => {
+    if (event.keyCode === 27) {
+      //Do whatever when esc is pressed
+      console.log("esc pressed");
+      props.closeModal();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, []);
 
   const submitRateReview = async () => {
     const dataToPass = {
@@ -28,10 +45,17 @@ function AddRating(props) {
     setRate(value);
   };
 
+  const callCloseMethod = () => {
+    props.closeModal();
+  };
+
   return (
     <div className="container" tabIndex="-1">
       <div className="rating_title">
         <h3>Rating and Review</h3>
+        <div className="cancel_img">
+          <img src="../../assets/images/cancel.png" onClick={callCloseMethod} />
+        </div>
       </div>
       <div
         className="d-flex review_form"
@@ -56,6 +80,9 @@ function AddRating(props) {
           changeRating={value => setRateValue(value)}></StarRatings>
       </div>
       <div className="submit_container">
+        <button className="btn btn-default btn_close" onClick={callCloseMethod}>
+          Close
+        </button>
         <button
           className="btn btn-default btn_submit"
           onClick={() => {
