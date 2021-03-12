@@ -102,3 +102,98 @@ export const storeRateReview = data => {
       });
   };
 };
+
+export const storeOnlineUser = () => {
+  return dispatch => {
+    const data = {
+      userId: localStorage.getItem("id"),
+    };
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/online/storeOnlineUserId`,
+        data
+      )
+      .then(result => {
+        if (result.data.success) {
+          dispatch({
+            type: "STORE_ONLINE_USER",
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error ", error);
+      });
+  };
+};
+
+export const getOnlineUserList = (category, subCategory) => {
+  console.log("get from community parameter ", category, subCategory);
+  let type;
+  if (category == "music") {
+    type = "star";
+  } else if (category == "food") {
+    type = "chef";
+  } else if (category == "style") {
+    type = "stylist";
+  } else if (category == "body") {
+    type = "trainer";
+  }
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/online/getOnlineUsers?type=${type}&subCategory=${subCategory}`
+      )
+      .then(result => {
+        if (result.data.success) {
+          dispatch({
+            type: "GET_ONLINE_USERS",
+            payload: result.data.message,
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error........", error);
+      });
+  };
+};
+
+export const removeOnlineUser = () => {
+  return dispatch => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}api/online/removeUser`, {
+        data: { userId: localStorage.getItem("id") },
+      })
+      .then(result => {
+        if (result.data.code === 201) {
+          dispatch({
+            type: "REMOVE_USER",
+          });
+
+          window.location.replace("/userHomepage");
+        }
+      })
+      .catch(error => {
+        console.log("error.......", error);
+      });
+  };
+};
+
+export const checkUserOnline = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/online/checkOnlineUser?id=${data}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "CHECK_ONLNIE_USER",
+            payload: result.data.success,
+          });
+        }
+      })
+      .catch(err => {
+        console.log("error in check user online ", err);
+      });
+  };
+};

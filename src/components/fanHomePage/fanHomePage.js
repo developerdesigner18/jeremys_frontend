@@ -8,6 +8,7 @@ import {
   removeFromCommunity,
   getUserWithId,
 } from "../../actions/userActions";
+import { getOnlineUserList } from "../../actions/orbActions";
 import { getFollowing } from "../../actions/followActions";
 import { useSelector, useDispatch } from "react-redux";
 import Slider from "react-slick";
@@ -69,7 +70,7 @@ function FanHomePage(props) {
     setIsOpen(false);
   });
 
-  function openCity(evt, eventName) {
+  async function openCity(evt, eventName) {
     console.log("fn called", category, subcategory);
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -85,12 +86,16 @@ function FanHomePage(props) {
 
     if (eventName == "food") {
       socket.emit("chekCategory", eventName, subFood[0]);
+      await dispatch(getOnlineUserList(eventName, subFood[0]));
     } else if (eventName == "style") {
       socket.emit("chekCategory", eventName, subStyle[0]);
+      await dispatch(getOnlineUserList(eventName, subStyle[0]));
     } else if (eventName == "body") {
       socket.emit("chekCategory", eventName, subBody[0]);
+      await dispatch(getOnlineUserList(eventName, subBody[0]));
     } else {
       socket.emit("chekCategory", eventName, subMusic[0]);
+      await dispatch(getOnlineUserList(eventName, subMusic[0]));
     }
 
     socket.on("onlineUsers", userList => {
@@ -191,6 +196,8 @@ function FanHomePage(props) {
     dispatch(getFollowing(localStorage.getItem("id")));
     dispatch(getFromCommunity(category, subcategory));
 
+    dispatch(getOnlineUserList(category, subcategory));
+
     return () => {
       // ComponentWillUnmount in Class Component
 
@@ -236,6 +243,13 @@ function FanHomePage(props) {
       }
     }
   }, [followData]);
+
+  useEffect(() => {
+    if (ORBState && ORBState.onlineUsers && ORBState.onlineUsers.length) {
+      setOnlineCheck(true);
+      setCommunityOnline(ORBState.onlineUsers);
+    }
+  }, [ORBState]);
 
   const getAllArtist = () => {
     console.log("getAllArtists=--=-=-=-=-=", stateData);
@@ -401,8 +415,9 @@ function FanHomePage(props) {
     props.history.push("/");
   };
 
-  const callSubCategory = (category, value) => {
+  const callSubCategory = async (category, value) => {
     setSubCategory(value);
+    await dispatch(getOnlineUserList(category, value));
     socket.emit("chekCategory", category, value);
 
     socket.on("onlineUsers", userList => {
@@ -421,9 +436,15 @@ function FanHomePage(props) {
     });
   };
 
-  const showProfileDetails = Id => {
+  const showProfileDetails = async Id => {
     console.log("id ", Id);
+    await dispatch;
     history.push("/myStory", { pageNumber: 1, userId: Id, isMystory: false });
+  };
+
+  const callOnlineUserList = async () => {
+    setOnlineCheck(!onlineCheck);
+    // await dispatch(getOnlineUserList(category, subcategory));
   };
 
   return (
@@ -715,7 +736,7 @@ function FanHomePage(props) {
                 type="checkbox"
                 value={onlineCheck}
                 checked={onlineCheck}
-                onChange={() => setOnlineCheck(!onlineCheck)}
+                onChange={() => callOnlineUserList()}
               />
               <span className="slider round"></span>
             </label>

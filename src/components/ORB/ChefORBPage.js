@@ -6,7 +6,12 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import { socket } from "../../socketIO";
 
-import { storeScreenShot, storeChefOrbDetails } from "../../actions/orbActions";
+import {
+  storeScreenShot,
+  storeChefOrbDetails,
+  storeOnlineUser,
+  removeOnlineUser,
+} from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -96,6 +101,7 @@ function ChefORBPage(props) {
   };
   const goToLivePage = async () => {
     console.log("fn called");
+    await dispatch(storeOnlineUser());
     let fd = new FormData();
 
     fd.append("name1", item1);
@@ -192,7 +198,7 @@ function ChefORBPage(props) {
       await RTC.client.leave();
     }
     socket.disconnect();
-    props.history.push("/userHomepage");
+    await dispatch(removeOnlineUser());
   }
 
   const Banner1Change = event => {
@@ -246,6 +252,15 @@ function ChefORBPage(props) {
     document.documentElement.scrollTop = 0;
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
+
+    window.addEventListener("beforeunload", async ev => {
+      console.log("before unload evenet called ", ev);
+
+      await dispatch(removeOnlineUser());
+
+      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+      return ev.returnValue;
+    });
   }, []);
 
   useEffect(() => {

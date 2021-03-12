@@ -33,6 +33,48 @@ export const orbReducer = (state = null, action) => {
         storedReview: action.payload,
       };
 
+    case "STORE_ONLINE_USER":
+      return {
+        ...state,
+      };
+
+    case "STORE_JOINED_FAN":
+      return {
+        ...state,
+      };
+
+    case "JOINED_FAN":
+      return {
+        ...state,
+        joinedFanList: action.payload,
+      };
+
+    case "REMOVE_USER":
+      return {
+        ...state,
+      };
+
+    case "REMOVE_FAN":
+      return {
+        ...state,
+      };
+
+    case "REMOVE_USER":
+      return {
+        ...state,
+      };
+
+    case "GET_ONLINE_USERS":
+      return {
+        ...state,
+        onlineUsers: action.payload,
+      };
+
+    case "CHECK_ONLNIE_USER":
+      return {
+        ...state,
+        checkOnlineUser: action.payload,
+      };
     default:
       return state;
   }

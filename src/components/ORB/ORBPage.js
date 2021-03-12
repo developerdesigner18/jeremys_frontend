@@ -6,7 +6,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socketIO";
 
-import { storeScreenShot } from "../../actions/orbActions";
+import {
+  storeScreenShot,
+  storeOnlineUser,
+  removeOnlineUser,
+} from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -48,6 +52,15 @@ function ORBPage(props) {
   });
   useEffect(() => {
     document.documentElement.scrollTop = 0;
+
+    window.addEventListener("beforeunload", async ev => {
+      console.log("before unload evenet called ", ev);
+
+      await dispatch(removeOnlineUser());
+
+      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+      return ev.returnValue;
+    });
   }, []);
 
   useEffect(() => {
@@ -95,6 +108,7 @@ function ORBPage(props) {
 
   const callGoToLive = async () => {
     setIsLive(true);
+    await dispatch(storeOnlineUser());
 
     let token;
     let subscribedValue = false;
@@ -190,6 +204,7 @@ function ORBPage(props) {
     }
     socket.disconnect();
     props.history.push("/userHomepage");
+    await dispatch(removeOnlineUser());
   }
 
   let encodedURL = encodeURI(

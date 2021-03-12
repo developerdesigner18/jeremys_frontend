@@ -8,8 +8,11 @@ import {
   getReviewOfFan,
   getReviewOfArtist,
   hideReview,
+  checkUserInCommunity,
+  addToCommunity,
 } from "../../actions/userActions";
 import { getFollowing, getFollowers } from "../../actions/followActions";
+import { checkUserOnline } from "../../actions/orbActions";
 import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
 
@@ -20,6 +23,7 @@ function MyStory(props) {
 
   const stateData = useSelector(state => state.user);
   const followData = useSelector(state => state.follow);
+  const stateORB = useSelector(state => state.ORB);
 
   const [userInfo, setUserInfo] = useState();
   const [following, setFollowing] = useState();
@@ -82,13 +86,19 @@ function MyStory(props) {
   const [activeReviewPage, setactiveReviewPage] = useState(0);
   const [OffsetReview, setOffsetReview] = useState(0);
 
+  const [inCommunity, setInCommunity] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
+
   useEffect(() => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));
     dispatch(getFollowers(props.location.state.userId));
     dispatch(getReviewOfFan(props.location.state.userId));
     dispatch(getReviewOfArtist(props.location.state.userId));
+    dispatch(checkUserOnline(props.location.state.userId));
+    dispatch(checkUserInCommunity(props.location.state.userId));
   }, []);
+
   useEffect(() => {
     if (stateData) {
       console.log("state data", stateData);
@@ -132,8 +142,12 @@ function MyStory(props) {
         setUserInfo(stateData.updatedValue);
         setScreenShot(stateData.updatedValue.data.screenShots);
       }
+      if (stateData.checkInCommunityUser) {
+        setInCommunity(stateData.checkInCommunityUser);
+      }
     }
   }, [stateData]);
+
   useEffect(() => {
     if (followData) {
       if (followData.following) {
@@ -144,6 +158,15 @@ function MyStory(props) {
       }
     }
   }, [followData]);
+
+  useEffect(() => {
+    if (stateORB) {
+      console.log("orb state from reducer.........", stateORB);
+      if (stateORB.onlineUsers && stateORB.onlineUsers.length) {
+        setIsOnline(true);
+      }
+    }
+  }, [stateORB]);
 
   const moveToNext = () => {
     if (screenShot.length - 1 === screenShotCounter) {
@@ -256,6 +279,10 @@ function MyStory(props) {
     // }
   };
 
+  const callAddToCommunity = async () => {
+    await dispatch(addToCommunity(props.location.state.userId));
+  };
+
   return (
     <div>
       <div className="container p-2 main mt-5">
@@ -295,27 +322,45 @@ function MyStory(props) {
                   <div className="chef_name">
                     {userInfo ? userInfo.data.firstName : ""}
                   </div>
-                  <div className="chef_designation">
+                  <div className="chef_designation" style={{ color: "white" }}>
                     {userInfo ? userInfo.data.type : ""}
                   </div>
-                  <div className="ref">My shout-out: Ric Brad</div>
+                  <div className="ref" style={{ color: "white" }}>
+                    My shout-out: Ric Brad
+                  </div>
                 </div>
               </div>
               <div className="live_text_div">
-                <h1 className="live_text_h1">LIVE</h1>
+                <h1 className="live_text_h1">{isOnline ? "LIVE" : ""}</h1>
               </div>
-              <div className="golive_logo">
-                <img
-                  src="../assets/images/Background.png"
-                  onClick={() => {
-                    goToORB();
-                  }}
-                  style={{ border: "solid 2px greem" }}></img>
-              </div>
-              {/* <div className="join_logo">
-                                <img src="../assets/images/button_bg_small.png"></img>
-                                <p>JOIN</p>
-                            </div> */}
+              {inCommunity ? (
+                isOnline ? (
+                  <div className="golive_logo">
+                    <img
+                      src="../assets/images/Background.png"
+                      onClick={() => {
+                        goToORB();
+                      }}
+                      style={{ border: "solid 2px greem" }}></img>
+                  </div>
+                ) : null
+              ) : isOnline ? (
+                <div className="golive_logo">
+                  <img
+                    src="../assets/images/Background.png"
+                    onClick={() => {
+                      goToORB();
+                    }}
+                    style={{ border: "solid 2px greem" }}></img>
+                </div>
+              ) : (
+                <div className="join_logo">
+                  <img
+                    src="../assets/images/button_bg_small.png"
+                    onClick={callAddToCommunity}></img>
+                  <p>JOIN</p>
+                </div>
+              )}
               <div className="down_chef_links position-absolute">
                 <div
                   className="mystory_option"

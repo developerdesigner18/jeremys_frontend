@@ -115,6 +115,12 @@ const userReducer = (state = null, action) => {
         fanList: action.payload,
       };
 
+    case "CHECK_IN_COMMUNITY":
+      return {
+        ...state,
+        checkInCommunityUser: action.payload,
+      };
+
     default:
       return state;
   }

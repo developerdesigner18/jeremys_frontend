@@ -652,3 +652,27 @@ export const getFanList = () => {
       .catch(error => console.log("error get fan list ", error));
   };
 };
+
+export const checkUserInCommunity = userId => {
+  return dispatch => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/online/checkUserFollowing?loginUserId=${localStorage.getItem(
+          "id"
+        )}&userId=${userId}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "CHECK_IN_COMMUNITY",
+            payload: result.data.success,
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error in check user in community ", error);
+      });
+  };
+};

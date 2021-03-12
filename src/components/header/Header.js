@@ -92,6 +92,7 @@ function Header(props) {
       <header>
         {localStorage.getItem("token") ? (
           <span style={{ position: "relative" }} ref={ref}>
+            <i className="fa fa-user mx-2" aria-hidden="true"></i>
             {"welcome " + localStorage.getItem("name")}
           </span>
         ) : (
