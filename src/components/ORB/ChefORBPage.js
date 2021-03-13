@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import { socket } from "../../socketIO";
-
+import Modal from "react-bootstrap/Modal";
 import { storeScreenShot, storeChefOrbDetails } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
+import Receipt from "../ORBTicketComponents/Receipt";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -37,6 +38,13 @@ function ChefORBPage(props) {
   const [price2, setPrice2] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    if (isLive) {
+      setShow(true);
+    }
+  };
   const [RTC, setRTC] = useState({
     client: null,
     localAudioTrack: null,
@@ -54,11 +62,11 @@ function ChefORBPage(props) {
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
   );
   const dispatch = useDispatch();
-  const stateData = useSelector(state => {
+  const stateData = useSelector((state) => {
     // console.log("state.... ", state.user);
     return state.user;
   });
-  const ORBData = useSelector(state => {
+  const ORBData = useSelector((state) => {
     // console.log("state.... ", state.user);
     return state.ORB;
   });
@@ -81,9 +89,9 @@ function ChefORBPage(props) {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -122,15 +130,15 @@ function ChefORBPage(props) {
           "name"
         )}&userId=${localStorage.getItem("id")}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result-==-=--=", result.data.key);
         setOptions({ ...options, token: result.data.key });
         token = result.data.key;
       })
-      .catch(err => console.log("error ", err));
+      .catch((err) => console.log("error ", err));
 
     rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    setRTC(prevState => ({ ...prevState, client: rtc.client }));
+    setRTC((prevState) => ({ ...prevState, client: rtc.client }));
     const uid = await rtc.client.join(
       options.appId,
       options.channel,
@@ -140,13 +148,13 @@ function ChefORBPage(props) {
 
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setRTC(prevState => ({
+    setRTC((prevState) => ({
       ...prevState,
       localAudioTrack: rtc.localAudioTrack,
     }));
     // Create a video track from the video captured by a camera.
     rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setRTC(prevState => ({
+    setRTC((prevState) => ({
       ...prevState,
       localVideoTrack: rtc.localVideoTrack,
     }));
@@ -205,10 +213,10 @@ function ChefORBPage(props) {
   //   };
   //   reader.readAsDataURL(event.target.files[0]);
   // };
-  const Banner1Change = event => {
+  const Banner1Change = (event) => {
     let reader = new FileReader();
-    reader.onload = e => {
-      setBanner1Img(prevState => ({
+    reader.onload = (e) => {
+      setBanner1Img((prevState) => ({
         ...prevState,
         bannerImg: event.target.files[0],
         bannerImgURl: e.target.result,
@@ -216,10 +224,10 @@ function ChefORBPage(props) {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
-  const Banner2Change = event => {
+  const Banner2Change = (event) => {
     let reader = new FileReader();
-    reader.onload = e => {
-      setBanner2Img(prevState => ({
+    reader.onload = (e) => {
+      setBanner2Img((prevState) => ({
         ...prevState,
         bannerImg: event.target.files[0],
         bannerImgURl: e.target.result,
@@ -230,17 +238,17 @@ function ChefORBPage(props) {
 
   const FoodImageChange = (event, item) => {
     let reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       if (item == "1") {
         // setItem1Image(e.target.result);
-        setItem1Image(prevState => ({
+        setItem1Image((prevState) => ({
           ...prevState,
           itemImg: event.target.files[0],
           itemImgURl: e.target.result,
         }));
       } else {
         // setItem2Image(e.target.result);
-        setItem2Image(prevState => ({
+        setItem2Image((prevState) => ({
           ...prevState,
           itemImg: event.target.files[0],
           itemImgURl: e.target.result,
@@ -249,7 +257,7 @@ function ChefORBPage(props) {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
-  const handleChange = e => {
+  const handleChange = (e) => {
     setPrice(e.target.value);
   };
   useEffect(async () => {
@@ -277,7 +285,20 @@ function ChefORBPage(props) {
         marginTop: "-48px",
         marginBottom: "-16px",
       }}
-      id="capture">
+      id="capture"
+    >
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title"
+      >
+        <Modal.Body style={{ padding: "0" }}>
+          <Receipt setShow={setShow} />
+        </Modal.Body>
+      </Modal>
+
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
@@ -291,7 +312,8 @@ function ChefORBPage(props) {
                 ? "inset 3px 5px 5px #3a3a3a"
                 : "rgb(89 89 89) 3px 5px 5px 8px inset",
               backgroundColor: "#424242",
-            }}></div>
+            }}
+          ></div>
           <div className="tips_info d-flex"></div>
         </div>
         <div className="container mt-5 d-flex top_section position-relative">
@@ -311,10 +333,11 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "500px",
             }}
-            method="POST">
+            method="POST"
+          >
             <input
               type="file"
-              onChange={e => Banner1Change(e)}
+              onChange={(e) => Banner1Change(e)}
               style={{
                 cursor: "pointer",
                 position: "absolute",
@@ -342,10 +365,11 @@ function ChefORBPage(props) {
               zIndex: "1",
               height: "500px",
             }}
-            method="POST">
+            method="POST"
+          >
             <input
               type="file"
-              onChange={e => Banner2Change(e)}
+              onChange={(e) => Banner2Change(e)}
               style={{
                 position: "absolute",
                 margin: "0",
@@ -373,10 +397,12 @@ function ChefORBPage(props) {
             className="round_video"
             style={{
               top: isLive ? "0" : "25px",
-            }}>
+            }}
+          >
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}>
+              style={{ zIndex: "2" }}
+            >
               {subscribed ? (
                 <div id="chef-remote-playerlist"></div>
               ) : (
@@ -410,10 +436,11 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "250px",
             }}
-            method="POST">
+            method="POST"
+          >
             <input
               type="file"
-              onChange={e => FoodImageChange(e, "1")}
+              onChange={(e) => FoodImageChange(e, "1")}
               style={{
                 cursor: "pointer",
                 position: "absolute",
@@ -443,14 +470,15 @@ function ChefORBPage(props) {
                     verticalAlign: "middle",
                     height: "100%",
                     borderRadius: "100%",
-                  }}></input>
+                  }}
+                ></input>
               </div>
               {/* </a> */}
               {/* <a href="#"> */}
               <div className="item">
                 <input
                   type="text"
-                  onChange={e => {
+                  onChange={(e) => {
                     setItem1(e.target.value);
                   }}
                   value={item1}
@@ -470,7 +498,10 @@ function ChefORBPage(props) {
             </div>
           </div>
           <div className="links">
-            <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
+            <a
+              style={{ cursor: isLive ? "pointer" : "no-drop" }}
+              onClick={handleShow}
+            >
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Ticket</p>
@@ -503,7 +534,8 @@ function ChefORBPage(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}>
+                onClick={() => setMoreIcon()}
+              >
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -523,7 +555,8 @@ function ChefORBPage(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}>
+                  }}
+                >
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
@@ -532,11 +565,13 @@ function ChefORBPage(props) {
                       // onClick={() => props.history.push("/profile")}
                     >
                       <a
-                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}>
+                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}
+                      >
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}></span>
+                          style={{ fontSize: "25px" }}
+                        ></span>
                       </a>
                     </li>
                     <li
@@ -546,10 +581,12 @@ function ChefORBPage(props) {
                     >
                       {" "}
                       <a
-                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
+                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}
+                      >
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}></span>{" "}
+                          style={{ fontSize: "25px" }}
+                        ></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -579,10 +616,11 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "250px",
             }}
-            method="POST">
+            method="POST"
+          >
             <input
               type="file"
-              onChange={e => FoodImageChange(e, "2")}
+              onChange={(e) => FoodImageChange(e, "2")}
               style={{
                 cursor: "pointer",
                 position: "absolute",
@@ -599,7 +637,7 @@ function ChefORBPage(props) {
                 <p style={{ marginTop: "15px" }}>$</p>{" "}
                 <input
                   type="number"
-                  onChange={e => {
+                  onChange={(e) => {
                     setPrice2(e.target.value);
                   }}
                   value={`${price2}`}
@@ -620,7 +658,7 @@ function ChefORBPage(props) {
                 {" "}
                 <input
                   type="text"
-                  onChange={e => {
+                  onChange={(e) => {
                     setItem2(e.target.value);
                   }}
                   value={item2}
