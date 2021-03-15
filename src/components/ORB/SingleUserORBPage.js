@@ -4,8 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { socket } from "../../socketIO";
+import axios from "axios";
+import swal from "sweetalert";
+import { useHistory } from "react-router-dom";
 
-import { storeScreenShot, getUserToken } from "../../actions/orbActions";
+import {
+  storeScreenShot,
+  getUserToken,
+  joinedFan,
+  removedJoinFan,
+  getJoinedFanList,
+} from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -30,11 +39,13 @@ function SingleUserORBPage(props) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [availableList, setAvailableList] = useState([]);
+  const [host, setHost] = useState([]);
   const ref = useRef();
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
+  const history = useHistory();
   const [fanRTC, setFanRTC] = useState({
     client: null,
     localAudioTrack: null,
@@ -46,9 +57,13 @@ function SingleUserORBPage(props) {
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
-    channel: "Artist",
+    channel: null,
     token: null,
-    role: availableList.length === 0 ? "host" : "audience",
+    role: availableList
+      ? availableList.length === 0
+        ? "host"
+        : "audience"
+      : "audience",
   });
   const orbState = useSelector(state => state.ORB);
   const remoteUsers = {};
@@ -63,67 +78,130 @@ function SingleUserORBPage(props) {
   });
   useEffect(async () => {
     socket.emit("storeLiveFans", localStorage.getItem("id"));
-    await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
+    document.documentElement.scrollTop = 0;
+    await dispatch(getUserToken(props.location.state.id));
+
+    await dispatch(getJoinedFanList(props.location.state.id));
+
+    window.addEventListener("beforeunload", async ev => {
+      console.log("before unload evenet called ", ev);
+
+      const dataToPass = {
+        fanId: localStorage.getItem("id"),
+        userId: props.location.state.id,
+      };
+      await dispatch(removedJoinFan(dataToPass));
+
+      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+      return ev.returnValue;
+    });
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (orbState) {
-      let role = "";
-      socket.on("listOnlineFans", fanList => {
-        console.log("fanlist in orb page", fanList);
-        setAvailableList(fanList);
-        if (fanList.length && fanList.length <= 15) {
-          role = "host";
+      if (orbState.joinedFanList && orbState.joinedFanList.length) {
+        if (orbState.joinedFanList.length >= 15) {
+          swal("Info", "You cannot communicate with this user", "info");
+          setOptions(prevState => ({ ...prevState, role: "audience" }));
+          setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
         } else {
-          role = fanList.length === 0 ? "host" : "audience";
+          setOptions(prevState => ({ ...prevState, role: "host" }));
+          setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
         }
-      });
-      console.log("role ", options);
-      setOptions(prevState => ({ ...prevState, role: role }));
-      rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-      setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
-      await rtc.client.setClientRole(options.role);
-      const uid = await rtc.client.join(
-        options.appId,
-        options.channel,
-        orbState.userToken.agoraToken,
-        null
-      );
-      console.log("Meeting Joined-==-=-=", rtc.client);
-      rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("handleUserPublished-==-=-=", user.uid);
-        const id = user.uid;
-        remoteUsers[id] = user;
-        //   subscribe(user, mediaType);
-        await rtc.client.subscribe(user, mediaType);
-        console.log("subscribe success-=-=-=-=-=-=-=-=-=");
-
-        if (mediaType === "video") {
-          user.videoTrack.play(`user-remote-playerlist`);
-          // user.videoTrack.play(`other-fan-remote`);
-        }
-        if (mediaType === "audio") {
-          user.audioTrack.play();
-        }
-      });
-      rtc.client.on("user-unpublished", async (user, mediaType) => {
-        console.log("handleUserUnpublished-==-=-=", user.uid);
-        const id = user.uid;
-        delete remoteUsers[id];
-      });
-
-      // Create an audio track from the audio sampled by a microphone.
-      // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      // Create a video track from the video captured by a camera.
-      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-
-      rtc.localVideoTrack.play("local-player");
-      // rtc.localAudioTrack.play();
-
-      // Publish the local audio and video tracks to the channel.
-      await rtc.client.publish([rtc.localVideoTrack]);
+      } else {
+        setOptions(prevState => ({ ...prevState, role: "host" }));
+        setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
+      }
     }
   }, [orbState]);
+
+  useEffect(async () => {
+    let id;
+    let token;
+    let hostUser = [];
+    if (props.location.state.id && props.location.state.name) {
+      const dataToPass = {
+        userId: props.location.state.id,
+        fanId: localStorage.getItem("id"),
+      };
+      await dispatch(joinedFan(dataToPass));
+      id = props.location.state.id;
+
+      axios
+        .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
+        .then(async result => {
+          setOptions({
+            ...options,
+            token: result.data.data.agoraToken,
+            channel: id,
+          });
+          console.log(
+            "result.data.data.agoraToken",
+            result.data.data.agoraToken
+          );
+
+          if (result.data.data.agoraToken) {
+            token = result.data.data.agoraToken;
+            rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+            setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
+            await rtc.client.setClientRole(options.role);
+            // const uid = await rtc.client.join(
+            //   options.appId,
+            //   options.channel,
+            //   token,
+            //   null
+            // );
+            const uid = await rtc.client.join(options.appId, id, token, null);
+            console.log("Meeting Joined-==-=-=", rtc.client);
+            rtc.client.on("user-published", async (user, mediaType) => {
+              console.log("handleUserPublished-==-=-=", user.uid);
+              hostUser.push(user);
+              setHost(prevState => [...prevState, hostUser]);
+              const id = user.uid;
+              remoteUsers[id] = user;
+              //   subscribe(user, mediaType);
+              await rtc.client.subscribe(user, mediaType);
+              console.log("subscribe success-=-=-=-=-=-=-=-=-=");
+
+              if (mediaType === "video") {
+                user.videoTrack.play(`user-remote-playerlist`);
+                // user.videoTrack.play(`other-fan-remote`);
+              }
+              if (mediaType === "audio") {
+                user.audioTrack.play();
+              }
+            });
+            rtc.client.on("user-unpublished", async (user, mediaType) => {
+              console.log("handleUserUnpublished-==-=-=", user.uid);
+              const id = user.uid;
+              delete remoteUsers[id];
+            });
+
+            // Create an audio track from the audio sampled by a microphone.
+            // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            // setFanRTC(prevState => ({
+            //   ...prevState,
+            //   localAudioTrack: rtc.localAudioTrack,
+            // }));
+            // Create a video track from the video captured by a camera.
+            rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+            setFanRTC(prevState => ({
+              ...prevState,
+              localVideoTrack: rtc.localVideoTrack,
+            }));
+
+            rtc.localVideoTrack.play("local-player");
+            // rtc.localAudioTrack.play();
+
+            // Publish the local audio and video tracks to the channel.
+            await rtc.client.publish([rtc.localVideoTrack]);
+          }
+        })
+        .catch(error => {
+          console.log("error........", error);
+        });
+    }
+  }, [props.location.state.id && props.location.state.name]);
 
   const getImage = () => {
     console.log("fn called");
@@ -155,6 +233,11 @@ function SingleUserORBPage(props) {
       await fanRTC.client.leave();
     }
     socket.disconnect();
+    const dataToPass = {
+      fanId: localStorage.getItem("id"),
+      userId: props.location.state.id,
+    };
+    await dispatch(removedJoinFan(dataToPass));
     props.history.push("/fanHomepage");
   }
   return (
@@ -273,7 +356,22 @@ function SingleUserORBPage(props) {
       </div>
       <div className="  row justify-content-center mx-auto  mt-5">
         <div className="row p-0 col-md-3">
-          <div className="col-md-6 fan_ORB_main_cat" id="other-fan-remote">
+          {availableList ? (
+            availableList.length <= 15 ? (
+              <div className="col-md-6 fan_ORB_main_cat">
+                <img src="../assets/images/button_bg.png" />
+              </div>
+            ) : (
+              availableList.map(user => {
+                return (
+                  <div className="col-md-6 fan_ORB_main_cat">
+                    <img src={user.profileImgURl} />
+                  </div>
+                );
+              })
+            )
+          ) : null}
+          <div className="col-md-6 fan_ORB_main_cat">
             <img src="../assets/images/button_bg.png" />
           </div>
           <div className="col-md-6 fan_ORB_main_cat">
@@ -305,14 +403,27 @@ function SingleUserORBPage(props) {
           </div>
         </div>
         <div className="col-md-6 text-center">
-          <div
+          {console.log("host length..", host.length)}
+          {host.length === 2 ? (
+            <div
+              className="border border-light rounded-circle mx-auto mb-3"
+              id="user-remote-playerlist"
+              style={{
+                height: "500px",
+                width: "500px",
+                borderRadius: "100%",
+              }}></div>
+          ) : (
+            <></>
+          )}
+          {/* <div
             className="border border-light rounded-circle mx-auto mb-3"
             id="user-remote-playerlist"
             style={{
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-            }}></div>
+            }}></div> */}
           <div className="r_image">
             {isLive ? (
               <img
@@ -334,12 +445,12 @@ function SingleUserORBPage(props) {
                 <p>Ticket</p>
               </div>
             </a>
-            <a href="#">
+            {/* <a href="#">
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/seat.png" />
                 <p>Seat</p>
               </div>
-            </a>
+            </a> */}
             <a onClick={getImage} style={{ cursor: "pointer" }}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
@@ -467,127 +578,6 @@ function SingleUserORBPage(props) {
           </div>
         </div>
       </div>
-
-      {/* <div className="container ORB_videos_container mt-3">
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="center_main"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat"></div>
-
-        <div className="r_image">
-          {isLive ? (
-            <img src="../assets/images/r_image.png" />
-          ) : (
-            <img src="../assets/images/disableR.png" />
-          )}
-        </div>
-        <div className="fan_ORB_main_cat"></div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-        <div className="fan_ORB_main_cat">
-          <img src="../assets/images/button_bg.png" />
-        </div>
-      </div>
-       */}
-      {/* <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/ticket.png" />
-            <p>Ticket</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/seat.png" />
-            <p>Seat</p>
-          </div>
-        </a>
-        <a onClick={getImage}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/take_picture.png" />
-            <p>Take Picture</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/time.png" />
-            <p>Time</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/short_break.png" />
-            <p>Short Break</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/share.png" />
-            <p>Share</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/tip.png" />
-            <p>Tip</p>
-          </div>
-        </a>
-        <a href="#">
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/exit.png" />
-            <p>Exit</p>
-          </div>
-        </a>
-      </div>*/}
     </div>
   );
 }

@@ -15,6 +15,8 @@ import { getFollowing, getFollowers } from "../../actions/followActions";
 import { checkUserOnline } from "../../actions/orbActions";
 import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
+import { socket } from "../../socketIO";
+import { getJoinedFanList } from "../../actions/orbActions";
 
 function MyStory(props) {
   var isMyStory = props.location.state.isMystory;
@@ -243,7 +245,7 @@ function MyStory(props) {
         name: userInfo
           ? userInfo.data.firstName
             ? userInfo.data.firstName
-            : "chef"
+            : ""
           : "",
         id: userInfo ? userInfo.data._id : "",
       });
@@ -254,29 +256,30 @@ function MyStory(props) {
       userInfo.data.type === "trainer" ||
       userInfo.data.type === "Trainer"
     ) {
+      socket.on("listOnlineFans", fanList => {
+        console.log("fan list.............", fanList);
+        if (fanList.length >= 15) {
+          alert("fan list is 15");
+        }
+      });
+      await dispatch(getJoinedFanList(userInfo.data._id));
       history.push("/fanORB", {
         name: userInfo
           ? userInfo.data.firstName
             ? userInfo.data.firstName
-            : "chef"
+            : ""
           : "",
         id: userInfo ? userInfo.data._id : "",
       });
+      // history.push("/fanORB", {
+      //   name: userInfo
+      //     ? userInfo.data.firstName
+      //       ? userInfo.data.firstName
+      //       : ""
+      //     : "",
+      //   id: userInfo ? userInfo.data._id : "",
+      // });
     }
-    // else if (
-    //   userInfo.data.type === "stylist" ||
-    //   userInfo.data.type === "Stylist"
-    // ) {
-    //   console.log("in else if ");
-    //   history.push("/fanStylistORB", {
-    //     name: userInfo
-    //       ? userInfo.data.firstName
-    //         ? userInfo.data.firstName
-    //         : "stylist"
-    //       : "",
-    //     id: userInfo ? userInfo.data._id : "",
-    //   });
-    // }
   };
 
   const callAddToCommunity = async () => {
@@ -357,7 +360,8 @@ function MyStory(props) {
                 <div className="join_logo">
                   <img
                     src="../assets/images/button_bg_small.png"
-                    onClick={callAddToCommunity}></img>
+                    onClick={callAddToCommunity}
+                    style={{ cursor: "pointer" }}></img>
                   <p>JOIN</p>
                 </div>
               )}

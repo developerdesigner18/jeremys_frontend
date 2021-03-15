@@ -16,7 +16,7 @@ import TinderCard from "react-tinder-card";
 import { socket } from "../../socketIO";
 import { useHistory } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import swal from "sweetalert";
+import swal from "@sweetalert/with-react";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -451,13 +451,16 @@ function FanHomePage(props) {
     <div className="container fan_container">
       <div className="form_container px-3 px-md-5">
         <Header />
-        {isMobileDevice
-          ? swal(
-              "Info",
-              "If you want to go with live streaming use the mobile App!",
-              "info"
-            )
-          : null}
+        {isMobileDevice ? (
+          // swal(
+          //   <div>
+          //     <p>To use live streaming use mobile application</p>
+          //   </div>
+          // )
+          alert("To use live streaming use mobile application")
+        ) : (
+          <></>
+        )}
         <div className="tabs_image">
           <div className="tab">
             <div className="tab1">

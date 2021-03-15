@@ -11,6 +11,7 @@ import {
   storeChefOrbDetails,
   storeOnlineUser,
   removeOnlineUser,
+  getJoinedFanList,
 } from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
 
@@ -60,11 +61,9 @@ function ChefORBPage(props) {
   );
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
-    // console.log("state.... ", state.user);
     return state.user;
   });
   const ORBData = useSelector(state => {
-    // console.log("state.... ", state.user);
     return state.ORB;
   });
 
@@ -253,6 +252,8 @@ function ChefORBPage(props) {
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
 
+    await dispatch(getJoinedFanList(localStorage.getItem("id")));
+
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
 
@@ -270,6 +271,13 @@ function ChefORBPage(props) {
       }
     }
   }, [stateData]);
+
+  useEffect(() => {
+    if (ORBData) {
+      if (ORBData.joinedFanList) {
+      }
+    }
+  }, [ORBData]);
 
   return (
     <div

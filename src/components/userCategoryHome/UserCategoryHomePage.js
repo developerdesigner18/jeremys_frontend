@@ -190,7 +190,9 @@ function UserCategoryHomePage(props) {
 
   let indexOfFirst = OffsetFollowers;
   let indexOfLast = OffsetFollowers + perPage;
-  let currentFollower = searchFollower.slice(indexOfFirst, indexOfLast);
+  let currentFollower = searchFollower.length
+    ? searchFollower.slice(indexOfFirst, indexOfLast)
+    : allFollower;
 
   const setMoreIcon = () => {
     setIsOpen(!isOpen);

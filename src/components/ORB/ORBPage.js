@@ -5,11 +5,13 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { socket } from "../../socketIO";
+import swal from "sweetalert";
 
 import {
   storeScreenShot,
   storeOnlineUser,
   removeOnlineUser,
+  getJoinedFanList,
 } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -63,7 +65,7 @@ function ORBPage(props) {
     });
   }, []);
 
-  useEffect(() => {
+  useEffect(async () => {
     const timer = setTimeout(() => {
       console.log("This will run after 2 second!");
       socket.on("listOnlineFans", list => {
@@ -71,12 +73,13 @@ function ORBPage(props) {
         setFanList(list);
       });
     }, 2000);
+
     return () => clearTimeout(timer);
   }, [isLive || !isLive]);
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
-    channel: localStorage.getItem("name"),
+    channel: localStorage.getItem("id"),
     token: null,
     role: "host",
   });
@@ -114,14 +117,15 @@ function ORBPage(props) {
     let subscribedValue = false;
 
     socket.emit("storeUser", localStorage.getItem("id"));
+    let userId = localStorage.getItem("id").toString();
 
     await axios
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${localStorage.getItem(
-          "name"
-        )}&userId=${localStorage.getItem("id")}`
+        }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
+          "id"
+        )}`
       )
       .then(result => {
         console.log("result-==-=--=", result.data.key);
@@ -163,6 +167,7 @@ function ORBPage(props) {
       // Subscribe to a remote user.
       await rtc.client.subscribe(user, mediaType);
       console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      await dispatch(getJoinedFanList(localStorage.getItem("id")));
 
       if (mediaType === "video") {
         subscribedValue = true;
@@ -206,6 +211,23 @@ function ORBPage(props) {
     props.history.push("/userHomepage");
     await dispatch(removeOnlineUser());
   }
+
+  useEffect(() => {
+    if (stateData) {
+      let list;
+      setTimeout(() => {
+        if (stateData.joinedFanList && stateData.joinedFanList.length) {
+          if (stateData.joinedFanList.length >= 15) {
+            swal("Info", "You cannot communicate with this user", "info");
+          } else {
+            setFanList(prevState => [...prevState, stateData.joinedFanList]);
+          }
+        } else {
+          setFanList(prevState => [...prevState, stateData.joinedFanList]);
+        }
+      }, 5000);
+    }
+  }, [stateData]);
 
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
@@ -331,18 +353,34 @@ function ORBPage(props) {
         </div>
       </div>
       <div className="container ORB_videos_container mt-3 player">
-        <div className="ORB_main_cat" id="fan-remote-playerlist">
-          {subscribedUsers ? (
-            <></>
-          ) : (
-            <img src="../assets/images/button_bg.png" />
-          )}
-        </div>
         {subscribedUsers ? (
-          <></>
+          fanList ? (
+            fanList.length <= 15 ? (
+              <div className="ORB_main_cat" id="fan-remote-playerlist"></div>
+            ) : fanList.length >= 15 ? (
+              fanList.map(user => {
+                return (
+                  <div className="ORB_main_cat">
+                    <img src={user.profileImgURl} />
+                  </div>
+                );
+              })
+            ) : (
+              <div className="ORB_main_cat">
+                <img src="../assets/images/button_bg.png" />
+              </div>
+            )
+          ) : (
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+          )
         ) : (
           <>
-            <div className="ORB_main_cat" id="fan-remote-playerlist">
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
               <img src="../assets/images/button_bg.png" />
             </div>
             <div className="ORB_main_cat">

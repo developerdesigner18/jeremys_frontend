@@ -32,8 +32,8 @@ function VideoCall() {
         token = result.data.key;
       })
       .catch(err => console.log("error ", err));
-    // rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-    rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+    // rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
     // await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
       options.appId,

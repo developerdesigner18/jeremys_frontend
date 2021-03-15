@@ -7,8 +7,15 @@ import { useHistory } from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
+import { socket } from "../../socketIO";
 
-import { storeScreenShot, getStreamDetails } from "../../actions/orbActions";
+import {
+  storeScreenShot,
+  getStreamDetails,
+  joinedFan,
+  removedJoinFan,
+  getJoinedFanList,
+} from "../../actions/orbActions";
 import { getUserWithId } from "../../actions/userActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -122,6 +129,7 @@ function FanChefORB(props) {
       await dispatch(getStreamDetails({ userId: id }));
     }
 
+    socket.emit("storeLiveFans", localStorage.getItem("id"));
     // if (props.location.state.name) {
     await axios
       .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
@@ -199,6 +207,11 @@ function FanChefORB(props) {
       })
       .catch(err => console.log("error ", err));
     // }
+    const dataToPass = {
+      userId: id,
+      fanId: localStorage.getItem("id"),
+    };
+    await dispatch(joinedFan(dataToPass));
   }, [props.location.state.id && props.location.state.name]);
 
   useEffect(async () => {
@@ -219,6 +232,23 @@ function FanChefORB(props) {
     }
   }, [stateData]);
 
+  useEffect(async () => {
+    await dispatch(getJoinedFanList(props.location.state.id));
+
+    window.addEventListener("beforeunload", async ev => {
+      console.log("before unload evenet called ", ev);
+
+      const dataToPass = {
+        fanId: localStorage.getItem("id"),
+        userId: props.location.state.id,
+      };
+      await dispatch(removedJoinFan(dataToPass));
+
+      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+      return ev.returnValue;
+    });
+  }, []);
+
   async function leaveCall() {
     console.log("leave call fn called in fan orb page of chef");
     // Destroy the local audio and video tracks.
@@ -231,6 +261,11 @@ function FanChefORB(props) {
       await chefRTC.client.leave();
     }
     // props.history.push("/fanHomePage");
+    const dataToPass = {
+      fanId: localStorage.getItem("id"),
+      userId: props.location.state.id,
+    };
+    await dispatch(removedJoinFan(dataToPass));
     setShowRating(true);
   }
 

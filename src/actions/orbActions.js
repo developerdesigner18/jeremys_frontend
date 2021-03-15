@@ -197,3 +197,58 @@ export const checkUserOnline = data => {
       });
   };
 };
+
+export const joinedFan = data => {
+  return dispatch => {
+    axios
+      .put(`${process.env.REACT_APP_API_URL}api/online/storeJoinedFan`, data)
+      .then(result => {
+        if (result.data.code === 201) {
+          dispatch({
+            type: "STORE_JOINED_FAN",
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error.........", error);
+      });
+  };
+};
+
+export const removedJoinFan = data => {
+  return dispatch => {
+    axios
+      .put(`${process.env.REACT_APP_API_URL}api/online/removeFan`, data)
+      .then(result => {
+        if (result.data.cpde === 201) {
+          dispatch({
+            type: "REMOVE_FAN",
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error........", error);
+      });
+  };
+};
+
+export const getJoinedFanList = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/online/getJoinedFans?id=${data}`
+      )
+      .then(result => {
+        console.log("result.data", result.data);
+        if (result.data.code === 201) {
+          dispatch({
+            type: "JOINED_FAN",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error in get fans list", error);
+      });
+  };
+};
