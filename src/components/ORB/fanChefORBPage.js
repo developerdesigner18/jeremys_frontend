@@ -8,6 +8,10 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
 import { socket } from "../../socketIO";
+import Ticket from "../ORBTicketComponents/Ticket";
+import Receipt from "../ORBTicketComponents/Receipt";
+
+import Modal from "react-bootstrap/Modal";
 
 import {
   storeScreenShot,
@@ -43,9 +47,18 @@ function FanChefORB(props) {
   const [subscribed, setSubscribed] = useState(false);
   const [showRating, setShowRating] = useState(false);
   const [closeModalBool, setCloseModalBool] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef();
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    // if (subscribed) {
+    setShow(true);
+    // }
+  };
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
@@ -286,6 +299,26 @@ function FanChefORB(props) {
         marginBottom: "-16px",
       }}
       id="capture1">
+      {console.log(
+        "rebcbzxcblzkxcb",
+        chefRTC,
+        rtc.localAudioTrack,
+        rtc.localVideoTrack
+      )}
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{ padding: "0" }}>
+          {paid ? (
+            <Receipt setShow={setShow} />
+          ) : (
+            <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
+          )}
+        </Modal.Body>
+      </Modal>
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">

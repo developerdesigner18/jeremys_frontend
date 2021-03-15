@@ -105,6 +105,10 @@ input::-webkit-inner-spin-button {
   text-transform: uppercase;
   background: linear-gradient(45deg, #0000004f, transparent);
 } */
+
+.modal-ticket {
+  max-width: 550px;
+}
 .top_section > div {
   flex: 1;
 }

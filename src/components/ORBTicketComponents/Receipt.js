@@ -1,12 +1,22 @@
 import React from "react";
 import "../../assets/css/ticket.css";
 
-function Ticket() {
+function Ticket(props) {
   return (
     <div class="MainwrapperTicket">
-      <div class="main_reciept_container position-relative mt-5">
+      <div class="main_reciept_container position-relative ">
         <div class="background_image">
           <img src="../assets/images/JL_RECEIPT_PAID.jpg" />
+        </div>
+        <div class="d-flex justify-content-end text-muted">
+          <i
+            class="fas fa-times "
+            role="button"
+            onClick={() => {
+              props.setShow(false);
+            }}
+            style={{ zIndex: "1", padding: "5px" }}
+          />
         </div>
         <div class="main_container d-flex flex-column align-items-center">
           <div class="text-center">

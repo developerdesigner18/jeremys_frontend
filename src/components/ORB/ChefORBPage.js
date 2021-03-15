@@ -13,7 +13,9 @@ import {
   removeOnlineUser,
   getJoinedFanList,
 } from "../../actions/orbActions";
+import Modal from "react-bootstrap/Modal";
 import { getUserWithId } from "../../actions/userActions";
+import Receipt from "../ORBTicketComponents/Receipt";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -43,6 +45,13 @@ function ChefORBPage(props) {
   const [price2, setPrice2] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    if (isLive) {
+      setShow(true);
+    }
+  };
   const [RTC, setRTC] = useState({
     client: null,
     localAudioTrack: null,
@@ -61,15 +70,17 @@ function ChefORBPage(props) {
   );
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
+    // console.log("state.... ", state.user);
     return state.user;
   });
   const ORBData = useSelector(state => {
+    // console.log("state.... ", state.user);
     return state.ORB;
   });
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
-    channel: localStorage.getItem("name"),
+    channel: localStorage.getItem("id"),
     token: null,
     role: "host",
   });
@@ -138,7 +149,12 @@ function ChefORBPage(props) {
 
     rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
     setRTC(prevState => ({ ...prevState, client: rtc.client }));
-    await rtc.client.join(options.appId, userId, token, null);
+    const uid = await rtc.client.join(
+      options.appId,
+      options.channel,
+      token,
+      null
+    );
 
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
@@ -291,6 +307,17 @@ function ChefORBPage(props) {
         marginBottom: "-16px",
       }}
       id="capture">
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{ padding: "0" }}>
+          <Receipt setShow={setShow} />
+        </Modal.Body>
+      </Modal>
+
       <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
@@ -484,7 +511,9 @@ function ChefORBPage(props) {
             </div>
           </div>
           <div className="links">
-            <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
+            <a
+              style={{ cursor: isLive ? "pointer" : "no-drop" }}
+              onClick={handleShow}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Ticket</p>
