@@ -101,11 +101,7 @@ function FanChefORB(props) {
       setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
-      swal("oops!", "Please pay for enjoy full live streaming", "warning").then(
-        () => {
-          if (closeModalBool === false) leaveCall();
-        }
-      );
+      setShowRating(true);
     }
   });
 
@@ -114,7 +110,7 @@ function FanChefORB(props) {
     html2canvas(document.querySelector("#capture1"), {
       allowTaint: true,
       scrollX: 0,
-      scrollY: -window.scrollY,
+      scrollY: 0,
       useCORS: true,
     }).then(canvas => {
       let file;
@@ -233,7 +229,9 @@ function FanChefORB(props) {
         setUserInfo(stateData.userInfo.data);
       }
     }
+  }, [stateData]);
 
+  useEffect(() => {
     if (StreamData) {
       if (StreamData.streamData) {
         setStreamDetails(StreamData.streamData.message);
@@ -243,7 +241,7 @@ function FanChefORB(props) {
         setItem2Image(StreamData.streamData.message.chefItems[1].pic);
       }
     }
-  }, [stateData]);
+  }, [StreamData]);
 
   useEffect(async () => {
     await dispatch(getJoinedFanList(props.location.state.id));

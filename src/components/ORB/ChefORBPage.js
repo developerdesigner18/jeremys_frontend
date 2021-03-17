@@ -17,6 +17,7 @@ import {
 import Modal from "react-bootstrap/Modal";
 import { getUserWithId } from "../../actions/userActions";
 import Receipt from "../ORBTicketComponents/Receipt";
+import swal from "sweetalert";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -38,9 +39,9 @@ function ChefORBPage(props) {
   const [userInfo, setUserInfo] = useState({});
   const [banner1Img, setBanner1Img] = useState({});
   const [banner2Img, setBanner2Img] = useState({});
-  const [item1, setItem1] = useState("Item 1");
+  const [item1, setItem1] = useState("");
   const [item1Image, setItem1Image] = useState({});
-  const [item2, setItem2] = useState("Item 2");
+  const [item2, setItem2] = useState("");
   const [item2Image, setItem2Image] = useState({});
   const [price, setPrice] = useState("");
   const [price2, setPrice2] = useState("");
@@ -97,6 +98,7 @@ function ChefORBPage(props) {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
+      useCORS: true,
     }).then(canvas => {
       let file;
       canvas.toBlob(async blob => {
@@ -111,96 +113,112 @@ function ChefORBPage(props) {
     });
   };
   const goToLivePage = async () => {
-    console.log("fn called");
     await dispatch(storeOnlineUser());
-    let fd = new FormData();
+    if (
+      item1 !== "" &&
+      item2 !== "" &&
+      price !== "" &&
+      price2 !== "" &&
+      item1Image.itemImg &&
+      item2Image.itemImg &&
+      banner1Img.bannerImg &&
+      banner2Img.bannerImg
+    ) {
+      let fd = new FormData();
 
-    fd.append("name1", item1);
-    fd.append("name2", item2);
-    fd.append("userId", localStorage.getItem("id"));
-    fd.append("userType", localStorage.getItem("type"));
-    fd.append("price1", price);
-    fd.append("price2", price2);
-    fd.append("banner1", banner1Img.bannerImg);
-    fd.append("banner2", banner2Img.bannerImg);
-    fd.append("item1Img", item1Image.itemImg);
-    fd.append("item2Img", item2Image.itemImg);
+      fd.append("name1", item1);
+      fd.append("name2", item2);
+      fd.append("userId", localStorage.getItem("id"));
+      fd.append("userType", localStorage.getItem("type"));
+      fd.append("price1", price);
+      fd.append("price2", price2);
+      fd.append("banner1", banner1Img.bannerImg);
+      fd.append("banner2", banner2Img.bannerImg);
+      fd.append("item1Img", item1Image.itemImg);
+      fd.append("item2Img", item2Image.itemImg);
 
-    await dispatch(storeChefOrbDetails(fd));
-    setIsLive(true);
+      await dispatch(storeChefOrbDetails(fd));
+      setIsLive(true);
 
-    let token;
+      let token;
 
-    socket.emit("storeUser", localStorage.getItem("id"));
-    let userId = localStorage.getItem("id").toString();
-    await axios
-      .get(
-        `${
-          process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
-          "id"
-        )}`
-      )
-      .then(result => {
-        console.log("result-==-=--=", result.data.key);
-        setOptions({ ...options, token: result.data.key });
-        token = result.data.key;
-      })
-      .catch(err => console.log("error ", err));
+      socket.emit("storeUser", localStorage.getItem("id"));
+      let userId = localStorage.getItem("id").toString();
+      await axios
+        .get(
+          `${
+            process.env.REACT_APP_API_URL
+          }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
+            "id"
+          )}`
+        )
+        .then(result => {
+          console.log("result-==-=--=", result.data.key);
+          setOptions({ ...options, token: result.data.key });
+          token = result.data.key;
+        })
+        .catch(err => console.log("error ", err));
 
-    rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    setRTC(prevState => ({ ...prevState, client: rtc.client }));
-    const uid = await rtc.client.join(
-      options.appId,
-      options.channel,
-      token,
-      null
-    );
+      rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+      setRTC(prevState => ({ ...prevState, client: rtc.client }));
+      const uid = await rtc.client.join(
+        options.appId,
+        options.channel,
+        token,
+        null
+      );
 
-    // Create an audio track from the audio sampled by a microphone.
-    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setRTC(prevState => ({
-      ...prevState,
-      localAudioTrack: rtc.localAudioTrack,
-    }));
-    // Create a video track from the video captured by a camera.
-    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setRTC(prevState => ({
-      ...prevState,
-      localVideoTrack: rtc.localVideoTrack,
-    }));
+      // Create an audio track from the audio sampled by a microphone.
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setRTC(prevState => ({
+        ...prevState,
+        localAudioTrack: rtc.localAudioTrack,
+      }));
+      // Create a video track from the video captured by a camera.
+      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setRTC(prevState => ({
+        ...prevState,
+        localVideoTrack: rtc.localVideoTrack,
+      }));
 
-    // Publish the local audio and video tracks to the channel.
-    await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+      // Publish the local audio and video tracks to the channel.
+      await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
-    rtc.client.on("user-published", async (user, mediaType) => {
-      console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-      // Subscribe to a remote user.
-      await rtc.client.subscribe(user, mediaType);
-      console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        // Subscribe to a remote user.
+        await rtc.client.subscribe(user, mediaType);
+        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-      if (mediaType === "video") {
-        console.log("video track!!!!!!!!");
-        setSubscribed(true);
-        user.videoTrack.play(`chef-remote-playerlist`);
-      }
-      if (mediaType === "audio") {
-        user.audioTrack.play();
-      }
-    });
-    rtc.client.on("user-unpublished", async (user, mediaType) => {
-      console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
-    });
+        if (mediaType === "video") {
+          console.log("video track!!!!!!!!");
+          setSubscribed(true);
+          user.videoTrack.play(`chef-remote-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+      rtc.client.on("user-unpublished", async (user, mediaType) => {
+        console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+      });
 
-    rtc.client.on("stream-added", evt => {
-      console.log("Stream added", evt);
-      // evt.stream.play("fan-playerlist");
-    });
+      rtc.client.on("stream-added", evt => {
+        console.log("Stream added", evt);
+        // evt.stream.play("fan-playerlist");
+      });
 
-    rtc.localVideoTrack.play("local-player");
-    rtc.localAudioTrack.play();
-    console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      rtc.localVideoTrack.play("local-player");
+      rtc.localAudioTrack.play();
+      console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    } else {
+      swal(
+        "Info",
+        "Please fill up the items, items description, item image and banner image!",
+        "info"
+      );
+    }
   };
 
   async function leaveCall() {

@@ -30,6 +30,7 @@ function MyStory(props) {
   const [userInfo, setUserInfo] = useState();
   const [following, setFollowing] = useState();
   const [followers, setFollowers] = useState();
+  const [rate, setRate] = useState();
   const [screenShot, setScreenShot] = useState();
   const [screenShotCounter, setScreenShotCounter] = useState(0);
   const [rightPart, setRightPart] = useState(props.location.state.pageNumber);
@@ -152,10 +153,15 @@ function MyStory(props) {
 
   useEffect(() => {
     if (followData) {
+      console.log("followdata........... ", followData);
       if (followData.following) {
         setFollowing(followData.following.message);
         if (followData.starFollowers) {
           setFollowers(followData.starFollowers.message);
+          if (followData.starFollowers.ratingList.length == 0) {
+            setRate(0);
+          }
+          setRate(followData.starFollowers.average);
         }
       }
     }
@@ -280,6 +286,9 @@ function MyStory(props) {
   return (
     <div>
       <div className="container p-2 main mt-5">
+        <div className="grey_logo">
+          <img src="../assets/images/grey_logo.png" />
+        </div>
         <div
           style={{
             display: "flex",
@@ -290,7 +299,8 @@ function MyStory(props) {
           <p onClick={() => history.push("/")} style={{ cursor: "pointer" }}>
             &#60; back
           </p>
-          <p>Story</p>
+
+          <p>{rightPart === 1 ? "PAGES AND PLACES" : "REVIEWS AND COMMENTS"}</p>
         </div>
         <div className="chef_image_container position-relative">
           <div className="backgroud_image">
@@ -309,9 +319,6 @@ function MyStory(props) {
                 }
               />
               <div className="top_chef_details position-absolute d-flex">
-                <div className="grey_logo">
-                  <img className="w-100" src="../assets/images/grey_logo.png" />
-                </div>
                 <div className="chef_desc">
                   <div className="chef_name">
                     {userInfo
@@ -359,9 +366,8 @@ function MyStory(props) {
                 </div>
               ) : (
                 <div className="join_logo">
-                  {isMyStory ? (
-                    <></>
-                  ) : (
+                  {localStorage.getItem("type") == "Fan" ||
+                  localStorage.getItem("type") == "fan" ? (
                     <>
                       <img
                         src="../assets/images/button_bg_small.png"
@@ -369,6 +375,8 @@ function MyStory(props) {
                         style={{ cursor: "pointer" }}></img>
                       <p>JOIN</p>
                     </>
+                  ) : (
+                    ""
                   )}
                 </div>
               )}
@@ -409,6 +417,28 @@ function MyStory(props) {
                 ) : (
                   ""
                 )}
+                <div className="ml-2">
+                  {userInfo ? (
+                    userInfo.data.type == "fan" ||
+                    userInfo.data.type == "Fan" ? null : (
+                      <StarRatings
+                        rating={rate}
+                        starRatedColor="white"
+                        starEmptyColor="#b1b0b0"
+                        starDimension="25px"
+                        starSpacing="1px"
+                      />
+                    )
+                  ) : (
+                    <StarRatings
+                      rating={rate}
+                      starRatedColor="white"
+                      starEmptyColor="#b1b0b0"
+                      starDimension="25px"
+                      starSpacing="1px"
+                    />
+                  )}
+                </div>
               </div>
             </div>
             {rightPart === 1 ? (
@@ -464,7 +494,7 @@ function MyStory(props) {
                       </div>
                     ) : (
                       <div>
-                        <p>No story found</p>
+                        <p>No Pages and Places found</p>
                       </div>
                     )
                   ) : (
@@ -477,11 +507,18 @@ function MyStory(props) {
                 <div className="journal_sec position-relative">
                   <div class="reviewContainer">
                     <p className="titleReview">Reviews and Comments</p>
+
                     {reviewData.length === 0 ? (
                       <p
                         style={{
                           display: "flex",
                           justifyContent: "center",
+                          position: "absolute",
+                          left: "0",
+                          top: "0",
+                          width: "100%",
+                          height: "100%",
+                          alignItems: "center",
                         }}>
                         No review Found
                       </p>

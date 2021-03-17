@@ -147,6 +147,13 @@ body {
   width: calc(100% - 200px);
   padding: 10px;
 }
+.grey_logo img {
+  width: 180px !important;
+}
+.grey_logo {
+  text-align: center;
+  margin: 25px 0;
+}
 .chef_name {
   font-size: 26px;
   text-transform: uppercase;
@@ -170,10 +177,12 @@ body {
   color: #5f5f5f;
 }
 .down_chef_links {
-  bottom: 25%;
+  bottom: 15%;
   left: 0;
   right: 0;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 .down_chef_links div {
   text-decoration: underline;
@@ -305,9 +314,12 @@ p.titleReview {
 }
 
 .mystory_option {
-  width: 40%;
-  margin: auto;
+  /* width: 40%;
+  margin: auto; */
   cursor: pointer;
+}
+.mystory_option:first-child {
+  margin-right: 15px;
 }
 table.tableJournal img {
   height: 70px;

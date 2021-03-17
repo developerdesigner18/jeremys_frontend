@@ -7,7 +7,7 @@ import { socket } from "../../socketIO";
 import axios from "axios";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
-
+import AddRating from "../Rating/AddRating";
 import {
   storeScreenShot,
   getUserToken,
@@ -34,13 +34,16 @@ const useOutsideClick = (ref, callback) => {
 
 function SingleUserORBPage(props) {
   const [isLive, setIsLive] = useState(false);
-  const [stream, setStream] = useState(null);
   const videoRef = useRef();
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [availableList, setAvailableList] = useState([]);
   const [host, setHost] = useState([]);
+  const [remoteId, setRemoteId] = useState("");
   const ref = useRef();
+  const [closeModalBool, setCloseModalBool] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [time, setTime] = useState(180);
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
@@ -73,9 +76,19 @@ function SingleUserORBPage(props) {
     localVideoTrack: null,
   };
 
+  React.useEffect(async () => {
+    if (time > 0) {
+      setTimeout(() => setTime(time - 1), 1000);
+    } else {
+      setTime(0);
+      setShowRatingModal(true);
+    }
+  });
+
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
+
   useEffect(async () => {
     socket.emit("storeLiveFans", localStorage.getItem("id"));
     document.documentElement.scrollTop = 0;
@@ -119,6 +132,7 @@ function SingleUserORBPage(props) {
     let id;
     let token;
     let hostUser = [];
+    console.log("props............ ", props);
     if (props.location.state.id && props.location.state.name) {
       const dataToPass = {
         userId: props.location.state.id,
@@ -126,6 +140,7 @@ function SingleUserORBPage(props) {
       };
       await dispatch(joinedFan(dataToPass));
       id = props.location.state.id;
+      setRemoteId(id);
 
       axios
         .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
@@ -223,23 +238,31 @@ function SingleUserORBPage(props) {
     });
   };
 
-  async function leaveCall() {
+  async function leaveCallFromFan() {
+    console.log("leave call fn called in fan orb page of star/trainer");
     // Destroy the local audio and video tracks.
-    // rtc.localAudioTrack.close();
-    // rtc.localVideoTrack.close();
 
-    // Leave the channel.
-    if (fanRTC.client) {
+    if (fanRTC.client && fanRTC.localVideoTrack) {
+      fanRTC.localVideoTrack.close();
+
+      // Leave the channel.
       await fanRTC.client.leave();
     }
-    socket.disconnect();
     const dataToPass = {
       fanId: localStorage.getItem("id"),
       userId: props.location.state.id,
     };
     await dispatch(removedJoinFan(dataToPass));
-    props.history.push("/fanHomepage");
+    setShowRatingModal(true);
   }
+
+  const closeModal = () => {
+    console.log("close modal.......");
+    setShowRatingModal(false);
+    setCloseModalBool(true);
+    props.history.push("/fanHomePage");
+  };
+
   return (
     <div
       style={{
@@ -403,7 +426,6 @@ function SingleUserORBPage(props) {
           </div>
         </div>
         <div className="col-md-6 text-center">
-          {console.log("host length..", host.length)}
           {host.length === 2 ? (
             <div
               className="border border-light rounded-circle mx-auto mb-3"
@@ -529,16 +551,18 @@ function SingleUserORBPage(props) {
               </div>
             </a>
 
-            <a href="#">
+            {/* <a href="#">
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
                 <p>Tip</p>
               </div>
-            </a>
-            <a href="#">
-              <div
-                className="ORB_link d-flex flex-column"
-                onClick={() => leaveCall()}>
+            </a> */}
+            <a
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                leaveCallFromFan();
+              }}>
+              <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
               </div>
@@ -578,6 +602,18 @@ function SingleUserORBPage(props) {
           </div>
         </div>
       </div>
+
+      {showRatingModal ? (
+        <div className="reviewFan">
+          <AddRating
+            userId={props.location.state.id}
+            itemDetail="Ticket"
+            closeModal={closeModal}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
