@@ -34,7 +34,14 @@ function AddRating(props) {
       review: review,
       rating: rate,
       artistId: props.userId,
-      item: props.itemDetail.chefItems[0].name,
+      item:
+        localStorage.getItem("type") == "chef" ||
+        localStorage.getItem("type") == "Chef"
+          ? props.itemDetail.chefItems[0].name
+          : localStorage.getItem("type") == "Star" ||
+            localStorage.getItem("type") == "star"
+          ? "Ticket"
+          : "",
     };
 
     await dispatch(storeRateReview(dataToPass));

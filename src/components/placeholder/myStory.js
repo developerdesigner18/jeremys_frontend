@@ -262,7 +262,6 @@ function MyStory(props) {
           alert("fan list is 15");
         }
       });
-      await dispatch(getJoinedFanList(userInfo.data._id));
       history.push("/fanORB", {
         name: userInfo
           ? userInfo.data.firstName
@@ -271,14 +270,6 @@ function MyStory(props) {
           : "",
         id: userInfo ? userInfo.data._id : "",
       });
-      // history.push("/fanORB", {
-      //   name: userInfo
-      //     ? userInfo.data.firstName
-      //       ? userInfo.data.firstName
-      //       : ""
-      //     : "",
-      //   id: userInfo ? userInfo.data._id : "",
-      // });
     }
   };
 
@@ -323,14 +314,16 @@ function MyStory(props) {
                 </div>
                 <div className="chef_desc">
                   <div className="chef_name">
-                    {userInfo ? userInfo.data.firstName : ""}
+                    {userInfo
+                      ? userInfo.data.firstName + " " + userInfo.data.lastName
+                      : ""}
                   </div>
-                  <div className="chef_designation" style={{ color: "white" }}>
+                  {/* <div className="chef_designation" style={{ color: "white" }}>
                     {userInfo ? userInfo.data.type : ""}
-                  </div>
-                  <div className="ref" style={{ color: "white" }}>
+                  </div> */}
+                  {/* <div className="ref" style={{ color: "white" }}>
                     My shout-out: Ric Brad
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="live_text_div">
@@ -339,30 +332,44 @@ function MyStory(props) {
               {inCommunity ? (
                 isOnline ? (
                   <div className="golive_logo">
+                    {isMyStory ? (
+                      <></>
+                    ) : (
+                      <img
+                        src="../assets/images/Background.png"
+                        onClick={() => {
+                          goToORB();
+                        }}
+                        style={{ border: "solid 2px greem" }}></img>
+                    )}
+                  </div>
+                ) : null
+              ) : isOnline ? (
+                <div className="golive_logo">
+                  {isMyStory ? (
+                    <></>
+                  ) : (
                     <img
                       src="../assets/images/Background.png"
                       onClick={() => {
                         goToORB();
                       }}
                       style={{ border: "solid 2px greem" }}></img>
-                  </div>
-                ) : null
-              ) : isOnline ? (
-                <div className="golive_logo">
-                  <img
-                    src="../assets/images/Background.png"
-                    onClick={() => {
-                      goToORB();
-                    }}
-                    style={{ border: "solid 2px greem" }}></img>
+                  )}
                 </div>
               ) : (
                 <div className="join_logo">
-                  <img
-                    src="../assets/images/button_bg_small.png"
-                    onClick={callAddToCommunity}
-                    style={{ cursor: "pointer" }}></img>
-                  <p>JOIN</p>
+                  {isMyStory ? (
+                    <></>
+                  ) : (
+                    <>
+                      <img
+                        src="../assets/images/button_bg_small.png"
+                        onClick={callAddToCommunity}
+                        style={{ cursor: "pointer" }}></img>
+                      <p>JOIN</p>
+                    </>
+                  )}
                 </div>
               )}
               <div className="down_chef_links position-absolute">

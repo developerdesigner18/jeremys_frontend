@@ -143,9 +143,9 @@ export const getOnlineUserList = (category, subCategory) => {
       .get(
         `${process.env.REACT_APP_API_URL}api/online/getOnlineUsers?type=${type}&subCategory=${subCategory}`
       )
-      .then(result => {
+      .then(async result => {
         if (result.data.success) {
-          dispatch({
+          await dispatch({
             type: "GET_ONLINE_USERS",
             payload: result.data.message,
           });
@@ -220,7 +220,7 @@ export const removedJoinFan = data => {
     axios
       .put(`${process.env.REACT_APP_API_URL}api/online/removeFan`, data)
       .then(result => {
-        if (result.data.cpde === 201) {
+        if (result.data.code === 201) {
           dispatch({
             type: "REMOVE_FAN",
           });
@@ -249,6 +249,25 @@ export const getJoinedFanList = data => {
       })
       .catch(error => {
         console.log("error in get fans list", error);
+      });
+  };
+};
+
+export const deleteGeneratedStream = () => {
+  return dispatch => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}api/stream/deleteStreamData`, {
+        data: { userId: localStorage.getItem("id") },
+      })
+      .then(result => {
+        if (result.data.code === 200 || result.data.success) {
+          dispatch({
+            type: "DELETE_STREAM",
+          });
+        }
+      })
+      .catch(error => {
+        console.log(" error........", error);
       });
   };
 };

@@ -55,7 +55,7 @@ function FanHomePage(props) {
   const [subcategory, setSubCategory] = useState("ALL");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [onlineCheck, setOnlineCheck] = useState(true);
+  const [onlineCheck, setOnlineCheck] = useState(false);
 
   const ref = useRef();
   const _isMounted = useRef(true);
@@ -63,6 +63,9 @@ function FanHomePage(props) {
   const isMobileDevice = useMediaQuery({
     query: "(max-device-width: 767px)",
   });
+  if (isMobileDevice) {
+    swal("Info", "To use live streaming use mobile application", "info");
+  }
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
 
@@ -83,19 +86,20 @@ function FanHomePage(props) {
     }
     document.getElementById(eventName).style.display = "block";
     evt.currentTarget.className += " active";
+    setOnlineCheck(false);
 
     if (eventName == "food") {
       socket.emit("chekCategory", eventName, subFood[0]);
-      await dispatch(getOnlineUserList(eventName, subFood[0]));
+      // await dispatch(getOnlineUserList(eventName, subFood[0]));
     } else if (eventName == "style") {
       socket.emit("chekCategory", eventName, subStyle[0]);
-      await dispatch(getOnlineUserList(eventName, subStyle[0]));
+      // await dispatch(getOnlineUserList(eventName, subStyle[0]));
     } else if (eventName == "body") {
       socket.emit("chekCategory", eventName, subBody[0]);
-      await dispatch(getOnlineUserList(eventName, subBody[0]));
+      // await dispatch(getOnlineUserList(eventName, subBody[0]));
     } else {
       socket.emit("chekCategory", eventName, subMusic[0]);
-      await dispatch(getOnlineUserList(eventName, subMusic[0]));
+      // await dispatch(getOnlineUserList(eventName, subMusic[0]));
     }
 
     socket.on("onlineUsers", userList => {
@@ -106,9 +110,7 @@ function FanHomePage(props) {
             index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
-        // setOnlineCheck(true);
       } else {
-        // setOnlineCheck(false);
         setCommunityOnline(userList);
       }
     });
@@ -184,9 +186,7 @@ function FanHomePage(props) {
             index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
-        // setOnlineCheck(true);
       } else {
-        // setOnlineCheck(false);
         setCommunityOnline(userList);
       }
     });
@@ -196,7 +196,7 @@ function FanHomePage(props) {
     dispatch(getFollowing(localStorage.getItem("id")));
     dispatch(getFromCommunity(category, subcategory));
 
-    dispatch(getOnlineUserList(category, subcategory));
+    // dispatch(getOnlineUserList(category, subcategory));
 
     return () => {
       // ComponentWillUnmount in Class Component
@@ -216,10 +216,7 @@ function FanHomePage(props) {
       }
       if (stateData.artists) setAllArtists(stateData.artists);
       if (stateData.community) {
-        // if (community.length == 0) {
-        setOnlineCheck(false);
         setCommunity(stateData.community);
-        // }
         setisLoading(false);
       }
       if (stateData.communityError) {
@@ -245,9 +242,9 @@ function FanHomePage(props) {
   }, [followData]);
 
   useEffect(() => {
-    if (ORBState && ORBState.onlineUsers && ORBState.onlineUsers.length) {
-      setOnlineCheck(true);
-      setCommunityOnline(ORBState.onlineUsers);
+    if (ORBState && ORBState.onlineUsers) {
+      let liveUsers = [...ORBState.onlineUsers];
+      setCommunityOnline(liveUsers);
     }
   }, [ORBState]);
 
@@ -417,7 +414,8 @@ function FanHomePage(props) {
 
   const callSubCategory = async (category, value) => {
     setSubCategory(value);
-    await dispatch(getOnlineUserList(category, value));
+    setOnlineCheck(false);
+    // await dispatch(getOnlineUserList(category, value));
     socket.emit("chekCategory", category, value);
 
     socket.on("onlineUsers", userList => {
@@ -428,9 +426,7 @@ function FanHomePage(props) {
             index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
-        // setOnlineCheck(true);
       } else {
-        // setOnlineCheck(false);
         setCommunityOnline(userList);
       }
     });
@@ -444,23 +440,13 @@ function FanHomePage(props) {
 
   const callOnlineUserList = async () => {
     setOnlineCheck(!onlineCheck);
-    // await dispatch(getOnlineUserList(category, subcategory));
+    await dispatch(getOnlineUserList(category, subcategory));
   };
 
   return (
     <div className="container fan_container">
       <div className="form_container px-3 px-md-5">
         <Header />
-        {isMobileDevice ? (
-          // swal(
-          //   <div>
-          //     <p>To use live streaming use mobile application</p>
-          //   </div>
-          // )
-          alert("To use live streaming use mobile application")
-        ) : (
-          <></>
-        )}
         <div className="tabs_image">
           <div className="tab">
             <div className="tab1">
@@ -731,9 +717,7 @@ function FanHomePage(props) {
               display: "flex",
               flexDirection: "row-reverse",
             }}>
-            <span>
-              {onlineCheck ? "Currently Online" : "Currently Offline"}
-            </span>
+            <span>{onlineCheck ? "Currently Live" : "Currently Offline"}</span>
             <label className="switch">
               <input
                 type="checkbox"
@@ -1007,7 +991,7 @@ function FanHomePage(props) {
                   }
                 />
               </a>
-              <div className="link_text mt-2">More</div>
+              <div className="link_text mt-2">Settings</div>
               <div className={menuClass} style={{ background: "#333333" }}>
                 <ul className="menu_item">
                   <li

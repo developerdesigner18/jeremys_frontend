@@ -93,7 +93,10 @@ function Header(props) {
         {localStorage.getItem("token") ? (
           <span style={{ position: "relative" }} ref={ref}>
             <i className="fa fa-user mx-2" aria-hidden="true"></i>
-            {"welcome " + localStorage.getItem("name")}
+            {"welcome " +
+              localStorage.getItem("name")[0].toUpperCase() +
+              localStorage.getItem("name").slice(1) +
+              "!"}
           </span>
         ) : (
           <div>
@@ -113,7 +116,7 @@ function Header(props) {
             </div>
             <div>
               <a onClick={goToRegister} style={{ cursor: "pointer" }}>
-                sign up for FREE
+                sign up - It's FREE!
               </a>
             </div>
           </div>

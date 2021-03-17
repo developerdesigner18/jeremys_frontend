@@ -12,6 +12,7 @@ import {
   storeOnlineUser,
   removeOnlineUser,
   getJoinedFanList,
+  deleteGeneratedStream,
 } from "../../actions/orbActions";
 import Modal from "react-bootstrap/Modal";
 import { getUserWithId } from "../../actions/userActions";
@@ -214,6 +215,7 @@ function ChefORBPage(props) {
     }
     socket.disconnect();
     await dispatch(removeOnlineUser());
+    await dispatch(deleteGeneratedStream());
   }
 
   const Banner1Change = event => {
@@ -274,6 +276,7 @@ function ChefORBPage(props) {
       console.log("before unload evenet called ", ev);
 
       await dispatch(removeOnlineUser());
+      await dispatch(deleteGeneratedStream());
 
       ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
       return ev.returnValue;
@@ -516,7 +519,7 @@ function ChefORBPage(props) {
               onClick={handleShow}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
-                <p>Ticket</p>
+                <p>Reciept</p>
               </div>
             </a>
             <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>

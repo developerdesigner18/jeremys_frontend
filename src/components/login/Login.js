@@ -17,7 +17,7 @@ function Login(props) {
     history.push("/register");
   };
 
-  const callLogin = async (e) => {
+  const callLogin = async e => {
     e.preventDefault();
 
     if (email && password) {
@@ -41,14 +41,14 @@ function Login(props) {
     <div style={{ background: "black" }}>
       <Header />
       <div className="container">
-        <form method="post" onSubmit={(e) => callLogin(e)}>
+        <form method="post" onSubmit={e => callLogin(e)}>
           <div className="login_form_container p-3 p-md-5 mt-5">
             <div className="form_detail">
               <label>E-mail</label>
               <input
                 type="email"
                 name="email"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
             <div className="form_detail">
@@ -56,7 +56,7 @@ function Login(props) {
               <input
                 type="password"
                 name="password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
               />
             </div>
             <div className="forgot_pass">
@@ -77,7 +77,7 @@ function Login(props) {
               <button>Login</button>
             </div>
             <div className="text-center newbie">
-              are You a newbie?{" "}
+              Just Joining Us? SIGN UP{" "}
               <a onClick={goToRegister} style={{ cursor: "pointer" }}>
                 Sign Up
               </a>

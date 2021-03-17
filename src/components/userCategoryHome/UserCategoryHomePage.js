@@ -235,7 +235,7 @@ function UserCategoryHomePage(props) {
                   }}>
                   {localStorage.getItem("type") === "Chef" ||
                   localStorage.getItem("type") === "chef"
-                    ? "Chef's Table"
+                    ? "Chefs Table"
                     : localStorage.getItem("type") === "Advertiser" ||
                       localStorage.getItem("type") === "advertiser"
                     ? "Published Ad"
@@ -293,7 +293,7 @@ function UserCategoryHomePage(props) {
                     // openCity(event, "style");
                     goToORB();
                   }}>
-                  Meet and Greet
+                  Say Hello!
                 </button>
               </div>
               <div className="tab4"></div>
@@ -488,7 +488,7 @@ function UserCategoryHomePage(props) {
                     }
                   />
                 </a>
-                <div className="link_text mt-2">More</div>
+                <div className="link_text">Settings</div>
                 <div className={menuClass} style={{ background: "#333333" }}>
                   <ul className="menu_item">
                     <li
@@ -505,7 +505,7 @@ function UserCategoryHomePage(props) {
                           isMystory: true,
                         })
                       }>
-                      MY STORY
+                      MY PAGES AND PLACES
                     </li>
                     <li
                       className="dropdown-item menu more_list"
@@ -516,7 +516,7 @@ function UserCategoryHomePage(props) {
                           isMystory: true,
                         })
                       }>
-                      MY JOURNAL
+                      ACCOUNTING LEDGER
                     </li>
                     <li
                       className="dropdown-item menu more_list"
@@ -532,14 +532,14 @@ function UserCategoryHomePage(props) {
                     <li
                       className="dropdown-item menu more_list"
                       onClick={() => props.history.push("/termsCondition")}>
-                      TERMS AND CONDITION
+                      TERMS AND CONDITIONS
                     </li>
                     <li
                       className="dropdown-item menu more_list"
                       onClick={() => {
                         props.history.push("/customerService");
                       }}>
-                      CONTACT US
+                      CONTACT
                     </li>
                   </ul>
                 </div>

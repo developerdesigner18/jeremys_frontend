@@ -75,6 +75,11 @@ export const orbReducer = (state = null, action) => {
         ...state,
         checkOnlineUser: action.payload,
       };
+
+    case "DELETE_STREAM":
+      return {
+        ...state,
+      };
     default:
       return state;
   }
