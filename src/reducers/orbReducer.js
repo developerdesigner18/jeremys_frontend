@@ -80,6 +80,17 @@ export const orbReducer = (state = null, action) => {
       return {
         ...state,
       };
+
+    case "CHANGE_STATUS":
+      return {
+        ...state,
+      };
+
+    case "GET_USER_STATUS":
+      return {
+        ...state,
+        userStatus: action.payload,
+      };
     default:
       return state;
   }

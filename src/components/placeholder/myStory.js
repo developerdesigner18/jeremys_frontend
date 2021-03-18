@@ -16,7 +16,7 @@ import { checkUserOnline } from "../../actions/orbActions";
 import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
 import { socket } from "../../socketIO";
-import { getJoinedFanList } from "../../actions/orbActions";
+import { getJoinedFanList, getUserStatus } from "../../actions/orbActions";
 
 function MyStory(props) {
   var isMyStory = props.location.state.isMystory;
@@ -92,7 +92,7 @@ function MyStory(props) {
   const [inCommunity, setInCommunity] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
 
-  useEffect(() => {
+  useEffect(async () => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));
     dispatch(getFollowers(props.location.state.userId));
@@ -100,6 +100,7 @@ function MyStory(props) {
     dispatch(getReviewOfArtist(props.location.state.userId));
     dispatch(checkUserOnline(props.location.state.userId));
     dispatch(checkUserInCommunity(props.location.state.userId));
+    await dispatch(getUserStatus(props.location.state.userId));
   }, []);
 
   useEffect(() => {
@@ -172,6 +173,11 @@ function MyStory(props) {
       console.log("orb state from reducer.........", stateORB);
       if (stateORB.onlineUsers && stateORB.onlineUsers.length) {
         setIsOnline(true);
+      }
+      if (stateORB.userStatus) {
+        if (stateORB.userStatus.onlineStatus) {
+          setIsOnline(true);
+        }
       }
     }
   }, [stateORB]);

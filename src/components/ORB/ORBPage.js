@@ -12,6 +12,7 @@ import {
   storeOnlineUser,
   removeOnlineUser,
   getJoinedFanList,
+  changeUserStatus,
 } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -166,8 +167,11 @@ function ORBPage(props) {
 
       // Subscribe to a remote user.
       await rtc.client.subscribe(user, mediaType);
+      await dispatch(changeUserStatus());
       console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
       await dispatch(getJoinedFanList(localStorage.getItem("id")));
+
+      let agoraClass = document.getElementById("fan-remote-playerlist");
 
       if (mediaType === "video") {
         subscribedValue = true;

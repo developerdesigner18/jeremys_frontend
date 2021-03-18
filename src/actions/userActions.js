@@ -659,7 +659,7 @@ export const checkUserInCommunity = userId => {
       .get(
         `${
           process.env.REACT_APP_API_URL
-        }api/online/checkUserFollowing?loginUserId=${localStorage.getItem(
+        }api/community/checkUserFollowing?loginUserId=${localStorage.getItem(
           "id"
         )}&userId=${userId}`
       )

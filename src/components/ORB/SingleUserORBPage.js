@@ -94,8 +94,6 @@ function SingleUserORBPage(props) {
     document.documentElement.scrollTop = 0;
     await dispatch(getUserToken(props.location.state.id));
 
-    await dispatch(getJoinedFanList(props.location.state.id));
-
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
 
@@ -112,6 +110,7 @@ function SingleUserORBPage(props) {
 
   useEffect(() => {
     if (orbState) {
+      console.log("orbState.joinedFanList", orbState);
       if (orbState.joinedFanList && orbState.joinedFanList.length) {
         if (orbState.joinedFanList.length >= 15) {
           swal("Info", "You cannot communicate with this user", "info");
@@ -140,6 +139,7 @@ function SingleUserORBPage(props) {
       };
       await dispatch(joinedFan(dataToPass));
       id = props.location.state.id;
+      await dispatch(getJoinedFanList(id));
       setRemoteId(id);
 
       axios
@@ -150,22 +150,13 @@ function SingleUserORBPage(props) {
             token: result.data.data.agoraToken,
             channel: id,
           });
-          console.log(
-            "result.data.data.agoraToken",
-            result.data.data.agoraToken
-          );
 
           if (result.data.data.agoraToken) {
             token = result.data.data.agoraToken;
             rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
             setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
             await rtc.client.setClientRole(options.role);
-            // const uid = await rtc.client.join(
-            //   options.appId,
-            //   options.channel,
-            //   token,
-            //   null
-            // );
+
             const uid = await rtc.client.join(options.appId, id, token, null);
             console.log("Meeting Joined-==-=-=", rtc.client);
             rtc.client.on("user-published", async (user, mediaType) => {
@@ -174,16 +165,27 @@ function SingleUserORBPage(props) {
               setHost(prevState => [...prevState, hostUser]);
               const id = user.uid;
               remoteUsers[id] = user;
-              //   subscribe(user, mediaType);
-              await rtc.client.subscribe(user, mediaType);
-              console.log("subscribe success-=-=-=-=-=-=-=-=-=");
 
-              if (mediaType === "video") {
-                user.videoTrack.play(`user-remote-playerlist`);
-                // user.videoTrack.play(`other-fan-remote`);
-              }
-              if (mediaType === "audio") {
-                user.audioTrack.play();
+              let agoraClass = document.getElementById(
+                "user-remote-playerlist"
+              );
+              if (agoraClass.childElementCount == 0) {
+                await rtc.client.subscribe(user, mediaType);
+                console.log("subscribe success-=-=-=-=-=-=-=-=-=");
+
+                if (mediaType === "video") {
+                  user.videoTrack.play(`user-remote-playerlist`);
+                  // user.videoTrack.play(`other-fan-remote`);
+                }
+                if (mediaType === "audio") {
+                  user.audioTrack.play();
+                }
+              } else {
+                await rtc.client.subscribe(user, mediaType);
+                console.log("subscribe success-=-=-=-=-=-=-=-=-=");
+                if (mediaType === "video") {
+                  user.videoTrack.play(`other-fan-remote`);
+                }
               }
             });
             rtc.client.on("user-unpublished", async (user, mediaType) => {
@@ -381,13 +383,15 @@ function SingleUserORBPage(props) {
         <div className="row p-0 col-md-3">
           {availableList ? (
             availableList.length <= 15 ? (
-              <div className="col-md-6 fan_ORB_main_cat">
+              <div className="col-md-6 fan_ORB_main_cat" id="other-fan-remote">
                 <img src="../assets/images/button_bg.png" />
               </div>
             ) : (
               availableList.map(user => {
                 return (
-                  <div className="col-md-6 fan_ORB_main_cat">
+                  <div
+                    className="col-md-6 fan_ORB_main_cat"
+                    id="other-fan-remote">
                     <img src={user.profileImgURl} />
                   </div>
                 );
@@ -426,7 +430,7 @@ function SingleUserORBPage(props) {
           </div>
         </div>
         <div className="col-md-6 text-center">
-          {host.length === 2 ? (
+          {/* {host.length === 2 ? (
             <div
               className="border border-light rounded-circle mx-auto mb-3"
               id="user-remote-playerlist"
@@ -437,15 +441,15 @@ function SingleUserORBPage(props) {
               }}></div>
           ) : (
             <></>
-          )}
-          {/* <div
+          )} */}
+          <div
             className="border border-light rounded-circle mx-auto mb-3"
             id="user-remote-playerlist"
             style={{
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-            }}></div> */}
+            }}></div>
           <div className="r_image">
             {isLive ? (
               <img

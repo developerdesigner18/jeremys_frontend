@@ -440,11 +440,20 @@ function FanHomePage(props) {
 
   const callOnlineUserList = async () => {
     setOnlineCheck(!onlineCheck);
+
     await dispatch(getOnlineUserList(category, subcategory));
+  };
+
+  const callfind = async () => {
+    setfind(true);
+    setOnlineCheck(false);
+    if (onlineCheck === false) getAllArtist();
+    if (onlineCheck) await dispatch(getOnlineUserList(category, subcategory));
   };
 
   return (
     <div className="container fan_container">
+      {console.log("online check checkbox value............... ", onlineCheck)}
       <div className="form_container px-3 px-md-5">
         <Header />
         <div className="tabs_image">
@@ -732,7 +741,70 @@ function FanHomePage(props) {
             <div className="loader my-5"></div>
           ) : Find ? (
             <div className=" row vids">
-              {allArtists.length != 0 ? (
+              {onlineCheck ? (
+                communityOnline.length != 0 ? (
+                  communityOnline.map((fan, i) => {
+                    return (
+                      <div
+                        className="profile_images col-sm-3 col-md-3  my-3"
+                        style={{ textAlign: "center" }}
+                        key={i}>
+                        {" "}
+                        {/* <div
+                        id={fan._id}
+                        onDragStart={(e) => handleDragStart(e)}
+                        onDrag={(e) => handleDrag(e, fan._id)}
+                        onDragEnd={(e) => {
+                          handleDragEnd(e, fan._id, fan.profileImgURl);
+                        }}
+                      > */}
+                        <TinderCard
+                          // ref={this.addToRefs}
+                          // className="swipe col-md-12 "
+                          // key={index.id}
+
+                          onSwipe={dir => swiped(dir, fan._id)}
+                          onCardLeftScreen={() => outOfFrame(fan._id)}
+                          preventSwipe={["down", "left", "right"]}>
+                          <img
+                            onClick={() => showProfileDetails(fan._id)}
+                            className="draggableImg"
+                            src={
+                              fan.profileImgURl != "" &&
+                              fan.profileImgURl != null
+                                ? fan.profileImgURl
+                                : "https://artsiam.com:8000/default/profile.jpg"
+                            }
+                            onError={e => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "https://artsiam.com:8000/default/profile.jpg";
+                            }}
+                          />
+                          <p className="mt-2">{`${fan.firstName} ${fan.lastName} `}</p>
+                        </TinderCard>
+                        {/* </div> */}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div style={{ margin: "auto" }}>
+                    <span>
+                      No {subcategory}{" "}
+                      {category == "music"
+                        ? "stars"
+                        : category == "body"
+                        ? "trainers"
+                        : category == "style"
+                        ? "stylists"
+                        : category == "food"
+                        ? "chefs"
+                        : "artists"}{" "}
+                      found online in your community
+                    </span>
+                  </div>
+                )
+              ) : allArtists.length != 0 ? (
                 allArtists.map((fan, i) => {
                   return (
                     <div
@@ -949,12 +1021,7 @@ function FanHomePage(props) {
               <div className="link_text mt-2">Home</div>
             </div>
             <div className="down_links">
-              <a
-                onClick={event => {
-                  setfind(true);
-
-                  getAllArtist();
-                }}>
+              <a onClick={callfind}>
                 <img
                   src="../assets/images/2.png"
                   style={

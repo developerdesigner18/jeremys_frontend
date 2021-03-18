@@ -239,7 +239,7 @@ export const getJoinedFanList = data => {
         `${process.env.REACT_APP_API_URL}api/online/getJoinedFans?id=${data}`
       )
       .then(result => {
-        console.log("result.data", result.data);
+        console.log("result.data", result.data, data);
         if (result.data.code === 201) {
           dispatch({
             type: "JOINED_FAN",
@@ -269,5 +269,44 @@ export const deleteGeneratedStream = () => {
       .catch(error => {
         console.log(" error........", error);
       });
+  };
+};
+
+export const changeUserStatus = () => {
+  return dispatch => {
+    axios
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/online/updateUserStatus?userId=${localStorage.getItem("id")}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "CHANGE_STATUS",
+          });
+        }
+      })
+      .catch(err => {
+        console.log("error in api callinkg ", err);
+      });
+  };
+};
+
+export const getUserStatus = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/online/getUserStatus?userId=${data}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "GET_USER_STATUS",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(err => console.log("error........ ", err));
   };
 };

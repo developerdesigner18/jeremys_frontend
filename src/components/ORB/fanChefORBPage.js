@@ -48,6 +48,7 @@ function FanChefORB(props) {
   const [showRating, setShowRating] = useState(false);
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [joinedFanList, setJoinedFanList] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef();
@@ -55,9 +56,9 @@ function FanChefORB(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
-    // if (subscribed) {
-    setShow(true);
-    // }
+    if (subscribed) {
+      setShow(true);
+    }
   };
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -110,7 +111,7 @@ function FanChefORB(props) {
     html2canvas(document.querySelector("#capture1"), {
       allowTaint: true,
       scrollX: 0,
-      scrollY: 0,
+      scrollY: -window.scrollY,
       useCORS: true,
     }).then(canvas => {
       let file;
@@ -163,6 +164,9 @@ function FanChefORB(props) {
             console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
             // Subscribe to a remote user.
+            let agoraClass = document.getElementById("fan-playerlist");
+            console.log("agora calss............. ", agoraClass);
+            // if (agoraClass.childElementCount == 0) {
             await rtc.client.subscribe(user, mediaType);
             console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
@@ -173,6 +177,7 @@ function FanChefORB(props) {
             if (mediaType === "audio") {
               user.audioTrack.play();
             }
+            // }
           });
 
           rtc.client.on("user-unpublished", async (user, mediaType) => {
@@ -233,12 +238,21 @@ function FanChefORB(props) {
 
   useEffect(() => {
     if (StreamData) {
+      console.log("streamdata orb............... ", StreamData);
       if (StreamData.streamData) {
         setStreamDetails(StreamData.streamData.message);
         setBanner1Img(StreamData.streamData.message.chefBanners[0]);
         setBanner2Img(StreamData.streamData.message.chefBanners[1]);
         setItem1Image(StreamData.streamData.message.chefItems[0].pic);
         setItem2Image(StreamData.streamData.message.chefItems[1].pic);
+      }
+
+      if (StreamData.joinedFanList) {
+        let list = [...StreamData.joinedFanList];
+        setJoinedFanList(list);
+        if (list.length > 1) {
+          swal("Info", "No other fan can join!", "info");
+        }
       }
     }
   }, [StreamData]);
@@ -355,8 +369,7 @@ function FanChefORB(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "500px",
-            }}
-            method="POST"></div>
+            }}></div>
 
           <div
             className="rectangle_video"
@@ -372,15 +385,32 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               height: "500px",
-            }}
-            method="POST"></div>
+            }}></div>
           <div className="justify-content-center go_live_logo"></div>
           <div className="round_video" style={{ top: "25px" }}>
             <div
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
+              {/* <div id="fan-playerlist">
+                {subscribed ? (
+                  joinedFanList.length === 0 ? (
+                  <div id="fan-playerlist"></div>
+                ) : null
+                ) : (
+                  <>
+                    <img src="../assets/images/style_rounded.png" alt="logo" />
+                    <img
+                      className="black_logo_img"
+                      src="../assets/images/black_logo.png"
+                      alt="logo"
+                    />
+                  </>
+                )}
+              </div> */}
               {subscribed ? (
-                <div id="fan-playerlist"></div>
+                joinedFanList.length === 0 ? (
+                  <div id="fan-playerlist"></div>
+                ) : null
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
@@ -434,7 +464,7 @@ function FanChefORB(props) {
             </div>
           </div>
           <div className="links">
-            <a href style={{ cursor: "pointer" }}>
+            <a style={{ cursor: "pointer" }} onClick={handleShow}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>

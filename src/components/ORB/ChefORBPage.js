@@ -13,6 +13,7 @@ import {
   removeOnlineUser,
   getJoinedFanList,
   deleteGeneratedStream,
+  changeUserStatus,
 } from "../../actions/orbActions";
 import Modal from "react-bootstrap/Modal";
 import { getUserWithId } from "../../actions/userActions";
@@ -49,6 +50,7 @@ function ChefORBPage(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
+  const [joinedFanList, setJoinedFanList] = useState([]);
   const handleShow = () => {
     if (isLive) {
       setShow(true);
@@ -189,6 +191,7 @@ function ChefORBPage(props) {
 
         // Subscribe to a remote user.
         await rtc.client.subscribe(user, mediaType);
+        await dispatch(changeUserStatus());
         console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
         if (mediaType === "video") {
@@ -312,6 +315,11 @@ function ChefORBPage(props) {
   useEffect(() => {
     if (ORBData) {
       if (ORBData.joinedFanList) {
+        let list = [...ORBData.joinedFanList];
+        setJoinedFanList(list);
+        if (list.length > 1) {
+          swal("Info", "No other fan can join!", "info");
+        }
       }
     }
   }, [ORBData]);
@@ -440,7 +448,9 @@ function ChefORBPage(props) {
               className="video_contents position-relative"
               style={{ zIndex: "2" }}>
               {subscribed ? (
-                <div id="chef-remote-playerlist"></div>
+                joinedFanList.length === 0 ? (
+                  <div id="chef-remote-playerlist"></div>
+                ) : null
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
