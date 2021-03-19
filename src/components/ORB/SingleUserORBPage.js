@@ -169,6 +169,10 @@ function SingleUserORBPage(props) {
               let agoraClass = document.getElementById(
                 "user-remote-playerlist"
               );
+              console.log(
+                "count child element.... ",
+                agoraClass.childElementCount
+              );
               if (agoraClass.childElementCount == 0) {
                 await rtc.client.subscribe(user, mediaType);
                 console.log("subscribe success-=-=-=-=-=-=-=-=-=");
