@@ -180,13 +180,14 @@ function SingleUserORBPage(props) {
                 if (mediaType === "audio") {
                   user.audioTrack.play();
                 }
-              } else {
-                await rtc.client.subscribe(user, mediaType);
-                console.log("subscribe success-=-=-=-=-=-=-=-=-=");
-                if (mediaType === "video") {
-                  user.videoTrack.play(`other-fan-remote`);
-                }
               }
+              // else {
+              //   await rtc.client.subscribe(user, mediaType);
+              //   console.log("subscribe success-=-=-=-=-=-=-=-=-=");
+              //   if (mediaType === "video") {
+              //     user.videoTrack.play(`other-fan-remote`);
+              //   }
+              // }
             });
             rtc.client.on("user-unpublished", async (user, mediaType) => {
               console.log("handleUserUnpublished-==-=-=", user.uid);
