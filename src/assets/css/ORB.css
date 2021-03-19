@@ -243,6 +243,14 @@ body {
   height: 130px; */
 }
 
+#other-fan-remote .agora_video_player {
+  border-radius: 50% !important;
+}
+
+#other-fan-remote1 .agora_video_player {
+  border-radius: 50% !important;
+}
+
 #user-remote-playerlist .agora_video_player {
   border-radius: 50% !important;
   position: relative !important;

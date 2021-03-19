@@ -43,6 +43,8 @@ function SingleUserORBPage(props) {
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [time, setTime] = useState(180);
+  const [col1, setCol1] = useState(false);
+  const [col2, setCol2] = useState(false);
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
@@ -164,37 +166,67 @@ function SingleUserORBPage(props) {
             console.log("Meeting Joined-==-=-=", rtc.client);
             rtc.client.on("user-published", async (user, mediaType) => {
               console.log("handleUserPublished-==-=-=", user.uid);
-              hostUser.push(user);
-              setHost(prevState => [...prevState, hostUser]);
+
               const id = user.uid;
               remoteUsers[id] = user;
 
               let agoraClass = document.getElementById(
                 "user-remote-playerlist"
               );
-              console.log(
-                "count child element.... ",
-                agoraClass.childElementCount
-              );
-              if (agoraClass.childElementCount == 0) {
-                await rtc.client.subscribe(user, mediaType);
-                console.log("subscribe success-=-=-=-=-=-=-=-=-=");
 
-                if (mediaType === "video") {
-                  user.videoTrack.play(`user-remote-playerlist`);
-                  // user.videoTrack.play(`other-fan-remote`);
-                }
-                if (mediaType === "audio") {
-                  user.audioTrack.play();
-                }
+              const remote = await rtc.client.subscribe(user, mediaType);
+              hostUser.push(id);
+              setHost(hostUser);
+
+              if (mediaType === "video") {
+                user.videoTrack.play(`user-remote-playerlist`);
               }
-              // else {
-              //   await rtc.client.subscribe(user, mediaType);
-              //   console.log("subscribe success-=-=-=-=-=-=-=-=-=");
-              //   if (mediaType === "video") {
-              //     user.videoTrack.play(`other-fan-remote`);
-              //   }
-              // }
+              if (mediaType === "audio") {
+                user.audioTrack.play();
+              }
+
+              if (hostUser.length > 2) {
+                console.log("host.............", hostUser);
+                hostUser.map((host, i) => {
+                  if (i > 1) {
+                    if (i % 2 == 0) {
+                      console.log("i % 2 == 0", i);
+                      let playerWrapper = document.createElement("div");
+                      playerWrapper.setAttribute(
+                        "id",
+                        `player-wrapper-${user.uid}`
+                      );
+                      playerWrapper.classList.add("col-md-6");
+                      playerWrapper.classList.add("fan_ORB_main_cat");
+                      playerWrapper.setAttribute(
+                        "style",
+                        "height:160px; width: 160px; border-radius:50%;"
+                      );
+                      document
+                        .getElementById("other-fan-remote")
+                        .appendChild(playerWrapper);
+                      user.videoTrack.play(`player-wrapper-${user.uid}`);
+                    } else {
+                      console.log("i % 2 == 0 else................", i);
+                      let playerWrapper = document.createElement("div");
+                      playerWrapper.setAttribute(
+                        "id",
+                        `player-wrapper-${user.uid}`
+                      );
+                      playerWrapper.classList.add("col-md-6");
+                      playerWrapper.classList.add("fan_ORB_main_cat");
+                      playerWrapper.setAttribute(
+                        "style",
+                        "height:160px; width: 160px; border-radius:50%;"
+                      );
+                      document
+                        .getElementById("other-fan-remote1")
+                        .appendChild(playerWrapper);
+                      user.videoTrack.play(`player-wrapper-${user.uid}`);
+                    }
+                  }
+                });
+              }
             });
             rtc.client.on("user-unpublished", async (user, mediaType) => {
               console.log("handleUserUnpublished-==-=-=", user.uid);
@@ -203,11 +235,11 @@ function SingleUserORBPage(props) {
             });
 
             // Create an audio track from the audio sampled by a microphone.
-            // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            // setFanRTC(prevState => ({
-            //   ...prevState,
-            //   localAudioTrack: rtc.localAudioTrack,
-            // }));
+            rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            setFanRTC(prevState => ({
+              ...prevState,
+              localAudioTrack: rtc.localAudioTrack,
+            }));
             // Create a video track from the video captured by a camera.
             rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
             setFanRTC(prevState => ({
@@ -216,7 +248,7 @@ function SingleUserORBPage(props) {
             }));
 
             rtc.localVideoTrack.play("local-player");
-            // rtc.localAudioTrack.play();
+            rtc.localAudioTrack.play();
 
             // Publish the local audio and video tracks to the channel.
             await rtc.client.publish([rtc.localVideoTrack]);
@@ -388,55 +420,7 @@ function SingleUserORBPage(props) {
         </div>
       </div>
       <div className="  row justify-content-center mx-auto  mt-5">
-        <div className="row p-0 col-md-3">
-          {availableList ? (
-            availableList.length <= 15 ? (
-              <div className="col-md-6 fan_ORB_main_cat" id="other-fan-remote">
-                <img src="../assets/images/button_bg.png" />
-              </div>
-            ) : (
-              availableList.map(user => {
-                return (
-                  <div
-                    className="col-md-6 fan_ORB_main_cat"
-                    id="other-fan-remote">
-                    <img src={user.profileImgURl} />
-                  </div>
-                );
-              })
-            )
-          ) : null}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-        </div>
+        <div className="row p-0 col-md-3" id="other-fan-remote"></div>
         <div className="col-md-6 text-center">
           {/* {host.length === 2 ? (
             <div
@@ -581,38 +565,7 @@ function SingleUserORBPage(props) {
             </a>
           </div>
         </div>
-        <div className="row p-0 col-md-3">
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>{" "}
-          <div className="col-md-6 fan_ORB_main_cat">
-            <img src="../assets/images/button_bg.png" />
-          </div>
-        </div>
+        <div className="row p-0 col-md-3 " id="other-fan-remote1"></div>
       </div>
 
       {showRatingModal ? (

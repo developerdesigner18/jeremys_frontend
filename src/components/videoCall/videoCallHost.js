@@ -34,7 +34,7 @@ function VideoCall() {
       .catch(err => console.log("error ", err));
     rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     // rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-    // await rtc.client.setClientRole(options.role);
+    await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
       options.appId,
       options.channel,
@@ -80,7 +80,7 @@ function VideoCall() {
         //   </div>
         // `;
         document.getElementById("remote-playerlist").appendChild(playerWrapper);
-        user.videoTrack.play(`remote-playerlist`);
+        user.videoTrack.play(`player-wrapper-${user.uid}`);
       }
       if (mediaType === "audio") {
         user.audioTrack.play();
@@ -128,7 +128,7 @@ function VideoCall() {
       <div
         id="remote-playerlist"
         class="player mt-5"
-        style={{ borderRadius: "100%", height: "450px", width: "300px" }}></div>
+        style={{ borderRadius: "100%", height: "300px", width: "300px" }}></div>
     </div>
   );
 }

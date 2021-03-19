@@ -116,6 +116,7 @@ function ChefORBPage(props) {
   };
   const goToLivePage = async () => {
     await dispatch(storeOnlineUser());
+
     if (
       item1 !== "" &&
       item2 !== "" &&
@@ -192,12 +193,14 @@ function ChefORBPage(props) {
         // Subscribe to a remote user.
         await rtc.client.subscribe(user, mediaType);
         await dispatch(changeUserStatus());
+
         console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
         if (mediaType === "video") {
           console.log("video track!!!!!!!!");
           setSubscribed(true);
           user.videoTrack.play(`chef-remote-playerlist`);
+          await dispatch(getJoinedFanList(localStorage.getItem("id")));
         }
         if (mediaType === "audio") {
           user.audioTrack.play();
@@ -288,10 +291,9 @@ function ChefORBPage(props) {
   };
   useEffect(async () => {
     document.documentElement.scrollTop = 0;
+
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
-
-    await dispatch(getJoinedFanList(localStorage.getItem("id")));
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -314,6 +316,7 @@ function ChefORBPage(props) {
 
   useEffect(() => {
     if (ORBData) {
+      console.log("joined fan list.............. ", ORBData);
       if (ORBData.joinedFanList) {
         let list = [...ORBData.joinedFanList];
         setJoinedFanList(list);

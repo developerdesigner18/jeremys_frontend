@@ -217,7 +217,7 @@ function MyStory(props) {
       userInfo.data.type === "stylist" ||
       userInfo.data.type === "Stylist"
     ) {
-      if (connectedFan.length == 1) {
+      if (connectedFan.length > 1) {
         swal("Info", "No other fan can join!", "info");
       } else {
         history.push("/fanChefORB", {
