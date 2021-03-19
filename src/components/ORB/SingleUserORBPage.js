@@ -13,7 +13,6 @@ import {
   getUserToken,
   joinedFan,
   removedJoinFan,
-  getJoinedFanList,
 } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
@@ -108,38 +107,42 @@ function SingleUserORBPage(props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (orbState) {
-      console.log("orbState.joinedFanList", orbState);
-      if (orbState.joinedFanList && orbState.joinedFanList.length) {
-        if (orbState.joinedFanList.length >= 15) {
-          swal("Info", "You cannot communicate with this user", "info");
-          setOptions(prevState => ({ ...prevState, role: "audience" }));
-          setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
-        } else {
-          setOptions(prevState => ({ ...prevState, role: "host" }));
-          setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
-        }
-      } else {
-        setOptions(prevState => ({ ...prevState, role: "host" }));
-        setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
-      }
-    }
-  }, [orbState]);
+  // useEffect(() => {
+  //   if (orbState) {
+  //     console.log("orbState.joinedFanList", orbState);
+  //     if (orbState.joinedFanList && orbState.joinedFanList.length) {
+  //       if (orbState.joinedFanList.length >= 15) {
+  //         swal("Info", "You cannot communicate with this user", "info");
+  //         setOptions(prevState => ({ ...prevState, role: "audience" }));
+  //         setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
+  //       } else {
+  //         setOptions(prevState => ({ ...prevState, role: "host" }));
+  //         setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
+  //       }
+  //     } else {
+  //       setOptions(prevState => ({ ...prevState, role: "host" }));
+  //       setAvailableList(prevState => [...prevState, orbState.joinedFanList]);
+  //     }
+  //   }
+  // }, [orbState]);
 
   useEffect(async () => {
-    let id;
+    let id, role;
     let token;
     let hostUser = [];
     console.log("props............ ", props);
-    if (props.location.state.id && props.location.state.name) {
+    if (
+      props.location.state.id &&
+      props.location.state.name &&
+      props.location.state.role
+    ) {
       const dataToPass = {
         userId: props.location.state.id,
         fanId: localStorage.getItem("id"),
       };
       await dispatch(joinedFan(dataToPass));
       id = props.location.state.id;
-      await dispatch(getJoinedFanList(id));
+      role = props.location.state.role;
       setRemoteId(id);
 
       axios
@@ -155,7 +158,7 @@ function SingleUserORBPage(props) {
             token = result.data.data.agoraToken;
             rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
             setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
-            await rtc.client.setClientRole(options.role);
+            await rtc.client.setClientRole(role);
 
             const uid = await rtc.client.join(options.appId, id, token, null);
             console.log("Meeting Joined-==-=-=", rtc.client);

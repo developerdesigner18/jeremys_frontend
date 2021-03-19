@@ -17,6 +17,7 @@ import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
 import { socket } from "../../socketIO";
 import { getJoinedFanList, getUserStatus } from "../../actions/orbActions";
+import swal from "sweetalert";
 
 function MyStory(props) {
   var isMyStory = props.location.state.isMystory;
@@ -34,50 +35,7 @@ function MyStory(props) {
   const [screenShot, setScreenShot] = useState();
   const [screenShotCounter, setScreenShotCounter] = useState(0);
   const [rightPart, setRightPart] = useState(props.location.state.pageNumber);
-  const [journalDataTemp, setJournalData] = useState([
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-    {
-      time: "121212",
-      items: "asasasasa",
-      orderTotal: "121",
-      tips: "11",
-      total: "123",
-    },
-  ]);
+  const [journalDataTemp, setJournalData] = useState([]);
   const [perPage, setperPage] = React.useState(5);
   const [perPageReview, setperPageReview] = React.useState(4);
   const [activePage, setactivePage] = useState(0);
@@ -92,6 +50,8 @@ function MyStory(props) {
   const [inCommunity, setInCommunity] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
 
+  const [connectedFan, setConnectedFan] = useState([]);
+
   useEffect(async () => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));
@@ -101,6 +61,7 @@ function MyStory(props) {
     dispatch(checkUserOnline(props.location.state.userId));
     dispatch(checkUserInCommunity(props.location.state.userId));
     await dispatch(getUserStatus(props.location.state.userId));
+    await dispatch(getJoinedFanList(props.location.state.userId));
   }, []);
 
   useEffect(() => {
@@ -179,6 +140,9 @@ function MyStory(props) {
           setIsOnline(true);
         }
       }
+      if (stateORB.getJoinedFanList && stateORB.getJoinedFanList.length) {
+        setConnectedFan(stateORB.getJoinedFanList);
+      }
     }
   }, [stateORB]);
 
@@ -253,14 +217,18 @@ function MyStory(props) {
       userInfo.data.type === "stylist" ||
       userInfo.data.type === "Stylist"
     ) {
-      history.push("/fanChefORB", {
-        name: userInfo
-          ? userInfo.data.firstName
+      if (connectedFan.length == 1) {
+        swal("Info", "No other fan can join!", "info");
+      } else {
+        history.push("/fanChefORB", {
+          name: userInfo
             ? userInfo.data.firstName
-            : ""
-          : "",
-        id: userInfo ? userInfo.data._id : "",
-      });
+              ? userInfo.data.firstName
+              : ""
+            : "",
+          id: userInfo ? userInfo.data._id : "",
+        });
+      }
     }
     if (
       userInfo.data.type === "star" ||
@@ -268,20 +236,27 @@ function MyStory(props) {
       userInfo.data.type === "trainer" ||
       userInfo.data.type === "Trainer"
     ) {
-      socket.on("listOnlineFans", fanList => {
-        console.log("fan list.............", fanList);
-        if (fanList.length >= 15) {
-          alert("fan list is 15");
-        }
-      });
-      history.push("/fanORB", {
-        name: userInfo
-          ? userInfo.data.firstName
+      if (connectedFan.length <= 15) {
+        history.push("/fanORB", {
+          name: userInfo
             ? userInfo.data.firstName
-            : ""
-          : "",
-        id: userInfo ? userInfo.data._id : "",
-      });
+              ? userInfo.data.firstName
+              : ""
+            : "",
+          id: userInfo ? userInfo.data._id : "",
+          role: "host",
+        });
+      } else if (connectedFan.length > 15) {
+        history.push("/fanORB", {
+          name: userInfo
+            ? userInfo.data.firstName
+              ? userInfo.data.firstName
+              : ""
+            : "",
+          id: userInfo ? userInfo.data._id : "",
+          role: "audience",
+        });
+      }
     }
   };
 
