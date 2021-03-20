@@ -90,6 +90,15 @@ function Header(props) {
   return (
     <div className="container p-3 p-md-3 cust_home_page">
       <header>
+        <div>
+          {localStorage.getItem("id") ? null : (
+            <div>
+              <p className="m-0">SIGN UP EARLY</p>
+              <p className="m-0">SIGN UP TODAY!</p>
+              <p className="m-0">FULL LAUNCH APRIL 1!</p>
+            </div>
+          )}
+        </div>
         {localStorage.getItem("token") ? (
           <span style={{ position: "relative" }} ref={ref}>
             <i className="fa fa-user mx-2" aria-hidden="true"></i>
@@ -114,7 +123,7 @@ function Header(props) {
                 Register
               </a>
             </div>
-            <div>
+            <div className="d-flex justify-content-end">
               <a onClick={goToRegister} style={{ cursor: "pointer" }}>
                 sign up - It's FREE!
               </a>

@@ -128,10 +128,11 @@ function SingleUserORBPage(props) {
   //   }
   // }, [orbState]);
 
+  let hostUser = [];
   useEffect(async () => {
     let id, role;
     let token;
-    let hostUser = [];
+
     console.log("props............ ", props);
     if (
       props.location.state.id &&
@@ -176,7 +177,11 @@ function SingleUserORBPage(props) {
 
               const remote = await rtc.client.subscribe(user, mediaType);
               hostUser.push(id);
-              setHost(hostUser);
+              const uniqueArray = hostUser.filter(function (item, pos) {
+                return hostUser.indexOf(item) == pos;
+              });
+              setHost(uniqueArray);
+              console.log("unique array.......... ", uniqueArray);
 
               if (mediaType === "video") {
                 user.videoTrack.play(`user-remote-playerlist`);
@@ -189,8 +194,14 @@ function SingleUserORBPage(props) {
                 console.log("host.............", hostUser);
                 hostUser.map((host, i) => {
                   if (i > 1) {
-                    if (i % 2 == 0) {
-                      console.log("i % 2 == 0", i);
+                    if (i % 2 !== 0) {
+                      console.log("i % 2 == 0", i, i % 2 !== 0);
+                      let generatedDiv = document.getElementById(
+                        `player-wrapper-${user.uid}`
+                      );
+                      if (generatedDiv) {
+                        generatedDiv.remove();
+                      }
                       let playerWrapper = document.createElement("div");
                       playerWrapper.setAttribute(
                         "id",
@@ -207,7 +218,17 @@ function SingleUserORBPage(props) {
                         .appendChild(playerWrapper);
                       user.videoTrack.play(`player-wrapper-${user.uid}`);
                     } else {
-                      console.log("i % 2 == 0 else................", i);
+                      console.log(
+                        "i % 2 == 0 else................",
+                        i,
+                        i % 2 !== 0
+                      );
+                      let generatedDiv = document.getElementById(
+                        `player-wrapper-${user.uid}`
+                      );
+                      if (generatedDiv) {
+                        generatedDiv.remove();
+                      }
                       let playerWrapper = document.createElement("div");
                       playerWrapper.setAttribute(
                         "id",
@@ -420,7 +441,9 @@ function SingleUserORBPage(props) {
         </div>
       </div>
       <div className="  row justify-content-center mx-auto  mt-5">
-        <div className="row p-0 col-md-3" id="other-fan-remote"></div>
+        <div className="col-md-3">
+          <div className="row" id="other-fan-remote1"></div>
+        </div>
         <div className="col-md-6 text-center">
           {/* {host.length === 2 ? (
             <div
@@ -565,7 +588,9 @@ function SingleUserORBPage(props) {
             </a>
           </div>
         </div>
-        <div className="row p-0 col-md-3 " id="other-fan-remote1"></div>
+        <div className="col-md-3 ">
+          <div className="row" id="other-fan-remote"></div>
+        </div>
       </div>
 
       {showRatingModal ? (

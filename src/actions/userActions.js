@@ -551,7 +551,7 @@ export const hideTheStory = data => {
         if (result.data.success === true) {
           dispatch({
             type: "HIDE_THE_STORY",
-            payload: result.data.message,
+            payload: result.data,
           });
           swal("Success", result.data.message, "success");
         } else {
