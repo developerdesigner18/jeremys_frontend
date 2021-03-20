@@ -480,7 +480,7 @@ function SingleUserORBPage(props) {
             )}
           </div>
           <div className="container justify-content-center d-flex ORB_links mt-5">
-            <a href="#">
+            <a style={{ cursor: "no-drop" }}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/ticket.png" />
                 <p>Ticket</p>

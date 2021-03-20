@@ -459,13 +459,13 @@ function ORBPage(props) {
         )}
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a>
+        <a style={{ cursor: "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />
             <p>Ticket</p>
           </div>
         </a>
-        <a>
+        <a style={{ cursor: "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/seat.png" />
             <p>Seat</p>
@@ -559,7 +559,7 @@ function ORBPage(props) {
           </div>
         </a>
 
-        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
+        <a style={{ cursor: "no-drop" }}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
             <p>Tip</p>

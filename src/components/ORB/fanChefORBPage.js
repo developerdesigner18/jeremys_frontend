@@ -464,13 +464,13 @@ function FanChefORB(props) {
             </div>
           </div>
           <div className="links">
-            <a style={{ cursor: "pointer" }} onClick={handleShow}>
+            <a style={{ cursor: "no-drop" }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>
               </div>
             </a>
-            <a href style={{ cursor: "pointer" }}>
+            <a style={{ cursor: "no-drop" }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
                 <p>Tip</p>
@@ -482,7 +482,7 @@ function FanChefORB(props) {
                 <p>Take Picture</p>
               </div>
             </a>
-            <a ref={ref} href>
+            <a ref={ref}>
               <div
                 className="ORB_link d-flex flex-column dropup"
                 data-toggle="dropdown"

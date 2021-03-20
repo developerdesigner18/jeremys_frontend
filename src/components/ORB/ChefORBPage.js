@@ -545,15 +545,13 @@ function ChefORBPage(props) {
             </div>
           </div>
           <div className="links">
-            <a
-              style={{ cursor: isLive ? "pointer" : "no-drop" }}
-              onClick={handleShow}>
+            <a style={{ cursor: "no-drop" }} onClick={handleShow}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Reciept</p>
               </div>
             </a>
-            <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
+            <a style={{ cursor: "no-drop" }}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
                 <p>Tip</p>
