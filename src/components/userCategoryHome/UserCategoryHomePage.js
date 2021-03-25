@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import {
@@ -7,10 +7,10 @@ import {
   getFromCommunity,
   getFanList,
 } from "../../actions/userActions";
-import { getFollowers } from "../../actions/followActions";
-import { useSelector, useDispatch } from "react-redux";
+import {getFollowers} from "../../actions/followActions";
+import {useSelector, useDispatch} from "react-redux";
 import Pagination from "react-js-pagination";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -275,12 +275,9 @@ function UserCategoryHomePage(props) {
                   />
                   <div
                     className="position-relative"
-                    style={{ textAlign: "center" }}>
-                    <span style={{ textTransform: "capitalize" }}>
-                      <i
-                        className="fas fa-heart mr-1"
-                        style={{ color: "red" }}
-                      />{" "}
+                    style={{textAlign: "center"}}>
+                    <span style={{textTransform: "capitalize"}}>
+                      <i className="fas fa-heart mr-1" style={{color: "red"}} />{" "}
                       FOLLOWERS: {starsFollowers}
                     </span>
                   </div>
@@ -301,11 +298,11 @@ function UserCategoryHomePage(props) {
             <div id="music" className="tabcontent active">
               <div
                 className="category_empty"
-                style={{ height: Find ? "40px" : "20px" }}>
+                style={{height: Find ? "40px" : "20px"}}>
                 <input
                   type="search"
                   placeholder="Search.."
-                  style={{ display: Find ? "block" : "none" }}
+                  style={{display: Find ? "block" : "none"}}
                   onChange={e => searchInputChange(e.target.value)}
                 />
               </div>
@@ -315,7 +312,7 @@ function UserCategoryHomePage(props) {
                     return (
                       <div
                         className="profile_images col-md-3 col-sm-6 "
-                        style={{ textAlign: "center" }}
+                        style={{textAlign: "center"}}
                         key={i}>
                         <div>
                           <img
@@ -346,7 +343,7 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ marginLeft: "10px" }}>No fans Found</div>
+                  <div style={{marginLeft: "10px"}}>No fans Found</div>
                 )}
               </div>
               <Pagination
@@ -361,11 +358,11 @@ function UserCategoryHomePage(props) {
             <div id="find" className="tabcontent">
               <div
                 className="category_empty"
-                style={{ height: Find ? "40px" : "20px" }}>
+                style={{height: Find ? "40px" : "20px"}}>
                 <input
                   type="search"
                   placeholder="Search.."
-                  style={{ display: Find ? "block" : "none" }}
+                  style={{display: Find ? "block" : "none"}}
                   onChange={e => searchInputChange(e.target.value)}
                 />
               </div>
@@ -375,7 +372,7 @@ function UserCategoryHomePage(props) {
                     return (
                       <div
                         className="profile_images col-md-3 col-sm-6 "
-                        style={{ textAlign: "center" }}
+                        style={{textAlign: "center"}}
                         key={i}>
                         <div>
                           <img
@@ -436,7 +433,7 @@ function UserCategoryHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                   onClick={event => {
                     setfind(false);
@@ -456,7 +453,7 @@ function UserCategoryHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                   onClick={event => {
                     openCity(event, "find");
@@ -484,12 +481,12 @@ function UserCategoryHomePage(props) {
                             cursor: "pointer",
                             borderRadius: "100%",
                           }
-                        : { cursor: "pointer" }
+                        : {cursor: "pointer"}
                     }
                   />
                 </a>
                 <div className="link_text">Settings</div>
-                <div className={menuClass} style={{ background: "#333333" }}>
+                <div className={menuClass} style={{background: "#333333"}}>
                   <ul className="menu_item">
                     <li
                       className="dropdown-item menu more_list"
@@ -506,6 +503,17 @@ function UserCategoryHomePage(props) {
                         })
                       }>
                       MY PAGES AND PLACES
+                    </li>
+                    <li
+                      className="dropdown-item menu more_list"
+                      onClick={() =>
+                        history.push("/myCalendar", {
+                          pageNumber: 1,
+                          userId: localStorage.getItem("id"),
+                          isMystory: true,
+                        })
+                      }>
+                      MY CALENDAR
                     </li>
                     <li
                       className="dropdown-item menu more_list"
@@ -547,7 +555,7 @@ function UserCategoryHomePage(props) {
               <div
                 className="down_links"
                 onClick={callLogout}
-                style={{ cursor: "pointer" }}>
+                style={{cursor: "pointer"}}>
                 <a>
                   <img src="../assets/images/4.png" />
                 </a>

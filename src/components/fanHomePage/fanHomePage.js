@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import {
@@ -8,14 +8,14 @@ import {
   removeFromCommunity,
   getUserWithId,
 } from "../../actions/userActions";
-import { getOnlineUserList } from "../../actions/orbActions";
-import { getFollowing } from "../../actions/followActions";
-import { useSelector, useDispatch } from "react-redux";
+import {getOnlineUserList} from "../../actions/orbActions";
+import {getFollowing} from "../../actions/followActions";
+import {useSelector, useDispatch} from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
-import { socket } from "../../socketIO";
-import { useHistory } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
+import {socket} from "../../socketIO";
+import {useHistory} from "react-router-dom";
+import {useMediaQuery} from "react-responsive";
 import swal from "@sweetalert/with-react";
 
 const useOutsideClick = (ref, callback) => {
@@ -304,22 +304,22 @@ function FanHomePage(props) {
     "aerobics",
   ];
   var musicData = [
-    { url: 123, name: "M1" },
-    { url: 123, name: "M2" },
-    { url: 123, name: "M3" },
-    { url: 123, name: "M4" },
-    { url: 123, name: "M5" },
-    { url: 123, name: "M6" },
-    { url: 123, name: "M7" },
-    { url: 123, name: "M8" },
-    { url: 123, name: "M9" },
-    { url: 123, name: "M10" },
-    { url: 123, name: "M11" },
-    { url: 123, name: "M12" },
-    { url: 123, name: "M13" },
-    { url: 123, name: "M14" },
-    { url: 123, name: "M15" },
-    { url: 123, name: "M16" },
+    {url: 123, name: "M1"},
+    {url: 123, name: "M2"},
+    {url: 123, name: "M3"},
+    {url: 123, name: "M4"},
+    {url: 123, name: "M5"},
+    {url: 123, name: "M6"},
+    {url: 123, name: "M7"},
+    {url: 123, name: "M8"},
+    {url: 123, name: "M9"},
+    {url: 123, name: "M10"},
+    {url: 123, name: "M11"},
+    {url: 123, name: "M12"},
+    {url: 123, name: "M13"},
+    {url: 123, name: "M14"},
+    {url: 123, name: "M15"},
+    {url: 123, name: "M16"},
   ];
 
   var settings = {
@@ -362,7 +362,7 @@ function FanHomePage(props) {
         <div className="profile_images">
           <img src="https://artsiam.com:8000/default/profile.jpg" />
 
-          <p style={{ color: "white" }}>{musicData[j].name}</p>
+          <p style={{color: "white"}}>{musicData[j].name}</p>
         </div>
       );
     }
@@ -435,7 +435,7 @@ function FanHomePage(props) {
   const showProfileDetails = async Id => {
     console.log("id ", Id);
     await dispatch;
-    history.push("/myStory", { pageNumber: 1, userId: Id, isMystory: false });
+    history.push("/myStory", {pageNumber: 1, userId: Id, isMystory: false});
   };
 
   const callOnlineUserList = async () => {
@@ -511,9 +511,9 @@ function FanHomePage(props) {
                 />
                 <div
                   className="position-relative"
-                  style={{ textAlign: "center" }}>
-                  <span style={{ textTransform: "capitalize" }}>
-                    <i className="fas fa-heart mr-1" style={{ color: "red" }} />{" "}
+                  style={{textAlign: "center"}}>
+                  <span style={{textTransform: "capitalize"}}>
+                    <i className="fas fa-heart mr-1" style={{color: "red"}} />{" "}
                     FOLLOWING: {loggedInUserFollowing}
                   </span>
                 </div>
@@ -558,7 +558,7 @@ function FanHomePage(props) {
             <Slider
               {...settings}
               className="mb-4"
-              style={{ background: "#333333", marginBottom: "25px" }}>
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subMusic.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -602,7 +602,7 @@ function FanHomePage(props) {
           <div id="food" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}>
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subFood.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -646,7 +646,7 @@ function FanHomePage(props) {
           <div id="style" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}>
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subStyle.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -684,7 +684,7 @@ function FanHomePage(props) {
           <div id="body" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}>
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subBody.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -747,7 +747,7 @@ function FanHomePage(props) {
                     return (
                       <div
                         className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
+                        style={{textAlign: "center"}}
                         key={i}>
                         {" "}
                         {/* <div
@@ -788,7 +788,7 @@ function FanHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ margin: "auto" }}>
+                  <div style={{margin: "auto"}}>
                     <span>
                       No {subcategory}{" "}
                       {category == "music"
@@ -811,7 +811,7 @@ function FanHomePage(props) {
                       // onClick={() => console.log("Clicked-=-=-=")}
                       onClick={() => console.log("Clicked-=-=-=")}
                       className="profile_images col-sm-3 col-md-3  my-3"
-                      style={{ textAlign: "center", cursor: "pointer" }}
+                      style={{textAlign: "center", cursor: "pointer"}}
                       key={i}>
                       {/* <div
                         id={fan._id}
@@ -853,7 +853,7 @@ function FanHomePage(props) {
                   );
                 })
               ) : (
-                <div style={{ margin: "auto" }}>
+                <div style={{margin: "auto"}}>
                   <span>
                     No {subcategory}{" "}
                     {category == "music"
@@ -878,7 +878,7 @@ function FanHomePage(props) {
                     return (
                       <div
                         className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
+                        style={{textAlign: "center"}}
                         key={i}>
                         {" "}
                         {/* <div
@@ -919,7 +919,7 @@ function FanHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ margin: "auto" }}>
+                  <div style={{margin: "auto"}}>
                     <span>
                       No {subcategory}{" "}
                       {category == "music"
@@ -940,7 +940,7 @@ function FanHomePage(props) {
                   return (
                     <div
                       className="profile_images col-sm-3 col-md-3  my-3"
-                      style={{ textAlign: "center" }}
+                      style={{textAlign: "center"}}
                       key={fan._id}>
                       {" "}
                       {/* <div
@@ -979,7 +979,7 @@ function FanHomePage(props) {
                   );
                 })
               ) : (
-                <div style={{ margin: "auto" }}>
+                <div style={{margin: "auto"}}>
                   <span>
                     No {subcategory}{" "}
                     {category == "music"
@@ -1014,7 +1014,7 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
@@ -1031,7 +1031,7 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
@@ -1054,12 +1054,12 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
               <div className="link_text mt-2">Settings</div>
-              <div className={menuClass} style={{ background: "#333333" }}>
+              <div className={menuClass} style={{background: "#333333"}}>
                 <ul className="menu_item">
                   <li
                     className="dropdown-item menu more_list"
@@ -1075,7 +1075,7 @@ function FanHomePage(props) {
                         isMystory: true,
                       })
                     }>
-                    MY STORY
+                    MY PAGES AND PLACES
                   </li>
                   <li
                     className="dropdown-item menu more_list"
@@ -1086,7 +1086,7 @@ function FanHomePage(props) {
                         isMystory: true,
                       })
                     }>
-                    MY JOURNAL
+                    ACCOUNTING LEDGER
                   </li>
                   <li
                     className="dropdown-item menu more_list"
@@ -1102,14 +1102,14 @@ function FanHomePage(props) {
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => props.history.push("/termsCondition")}>
-                    TERMS AND CONDITION
+                    TERMS AND CONDITIONS
                   </li>
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => {
                       props.history.push("/customerService");
                     }}>
-                    CONTACT US
+                    CONTACT
                   </li>
                 </ul>
               </div>
@@ -1117,7 +1117,7 @@ function FanHomePage(props) {
             <div
               className="down_links"
               onClick={callLogout}
-              style={{ cursor: "pointer" }}>
+              style={{cursor: "pointer"}}>
               <a>
                 <img src="../assets/images/4.png" />
               </a>
