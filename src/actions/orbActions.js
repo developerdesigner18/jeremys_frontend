@@ -33,7 +33,7 @@ export const storeChefOrbDetails = data => {
         if (result.status === 201) {
           dispatch({
             type: "STORE_CHEF_ORB_DETAILS",
-            payload: result.data,
+            payload: result.data.data,
           });
         }
       })
@@ -161,7 +161,7 @@ export const removeOnlineUser = () => {
   return dispatch => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}api/online/removeUser`, {
-        data: { userId: localStorage.getItem("id") },
+        data: {userId: localStorage.getItem("id")},
       })
       .then(result => {
         if (result.data.code === 201) {
@@ -257,7 +257,7 @@ export const deleteGeneratedStream = () => {
   return dispatch => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}api/stream/deleteStreamData`, {
-        data: { userId: localStorage.getItem("id") },
+        data: {userId: localStorage.getItem("id")},
       })
       .then(result => {
         if (result.data.code === 200 || result.data.success) {
@@ -308,5 +308,23 @@ export const getUserStatus = data => {
         }
       })
       .catch(err => console.log("error........ ", err));
+  };
+};
+
+export const onlineUserCheck = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/online/checkOnlineUser?id=${data}`
+      )
+      .then(result => {
+        if (result.data.success) {
+          dispatch({
+            type: "CHECK_ONLNIE_USER",
+            payload: result.data.success,
+          });
+        }
+      })
+      .catch(err => console.log("error..........", err));
   };
 };

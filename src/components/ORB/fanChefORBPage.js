@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import swal from "sweetalert";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
-import { socket } from "../../socketIO";
+import {socket} from "../../socketIO";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
 
@@ -20,7 +20,9 @@ import {
   removedJoinFan,
   getJoinedFanList,
 } from "../../actions/orbActions";
-import { getUserWithId } from "../../actions/userActions";
+import {getUserWithId} from "../../actions/userActions";
+import Tip from "../ORBTicketComponents/Tip";
+import PayOrder from "../ORBTicketComponents/PayOrder";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -49,15 +51,35 @@ function FanChefORB(props) {
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [paid, setPaid] = useState(false);
   const [joinedFanList, setJoinedFanList] = useState([]);
+  const [time, setTime] = useState(180);
+  const [pauseTime, setPauseTime] = useState(10);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const ref = useRef();
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const [showTip, setShowTip] = useState(false);
+  const handleClose = () => {
+    // setTime(pauseTime);
+    // setPauseTime(0);
+    setIsActive(true);
+    setShow(false);
+    console.log("on close time..... ", time, pauseTime);
+  };
+  const handleCloseReciept = () => {
+    setPaid(false);
+    setTime(pauseTime);
+    setPauseTime(0);
+  };
   const handleShow = () => {
     if (subscribed) {
+      console.log("fan time......... ", time);
+      setIsActive(false);
       setShow(true);
+      setShowTip(false);
+      // setPauseTime(time);
+      // setTime(0);
     }
   };
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
@@ -76,7 +98,7 @@ function FanChefORB(props) {
     setIsOpen(false);
   });
   const history = useHistory();
-  const [time, setTime] = useState(180);
+
   const [stream, setStream] = useState(false);
 
   const remoteUsers = {};
@@ -94,20 +116,60 @@ function FanChefORB(props) {
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
     channel: null,
     token: null,
-    role: "audience",
+    role: "host",
   });
 
-  React.useEffect(async () => {
-    if (time > 0) {
-      setTimeout(() => setTime(time - 1), 1000);
-    } else {
-      setTime(0);
+  // React.useEffect(async () => {
+  //   console.log(
+  //     "time...... ",
+  //     time,
+  //     " pause time..... ",
+  //     pauseTime,
+  //     "condition... ",
+  //     time > 0 || pauseTime > 0
+  //   );
+  //   if (time !== 0) {
+  //     setTimeout(() => setTime(time - 1), 1000);
+  //   } else {
+  //     setTime(0);
+  //     if (show == false && paid == false) setShowRating(true);
+  //   }
+  // });
+
+  useEffect(() => {
+    let interval = null;
+    console.log(
+      "time...... ",
+      time,
+      " pause time..... ",
+      isActive,
+      " paid............. ",
+      paid
+    );
+    if (isActive && !paid && time > 0) {
+      interval = setInterval(() => {
+        setTime(time => time - 1);
+      }, 1000);
+    } else if (!isActive && time !== 0) {
+      clearInterval(interval);
+    } else if (isActive && time == 0) {
       setShowRating(true);
     }
-  });
+    return () => clearInterval(interval);
+  }, [time, isActive]);
 
   const getImage = () => {
     console.log("fn called");
+    // let canvas = document.createElement("canvas");
+    // let ctx = canvas.getContext("2d");
+
+    // //draw image to canvas. scale to target dimensions
+    // console.log("canvas.......... ", ctx);
+    // ctx.drawImage(document.querySelector("#capture1"), 0, 0);
+
+    // //convert to desired file format
+    // let dataURI = canvas.toDataURL("image/jpeg"); // can also use 'image/png'
+    // console.log("datauri ", dataURI);
     html2canvas(document.querySelector("#capture1"), {
       allowTaint: true,
       scrollX: 0,
@@ -117,7 +179,7 @@ function FanChefORB(props) {
       let file;
       // console.log('canvas',canvas.toBlob());
       canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
+        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
         fd.append("image", file);
@@ -136,7 +198,7 @@ function FanChefORB(props) {
     if (props.location.state.name && props.location.state.id) {
       id = props.location.state.id;
       name = props.location.state.name;
-      await dispatch(getStreamDetails({ userId: id }));
+      await dispatch(getStreamDetails({userId: id}));
     }
 
     socket.emit("storeLiveFans", localStorage.getItem("id"));
@@ -144,10 +206,11 @@ function FanChefORB(props) {
     await axios
       .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
       .then(async result => {
-        setOptions({ ...options, token: result.data.data.agoraToken });
+        setOptions({...options, token: result.data.data.agoraToken});
         if (result.data.data.agoraToken) {
           const token = result.data.data.agoraToken;
-          rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+          rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+          await rtc.client.setClientRole(options.role);
           console.log("agora token ", token);
           await rtc.client.join(
             process.env.REACT_APP_AGORA_APP_ID,
@@ -294,11 +357,30 @@ function FanChefORB(props) {
     setShowRating(true);
   }
 
-  const closeModal = () => {
+  const closeModal = async () => {
     console.log("close modal.......");
+    if (chefRTC.client && chefRTC.localVideoTrack && chefRTC.localAudioTrack) {
+      chefRTC.localAudioTrack.close();
+      chefRTC.localVideoTrack.close();
+
+      // Leave the channel.
+      await chefRTC.client.leave();
+    }
+    // props.history.push("/fanHomePage");
+    const dataToPass = {
+      fanId: localStorage.getItem("id"),
+      userId: props.location.state.id,
+    };
+    await dispatch(removedJoinFan(dataToPass));
     setShowRating(false);
     setCloseModalBool(true);
     props.history.push("/fanHomePage");
+  };
+
+  const showTipModal = () => {
+    setShowTip(!showTip);
+    setShow(true);
+    setIsActive(false);
   };
 
   return (
@@ -311,45 +393,88 @@ function FanChefORB(props) {
         marginBottom: "-16px",
       }}
       id="capture1">
-      {console.log(
-        "rebcbzxcblzkxcb",
-        chefRTC,
-        rtc.localAudioTrack,
-        rtc.localVideoTrack
-      )}
       <Modal
         show={show}
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{ padding: "0" }}>
+        <Modal.Body style={{padding: "0"}}>
           {paid ? (
-            <Receipt setShow={setShow} />
+            <Receipt
+              setPaid={setPaid}
+              streamId={streamDetails ? streamDetails._id : ""}
+              setShow={setShow}
+            />
+          ) : showTip ? (
+            <Tip
+              setShow={setShow}
+              type={streamDetails ? streamDetails.userType : ""}
+              userId={props.location.state.id}
+              streamId={streamDetails ? streamDetails._id : ""}
+            />
           ) : (
-            <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
+            <PayOrder
+              setShow={setShow}
+              price1={
+                streamDetails.chefItems ? streamDetails.chefItems[0].price : 0
+              }
+              price2={
+                streamDetails.chefItems ? streamDetails.chefItems[1].price : 0
+              }
+              item1={
+                streamDetails.chefItems ? streamDetails.chefItems[0].name : ""
+              }
+              item2={
+                streamDetails.chefItems ? streamDetails.chefItems[1].name : ""
+              }
+              userId={props.location.state.id}
+              streamId={streamDetails ? streamDetails._id : ""}
+              type={streamDetails ? streamDetails.userType : ""}
+              setPaid={setPaid}
+              paid={paid}
+              handleClose={handleClose}
+            />
+            // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
           )}
         </Modal.Body>
       </Modal>
-      <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
+      {/* <Modal
+        show={paid}
+        onHide={handleCloseReciept}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {console.log("paid and show........... ", paid, show)}
+          {paid ? (
+            <Receipt
+              setPaid={setPaid}
+              streamId={streamDetails ? streamDetails._id : ""}
+            />
+          ) : null}
+        </Modal.Body>
+      </Modal> */}
+
+      <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
             <img src="../assets/images/grey_logo.png" alt="logo" />
           </div>
-          <div className="live_container d-flex" id="local-player">
-            {/* <div className="video_live d-flex position-relative">
-              <video ref={videoRef} autoPlay className="userVideo"></video> 
-            </div> */}
-          </div>
+          <div className="live_container d-flex" id="local-player"></div>
           <div className="tips_info d-flex">
-            <div className="timer" style={{ color: "#626262" }}>
-              <p>Timer</p>
-              <p>
-                {Math.floor(time / 60) < 10
-                  ? "0" + Math.floor(time / 60)
-                  : Math.floor(time / 60)}
-                :{time % 60 < 10 ? "0" + (time % 60) : time % 60}
-              </p>
+            <div className="timer" style={{color: "#626262"}}>
+              {paid ? null : (
+                <>
+                  <p>Timer</p>
+                  <p style={{fontWeight: "600"}}>
+                    {Math.floor(time / 60) < 10
+                      ? "0" + Math.floor(time / 60)
+                      : Math.floor(time / 60)}
+                    :{time % 60 < 10 ? "0" + (time % 60) : time % 60}
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -387,10 +512,10 @@ function FanChefORB(props) {
               height: "500px",
             }}></div>
           <div className="justify-content-center go_live_logo"></div>
-          <div className="round_video" style={{ top: "25px" }}>
+          <div className="round_video" style={{top: "25px"}}>
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}>
+              style={{zIndex: "2"}}>
               {/* <div id="fan-playerlist">
                 {subscribed ? (
                   joinedFanList.length === 0 ? (
@@ -409,29 +534,58 @@ function FanChefORB(props) {
               </div> */}
               {subscribed ? (
                 joinedFanList.length === 0 ? (
-                  <div id="fan-playerlist"></div>
+                  <>
+                    <div id="fan-playerlist"></div>
+                    <div className="circle"></div>
+                    <img
+                      className="black_logo_img"
+                      src="../assets/images/black_logo.png"
+                      alt="logo"
+                    />
+                  </>
                 ) : null
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
-                  <img
-                    className="black_logo_img"
-                    src="../assets/images/black_logo.png"
-                    alt="logo"
-                  />
                 </>
               )}
             </div>
           </div>
         </div>
-        <div className="container items_links px-5 my-3 py-1">
+        <div className="items_links px-5 my-3 py-1 mt-5">
+          <div>
+            <div className="item-des mx-2">
+              <p
+                style={{
+                  width: "100%",
+                  borderRadius: "34px",
+                  height: "100%",
+                  border: "3px solid #9297a8",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}>
+                {streamDetails.chefItems !== undefined
+                  ? streamDetails.chefItems[0].name
+                  : "Item"}
+              </p>
+            </div>
+            <div className="price">
+              <p style={{marginTop: "15px"}}>
+                $
+                {streamDetails.chefItems !== undefined
+                  ? streamDetails.chefItems[0].price
+                  : "Item"}
+              </p>
+            </div>
+          </div>
           <div
             className="item position-relative price_item_main"
             style={{
               backgroundImage: `url("${
                 item1Image != ""
                   ? item1Image
-                  : "../assets/images/style_fan_orb.png"
+                  : "../assets/images/left-bg4-full.png"
               }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -439,44 +593,21 @@ function FanChefORB(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}>
-            {/* <img src="../assets/images/style_fan_orb.png" alt="logo" /> */}
-            <div className="price_item">
-              {/* <a href="#"> */}
-              <div className="price">
-                <p style={{ marginTop: "15px" }}>
-                  $
-                  {streamDetails.chefItems !== undefined
-                    ? streamDetails.chefItems[0].price
-                    : "Item"}
-                </p>
-              </div>
-              {/* </a> */}
-              {/* <a href="#"> */}
-              <div className="item">
-                <p>
-                  {streamDetails.chefItems !== undefined
-                    ? streamDetails.chefItems[0].name
-                    : "Item"}
-                </p>
-              </div>
-              {/* </a> */}
-            </div>
-          </div>
+            }}></div>
           <div className="links">
-            <a style={{ cursor: "no-drop" }}>
+            <a style={{cursor: "cursor"}} onClick={handleShow}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>
               </div>
             </a>
-            <a style={{ cursor: "no-drop" }}>
+            <a style={{cursor: "pointer"}} onClick={showTipModal}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
                 <p>Tip</p>
               </div>
             </a>
-            <a href onClick={getImage}>
+            <a onClick={getImage}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>
@@ -498,7 +629,7 @@ function FanChefORB(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
                 <p>Share</p>
@@ -513,7 +644,7 @@ function FanChefORB(props) {
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
                       <a
@@ -521,12 +652,12 @@ function FanChefORB(props) {
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}></span>
+                          style={{fontSize: "25px"}}></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
                       {" "}
@@ -534,7 +665,7 @@ function FanChefORB(props) {
                         href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}></span>{" "}
+                          style={{fontSize: "25px"}}></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -542,7 +673,7 @@ function FanChefORB(props) {
               </div>
             </a>
             <a
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
               onClick={() => {
                 leaveCall();
               }}>
@@ -566,24 +697,33 @@ function FanChefORB(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}>
-            <div className="price_item">
-              <div className="price">
-                <p style={{ marginTop: "15px" }}>
-                  $
-                  {streamDetails.chefItems !== undefined
-                    ? streamDetails.chefItems[1].price
-                    : "Item"}
-                </p>
-              </div>
-
+            }}></div>
+          <div>
+            <div className="item-des mx-2">
               <div className="item">
-                <p>
+                <p
+                  style={{
+                    width: "100%",
+                    borderRadius: "34px",
+                    height: "100%",
+                    border: "3px solid #9297a8",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
                   {streamDetails.chefItems !== undefined
                     ? streamDetails.chefItems[1].name
                     : "Item"}
                 </p>
-              </div>
+              </div>{" "}
+            </div>
+            <div className="price">
+              <p style={{marginTop: "15px"}}>
+                $
+                {streamDetails.chefItems !== undefined
+                  ? streamDetails.chefItems[1].price
+                  : "Item"}
+              </p>
             </div>
           </div>
         </div>

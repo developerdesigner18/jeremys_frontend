@@ -76,7 +76,7 @@
   left: 0;
 }
 .main_container {
-  padding: 25px 50px;
+  padding: 25px 30px;
   position: relative;
   z-index: 1000;
 }
@@ -106,4 +106,11 @@ button.reciept_button {
 }
 .thanks {
   font-size: 24px;
+}
+.fan_image img {
+  width: 200px;
+  height: 200px;
+}
+button.tablinks.active {
+  border: 2px solid #363636;
 }

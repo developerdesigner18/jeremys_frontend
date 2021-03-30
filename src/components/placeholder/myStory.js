@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import React, {useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
 import "../../assets/css/myStory.css";
 import {
   getUserWithId,
@@ -11,12 +11,16 @@ import {
   checkUserInCommunity,
   addToCommunity,
 } from "../../actions/userActions";
-import { getFollowing, getFollowers } from "../../actions/followActions";
-import { checkUserOnline } from "../../actions/orbActions";
+import {getFollowing, getFollowers} from "../../actions/followActions";
+import {checkUserOnline} from "../../actions/orbActions";
 import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
-import { socket } from "../../socketIO";
-import { getJoinedFanList, getUserStatus } from "../../actions/orbActions";
+import {socket} from "../../socketIO";
+import {
+  getJoinedFanList,
+  getUserStatus,
+  onlineUserCheck,
+} from "../../actions/orbActions";
 import swal from "sweetalert";
 
 function MyStory(props) {
@@ -52,6 +56,8 @@ function MyStory(props) {
 
   const [connectedFan, setConnectedFan] = useState([]);
 
+  const [fanJoined, setFanJoined] = useState(false);
+
   useEffect(async () => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));
@@ -62,6 +68,7 @@ function MyStory(props) {
     dispatch(checkUserInCommunity(props.location.state.userId));
     await dispatch(getUserStatus(props.location.state.userId));
     await dispatch(getJoinedFanList(props.location.state.userId));
+    await dispatch(onlineUserCheck(props.location.state.userId));
   }, []);
 
   useEffect(() => {
@@ -143,6 +150,13 @@ function MyStory(props) {
       if (stateORB.getJoinedFanList && stateORB.getJoinedFanList.length) {
         setConnectedFan(stateORB.getJoinedFanList);
       }
+      console.log("stateORB.isFanJoin...........", stateORB.checkOnlineUser);
+      if (
+        stateORB.checkOnlineUser == true ||
+        stateORB.checkOnlineUser == false
+      ) {
+        setFanJoined(stateORB.checkOnlineUser);
+      }
     }
   }, [stateORB]);
 
@@ -217,8 +231,9 @@ function MyStory(props) {
       userInfo.data.type === "stylist" ||
       userInfo.data.type === "Stylist"
     ) {
-      if (connectedFan.length > 1) {
-        swal("Info", "No other fan can join!", "info");
+      console.log("connectedFan.length ", fanJoined);
+      if (fanJoined) {
+        swal("Info", "You can’t join live streaming", "info");
       } else {
         history.push("/fanChefORB", {
           name: userInfo
@@ -277,7 +292,7 @@ function MyStory(props) {
             fontSize: "20px",
             color: "#6c6b6b",
           }}>
-          <p onClick={() => history.push("/")} style={{ cursor: "pointer" }}>
+          <p onClick={() => history.push("/")} style={{cursor: "pointer"}}>
             &#60; back
           </p>
 
@@ -328,7 +343,7 @@ function MyStory(props) {
                         onClick={() => {
                           goToORB();
                         }}
-                        style={{ border: "solid 2px greem" }}></img>
+                        style={{border: "solid 2px greem"}}></img>
                     )}
                   </div>
                 ) : null
@@ -342,7 +357,7 @@ function MyStory(props) {
                       onClick={() => {
                         goToORB();
                       }}
-                      style={{ border: "solid 2px greem" }}></img>
+                      style={{border: "solid 2px greem"}}></img>
                   )}
                 </div>
               ) : (
@@ -353,7 +368,7 @@ function MyStory(props) {
                       <img
                         src="../assets/images/button_bg_small.png"
                         onClick={callAddToCommunity}
-                        style={{ cursor: "pointer" }}></img>
+                        style={{cursor: "pointer"}}></img>
                       <p>JOIN</p>
                     </>
                   ) : (
@@ -365,20 +380,20 @@ function MyStory(props) {
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(1)}
-                  style={{ fontWeight: rightPart === 1 ? "600" : "" }}>
+                  style={{fontWeight: rightPart === 1 ? "600" : ""}}>
                   Pages and Places
                 </div>
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(2)}
-                  style={{ fontWeight: rightPart === 2 ? "600" : "" }}>
+                  style={{fontWeight: rightPart === 2 ? "600" : ""}}>
                   Reviews and Comments
                 </div>
                 {isMyStory ? (
                   <div
                     className="mystory_option"
                     onClick={() => setRightPart(3)}
-                    style={{ fontWeight: rightPart === 3 ? "600" : "" }}>
+                    style={{fontWeight: rightPart === 3 ? "600" : ""}}>
                     Journals
                   </div>
                 ) : (
@@ -426,7 +441,7 @@ function MyStory(props) {
               <>
                 <div
                   className="journal_sec position-relative"
-                  style={{ alignItems: "center" }}>
+                  style={{alignItems: "center"}}>
                   {screenShot ? (
                     screenShot.length > 0 ? (
                       <div>

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import { socket } from "../../socketIO";
+import {socket} from "../../socketIO";
 
 import {
   storeScreenShot,
@@ -16,7 +16,7 @@ import {
   changeUserStatus,
 } from "../../actions/orbActions";
 import Modal from "react-bootstrap/Modal";
-import { getUserWithId } from "../../actions/userActions";
+import {getUserWithId} from "../../actions/userActions";
 import Receipt from "../ORBTicketComponents/Receipt";
 import swal from "sweetalert";
 
@@ -51,10 +51,9 @@ function ChefORBPage(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const [joinedFanList, setJoinedFanList] = useState([]);
+  const [streamResponse, setStreamResponse] = useState({});
   const handleShow = () => {
-    if (isLive) {
-      setShow(true);
-    }
+    if (isLive) setShow(true);
   };
   const [RTC, setRTC] = useState({
     client: null,
@@ -104,7 +103,7 @@ function ChefORBPage(props) {
     }).then(canvas => {
       let file;
       canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
+        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
         fd.append("starName", "starName");
@@ -157,13 +156,14 @@ function ChefORBPage(props) {
         )
         .then(result => {
           console.log("result-==-=--=", result.data.key);
-          setOptions({ ...options, token: result.data.key });
+          setOptions({...options, token: result.data.key});
           token = result.data.key;
         })
         .catch(err => console.log("error ", err));
 
-      rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-      setRTC(prevState => ({ ...prevState, client: rtc.client }));
+      rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+      setRTC(prevState => ({...prevState, client: rtc.client}));
+      await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
         options.appId,
         options.channel,
@@ -324,6 +324,9 @@ function ChefORBPage(props) {
           swal("Info", "No other fan can join!", "info");
         }
       }
+      if (ORBData.response) {
+        setStreamResponse(ORBData.response);
+      }
     }
   }, [ORBData]);
 
@@ -345,12 +348,14 @@ function ChefORBPage(props) {
         centered
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{ padding: "0" }}>
-          <Receipt setShow={setShow} />
+        <Modal.Body style={{padding: "0"}}>
+          {streamResponse ? (
+            <Receipt setShow={setShow} streamId={streamResponse._id} />
+          ) : null}
         </Modal.Body>
       </Modal>
 
-      <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
+      <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
             <img src="../assets/images/grey_logo.png" alt="logo" />
@@ -365,7 +370,11 @@ function ChefORBPage(props) {
               backgroundColor: "#424242",
               content: isLive ? "" : "LIVE",
             }}></div>
-          <div className="tips_info d-flex"></div>
+          <div
+            className="tips_info d-flex text-center"
+            style={{justifyContent: "center"}}>
+            <p>All Orders include Taxes and Delivery</p>
+          </div>
         </div>
         <div className="container mt-5 d-flex top_section position-relative">
           <div
@@ -375,7 +384,7 @@ function ChefORBPage(props) {
               backgroundImage: `url("${
                 banner1Img.bannerImgURl != undefined
                   ? banner1Img.bannerImgURl
-                  : "../assets/images/style_fan_orb.png"
+                  : "../assets/images/right-bg2-full.png"
               }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -383,8 +392,7 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "500px",
-            }}
-            method="POST">
+            }}>
             <input
               type="file"
               onChange={e => Banner1Change(e)}
@@ -407,15 +415,14 @@ function ChefORBPage(props) {
               backgroundImage: `url("${
                 banner2Img.bannerImgURl != undefined
                   ? banner2Img.bannerImgURl
-                  : "../assets/images/style_fan_orb.png"
+                  : "../assets/images/right-bg2-full.png"
               }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
               borderRadius: "20%",
               zIndex: "1",
               height: "500px",
-            }}
-            method="POST">
+            }}>
             <input
               type="file"
               onChange={e => Banner2Change(e)}
@@ -432,11 +439,17 @@ function ChefORBPage(props) {
             />
           </div>
           <div className="justify-content-center go_live_logo">
-            {isLive ? null : (
+            {isLive ? (
+              <img
+                src="../assets/images/live-btn-chef-stylist.png"
+                alt="go_live"
+                height={50}
+              />
+            ) : (
               <img
                 src="../assets/images/go_live_chef_stylist.png"
                 alt="go_live"
-                style={{ cursor: "pointer" }}
+                style={{cursor: "pointer"}}
                 onClick={() => goToLivePage()}
               />
             )}
@@ -445,38 +458,83 @@ function ChefORBPage(props) {
           <div
             className="round_video"
             style={{
-              top: isLive ? "0" : "25px",
+              top: isLive ? "25" : "25px",
             }}>
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}>
+              style={{zIndex: "2"}}>
               {subscribed ? (
-                joinedFanList.length === 0 ? (
-                  <div id="chef-remote-playerlist"></div>
-                ) : null
+                // joinedFanList.length === 0 ? (
+                <div id="chef-remote-playerlist"></div>
               ) : (
+                // ) : null
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
                   <img
                     className="black_logo_img"
-                    src="../assets/images/black_logo.png"
+                    src="../assets/images/black_logo-without-text.png"
                     alt="logo"
                   />
                 </>
               )}
-
-              {/* {isLive ? <></> : <></>} */}
             </div>
           </div>
         </div>
-        <div className="container items_links px-5 my-3 py-1">
+        <div className="items_links px-5 my-3 py-1 mt-5">
+          <div>
+            <div
+              className="item-des mx-2"
+              style={{
+                background: item1
+                  ? "none"
+                  : `url("../assets/images/left-bg4-full.png")`,
+              }}>
+              <div className="item">
+                <input
+                  type="text"
+                  onChange={e => {
+                    setItem1(e.target.value);
+                  }}
+                  value={item1}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    color: "rgb(178, 178, 178)",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    borderRadius: "34px",
+                    height: "100%",
+                    border: "3px solid #9297a8",
+                    outline: "none",
+                  }}
+                />
+              </div>
+            </div>
+            <div className="price">
+              <p style={{marginTop: "15px"}}>$</p>
+              <input
+                type="number"
+                value={`${price}`}
+                onChange={handleChange}
+                style={{
+                  width: "100%",
+                  background: "transparent",
+                  border: "none",
+                  color: "#b2b2b2",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                  height: "100%",
+                  borderRadius: "100%",
+                }}></input>
+            </div>
+          </div>
           <div
             className="item position-relative"
             style={{
               backgroundImage: `url("${
                 item1Image.itemImgURl != undefined
                   ? item1Image.itemImgURl
-                  : "../assets/images/style_fan_orb.png"
+                  : "../assets/images/right-bg7-full.png"
               }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -484,8 +542,7 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-            method="POST">
+            }}>
             <input
               type="file"
               onChange={e => FoodImageChange(e, "1")}
@@ -500,10 +557,8 @@ function ChefORBPage(props) {
                 opacity: "0",
               }}
             />
-            {/* <img src="../assets/images/style_fan_orb.png" alt="logo" /> */}
             <div className="price_item">
-              {/* <a href="#"> */}
-              <div className="price">
+              {/* <div className="price">
                 <p style={{ marginTop: "15px" }}>$</p>
                 <input
                   type="number"
@@ -520,8 +575,6 @@ function ChefORBPage(props) {
                     borderRadius: "100%",
                   }}></input>
               </div>
-              {/* </a> */}
-              {/* <a href="#"> */}
               <div className="item">
                 <input
                   type="text"
@@ -540,21 +593,30 @@ function ChefORBPage(props) {
                     borderRadius: "100%",
                   }}
                 />
-              </div>
-              {/* </a> */}
+              </div> */}
             </div>
           </div>
           <div className="links">
-            <a style={{ cursor: "no-drop" }} onClick={handleShow}>
-              <div className="link d-flex flex-column">
-                <img src="../assets/images/ticket.png" alt="logo" />
-                <p>Reciept</p>
-              </div>
-            </a>
-            <a style={{ cursor: "no-drop" }}>
+            {isLive ? (
+              <a style={{cursor: "pointer"}} onClick={handleShow}>
+                <div className="link d-flex flex-column">
+                  <img src="../assets/images/ticket.png" alt="logo" />
+                  <p>Reciept</p>
+                </div>
+              </a>
+            ) : (
+              <a style={{cursor: "no-drop"}}>
+                <div className="link d-flex flex-column">
+                  <img src="../assets/images/ticket.png" alt="logo" />
+                  <p>Reciept</p>
+                </div>
+              </a>
+            )}
+
+            <a style={{cursor: "no-drop"}}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
-                <p>Tip</p>
+                <p>Tips</p>
               </div>
             </a>
             {isLive ? (
@@ -565,7 +627,7 @@ function ChefORBPage(props) {
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/take_picture.png" />
                   <p>Take Picture</p>
@@ -588,7 +650,7 @@ function ChefORBPage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
                 <p>Share</p>
@@ -603,7 +665,7 @@ function ChefORBPage(props) {
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
                       <a
@@ -611,12 +673,12 @@ function ChefORBPage(props) {
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}></span>
+                          style={{fontSize: "25px"}}></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
                       {" "}
@@ -624,7 +686,7 @@ function ChefORBPage(props) {
                         href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}></span>{" "}
+                          style={{fontSize: "25px"}}></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -632,7 +694,7 @@ function ChefORBPage(props) {
               </div>
             </a>
 
-            <a style={{ cursor: "pointer" }} onClick={() => leaveCall()}>
+            <a style={{cursor: "pointer"}} onClick={() => leaveCall()}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
@@ -645,7 +707,7 @@ function ChefORBPage(props) {
               backgroundImage: `url("${
                 item2Image.itemImgURl != undefined
                   ? item2Image.itemImgURl
-                  : "../assets/images/style_fan_orb.png"
+                  : "../assets/images/right-bg7-full.png"
               }") `,
               backgroundSize: "cover",
               backgroundRepeat: "no-repeat",
@@ -653,8 +715,7 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-            method="POST">
+            }}>
             <input
               type="file"
               onChange={e => FoodImageChange(e, "2")}
@@ -670,7 +731,7 @@ function ChefORBPage(props) {
               }}
             />
             <div className="price_item">
-              <div className="price">
+              {/* <div className="price">
                 <p style={{ marginTop: "15px" }}>$</p>{" "}
                 <input
                   type="number"
@@ -710,7 +771,58 @@ function ChefORBPage(props) {
                     borderRadius: "100%",
                   }}
                 />
+              </div> */}
+            </div>
+          </div>
+
+          <div>
+            <div
+              className="item-des mx-2"
+              style={{
+                background: item2
+                  ? "none"
+                  : `url("../assets/images/left-bg4-full.png")`,
+              }}>
+              <div className="item">
+                <input
+                  type="text"
+                  onChange={e => {
+                    setItem2(e.target.value);
+                  }}
+                  value={item2}
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    color: "rgb(178, 178, 178)",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    borderRadius: "34px",
+                    height: "100%",
+                    border: "3px solid #9297a8",
+                    outline: "none",
+                  }}
+                />
               </div>
+            </div>
+            <div className="price">
+              <p style={{marginTop: "15px"}}>$</p>{" "}
+              <input
+                type="number"
+                onChange={e => {
+                  setPrice2(e.target.value);
+                }}
+                value={`${price2}`}
+                style={{
+                  width: "100%",
+                  background: "transparent",
+                  border: "none",
+                  color: "#b2b2b2",
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                  height: "100%",
+                  borderRadius: "100%",
+                }}
+              />
             </div>
           </div>
         </div>

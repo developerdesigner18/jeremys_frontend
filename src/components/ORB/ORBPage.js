@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import "../../assets/css/ORB.css";
 import html2canvas from "html2canvas";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { socket } from "../../socketIO";
+import {useDispatch, useSelector} from "react-redux";
+import {socket} from "../../socketIO";
 import swal from "sweetalert";
+import Modal from "react-bootstrap/Modal";
 
 import {
   storeScreenShot,
@@ -14,6 +15,11 @@ import {
   getJoinedFanList,
   changeUserStatus,
 } from "../../actions/orbActions";
+import {getUserWithId} from "../../actions/userActions";
+import Timer from "../ORBTicketComponents/Timer";
+import Seat from "../ORBTicketComponents/Seat";
+import GenerateTicket from "../ORBTicketComponents/GenerateTicket";
+import moment from "moment";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -36,9 +42,16 @@ function ORBPage(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [fanList, setFanList] = useState([]);
   const ref = useRef();
-  const videoRef = useRef();
+  const [isBreak, setIsbreak] = useState(false);
   const dispatch = useDispatch();
   const [subscribedUsers, setSubscribedUsers] = useState(false);
+  const [showTimer, setShowTimer] = useState(false);
+  const [showSeat, setShowSeat] = useState(false);
+  const [showTicket, setShowTicket] = useState(false);
+  const [userDetail, setUserDetail] = useState({});
+  const [seats, setSeats] = useState(0);
+  const [time, setTime] = useState(0);
+  const [timeOnTicket, setTimeOnTicket] = useState(0);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -53,8 +66,9 @@ function ORBPage(props) {
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
-  useEffect(() => {
+  useEffect(async () => {
     document.documentElement.scrollTop = 0;
+    await dispatch(getUserWithId(localStorage.getItem("id")));
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -66,17 +80,13 @@ function ORBPage(props) {
     });
   }, []);
 
-  useEffect(async () => {
-    const timer = setTimeout(() => {
-      console.log("This will run after 2 second!");
-      socket.on("listOnlineFans", list => {
-        console.log("fanlist in orb page", list);
-        setFanList(list);
-      });
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [isLive || !isLive]);
+  React.useEffect(async () => {
+    if (time > 0) {
+      setTimeout(() => setTime(time - 1), 1000);
+    } else {
+      setTime(0);
+    }
+  });
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -84,8 +94,19 @@ function ORBPage(props) {
     token: null,
     role: "host",
   });
+  const [show, setShow] = useState(false);
+  const handleClose = () => {
+    setShow(false);
+    setShowTimer(false);
+    setShowSeat(false);
+    setShowTicket(false);
+  };
+  const handleShow = () => {
+    setShow(true);
+  };
 
   const stateData = useSelector(state => state.ORB);
+  const stateUser = useSelector(state => state.user);
 
   const getImage = () => {
     console.log("fn called");
@@ -96,7 +117,7 @@ function ORBPage(props) {
     }).then(canvas => {
       let file;
       canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
+        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
         fd.append("image", file);
@@ -130,13 +151,13 @@ function ORBPage(props) {
       )
       .then(result => {
         console.log("result-==-=--=", result.data.key);
-        setOptions(prevState => ({ ...prevState, token: result.data.key }));
+        setOptions(prevState => ({...prevState, token: result.data.key}));
         token = result.data.key;
       })
       .catch(err => console.log("error ", err));
 
-    rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-    setORB(prevState => ({ ...prevState, client: rtc.client }));
+    rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+    setORB(prevState => ({...prevState, client: rtc.client}));
     await rtc.client.setClientRole(options.role);
     const uid = await rtc.client.join(
       options.appId,
@@ -144,6 +165,8 @@ function ORBPage(props) {
       token,
       null
     );
+
+    await rtc.client.enableDualStream();
     // Create an audio track from the audio sampled by a microphone.
     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     setORB(prevState => ({
@@ -233,9 +256,54 @@ function ORBPage(props) {
     }
   }, [stateData]);
 
+  useEffect(() => {
+    if (stateUser) {
+      console.log("state user............. ", stateUser);
+      if (stateUser.userInfo) {
+        setUserDetail(stateUser.userInfo);
+      }
+    }
+  }, [stateUser]);
+
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
   );
+
+  const callShortBreak = async () => {
+    console.log("callShortBreak fn callled!!!!!!!!!!!!");
+    setIsbreak(!isBreak);
+
+    if (ORB.localAudioTrack && ORB.localVideoTrack) {
+      await ORB.localVideoTrack.setEnabled(isBreak);
+      await ORB.localAudioTrack.setEnabled(isBreak);
+    }
+  };
+
+  const showTimerModal = () => {
+    setShow(true);
+    setShowTimer(!showTimer);
+    setShowTicket(false);
+    setShowSeat(false);
+
+    if (time) {
+      setTimeOnTicket(time);
+    }
+  };
+
+  const showSeatModal = () => {
+    setShow(true);
+    setShowSeat(!showSeat);
+    setShowTimer(false);
+    setShowTicket(false);
+  };
+
+  const showTicketModal = () => {
+    setShow(true);
+    setShowTicket(!showTimer);
+    setShowSeat(false);
+    setShowTimer(false);
+  };
+
   return (
     <div
       style={{
@@ -246,6 +314,31 @@ function ORBPage(props) {
         marginTop: "-48px",
       }}
       id="capture">
+      <Modal
+        show={show}
+        onHide={handleClose}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {showTimer ? (
+            <Timer setShow={setShow} setTime={setTime} />
+          ) : showSeat ? (
+            <Seat setShow={setShow} setSeats={setSeats} />
+          ) : showTicket ? (
+            userDetail ? (
+              <GenerateTicket
+                setShow={setShow}
+                seats={seats}
+                time={timeOnTicket}
+                userDetail={userDetail}
+                currentDate={moment().format("YYYY-MM-DD HH:mm")}
+              />
+            ) : null
+          ) : null}
+        </Modal.Body>
+      </Modal>
+
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -265,7 +358,7 @@ function ORBPage(props) {
         </div>
 
         <div className="ORB_tips_info d-flex">
-          <div className="tips text-center">
+          {/* <div className="tips text-center">
             <div className="lights">
               <div className="one_light"></div>
               <div className="two_light"></div>
@@ -279,25 +372,16 @@ function ORBPage(props) {
               <div className="ten_light"></div>
             </div>
             <div className="title_tips">Tips</div>
-          </div>
+          </div> */}
           <div className="values">
             <div className="value_container">
               <span className="value_name">Timer</span>
-              <div
-                className="progress"
-                style={{
-                  width: "70px",
-                }}>
-                <div
-                  className="progress-bar"
-                  role="progressbar"
-                  style={{
-                    width: "100%",
-                  }}
-                  aria-valuenow="100"
-                  aria-valuemin="0"
-                  aria-valuemax="100"></div>
-              </div>
+              <p style={{fontWeight: "600"}}>
+                {Math.floor(time / 60) < 10
+                  ? "0" + Math.floor(time / 60)
+                  : Math.floor(time / 60)}
+                :{time % 60 < 10 ? "0" + (time % 60) : time % 60}
+              </p>
             </div>
             <div className="value_container">
               <span className="value_name">Tip</span>
@@ -392,10 +476,10 @@ function ORBPage(props) {
             </div>
             <div
               className="ORB_main_cat"
-              style={{ cursor: isLive ? "auto" : "pointer" }}
+              style={{cursor: isLive ? "auto" : "pointer"}}
               onClick={callGoToLive}>
               {isLive ? (
-                <img src="../assets/images/button_bg.png" />
+                <img src="../assets/images/live-btn.png" />
               ) : (
                 <img src="../assets/images/Background.png" />
               )}
@@ -459,13 +543,17 @@ function ORBPage(props) {
         )}
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a style={{ cursor: "no-drop" }}>
+        <a
+          style={{cursor: isLive ? "no-drop" : "pointer"}}
+          onClick={showTicketModal}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/ticket.png" />
             <p>Ticket</p>
           </div>
         </a>
-        <a style={{ cursor: "no-drop" }}>
+        <a
+          style={{cursor: isLive ? "no-drop" : "pointer"}}
+          onClick={showSeatModal}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/seat.png" />
             <p>Seat</p>
@@ -479,7 +567,7 @@ function ORBPage(props) {
             </div>
           </a>
         ) : (
-          <a style={{ cursor: "no-drop" }}>
+          <a style={{cursor: "no-drop"}}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/take_picture.png" />
               <p>Take Picture</p>
@@ -487,13 +575,17 @@ function ORBPage(props) {
           </a>
         )}
 
-        <a>
+        <a
+          style={{cursor: isLive ? "no-drop" : "pointer"}}
+          onClick={showTimerModal}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>Time</p>
           </div>
         </a>
-        <a style={{ cursor: isLive ? "pointer" : "no-drop" }}>
+        <a
+          style={{cursor: isLive ? "pointer" : "no-drop"}}
+          onClick={callShortBreak}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/short_break.png" />
             <p>Short Break</p>
@@ -515,7 +607,7 @@ function ORBPage(props) {
                       cursor: "pointer",
                       borderRadius: "100%",
                     }
-                  : { cursor: "pointer" }
+                  : {cursor: "pointer"}
               }
             />
             <p>Share</p>
@@ -530,7 +622,7 @@ function ORBPage(props) {
                 {" "}
                 <li
                   className="menu more_list "
-                  style={{ listStyleType: "none" }}
+                  style={{listStyleType: "none"}}
                   // onClick={() => props.history.push("/profile")}
                 >
                   <a
@@ -538,12 +630,12 @@ function ORBPage(props) {
                     {" "}
                     <span
                       className="fab fa-facebook-square"
-                      style={{ fontSize: "25px" }}></span>
+                      style={{fontSize: "25px"}}></span>
                   </a>
                 </li>
                 <li
                   className="menu more_list"
-                  style={{ listStyleType: "none" }}
+                  style={{listStyleType: "none"}}
                   // onClick={() => props.history.push("/myStory")}
                 >
                   {" "}
@@ -551,7 +643,7 @@ function ORBPage(props) {
                     href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
                     <span
                       className="fab fa-twitter-square"
-                      style={{ fontSize: "25px" }}></span>{" "}
+                      style={{fontSize: "25px"}}></span>{" "}
                   </a>
                 </li>
               </ul>
@@ -559,7 +651,7 @@ function ORBPage(props) {
           </div>
         </a>
 
-        <a style={{ cursor: "no-drop" }}>
+        <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
             <p>Tip</p>

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { BrowserRouter, Route, Redirect } from "react-router-dom";
+import React, {Component} from "react";
+import {BrowserRouter, Route, Redirect} from "react-router-dom";
 import ArtistsProfile from "./components/artistsProfile/artistsProfile";
 import CustomerService from "./components/CustomerService";
 import fanHomePage from "./components/fanHomePage/fanHomePage";
@@ -18,14 +18,13 @@ import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
 import VideoChat from "./components/videoCall/videoCallHost";
 import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
-import { isAuthenticate } from "./utill";
+import {isAuthenticate} from "./utill";
 import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
 import FanOrbForUser from "./components/ORB/FanOrbForUser";
 import VideoCallBasicCall from "./components/videoCall/VideoCallBasicCall";
 import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
 import VideoCall1 from "./components/videoCall/videoCallHost copy";
-import Ticket from "./components/ORBTicketComponents/Receipt";
 
 function App() {
   return (
@@ -48,7 +47,7 @@ function App() {
           }
         />
         <Route path="/home" component={HomePage} />
-        <PrivateRoute path="/ticket" component={Ticket} />
+        {/* <PrivateRoute path="/ticket" component={Ticket} /> */}
 
         <PublicRoute path="/login" component={Login} />
         <PublicRoute path="/register" component={Register} />
@@ -85,7 +84,7 @@ function App() {
     </div>
   );
 
-  function PrivateRoute({ component: Component, ...rest }) {
+  function PrivateRoute({component: Component, ...rest}) {
     return (
       <Route
         {...rest}
@@ -107,7 +106,7 @@ function App() {
     );
   }
 
-  function PublicRoute({ component, ...rest }) {
+  function PublicRoute({component, ...rest}) {
     return (
       <Route
         {...rest}

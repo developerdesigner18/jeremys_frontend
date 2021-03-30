@@ -91,6 +91,7 @@ export const orbReducer = (state = null, action) => {
         ...state,
         userStatus: action.payload,
       };
+
     default:
       return state;
   }
