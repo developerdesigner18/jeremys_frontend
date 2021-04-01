@@ -92,6 +92,23 @@ export const orbReducer = (state = null, action) => {
         userStatus: action.payload,
       };
 
+    case "STORE_LIVE_STREAM":
+      return {
+        ...state,
+        storedLiveStreamValue: action.payload,
+      };
+
+    case "GET_LIVE_STREAM_DATA":
+      return {
+        ...state,
+        getLiveStreamData: action.payload,
+      };
+
+    case "DELETE_LIVE_STREAM":
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }

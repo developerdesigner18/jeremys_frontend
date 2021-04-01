@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from "react"
-import "../../assets/css/signup.css"
-import { useHistory } from "react-router-dom"
-import { registration } from "../../actions/userActions"
-import { useSelector, useDispatch } from "react-redux"
-import Header from "../header/Header"
-import swal from "sweetalert"
+import React, {useState, useEffect} from "react";
+import "../../assets/css/signup.css";
+import {useHistory} from "react-router-dom";
+import {registration} from "../../actions/userActions";
+import {useSelector, useDispatch} from "react-redux";
+import Header from "../header/Header";
+import swal from "sweetalert";
 
 function Register(props) {
-  const history = useHistory()
-  const stateData = useSelector(state => state.user)
-  const dispatch = useDispatch()
+  const history = useHistory();
+  const stateData = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
-  const [type, setType] = useState("Fan")
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confpass, setConfpass] = useState("")
-  const [image, setImage] = useState("")
-  const [showImage, setShowImage] = useState("")
+  const [type, setType] = useState("Fan");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confpass, setConfpass] = useState("");
+  const [image, setImage] = useState("");
+  const [showImage, setShowImage] = useState("");
 
   const onImageChange = e => {
-    console.log("image... ", e.target.files[0])
-    setImage(e.target.files[0])
-    setShowImage(URL.createObjectURL(e.target.files[0]))
-  }
+    console.log("image... ", e.target.files[0]);
+    setImage(e.target.files[0]);
+    setShowImage(URL.createObjectURL(e.target.files[0]));
+  };
 
   const goToTerms = () => {
-    history.push("/termsCondition")
-  }
+    history.push("/termsCondition");
+  };
 
   const callRegister = async e => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (
       firstName === "" ||
@@ -39,42 +39,43 @@ function Register(props) {
       email === "" ||
       password === "" ||
       confpass === "" ||
-      type === ""
+      type === "" ||
+      image === ""
     ) {
-      swal("!Oops", "Field cannot be blank", "error")
-      return
+      swal("!Oops", "Field cannot be blank", "error");
+      return;
     } else if (password !== confpass) {
-      swal("!Oops", "Password and confirm password must be same", "error")
+      swal("!Oops", "Password and confirm password must be same", "error");
     } else {
-      let fd = new FormData()
-      fd.append("firstName", firstName)
-      fd.append("lastName", lastName)
-      fd.append("email", email)
-      fd.append("password", password)
-      fd.append("type", type)
-      if (image) fd.append("image", image)
+      let fd = new FormData();
+      fd.append("firstName", firstName);
+      fd.append("lastName", lastName);
+      fd.append("email", email);
+      fd.append("password", password);
+      fd.append("type", type);
+      fd.append("image", image);
 
-      await dispatch(registration(fd, props))
+      await dispatch(registration(fd, props));
     }
-  }
+  };
 
   const changeType = (e, type) => {
-    console.log("typre ", type)
-    e.preventDefault()
-    setType(type)
-  }
+    console.log("typre ", type);
+    e.preventDefault();
+    setType(type);
+  };
 
   const imageChange = event => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onload = e => {
-      setImage(event.target.files[0])
-      setShowImage(e.target.result)
-    }
-    reader.readAsDataURL(event.target.files[0])
-  }
+      setImage(event.target.files[0]);
+      setShowImage(e.target.result);
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
 
   return (
-    <div style={{ background: "black" }}>
+    <div style={{background: "black"}}>
       <Header />
       <div className="container p-5 main mt-5">
         <form method="post" onSubmit={e => callRegister(e)}>
@@ -82,21 +83,21 @@ function Register(props) {
             <button
               className="tablinks"
               type="button"
-              style={{ border: type == "Fan" ? "2px solid #363636" : "none" }}
+              style={{border: type == "Fan" ? "2px solid #363636" : "none"}}
               onClick={e => changeType(e, "Fan")}>
               FAN
             </button>
             <button
               className="tablinks"
               type="button"
-              style={{ border: type == "Star" ? "2px solid #363636" : "none" }}
+              style={{border: type == "Star" ? "2px solid #363636" : "none"}}
               onClick={e => changeType(e, "Star")}>
               STAR
             </button>
             <button
               className="tablinks"
               type="button"
-              style={{ border: type == "Chef" ? "2px solid #363636" : "none" }}
+              style={{border: type == "Chef" ? "2px solid #363636" : "none"}}
               onClick={e => changeType(e, "Chef")}>
               CHEF
             </button>
@@ -175,7 +176,7 @@ function Register(props) {
                           color: "white",
                           backgroundSize: "cover",
                         }
-                      : { background: "#ffff", width: "100%" }
+                      : {background: "#ffff", width: "100%"}
                   }
                   className="upload"
                   method="POST">
@@ -199,7 +200,7 @@ function Register(props) {
             </div>
             <div className="privacy">
               By clicking the button, you agree to our{" "}
-              <span style={{ cursor: "pointer" }} onClick={goToTerms}>
+              <span style={{cursor: "pointer"}} onClick={goToTerms}>
                 Terms
               </span>
               , <span>Privacy</span> and <span>Security Policy</span>.
@@ -231,7 +232,7 @@ function Register(props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Register
+export default Register;

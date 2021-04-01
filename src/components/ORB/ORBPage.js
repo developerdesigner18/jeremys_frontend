@@ -14,6 +14,8 @@ import {
   removeOnlineUser,
   getJoinedFanList,
   changeUserStatus,
+  storeLiveStream,
+  deleteStream,
 } from "../../actions/orbActions";
 import {getUserWithId} from "../../actions/userActions";
 import Timer from "../ORBTicketComponents/Timer";
@@ -52,6 +54,7 @@ function ORBPage(props) {
   const [seats, setSeats] = useState(0);
   const [time, setTime] = useState(0);
   const [timeOnTicket, setTimeOnTicket] = useState(0);
+  const [startTime, setStartTime] = useState(0);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -74,6 +77,7 @@ function ORBPage(props) {
       console.log("before unload evenet called ", ev);
 
       await dispatch(removeOnlineUser());
+      await dispatch(deleteStream());
 
       ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
       return ev.returnValue;
@@ -82,7 +86,7 @@ function ORBPage(props) {
 
   React.useEffect(async () => {
     if (time > 0) {
-      setTimeout(() => setTime(time - 1), 1000);
+      if (subscribedUsers) setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
     }
@@ -132,85 +136,98 @@ function ORBPage(props) {
   };
 
   const callGoToLive = async () => {
-    setIsLive(true);
-    await dispatch(storeOnlineUser());
+    console.log("seats and time... ", seats, time);
+    if (seats > 0 && time > 0) {
+      const dataToPass = {
+        userId: localStorage.getItem("id").toString(),
+        timer: time,
+        seat: seats,
+        price: 0,
+      };
+      await dispatch(storeLiveStream(dataToPass));
 
-    let token;
-    let subscribedValue = false;
+      setIsLive(true);
+      await dispatch(storeOnlineUser());
 
-    socket.emit("storeUser", localStorage.getItem("id"));
-    let userId = localStorage.getItem("id").toString();
+      let token;
+      let subscribedValue = false;
 
-    await axios
-      .get(
-        `${
-          process.env.REACT_APP_API_URL
-        }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
-          "id"
-        )}`
-      )
-      .then(result => {
-        console.log("result-==-=--=", result.data.key);
-        setOptions(prevState => ({...prevState, token: result.data.key}));
-        token = result.data.key;
-      })
-      .catch(err => console.log("error ", err));
+      socket.emit("storeUser", localStorage.getItem("id"));
+      let userId = localStorage.getItem("id").toString();
 
-    rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
-    setORB(prevState => ({...prevState, client: rtc.client}));
-    await rtc.client.setClientRole(options.role);
-    const uid = await rtc.client.join(
-      options.appId,
-      options.channel,
-      token,
-      null
-    );
+      await axios
+        .get(
+          `${
+            process.env.REACT_APP_API_URL
+          }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
+            "id"
+          )}`
+        )
+        .then(result => {
+          console.log("result-==-=--=", result.data.key);
+          setOptions(prevState => ({...prevState, token: result.data.key}));
+          token = result.data.key;
+        })
+        .catch(err => console.log("error ", err));
 
-    await rtc.client.enableDualStream();
-    // Create an audio track from the audio sampled by a microphone.
-    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    setORB(prevState => ({
-      ...prevState,
-      localAudioTrack: rtc.localAudioTrack,
-    }));
-    // Create a video track from the video captured by a camera.
-    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-    setORB(prevState => ({
-      ...prevState,
-      localVideoTrack: rtc.localVideoTrack,
-    }));
+      rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+      setORB(prevState => ({...prevState, client: rtc.client}));
+      await rtc.client.setClientRole(options.role);
+      const uid = await rtc.client.join(
+        options.appId,
+        options.channel,
+        token,
+        null
+      );
 
-    rtc.localVideoTrack.play("local-player");
-    rtc.localAudioTrack.play();
+      await rtc.client.enableDualStream();
+      // Create an audio track from the audio sampled by a microphone.
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setORB(prevState => ({
+        ...prevState,
+        localAudioTrack: rtc.localAudioTrack,
+      }));
+      // Create a video track from the video captured by a camera.
+      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+      setORB(prevState => ({
+        ...prevState,
+        localVideoTrack: rtc.localVideoTrack,
+      }));
 
-    // Publish the local audio and video tracks to the channel.
-    await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
-    rtc.client.on("user-published", async (user, mediaType) => {
-      console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      rtc.localVideoTrack.play("local-player");
+      rtc.localAudioTrack.play();
 
-      // Subscribe to a remote user.
-      await rtc.client.subscribe(user, mediaType);
-      await dispatch(changeUserStatus());
-      console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-      await dispatch(getJoinedFanList(localStorage.getItem("id")));
+      // Publish the local audio and video tracks to the channel.
+      await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+      rtc.client.on("user-published", async (user, mediaType) => {
+        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
-      let agoraClass = document.getElementById("fan-remote-playerlist");
+        // Subscribe to a remote user.
+        await rtc.client.subscribe(user, mediaType);
+        await dispatch(changeUserStatus());
+        console.log("subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        await dispatch(getJoinedFanList(localStorage.getItem("id")));
 
-      if (mediaType === "video") {
-        subscribedValue = true;
-        setSubscribedUsers(subscribedValue);
-        user.videoTrack.play(`fan-remote-playerlist`);
-      }
-      if (mediaType === "audio") {
-        user.audioTrack.play();
-      }
-    });
-    rtc.client.on("user-unpublished", async (user, mediaType) => {
-      console.log("handleUserUnpublished-==-=-=", user.uid);
-      const id = user.uid;
-    });
+        let agoraClass = document.getElementById("fan-remote-playerlist");
 
-    console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        if (mediaType === "video") {
+          subscribedValue = true;
+          setSubscribedUsers(subscribedValue);
+          user.videoTrack.play(`fan-remote-playerlist`);
+        }
+        if (mediaType === "audio") {
+          user.audioTrack.play();
+        }
+      });
+      rtc.client.on("user-unpublished", async (user, mediaType) => {
+        console.log("handleUserUnpublished-==-=-=", user.uid);
+        const id = user.uid;
+      });
+
+      console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+    } else {
+      swal("Info", "Please fill up the show time and seats!", "info");
+    }
   };
 
   function showHosts() {
@@ -237,6 +254,7 @@ function ORBPage(props) {
     socket.disconnect();
     props.history.push("/userHomepage");
     await dispatch(removeOnlineUser());
+    await dispatch(deleteStream());
   }
 
   useEffect(() => {

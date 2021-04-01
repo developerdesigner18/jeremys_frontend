@@ -61,6 +61,8 @@ function Tip(props) {
                   userId: props.userId,
                   tipAmount: tipAmount,
                   streamId: props.streamId,
+                  fanId: localStorage.getItem("id"),
+                  dateTime: moment.utc(),
                 };
 
                 await dispatch(tipOrTicketPayment(dataToPass));

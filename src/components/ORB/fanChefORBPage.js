@@ -85,6 +85,9 @@ function FanChefORB(props) {
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
+    setIsActive(false);
+    setShowTip(false);
+    setShow(false);
   };
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
@@ -96,6 +99,7 @@ function FanChefORB(props) {
   const StreamData = useSelector(state => state.ORB);
   useOutsideClick(ref, () => {
     setIsOpen(false);
+    setIsActive(true);
   });
   const history = useHistory();
 
@@ -119,33 +123,9 @@ function FanChefORB(props) {
     role: "host",
   });
 
-  // React.useEffect(async () => {
-  //   console.log(
-  //     "time...... ",
-  //     time,
-  //     " pause time..... ",
-  //     pauseTime,
-  //     "condition... ",
-  //     time > 0 || pauseTime > 0
-  //   );
-  //   if (time !== 0) {
-  //     setTimeout(() => setTime(time - 1), 1000);
-  //   } else {
-  //     setTime(0);
-  //     if (show == false && paid == false) setShowRating(true);
-  //   }
-  // });
-
   useEffect(() => {
     let interval = null;
-    console.log(
-      "time...... ",
-      time,
-      " pause time..... ",
-      isActive,
-      " paid............. ",
-      paid
-    );
+
     if (isActive && !paid && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -439,22 +419,6 @@ function FanChefORB(props) {
           )}
         </Modal.Body>
       </Modal>
-      {/* <Modal
-        show={paid}
-        onHide={handleCloseReciept}
-        centered
-        dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{padding: "0"}}>
-          {console.log("paid and show........... ", paid, show)}
-          {paid ? (
-            <Receipt
-              setPaid={setPaid}
-              streamId={streamDetails ? streamDetails._id : ""}
-            />
-          ) : null}
-        </Modal.Body>
-      </Modal> */}
 
       <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
@@ -516,27 +480,20 @@ function FanChefORB(props) {
             <div
               className="video_contents position-relative"
               style={{zIndex: "2"}}>
-              {/* <div id="fan-playerlist">
-                {subscribed ? (
-                  joinedFanList.length === 0 ? (
-                  <div id="fan-playerlist"></div>
-                ) : null
-                ) : (
-                  <>
-                    <img src="../assets/images/style_rounded.png" alt="logo" />
-                    <img
-                      className="black_logo_img"
-                      src="../assets/images/black_logo.png"
-                      alt="logo"
-                    />
-                  </>
-                )}
-              </div> */}
               {subscribed ? (
                 joinedFanList.length === 0 ? (
                   <>
                     <div id="fan-playerlist"></div>
-                    <div className="circle"></div>
+                    <div
+                      className="circle"
+                      style={{
+                        background: paid
+                          ? "green"
+                          : showRating
+                          ? "red"
+                          : "yellow",
+                        border: paid ? "green" : showRating ? "red" : "yellow",
+                      }}></div>
                     <img
                       className="black_logo_img"
                       src="../assets/images/black_logo.png"
@@ -547,6 +504,16 @@ function FanChefORB(props) {
               ) : (
                 <>
                   <img src="../assets/images/style_rounded.png" alt="logo" />
+                  <div
+                    className="circle"
+                    style={{
+                      background: paid
+                        ? "green"
+                        : showRating
+                        ? "red"
+                        : "yellow",
+                      border: paid ? "green" : showRating ? "red" : "yellow",
+                    }}></div>
                 </>
               )}
             </div>

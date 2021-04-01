@@ -13,6 +13,7 @@ import {
   getUserToken,
   joinedFan,
   removedJoinFan,
+  getLiveStream,
 } from "../../actions/orbActions";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
@@ -47,13 +48,17 @@ function SingleUserORBPage(props) {
   const ref = useRef();
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [time, setTime] = useState(180);
+  const [time, setTime] = useState(0);
   const [col1, setCol1] = useState(false);
   const [col2, setCol2] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [streamObj, setStreamObj] = useState({});
+
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
+    setIsActive(false);
   };
   const history = useHistory();
   const [fanRTC, setFanRTC] = useState({
@@ -85,28 +90,39 @@ function SingleUserORBPage(props) {
 
   const [show, setShow] = useState(false);
   const [showTip, setShowTip] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setIsActive(true);
+  };
   const handleShow = () => {
+    setIsActive(false);
     setShow(true);
   };
 
-  React.useEffect(async () => {
-    if (time > 0) {
-      setTimeout(() => setTime(time - 1), 1000);
-    } else {
-      setTime(0);
-      setShowRatingModal(true);
+  useEffect(() => {
+    let interval = null;
+    if (isActive && !paid && time > 0) {
+      interval = setInterval(() => {
+        setTime(time => time - 1);
+      }, 1000);
+    } else if (!isActive && time !== 0) {
+      clearInterval(interval);
     }
-  });
+    // else if (isActive && time == 0 && streamObj.price == 0) {
+    //   setShowRatingModal(true);
+    // }
+    return () => clearInterval(interval);
+  }, [time, isActive]);
 
   useOutsideClick(ref, () => {
     setIsOpen(false);
+    setIsActive(true);
   });
 
   useEffect(async () => {
     socket.emit("storeLiveFans", localStorage.getItem("id"));
     document.documentElement.scrollTop = 0;
-    await dispatch(getUserToken(props.location.state.id));
+    await dispatch(getLiveStream(props.location.state.id));
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -282,6 +298,22 @@ function SingleUserORBPage(props) {
     }
   }, [props.location.state.id && props.location.state.name]);
 
+  useEffect(() => {
+    if (orbState) {
+      console.log("orb state........... ", orbState);
+      if (orbState.getLiveStreamData) {
+        if (paid) {
+          setTime(orbState.getLiveStreamData.timer);
+        } else if (orbState.getLiveStreamData.price == 0) {
+          setTime(orbState.getLiveStreamData.timer);
+        } else {
+          setTime(180);
+        }
+        setStreamObj(orbState.getLiveStreamData);
+      }
+    }
+  }, [orbState]);
+
   const getImage = () => {
     console.log("fn called");
     html2canvas(document.querySelector("#capture"), {
@@ -340,6 +372,12 @@ function SingleUserORBPage(props) {
     props.history.push("/fanHomePage");
   };
 
+  const handleTipModal = async () => {
+    console.log("handle tip modal fn called.......... ");
+
+    setShowTip(!showTip);
+  };
+
   return (
     <div
       style={{
@@ -374,9 +412,7 @@ function SingleUserORBPage(props) {
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}>
-            {/* <video ref={videoRef} autoPlay></video> */}
-          </div>
+            }}></div>
         </div>
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
@@ -412,18 +448,6 @@ function SingleUserORBPage(props) {
           <div className="row" id="other-fan-remote1"></div>
         </div>
         <div className="col-md-6 text-center">
-          {/* {host.length === 2 ? (
-            <div
-              className="border border-light rounded-circle mx-auto mb-3"
-              id="user-remote-playerlist"
-              style={{
-                height: "500px",
-                width: "500px",
-                borderRadius: "100%",
-              }}></div>
-          ) : (
-            <></>
-          )} */}
           <div
             className="border border-light rounded-circle mx-auto mb-3"
             id="user-remote-playerlist"
@@ -446,7 +470,7 @@ function SingleUserORBPage(props) {
             )}
           </div>
           <div className="container justify-content-center d-flex ORB_links mt-5">
-            <a style={{cursor: "no-drop"}}>
+            <a style={{cursor: "pointer"}} onClick={handleShow}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/ticket.png" />
                 <p>Ticket</p>
@@ -464,13 +488,13 @@ function SingleUserORBPage(props) {
                 <p>Take Picture</p>
               </div>
             </a>
-            <a href="#">
+            <a style={{cursor: "pointer"}}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/audio.png" />
                 <p>Audio</p>
               </div>
             </a>
-            <a href="#">
+            <a style={{cursor: "pointer"}}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/camera.png" />
                 <p>Camera</p>
@@ -536,12 +560,12 @@ function SingleUserORBPage(props) {
               </div>
             </a>
 
-            {/* <a href="#">
+            <a style={{cursor: "pointer"}} onClick={handleTipModal}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
                 <p>Tip</p>
               </div>
-            </a> */}
+            </a>
             <a
               style={{cursor: "pointer"}}
               onClick={() => {

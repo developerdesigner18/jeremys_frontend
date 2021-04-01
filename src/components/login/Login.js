@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "../../assets/css/signin.css";
-import { useHistory } from "react-router-dom";
-import { login } from "../../actions/userActions";
-import { useDispatch } from "react-redux";
+import {useHistory} from "react-router-dom";
+import {login} from "../../actions/userActions";
+import {useDispatch} from "react-redux";
 import Header from "../header/Header";
 import swal from "sweetalert";
 
@@ -38,7 +38,7 @@ function Login(props) {
   };
 
   return (
-    <div style={{ background: "black" }}>
+    <div style={{background: "black"}}>
       <Header />
       <div className="container">
         <form method="post" onSubmit={e => callLogin(e)}>
@@ -60,7 +60,7 @@ function Login(props) {
               />
             </div>
             <div className="forgot_pass">
-              <a style={{ cursor: "pointer" }} onClick={callForgotPassword}>
+              <a style={{cursor: "pointer"}} onClick={callForgotPassword}>
                 <span>forgot password</span>
               </a>
             </div>
@@ -77,8 +77,8 @@ function Login(props) {
               <button>Login</button>
             </div>
             <div className="text-center newbie">
-              Just Joining Us? SIGN UP{" "}
-              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
+              Just Joining Us?{" "}
+              <a onClick={goToRegister} style={{cursor: "pointer"}}>
                 Sign Up
               </a>
             </div>

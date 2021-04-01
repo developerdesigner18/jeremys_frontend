@@ -328,3 +328,60 @@ export const onlineUserCheck = data => {
       .catch(err => console.log("error..........", err));
   };
 };
+
+export const storeLiveStream = data => {
+  return dispatch => {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/liveStream/storeLiveStreamData`,
+        data
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "STORE_LIVE_STREAM",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("error in storelivestram api...... ", error));
+  };
+};
+
+export const getLiveStream = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/liveStream/getLiveStreamData?userId=${data}`
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "GET_LIVE_STREAM_DATA",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(err => console.log("err in get live stream ", err));
+  };
+};
+
+export const deleteStream = () => {
+  return dispatch => {
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_URL}api/liveStream/deleteLiveStreamData`,
+        {
+          data: {userId: localStorage.getItem("id")},
+        }
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "DELETE_LIVE_STREAM",
+          });
+        }
+      })
+      .catch(error => console.log("eror.. ", error));
+  };
+};

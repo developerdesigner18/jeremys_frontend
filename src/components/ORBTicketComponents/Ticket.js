@@ -1,6 +1,6 @@
 import React from "react";
 import "../../assets/css/ticket.css";
-import { PayPalButton } from "react-paypal-button-v2";
+import {PayPalButton} from "react-paypal-button-v2";
 function Ticket(props) {
   return (
     <div class="MainwrapperTicket">
@@ -15,7 +15,7 @@ function Ticket(props) {
             onClick={() => {
               props.setShow(false);
             }}
-            style={{ zIndex: "1", padding: "5px" }}
+            style={{zIndex: "1", padding: "5px"}}
           />
         </div>
         <div class="main_container d-flex flex-column align-items-center">
@@ -27,13 +27,13 @@ function Ticket(props) {
             <div class="mail ml-2">Email: mail@jeremys.com</div> */}
 
             <div className="fan_image">
-              <div className="">
+              <div>
                 <img
-                  src={"http://54.236.46.101:8000/default/profile.jpg"}
-                  onError={(e) => {
+                  src={"https://artsiam.com:8000/default/profile.jpg"}
+                  onError={e => {
                     e.target.onerror = null;
                     e.target.src =
-                      "http://54.236.46.101:8000/default/profile.jpg";
+                      "https://artsiam.com:8000/default/profile.jpg";
                   }}
                 />
               </div>
@@ -46,19 +46,17 @@ function Ticket(props) {
               fontWeight: "500",
               fontSize: "20px",
               letterSpacing: "4px",
-            }}
-          >
+            }}>
             Live Music Performance
           </h4>
           <div className="text-center">
             <div class="table_down d-flex align-items-center my-2">
-              <div className="col-md-4 p-0" style={{ letterSpacing: "4px" }}>
+              <div className="col-md-4 p-0" style={{letterSpacing: "4px"}}>
                 <h1 className="text-white m-0">28</h1>
               </div>
               <div
                 className="col-md-8 pr-0"
-                style={{ fontSize: "13px", letterSpacing: "4px" }}
-              >
+                style={{fontSize: "13px", letterSpacing: "4px"}}>
                 <p className="text-white text-uppercase m-0 text-justify">
                   october
                 </p>
@@ -70,56 +68,36 @@ function Ticket(props) {
           </div>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             Duration :
           </p>
-          <p class="" style={{ letterSpacing: "2px" }}>
+          <p class="" style={{letterSpacing: "2px"}}>
             2 HOURS
           </p>
 
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             Seats :
           </p>
-          <p class="" style={{ letterSpacing: "2px" }}>
+          <p class="" style={{letterSpacing: "2px"}}>
             100
           </p>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             ticket price :
           </p>
-          <p class="" style={{ letterSpacing: "2px" }}>
+          <p class="" style={{letterSpacing: "2px"}}>
             $ 300
           </p>
 
-          <PayPalButton
-            amount="0.01"
-            // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-            onSuccess={(details, data) => {
-              alert(
-                "Transaction completed by " + details.payer.name.given_name
-              );
-              console.log("Payment data-=-=-=-=-=", data);
-              console.log("Payment details-=-=-=-=-=", details);
-              // OPTIONAL: Call your server to save the transaction
-            }}
-            // options={{
-            //   clientId:
-            //     "A21AAIxJjvliX2MjTI_DNbiKA7D2cQZWX_9rwAQu9QdJTPzFP1ZgOvauTWJrnFliyDKT1Nhis9y2qJy7Pv-mSC7C0--MUuHRg",
-            // }}
-          />
           <div
             class="paid_image my-3 pointer "
             role="button"
             onClick={() => {
               props.setPaid(true);
-            }}
-          >
+            }}>
             <img src="../assets/images/paid_button.png" />
           </div>
           {/* <p class="thanks">Thank you from Jeremy’s Live!</p> */}
