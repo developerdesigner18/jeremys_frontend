@@ -248,10 +248,18 @@ function SingleUserORBPage(props) {
                               document
                                 .getElementById("other-fan-remote1")
                                 .appendChild(playerWrapper);
-                              if (mediaType == "video")
+                              if (mediaType == "video") {
                                 user.videoTrack.play(
                                   `player-wrapper-${user.uid}`
                                 );
+                              } else {
+                                rtc.client.on("media-reconnect-start", uid => {
+                                  console.log(
+                                    "media-reconnect-start event called.............",
+                                    uid
+                                  );
+                                });
+                              }
                             } else {
                               console.log(
                                 "i % 2 == 0 else................",
@@ -278,10 +286,18 @@ function SingleUserORBPage(props) {
                               document
                                 .getElementById("other-fan-remote")
                                 .appendChild(playerWrapper);
-                              if (mediaType == "video")
+                              if (mediaType == "video") {
                                 user.videoTrack.play(
                                   `player-wrapper-${user.uid}`
                                 );
+                              } else {
+                                rtc.client.on("media-reconnect-start", uid => {
+                                  console.log(
+                                    "media-reconnect-start event called.............",
+                                    uid
+                                  );
+                                });
+                              }
                             }
                           } else {
                             console.log(
@@ -309,6 +325,13 @@ function SingleUserORBPage(props) {
                             if (mediaType == "video") {
                               user.videoTrack.play(playerWrapper);
                               // user.videoTrack.play(agoraClass);
+                            } else {
+                              rtc.client.on("media-reconnect-start", uid => {
+                                console.log(
+                                  "media-reconnect-start event called.............",
+                                  uid
+                                );
+                              });
                             }
                             // if (mediaType === "audio") {
                             //   user.audioTrack.play();

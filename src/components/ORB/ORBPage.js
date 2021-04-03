@@ -182,6 +182,8 @@ function ORBPage(props) {
         token,
         null
       );
+      await dispatch(storeHostUId(uid));
+      console.log("uid Host==-=-=-=", uid);
 
       await rtc.client.enableDualStream();
       // Create an audio track from the audio sampled by a microphone.
@@ -217,9 +219,17 @@ function ORBPage(props) {
           subscribedValue = true;
           setSubscribedUsers(subscribedValue);
           user.videoTrack.play(`fan-remote-playerlist`);
+        } else {
+          rtc.client.on("media-reconnect-start", uid => {
+            console.log("media-reconnect-start event called.............", uid);
+          });
         }
         if (mediaType === "audio") {
           user.audioTrack.play();
+        } else {
+          rtc.client.on("media-reconnect-start", uid => {
+            console.log("media-reconnect-start event called.............", uid);
+          });
         }
       });
       rtc.client.on("user-unpublished", async (user, mediaType) => {
@@ -465,6 +475,86 @@ function ORBPage(props) {
       </div>
       <div className="container ORB_videos_container mt-3 player">
         {subscribedUsers ? (
+          <div className="ORB_main_cat" id="fan-remote-playerlist"></div>
+        ) : (
+          <>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div
+              className="ORB_main_cat"
+              style={{cursor: isLive ? "auto" : "pointer"}}
+              onClick={callGoToLive}>
+              {isLive ? (
+                <img src="../assets/images/live-btn.png" />
+              ) : (
+                <img src="../assets/images/Background.png" />
+              )}
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="r_image">
+              {isLive ? (
+                <img src="../assets/images/r_image.png" />
+              ) : (
+                <img src="../assets/images/disableR.png" />
+              )}
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+            <div className="ORB_main_cat">
+              <img src="../assets/images/button_bg.png" />
+            </div>
+          </>
+        )}
+        {/* {subscribedUsers ? (
           fanList ? (
             fanList.length <= 15 ? (
               <div className="ORB_main_cat" id="fan-remote-playerlist"></div>
@@ -563,7 +653,7 @@ function ORBPage(props) {
               <img src="../assets/images/button_bg.png" />
             </div>
           </>
-        )}
+        )} */}
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
         {isLive ? (
