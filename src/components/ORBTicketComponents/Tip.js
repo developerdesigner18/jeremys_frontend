@@ -16,12 +16,12 @@ function Tip(props) {
   const paypalRef = useRef();
 
   const storeTipAmount = value => {
-    if (value > 100) {
-      setErrorMsg("You can give tip from $1 to $100");
-      setTipAmount(0);
-    } else {
+    if (value >= 1 && value <= 100) {
       setErrorMsg("");
       setTipAmount(value);
+    } else {
+      setErrorMsg("You can give tip from $1 to $100");
+      setTipAmount(0);
     }
   };
 
@@ -44,7 +44,7 @@ function Tip(props) {
               return actions.order.create({
                 purchase_units: [
                   {
-                    description: "Tip for" + props.type,
+                    description: "Tip for " + props.type ? props.type : "",
                     amount: {
                       currency_code: "USD",
                       value: tipAmount,

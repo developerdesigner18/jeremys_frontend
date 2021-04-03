@@ -109,6 +109,11 @@ export const orbReducer = (state = null, action) => {
         ...state,
       };
 
+    case "STORE_HOST_UID":
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }

@@ -57,3 +57,21 @@ export const getPaymentDetails = data => {
       .catch(err => console.log("err....... ", err));
   };
 };
+
+export const getPaymentDetailsOfStarTrainer = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/payment/getReceiptForStarOrTrainer?streamId=${data}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "GET_TICKET_PAYMENT",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("eror... ", error));
+  };
+};

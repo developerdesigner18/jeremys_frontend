@@ -18,6 +18,12 @@ const paymentReducer = (state = null, action) => {
         paymentDetail: action.payload,
       };
 
+    case "GET_TICKET_PAYMENT":
+      return {
+        ...state,
+        ticketReceipt: action.payload,
+      };
+
     default:
       return {
         ...state,

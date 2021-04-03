@@ -16,6 +16,7 @@ import {
   changeUserStatus,
   storeLiveStream,
   deleteStream,
+  storeHostUId,
 } from "../../actions/orbActions";
 import {getUserWithId} from "../../actions/userActions";
 import Timer from "../ORBTicketComponents/Timer";
@@ -55,6 +56,7 @@ function ORBPage(props) {
   const [time, setTime] = useState(0);
   const [timeOnTicket, setTimeOnTicket] = useState(0);
   const [startTime, setStartTime] = useState(0);
+  const [ticketPrice, setTicketPrice] = useState(0);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -89,6 +91,7 @@ function ORBPage(props) {
       if (subscribedUsers) setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
+      // await leaveCall();
     }
   });
 
@@ -142,7 +145,7 @@ function ORBPage(props) {
         userId: localStorage.getItem("id").toString(),
         timer: time,
         seat: seats,
-        price: 0,
+        price: ticketPrice,
       };
       await dispatch(storeLiveStream(dataToPass));
 
@@ -320,6 +323,7 @@ function ORBPage(props) {
     setShowTicket(!showTimer);
     setShowSeat(false);
     setShowTimer(false);
+    console.log("time and seat... ", time, seats);
   };
 
   return (
@@ -348,9 +352,10 @@ function ORBPage(props) {
               <GenerateTicket
                 setShow={setShow}
                 seats={seats}
-                time={timeOnTicket}
+                time={time}
                 userDetail={userDetail}
                 currentDate={moment().format("YYYY-MM-DD HH:mm")}
+                setTicketPrice={setTicketPrice}
               />
             ) : null
           ) : null}
@@ -561,22 +566,37 @@ function ORBPage(props) {
         )}
       </div>
       <div className="container justify-content-center d-flex ORB_links mt-5">
-        <a
-          style={{cursor: isLive ? "no-drop" : "pointer"}}
-          onClick={showTicketModal}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/ticket.png" />
-            <p>Ticket</p>
-          </div>
-        </a>
-        <a
-          style={{cursor: isLive ? "no-drop" : "pointer"}}
-          onClick={showSeatModal}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/seat.png" />
-            <p>Seat</p>
-          </div>
-        </a>
+        {isLive ? (
+          <a style={{cursor: "no-drop"}}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/ticket.png" />
+              <p>Ticket</p>
+            </div>
+          </a>
+        ) : (
+          <a style={{cursor: "pointer"}} onClick={showTicketModal}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/ticket.png" />
+              <p>Ticket</p>
+            </div>
+          </a>
+        )}
+        {isLive ? (
+          <a style={{cursor: "no-drop"}}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/seat.png" />
+              <p>Seat</p>
+            </div>
+          </a>
+        ) : (
+          <a style={{cursor: "pointer"}} onClick={showSeatModal}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/seat.png" />
+              <p>Seat</p>
+            </div>
+          </a>
+        )}
+
         {isLive ? (
           <a onClick={getImage}>
             <div className="ORB_link d-flex flex-column">
@@ -669,12 +689,12 @@ function ORBPage(props) {
           </div>
         </a>
 
-        <a>
+        {/* <a>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/tip.png" />
             <p>Tip</p>
           </div>
-        </a>
+        </a> */}
         <a>
           <div className="ORB_link d-flex flex-column" onClick={leaveCall}>
             <img src="../assets/images/exit.png" />

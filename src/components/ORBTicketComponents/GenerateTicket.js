@@ -1,7 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import "../../assets/css/ticket.css";
 
 function GenerateTicket(props) {
+  const [price, setPrice] = useState(0);
+
+  const storePrice = () => {
+    props.setTicketPrice(price);
+    props.setShow(false);
+  };
+
   return (
     <div className="MainwrapperTicket">
       <div className="main_reciept_container position-relative ">
@@ -103,10 +110,11 @@ function GenerateTicket(props) {
                 textAlign: "center",
                 verticalAlign: "middle",
               }}
+              onChange={e => setPrice(e.target.value)}
             />
           </p>
 
-          <button className="tablinks" type="button">
+          <button className="tablinks" type="button" onClick={storePrice}>
             Generate
           </button>
         </div>

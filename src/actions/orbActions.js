@@ -385,3 +385,24 @@ export const deleteStream = () => {
       .catch(error => console.log("eror.. ", error));
   };
 };
+
+export const storeHostUId = uid => {
+  return dispatch => {
+    const data = {
+      userId: localStorage.getItem("id"),
+      hostUid: uid,
+    };
+    axios
+      .post(`${process.env.REACT_APP_API_URL}api/online/storeHostUId`, data)
+      .then(result => {
+        if (result.data.success) {
+          dispatch({
+            type: "STORE_HOST_UID",
+          });
+        }
+      })
+      .catch(error => {
+        console.log("error ", error);
+      });
+  };
+};

@@ -2,7 +2,10 @@ import React, {useState, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import "../../assets/css/ticket.css";
 
-import {getPaymentDetails} from "../../actions/paymentActions";
+import {
+  getPaymentDetails,
+  getPaymentDetailsOfStarTrainer,
+} from "../../actions/paymentActions";
 import moment from "moment";
 
 function Ticket(props) {
@@ -13,13 +16,19 @@ function Ticket(props) {
   const [loading, setloading] = useState(false);
 
   useEffect(async () => {
-    await dispatch(getPaymentDetails(props.streamId));
+    if (props.text === "chef/stylist") {
+      await dispatch(getPaymentDetails(props.streamId));
+    } else {
+      await dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+    }
   }, [props]);
 
   useEffect(() => {
     if (stateData.paymentDetail) {
-      console.log("paid details....... ", paidDetail);
       setPaidDetail(stateData.paymentDetail);
+      setloading(true);
+    } else if (stateData.ticketReceipt) {
+      setPaidDetail(stateData.ticketReceipt);
       setloading(true);
     }
   }, [stateData]);
@@ -96,7 +105,7 @@ function Ticket(props) {
             <div class="paid_image my-3">
               <img src="../assets/images/paid_button.png" />
             </div>
-            {/* <p class="thanks">Thank you from Jeremy’s Live!</p> */}
+            <p class="thanks">Thank you from Jeremy’s Live!</p>
           </div>
         ) : null}
       </div>

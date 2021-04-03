@@ -85,9 +85,6 @@ function FanChefORB(props) {
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
-    setIsActive(false);
-    setShowTip(false);
-    setShow(false);
   };
   let encodedURL = encodeURI(
     `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
@@ -99,7 +96,6 @@ function FanChefORB(props) {
   const StreamData = useSelector(state => state.ORB);
   useOutsideClick(ref, () => {
     setIsOpen(false);
-    setIsActive(true);
   });
   const history = useHistory();
 
@@ -125,7 +121,7 @@ function FanChefORB(props) {
 
   useEffect(() => {
     let interval = null;
-
+    console.log("time & isactive... ", time, isActive);
     if (isActive && !paid && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -385,6 +381,7 @@ function FanChefORB(props) {
               setPaid={setPaid}
               streamId={streamDetails ? streamDetails._id : ""}
               setShow={setShow}
+              text="chef/stylist"
             />
           ) : showTip ? (
             <Tip

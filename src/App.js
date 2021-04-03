@@ -11,7 +11,6 @@ import ORBPage from "./components/ORB/ORBPage";
 import ChefORBPage from "./components/ORB/ChefORBPage";
 import Calendar from "./components/passport/CalendarShow";
 import UserProfile from "./components/profile/UserProfile";
-import UserProfileCopy from "./components/profile/UserProfile copy";
 import Register from "./components/register/Register";
 import ResetPassword from "./components/Reset";
 import TermsCondition from "./components/TermsCondition";
@@ -74,7 +73,6 @@ function App() {
         <PrivateRoute path="/videoCallBasic" component={VideoCall1} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         <PrivateRoute path="/userORB" component={FanOrbForUser} />
-        {/* <Route exact path="/profile1" component={UserProfileCopy} />  */}
 
         <Route exact path="/myCalendar" component={Calendar} />
         <Route path="/one-to-one" component={VideoCallBasicCall} />
