@@ -31,6 +31,7 @@ function MyStory(props) {
   const stateData = useSelector(state => state.user);
   const followData = useSelector(state => state.follow);
   const stateORB = useSelector(state => state.ORB);
+  const paymentState = useSelector(state => state.payment);
 
   const [userInfo, setUserInfo] = useState();
   const [following, setFollowing] = useState();
@@ -160,6 +161,14 @@ function MyStory(props) {
     }
   }, [stateORB]);
 
+  useEffect(() => {
+    if (paymentState) {
+      if (paymentState.journalData) {
+        console.log("journal data.... ", paymentState);
+      }
+    }
+  }, [paymentState]);
+
   const moveToNext = () => {
     if (screenShot.length - 1 === screenShotCounter) {
       setScreenShotCounter(0);
@@ -260,6 +269,7 @@ function MyStory(props) {
             : "",
           id: userInfo ? userInfo.data._id : "",
           role: "host",
+          type: userInfo ? userInfo.data.type : "",
         });
       } else if (connectedFan.length > 15) {
         history.push("/fanORB", {
@@ -270,6 +280,7 @@ function MyStory(props) {
             : "",
           id: userInfo ? userInfo.data._id : "",
           role: "audience",
+          type: userInfo ? userInfo.data.type : "",
         });
       }
     }

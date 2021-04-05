@@ -75,3 +75,21 @@ export const getPaymentDetailsOfStarTrainer = data => {
       .catch(error => console.log("eror... ", error));
   };
 };
+
+export const journalData = (data, type) => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/payment/userJournal?userId=${data}&type=${type}`
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "JOURNAL_DATA",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("error..... ", error));
+  };
+};

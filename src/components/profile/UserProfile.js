@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import Header from "../header/Header";
 import {
   getUser,
   updateProfile,
   deactivateUserAccount,
 } from "../../actions/userActions";
-import { useSelector, useDispatch } from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import swal from "sweetalert";
-import { PayPalButton } from "react-paypal-button-v2";
+import {PayPalButton} from "react-paypal-button-v2";
 import "../../assets/css/profile.css";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 function UserProfile(props) {
   const dispatch = useDispatch();
@@ -44,6 +44,7 @@ function UserProfile(props) {
     showBannerImage: "",
     type: "",
     cvv: "",
+    paypalEmail: "",
   });
   const useHasChanged = val => {
     const prevVal = usePrevious(val);
@@ -96,6 +97,7 @@ function UserProfile(props) {
               profileImgURl,
               bannerImgURl,
               type,
+              paypalEmail,
             } = result.data.data;
 
             setUserInfo(prevState => ({
@@ -118,6 +120,7 @@ function UserProfile(props) {
               showImage: profileImgURl,
               showBannerImage: bannerImgURl,
               type: type,
+              paypalEmail: paypalEmail,
               paymentType: result.data.paymentData
                 ? result.data.paymentData.paymentType
                 : "",
@@ -141,7 +144,7 @@ function UserProfile(props) {
   }, []);
 
   const handleChange = e => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
     console.log("fn called ", value);
     // if (stateData) {
     //   if (stateData.userDetail && stateData.userDetail.data) {
@@ -194,34 +197,47 @@ function UserProfile(props) {
       }
     }
     console.log("usrinfo ", stateData, userInfo);
-    if (userInfo.image || userInfo.bannerImage) {
-      console.log("-=-=-=- inside image");
-      let fd = new FormData();
-      fd.append("firstName", userInfo.firstName);
-      fd.append("lastName", userInfo.lastName);
-      fd.append("city", userInfo.city);
-      fd.append("state", userInfo.state);
-      fd.append("country", userInfo.country);
-      fd.append("paymentType", userInfo.paymentType);
-      fd.append("cardNumber", userInfo.cardNumber);
-      fd.append("expiryDate", userInfo.expiryDate);
-      fd.append("phoneNumber", userInfo.phoneNumber);
-      fd.append("userNameHandle", userInfo.userNameHandle);
-      fd.append("startAddress", userInfo.startAddress);
-      fd.append("audienceTheme", userInfo.audienceTheme);
-      fd.append("brandName", userInfo.brandName);
-      fd.append("bandName", userInfo.bandName);
-      // fd.append('contactNumber', userInfo.contactNumber);
-      fd.append("userName", userInfo.userName);
-      fd.append("preferredCarrier", userInfo.preferredCarrier);
-      fd.append("type", stateData.userDetail.data.type);
-      fd.append("email", stateData.userDetail.data.emailId);
-      if (userInfo.image) fd.append("image", userInfo.image);
-      if (userInfo.bannerImage) fd.append("bannerImage", userInfo.bannerImage);
-      await dispatch(updateProfile(fd));
-    } else {
-      console.log("new user info ", userInfo);
-      await dispatch(updateProfile(userInfo));
+
+    if (userInfo.paypalEmail) {
+      swal({
+        text:
+          "Please make sure you have entered correct and proper paypal email address!",
+        buttons: ["OK", "Yes, I have Checked!"],
+      }).then(async function (isConfirm) {
+        if (isConfirm) {
+          if (userInfo.image || userInfo.bannerImage) {
+            console.log("-=-=-=- inside image");
+            let fd = new FormData();
+            fd.append("firstName", userInfo.firstName);
+            fd.append("lastName", userInfo.lastName);
+            fd.append("city", userInfo.city);
+            fd.append("state", userInfo.state);
+            fd.append("country", userInfo.country);
+            fd.append("paymentType", userInfo.paymentType);
+            fd.append("cardNumber", userInfo.cardNumber);
+            fd.append("expiryDate", userInfo.expiryDate);
+            fd.append("phoneNumber", userInfo.phoneNumber);
+            fd.append("userNameHandle", userInfo.userNameHandle);
+            fd.append("startAddress", userInfo.startAddress);
+            fd.append("audienceTheme", userInfo.audienceTheme);
+            fd.append("brandName", userInfo.brandName);
+            fd.append("bandName", userInfo.bandName);
+            // fd.append('contactNumber', userInfo.contactNumber);
+            fd.append("userName", userInfo.userName);
+            fd.append("preferredCarrier", userInfo.preferredCarrier);
+            fd.append("type", stateData.userDetail.data.type);
+            fd.append("email", stateData.userDetail.data.emailId);
+            fd.append("paypalEmail", stateData.userDetail.data.paypalEmail);
+            if (userInfo.image) fd.append("image", userInfo.image);
+            if (userInfo.bannerImage)
+              fd.append("bannerImage", userInfo.bannerImage);
+            await dispatch(updateProfile(fd));
+          } else {
+            console.log("new user info ", userInfo);
+            await dispatch(updateProfile(userInfo));
+          }
+        }
+      });
     }
   };
 
@@ -235,14 +251,14 @@ function UserProfile(props) {
 
   const goToUserProfile = () => {
     console.log("go to user profile fn called");
-    props.history.push("/artistProfile", { forUpdate: true });
+    props.history.push("/artistProfile", {forUpdate: true});
   };
 
   return (
     <div className="container mb-5  ">
       <Header />
-      <div className="wrapper " style={{ color: "white" }}>
-        <div className="mb-5" style={{ textAlign: "center" }}>
+      <div className="wrapper " style={{color: "white"}}>
+        <div className="mb-5" style={{textAlign: "center"}}>
           USER INFORMATION
         </div>
 
@@ -303,7 +319,7 @@ function UserProfile(props) {
                             color: "white",
                             backgroundSize: "contain",
                           }
-                        : { background: "#ffff", width: "100%" }
+                        : {background: "#ffff", width: "100%"}
                     }
                     className="upload"
                     method="POST">
@@ -392,7 +408,7 @@ function UserProfile(props) {
                           color: "white",
                           backgroundSize: "contain",
                         }
-                      : { background: "#ffff", width: "100%" }
+                      : {background: "#ffff", width: "100%"}
                   }
                   className="upload"
                   method="POST">
@@ -453,7 +469,7 @@ function UserProfile(props) {
             </div>
           </div>
           {/* ========================================================================================*/}
-          <div className="my-5" style={{ textAlign: "center" }}>
+          <div className="my-5" style={{textAlign: "center"}}>
             DETAILS
           </div>
           <div>
@@ -547,7 +563,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display: "none"}}>
                   <label>PAYMENT TYPE</label>
                   <input
                     type="text"
@@ -557,7 +573,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display: "none"}}>
                   <label>EXPIRY DATE</label>
                   <input
                     type="text"
@@ -646,7 +662,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display: "none"}}>
                   <label>PREFERRED CARRIER</label>
                   <input
                     type="text"
@@ -656,7 +672,7 @@ function UserProfile(props) {
                   />
                 </div>
 
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display: "none"}}>
                   <label>CARD NUMBER</label>
                   <input
                     type="text"
@@ -665,13 +681,32 @@ function UserProfile(props) {
                     onChange={e => handleChange(e)}
                   />
                 </div>
-                <div className="form_detail" style={{ display: "none" }}>
+                <div className="form_detail" style={{display: "none"}}>
                   <label>CVV</label>
                   <input
                     type="password"
                     name="cvv"
                     value={userInfo.cvv}
                     onChange={e => handleChange(e)}
+                  />
+                </div>
+
+                <div
+                  className="form_detail"
+                  style={{
+                    display:
+                      localStorage.getItem("type") == "fan" ||
+                      localStorage.getItem("type") == "Fan"
+                        ? "none"
+                        : "block",
+                  }}>
+                  <label>PAYPAL EMAIL Address</label>
+                  <input
+                    type="email"
+                    name="paypalEmail"
+                    value={userInfo.paypalEmail ? userInfo.paypalEmail : ""}
+                    onChange={e => handleChange(e)}
+                    required={true}
                   />
                 </div>
               </div>

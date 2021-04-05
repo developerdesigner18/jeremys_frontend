@@ -1064,7 +1064,7 @@ function FanHomePage(props) {
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => props.history.push("/profile")}>
-                    PROFILE
+                    MY PROFILE
                   </li>
                   <li
                     className="dropdown-item menu more_list"
