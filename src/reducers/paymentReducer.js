@@ -24,7 +24,7 @@ const paymentReducer = (state = null, action) => {
         ticketReceipt: action.payload,
       };
 
-    case "JOURNAL_DATA":
+    case "FAN_JOURNAL_DATA":
       return {
         ...state,
         journalData: action.payload,
