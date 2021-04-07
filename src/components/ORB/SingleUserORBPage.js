@@ -1,12 +1,12 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import html2canvas from "html2canvas";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
-import {socket} from "../../socketIO";
+import { socket } from "../../socketIO";
 import axios from "axios";
 import swal from "sweetalert";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AddRating from "../Rating/AddRating";
 import {
   storeScreenShot,
@@ -22,7 +22,7 @@ import Tip from "../ORBTicketComponents/Tip";
 import Modal from "react-bootstrap/Modal";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -80,7 +80,7 @@ function SingleUserORBPage(props) {
         : "audience"
       : "audience",
   });
-  const orbState = useSelector(state => state.ORB);
+  const orbState = useSelector((state) => state.ORB);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -104,7 +104,7 @@ function SingleUserORBPage(props) {
     let interval = null;
     if (isActive && time > 0) {
       interval = setInterval(() => {
-        setTime(time => time - 1);
+        setTime((time) => time - 1);
       }, 1000);
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
@@ -123,7 +123,7 @@ function SingleUserORBPage(props) {
     document.documentElement.scrollTop = 0;
     await dispatch(getLiveStream(props.location.state.id));
 
-    window.addEventListener("beforeunload", async ev => {
+    window.addEventListener("beforeunload", async (ev) => {
       console.log("before unload evenet called ", ev);
 
       const dataToPass = {
@@ -156,7 +156,7 @@ function SingleUserORBPage(props) {
           `${process.env.REACT_APP_API_URL}api/online/storeJoinedFan`,
           dataToPass
         )
-        .then(storeJoinedFan => {
+        .then((storeJoinedFan) => {
           // await dispatch(joinedFan(dataToPass));
           id = props.location.state.id;
           role = props.location.state.role;
@@ -166,14 +166,14 @@ function SingleUserORBPage(props) {
             .get(
               `${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`
             )
-            .then(async result => {
+            .then(async (result) => {
               axios
                 .post(
                   `${process.env.REACT_APP_API_URL}api/online/getHostInfo`,
 
-                  {joinedFanId: localStorage.getItem("id")}
+                  { joinedFanId: localStorage.getItem("id") }
                 )
-                .then(async data => {
+                .then(async (data) => {
                   let hostUidResponse = data.data.message.hostUid;
 
                   setOptions({
@@ -188,7 +188,7 @@ function SingleUserORBPage(props) {
                       mode: "live",
                       codec: "vp8",
                     });
-                    setFanRTC(prevState => ({
+                    setFanRTC((prevState) => ({
                       ...prevState,
                       client: rtc.client,
                     }));
@@ -246,19 +246,29 @@ function SingleUserORBPage(props) {
                                 "height:160px; width: 160px; border-radius:50%;"
                               );
                               document
-                                .getElementById("other-fan-remote1")
+                                .getElementById("other-fan-remote")
                                 .appendChild(playerWrapper);
                               if (mediaType == "video") {
                                 user.videoTrack.play(
                                   `player-wrapper-${user.uid}`
                                 );
+                                // if (mediaType === "audio") {
+                                // user.audioTrack.play();
+                                // }
                               } else {
-                                rtc.client.on("media-reconnect-start", uid => {
-                                  console.log(
-                                    "media-reconnect-start event called.............",
-                                    uid
-                                  );
-                                });
+                                console.log(
+                                  "media-reconnect-start event will be called.............",
+                                  uid
+                                );
+                                rtc.client.on(
+                                  "media-reconnect-start",
+                                  (uid) => {
+                                    console.log(
+                                      "media-reconnect-start event called.............",
+                                      uid
+                                    );
+                                  }
+                                );
                               }
                             } else {
                               console.log(
@@ -284,19 +294,22 @@ function SingleUserORBPage(props) {
                                 "height:160px; width: 160px; border-radius:50%;"
                               );
                               document
-                                .getElementById("other-fan-remote")
+                                .getElementById("other-fan-remote1")
                                 .appendChild(playerWrapper);
                               if (mediaType == "video") {
                                 user.videoTrack.play(
                                   `player-wrapper-${user.uid}`
                                 );
                               } else {
-                                rtc.client.on("media-reconnect-start", uid => {
-                                  console.log(
-                                    "media-reconnect-start event called.............",
-                                    uid
-                                  );
-                                });
+                                rtc.client.on(
+                                  "media-reconnect-start",
+                                  (uid) => {
+                                    console.log(
+                                      "media-reconnect-start event called.............",
+                                      uid
+                                    );
+                                  }
+                                );
                               }
                             }
                           } else {
@@ -324,9 +337,16 @@ function SingleUserORBPage(props) {
                             agoraClass.appendChild(playerWrapper);
                             if (mediaType == "video") {
                               user.videoTrack.play(playerWrapper);
+                              // if()
+                              // user.audioTrack.play();
+
                               // user.videoTrack.play(agoraClass);
                             } else {
-                              rtc.client.on("media-reconnect-start", uid => {
+                              console.log(
+                                "media-reconnect-start event will be called.............",
+                                uid
+                              );
+                              rtc.client.on("media-reconnect-start", (uid) => {
                                 console.log(
                                   "media-reconnect-start event called.............",
                                   uid
@@ -364,13 +384,13 @@ function SingleUserORBPage(props) {
 
                     // Create an audio track from the audio sampled by a microphone.
                     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-                    setFanRTC(prevState => ({
+                    setFanRTC((prevState) => ({
                       ...prevState,
                       localAudioTrack: rtc.localAudioTrack,
                     }));
                     // Create a video track from the video captured by a camera.
                     rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-                    setFanRTC(prevState => ({
+                    setFanRTC((prevState) => ({
                       ...prevState,
                       localVideoTrack: rtc.localVideoTrack,
                     }));
@@ -383,11 +403,11 @@ function SingleUserORBPage(props) {
                   }
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               console.log("error........", error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error........", error);
         });
     }
@@ -415,10 +435,10 @@ function SingleUserORBPage(props) {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
+      canvas.toBlob(async (blob) => {
+        file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
         fd.append("image", file);
@@ -501,14 +521,16 @@ function SingleUserORBPage(props) {
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <Modal
         show={show}
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{padding: "0"}}>
+        aria-labelledby="example-custom-modal-styling-title"
+      >
+        <Modal.Body style={{ padding: "0" }}>
           {paid ? (
             <Receipt
               setShow={setShow}
@@ -540,7 +562,8 @@ function SingleUserORBPage(props) {
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}></div>
+            }}
+          ></div>
         </div>
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
@@ -561,7 +584,7 @@ function SingleUserORBPage(props) {
           <div className="values">
             <div className="value_container">
               <span className="value_name">Timer</span>
-              <p style={{fontWeight: "600"}}>
+              <p style={{ fontWeight: "600" }}>
                 {Math.floor(time / 60) < 10
                   ? "0" + Math.floor(time / 60)
                   : Math.floor(time / 60)}
@@ -583,23 +606,24 @@ function SingleUserORBPage(props) {
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-            }}></div>
+            }}
+          ></div>
           <div className="r_image">
             <img
               src="../assets/images/Qcolor.png"
-              style={{height: "80px", width: "80px"}}
+              style={{ height: "80px", width: "80px" }}
             />
           </div>
           <div className="container justify-content-center d-flex ORB_links mt-5">
             {streamObj.price == 0 ? (
-              <a style={{cursor: "no-drop"}}>
+              <a style={{ cursor: "no-drop" }}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/ticket.png" />
                   <p>Ticket</p>
                 </div>
               </a>
             ) : (
-              <a style={{cursor: "pointer"}} onClick={handleShow}>
+              <a style={{ cursor: "pointer" }} onClick={handleShow}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/ticket.png" />
                   <p>Ticket</p>
@@ -613,19 +637,19 @@ function SingleUserORBPage(props) {
                 <p>Seat</p>
               </div>
             </a> */}
-            <a onClick={getImage} style={{cursor: "pointer"}}>
+            <a onClick={getImage} style={{ cursor: "pointer" }}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>
               </div>
             </a>
-            <a style={{cursor: "pointer"}} onClick={callAudioPause}>
+            <a style={{ cursor: "pointer" }} onClick={callAudioPause}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/audio.png" />
                 <p>Audio</p>
               </div>
             </a>
-            <a style={{cursor: "pointer"}} onClick={callVideoPause}>
+            <a style={{ cursor: "pointer" }} onClick={callVideoPause}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/camera.png" />
                 <p>Camera</p>
@@ -637,7 +661,8 @@ function SingleUserORBPage(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}>
+                onClick={() => setMoreIcon()}
+              >
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -647,7 +672,7 @@ function SingleUserORBPage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : {cursor: "pointer"}
+                      : { cursor: "pointer" }
                   }
                 />
                 <p>Share</p>
@@ -657,33 +682,38 @@ function SingleUserORBPage(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}>
+                  }}
+                >
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{listStyleType: "none"}}
+                      style={{ listStyleType: "none" }}
                       // onClick={() => props.history.push("/profile")}
                     >
                       <a
-                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}>
+                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}
+                      >
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{fontSize: "25px"}}></span>
+                          style={{ fontSize: "25px" }}
+                        ></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{listStyleType: "none"}}
+                      style={{ listStyleType: "none" }}
                       // onClick={() => props.history.push("/myStory")}
                     >
                       {" "}
                       <a
-                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
+                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}
+                      >
                         <span
                           className="fab fa-twitter-square"
-                          style={{fontSize: "25px"}}></span>{" "}
+                          style={{ fontSize: "25px" }}
+                        ></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -691,17 +721,18 @@ function SingleUserORBPage(props) {
               </div>
             </a>
 
-            <a style={{cursor: "pointer"}} onClick={handleTipModal}>
+            <a style={{ cursor: "pointer" }} onClick={handleTipModal}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
                 <p>Tip</p>
               </div>
             </a>
             <a
-              style={{cursor: "pointer"}}
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 leaveCallFromFan();
-              }}>
+              }}
+            >
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
