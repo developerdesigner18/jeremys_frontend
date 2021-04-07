@@ -10,6 +10,7 @@ import {
 } from "../../actions/userActions";
 import {getOnlineUserList} from "../../actions/orbActions";
 import {getFollowing} from "../../actions/followActions";
+import {fanJournalData} from "../../actions/paymentActions";
 import {useSelector, useDispatch} from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
@@ -449,6 +450,16 @@ function FanHomePage(props) {
     setOnlineCheck(false);
     if (onlineCheck === false) getAllArtist();
     if (onlineCheck) await dispatch(getOnlineUserList(category, subcategory));
+  };
+
+  const callJournal = async () => {
+    await dispatch(fanJournalData(localStorage.getItem("id"), "fan"));
+
+    history.push("/myStory", {
+      pageNumber: 3,
+      userId: localStorage.getItem("id"),
+      isMystory: true,
+    });
   };
 
   return (
@@ -1079,13 +1090,7 @@ function FanHomePage(props) {
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() =>
-                      history.push("/myStory", {
-                        pageNumber: 3,
-                        userId: localStorage.getItem("id"),
-                        isMystory: true,
-                      })
-                    }>
+                    onClick={() => callJournal()}>
                     ACCOUNTING LEDGER
                   </li>
                   <li

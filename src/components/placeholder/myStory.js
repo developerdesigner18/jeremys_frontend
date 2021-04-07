@@ -22,6 +22,7 @@ import {
   onlineUserCheck,
 } from "../../actions/orbActions";
 import swal from "sweetalert";
+import moment from "moment";
 
 function MyStory(props) {
   var isMyStory = props.location.state.isMystory;
@@ -165,6 +166,7 @@ function MyStory(props) {
     if (paymentState) {
       if (paymentState.journalData) {
         console.log("journal data.... ", paymentState);
+        setJournalData(paymentState.journalData);
       }
     }
   }, [paymentState]);
@@ -373,8 +375,9 @@ function MyStory(props) {
                 </div>
               ) : (
                 <div className="join_logo">
-                  {localStorage.getItem("type") == "Fan" ||
-                  localStorage.getItem("type") == "fan" ? (
+                  {isMyStory ? (
+                    <></>
+                  ) : (
                     <>
                       <img
                         src="../assets/images/button_bg_small.png"
@@ -382,8 +385,6 @@ function MyStory(props) {
                         style={{cursor: "pointer"}}></img>
                       <p>JOIN</p>
                     </>
-                  ) : (
-                    ""
                   )}
                 </div>
               )}
@@ -665,7 +666,7 @@ function MyStory(props) {
               <>
                 <div className="journal_sec position-relative">
                   <div className="mainDivJournal">
-                    <p className="headerJournal">JOURNAL</p>
+                    <p className="headerJournal">ACCOUNTING LEDGER</p>
                     <table className="tableJournal">
                       {userInfo ? (
                         userInfo.data.type == "Star" ||
@@ -727,18 +728,30 @@ function MyStory(props) {
                                 <tr className="fanJurnalTable">
                                   <td>
                                     <img
-                                      src={"../assets/images/star.jpg"}></img>
+                                      src={element.userId.profileImgURl}></img>
                                   </td>
                                   <td>
-                                    <p>{element.time}</p>
+                                    <p>
+                                      {moment(element.createdAt).format(
+                                        "DD MMM YYYY"
+                                      ) +
+                                        " " +
+                                        moment(element.createdAt).format(
+                                          "HH:mm"
+                                        )}
+                                    </p>
                                     <div className="fanJurnalMain">
-                                      <p>stylist</p>
+                                      <p>
+                                        {element.userId.firstName +
+                                          " " +
+                                          element.userId.lastName}
+                                      </p>
                                       <p
                                         style={{
                                           textTransform: "uppercase",
                                           fontWeight: "600",
                                         }}>
-                                        FAN
+                                        {element.userId.type}
                                       </p>
                                     </div>
                                   </td>
@@ -747,10 +760,13 @@ function MyStory(props) {
                                       textTransform: "uppercase",
                                       fontWeight: "600",
                                     }}>
-                                    Title
+                                    {element.item.join()}
+
+                                    <p>${element.total}</p>
                                   </td>
                                   <td>
-                                    <p>payment methods</p>account Number<p></p>
+                                    <p>payment methods: Paypal</p>
+                                    {/* <p>account Number</p> */}
                                   </td>
                                 </tr>
                               );

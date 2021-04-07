@@ -76,7 +76,7 @@ export const getPaymentDetailsOfStarTrainer = data => {
   };
 };
 
-export const journalData = (data, type) => {
+export const fanJournalData = (data, type) => {
   return dispatch => {
     axios
       .get(
@@ -85,7 +85,7 @@ export const journalData = (data, type) => {
       .then(result => {
         if (result.data.code == 200) {
           dispatch({
-            type: "JOURNAL_DATA",
+            type: "FAN_JOURNAL_DATA",
             payload: result.data.data,
           });
         }
