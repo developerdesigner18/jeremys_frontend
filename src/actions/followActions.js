@@ -35,6 +35,6 @@ export const getFollowers = id => dispatch => {
       });
     })
     .catch(err => {
-      console.log("Err response for getFollowing-=-=-=-=", err.response.data);
+      console.log("Err response for getFollowing-=-=-=-=", err);
     });
 };

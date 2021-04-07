@@ -24,6 +24,12 @@ const paymentReducer = (state = null, action) => {
         ticketReceipt: action.payload,
       };
 
+    case "JOURNAL_DATA":
+      return {
+        ...state,
+        journalData: action.payload,
+      };
+
     default:
       return {
         ...state,

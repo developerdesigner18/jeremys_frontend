@@ -609,10 +609,15 @@ function SingleUserORBPage(props) {
             }}
           ></div>
           <div className="r_image">
-            <img
-              src="../assets/images/Qcolor.png"
-              style={{ height: "80px", width: "80px" }}
-            />
+            {props.location.state.type == "trainer" ||
+            props.location.state.type == "Trainer" ? (
+              <img src="../assets/images/r_image.png" className="m-0" />
+            ) : (
+              <img
+                src="../assets/images/Qcolor.png"
+                style={{ height: "80px", width: "80px" }}
+              />
+            )}
           </div>
           <div className="container justify-content-center d-flex ORB_links mt-5">
             {streamObj.price == 0 ? (

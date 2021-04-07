@@ -11,6 +11,7 @@ import {getFollowers} from "../../actions/followActions";
 import {useSelector, useDispatch} from "react-redux";
 import Pagination from "react-js-pagination";
 import {useHistory} from "react-router-dom";
+import swal from "sweetalert";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -110,17 +111,30 @@ function UserCategoryHomePage(props) {
 
   const goToORB = () => {
     if (
-      localStorage.getItem("type") == "chef" ||
-      localStorage.getItem("type") == "Chef"
+      currentUserdata.data.paypalEmail &&
+      currentUserdata.data.paypalEmail != ""
     ) {
-      props.history.push("/chefORB");
-    } else if (
-      localStorage.getItem("type") == "Stylist" ||
-      localStorage.getItem("type") == "stylist"
-    ) {
-      props.history.push("/stylistORB");
+      if (
+        localStorage.getItem("type") == "chef" ||
+        localStorage.getItem("type") == "Chef"
+      ) {
+        props.history.push("/chefORB");
+      } else if (
+        localStorage.getItem("type") == "Stylist" ||
+        localStorage.getItem("type") == "stylist"
+      ) {
+        props.history.push("/stylistORB");
+      } else {
+        props.history.push("/ORBpage");
+      }
     } else {
-      props.history.push("/ORBpage");
+      swal(
+        "Info",
+        "Please Enter paypal email address to receive payment!",
+        "info"
+      ).then(() => {
+        props.history.push("/profile");
+      });
     }
   };
   const searchInputChange = value => {
@@ -144,7 +158,7 @@ function UserCategoryHomePage(props) {
 
   useEffect(async () => {
     if (stateData) {
-      // console.log("stateData", stateData);
+      console.log("stateData", stateData);
       if (stateData.userDetail) setCurrentUserdata(stateData.userDetail);
       if (stateData.followers) {
         await dispatch(getFollowers(localStorage.getItem("id")));
@@ -491,7 +505,7 @@ function UserCategoryHomePage(props) {
                     <li
                       className="dropdown-item menu more_list"
                       onClick={() => props.history.push("/profile")}>
-                      PROFILE
+                      MY PROFILE
                     </li>
                     <li
                       className="dropdown-item menu more_list"
