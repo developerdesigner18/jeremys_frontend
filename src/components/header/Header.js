@@ -93,9 +93,9 @@ function Header(props) {
         <div>
           {localStorage.getItem("id") ? null : (
             <div>
-              <p className="m-0">SIGN UP EARLY</p>
+              {/* <p className="m-0">SIGN UP EARLY</p>
               <p className="m-0">SIGN UP TODAY!</p>
-              <p className="m-0">FULL LAUNCH APRIL 10!</p>
+              <p className="m-0">FULL LAUNCH APRIL 10!</p> */}
             </div>
           )}
         </div>
