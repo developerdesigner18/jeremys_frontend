@@ -244,7 +244,7 @@ function ChefORBPage(props) {
 
   const Banner1Change = (event) => {
     let reader = new FileReader();
-    if (event.target.files) {
+    if (event.target.files.length) {
       reader.onload = (e) => {
         setBanner1Img((prevState) => ({
           ...prevState,
@@ -257,7 +257,7 @@ function ChefORBPage(props) {
   };
   const Banner2Change = (event) => {
     let reader = new FileReader();
-    if (event.target.files) {
+    if (event.target.files.length) {
       reader.onload = (e) => {
         setBanner2Img((prevState) => ({
           ...prevState,
@@ -272,7 +272,7 @@ function ChefORBPage(props) {
   const FoodImageChange = (event, item) => {
     let reader = new FileReader();
 
-    if (event.target.files) {
+    if (event.target.files.length) {
       reader.onload = (e) => {
         if (item == "1") {
           // setItem1Image(e.target.result);

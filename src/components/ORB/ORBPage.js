@@ -257,7 +257,6 @@ function ORBPage(props) {
         console.log("handleUserUnpublished-==-=-=", user.uid);
         const id = user.uid;
       });
-
       console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal("Info", "Please fill up the show time and seats!", "info");
