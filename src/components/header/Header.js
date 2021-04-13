@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useRef} from "react";
-import {useHistory} from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import "../../assets/css/homepage.css";
-import {getUser, logout} from "../../actions/userActions";
-import {useSelector, useDispatch} from "react-redux";
-import {storeFanStatus} from "../../actions/orbActions";
+import { getUser, logout } from "../../actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
+import { storeFanStatus } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -24,7 +24,7 @@ const useOutsideClick = (ref, callback) => {
 function Header(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const stateData = useSelector(state => state.user);
+  const stateData = useSelector((state) => state.user);
   const ref = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -93,14 +93,14 @@ function Header(props) {
         <div>
           {localStorage.getItem("id") ? null : (
             <div>
-              <p className="m-0">SIGN UP EARLY</p>
+              {/* <p className="m-0">SIGN UP EARLY</p>
               <p className="m-0">SIGN UP TODAY!</p>
-              <p className="m-0">FULL LAUNCH APRIL 10!</p>
+              <p className="m-0">FULL LAUNCH APRIL 10!</p> */}
             </div>
           )}
         </div>
         {localStorage.getItem("token") ? (
-          <span style={{position: "relative"}} ref={ref}>
+          <span style={{ position: "relative" }} ref={ref}>
             <i className="fa fa-user mx-2" aria-hidden="true"></i>
             {"welcome " +
               localStorage.getItem("name")[0].toUpperCase() +
@@ -113,18 +113,20 @@ function Header(props) {
               <a
                 className="login"
                 onClick={goToLogin}
-                style={{cursor: "pointer"}}>
+                style={{ cursor: "pointer" }}
+              >
                 Login
               </a>
               <a
                 className="login"
                 onClick={goToRegister}
-                style={{cursor: "pointer"}}>
+                style={{ cursor: "pointer" }}
+              >
                 Register
               </a>
             </div>
             <div className="d-flex justify-content-end">
-              <a onClick={goToRegister} style={{cursor: "pointer"}}>
+              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
                 sign up - It's FREE!
               </a>
             </div>
@@ -144,8 +146,9 @@ function Header(props) {
           localStorage.getItem("type") === "fan" ? (
             <p
               className="go_live mt-1 mb-0"
-              style={{cursor: "pointer"}}
-              onClick={changeStatus}>
+              style={{ cursor: "pointer" }}
+              onClick={changeStatus}
+            >
               Go Live!
             </p>
           ) : (

@@ -66,6 +66,8 @@ function PayOrder(props) {
         // setPaid(true);
       }
       if (paymentState.paymentDetail) {
+        props.setPaid(true);
+
         console.log(
           "paymentState.paymentDetail-=-=-=",
           paymentState.paymentDetail
@@ -246,7 +248,7 @@ function PayOrder(props) {
               {" "}
               Checkout
             </button> */}
-            <a
+            {/* <a
               type="submit"
               className="button"
               id="continueButton"
@@ -259,7 +261,7 @@ function PayOrder(props) {
             >
               {" "}
               Proceed to Checkout
-            </a>
+            </a> */}
             {/* <iframe
               allowpaymentrequest={true}
               sandbox="allow-forms allow-modals allow-scripts allow-same-origin  allow-popups allow-top-navigation allow-top-navigation-by-user-activation"

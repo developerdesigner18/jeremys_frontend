@@ -217,36 +217,31 @@ function ORBPage(props) {
         );
         await dispatch(getJoinedFanList(localStorage.getItem("id")));
 
+        let agoraClass = document.getElementById("fan-remote-playerlist");
+
         if (mediaType === "video") {
           subscribedValue = true;
           setSubscribedUsers(subscribedValue);
-          let agoraClass = document.getElementById("fan-remote-playerlist2");
           for (let i = 0; i < seats; i++) {
-            let generatedDiv = document.getElementById(
-              `player-wrapper-${user.uid}`
-            );
-            if (generatedDiv) {
-              generatedDiv.remove();
-            }
-            // let playerWrapper = document.createElement("div");
-            // playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            // playerWrapper.setAttribute(
-            //   "style",
-            //   "height:155px; width: 100%; border-radius:50%;"
-            // );
-            // document.getElementById(`fan-ORB${i}`).appendChild(playerWrapper);
-            // user.videoTrack.play(`player-wrapper-${user.uid}`);
+            console.log("i.......", i);
+            // if (i == 3) {
+            //   if (document.getElementById(`fan-ORB${i}`)) {
+            //     document
+            //       .getElementById(`fan-ORB${i}`)
+            //       .appendChild(<img src="../assets/images/live-btn.png" />);
+            //   }
+            // } else if (i == 17) {
+            //   if (document.getElementById(`fan-ORB${i}`)) {
+            //     document
+            //       .getElementById(`fan-ORB${i}`)
+            //       .appendChild(<img src="../assets/images/r_image.png" />);
+            //   }
+            // } else {
             let playerWrapper = document.createElement("div");
             playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            playerWrapper.classList.add("col-md-2");
-            playerWrapper.classList.add("my-1");
-            playerWrapper.classList.add("fan_ORB_main_small_video");
-            playerWrapper.setAttribute(
-              "style",
-              "height:155px; width: 100%; border-radius:50%;"
-            );
-            agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
+            document.getElementById(`fan-ORB${i}`).appendChild(playerWrapper);
             user.videoTrack.play(`player-wrapper-${user.uid}`);
+            // }
           }
         } else {
           rtc.client.on("media-reconnect-start", (uid) => {
@@ -262,15 +257,10 @@ function ORBPage(props) {
         }
       });
       rtc.client.on("user-unpublished", async (user, mediaType) => {
-        let generatedDiv = document.getElementById(
-          `player-wrapper-${user.uid}`
-        );
-        if (generatedDiv) {
-          generatedDiv.remove();
-        }
         console.log("handleUserUnpublished-==-=-=", user.uid);
         const id = user.uid;
       });
+
       console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal("Info", "Please fill up the show time and seats!", "info");
@@ -281,13 +271,10 @@ function ORBPage(props) {
 
   function showHosts() {
     let hosts = [];
-    for (let i = 0; i < parseInt(seats) + 1; i++) {
+    for (let i = 0; i < seats; i++) {
       if (i == 3) {
         hosts.push(
-          <div
-            className={`ORB_main_cat ${subscribedUsers ? "col-md-2" : null}`}
-            id={`fan-ORB${i}`}
-          >
+          <div className="ORB_main_cat" id={`fan-ORB${i}`}>
             {subscribedUsers ? (
               <></>
             ) : (
@@ -318,25 +305,7 @@ function ORBPage(props) {
     }
     return hosts;
   }
-  function showEmptyCircles() {
-    var x = document.getElementsByClassName("fan_ORB_main_small_video").length;
-    let hosts = [];
-    for (let i = 0; i < parseInt(seats) - x; i++) {
-      hosts.push(
-        <div
-          className="ORB_main_cat col-md-2 my-1 mx-0"
-          id={`fan-ORB${i}`}
-          style={{ width: "100%", height: "155px" }}
-        >
-          <img
-            src="../assets/images/button_bg.png"
-            style={{ width: "100%", height: "100%" }}
-          />
-        </div>
-      );
-    }
-    return hosts;
-  }
+
   async function leaveCall() {
     // Destroy the local audio and video tracks.
     if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
@@ -417,10 +386,7 @@ function ORBPage(props) {
     setShowTimer(false);
     console.log("time and seat... ", time, seats);
   };
-  if (subscribedUsers) {
-    var x = document.getElementsByClassName("fan_ORB_main_small_video").length;
-    console.log("seat-====", x);
-  }
+
   return (
     <div
       style={{
@@ -571,19 +537,10 @@ function ORBPage(props) {
           </div>
         </div>
       </div>
-      <div
-        className="container row ORB_videos_container mt-5 mx-auto player"
-        id="fan-remote-playerlist2"
-      >
-        {isLive ? (subscribedUsers ? null : showHosts()) : null}
-        {subscribedUsers ? showEmptyCircles() : null}
-      </div>
-      <div className="container row ORB_videos_container mt-5 mx-auto  player">
-        {isLive ? null : (
-          // showHosts()
-          // <div className=" row mt-5 mx-auto" id="fan-remote-playerlist2">
-          //   {showHosts()}
-          // </div>
+      <div className="container ORB_videos_container mt-3 player">
+        {isLive ? (
+          showHosts()
+        ) : (
           <>
             <div className="ORB_main_cat">
               <img src="../assets/images/button_bg.png" />

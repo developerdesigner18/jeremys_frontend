@@ -47,7 +47,7 @@ function MyStory(props) {
   const [screenShotCounter, setScreenShotCounter] = useState(0);
   const [rightPart, setRightPart] = useState(props.location.state.pageNumber);
   const [journalDataTemp, setJournalData] = useState([]);
-  const [perPage, setperPage] = React.useState(5);
+  const [perPage, setperPage] = React.useState(4);
   const [perPageReview, setperPageReview] = React.useState(4);
   const [activePage, setactivePage] = useState(0);
   const [Offset, setOffset] = useState(0);
@@ -349,12 +349,13 @@ function MyStory(props) {
                   userInfo
                     ? userInfo.data.profileImgURl
                       ? userInfo.data.profileImgURl
-                      : "https://artsiam.com:8000/default/profile.jpg"
-                    : "https://artsiam.com:8000/default/profile.jpg"
+                      : "https://jeremysLive.com:8000/default/profile.jpg"
+                    : "https://jeremysLive.com:8000/default/profile.jpg"
                 }
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://artsiam.com:8000/default/profile.jpg";
+                  e.target.src =
+                    "https://jeremysLive.com:8000/default/profile.jpg";
                 }}
               />
               <div className="top_chef_details position-absolute d-flex">
@@ -812,7 +813,7 @@ function MyStory(props) {
                               </p>
                             ) : (
                               <>
-                                {" "}
+                                {/* {console.log("current-=-=-=", current)}{" "} */}
                                 <tr>
                                   <th></th>
                                   <th>ITEMS</th>
@@ -821,13 +822,19 @@ function MyStory(props) {
                                   <th>TOTAL EARNINGS</th>
                                 </tr>
                                 {current.map((element) => {
-                                  // let orderTotal = 0;
-                                  // if (element.price.length > 0) {
-                                  let orderTotal = element.price.reduce(
-                                    (a, b) => parseFloat(a) + parseFloat(b),
-                                    0
-                                  );
-                                  // }
+                                  let orderTotal = 0;
+
+                                  console.log("element-=-=-=", element);
+
+                                  if (
+                                    element.price &&
+                                    element.price.length > 0
+                                  ) {
+                                    orderTotal = element.price.reduce(
+                                      (a, b) => parseFloat(a) + parseFloat(b),
+                                      0
+                                    );
+                                  }
                                   return (
                                     <tr>
                                       <td>
@@ -843,9 +850,11 @@ function MyStory(props) {
                                         </p>
                                       </td>
                                       <td>
-                                        {element.item.map((item) => (
-                                          <p className="mb-0">{item}</p>
-                                        ))}
+                                        {element.item
+                                          ? element.item.map((item) => (
+                                              <p className="mb-0">{item}</p>
+                                            ))
+                                          : "item"}
                                       </td>
                                       <td>${orderTotal}</td>
                                       <td>${element.tip}</td>

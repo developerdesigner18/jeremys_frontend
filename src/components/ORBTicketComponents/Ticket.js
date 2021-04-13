@@ -1,13 +1,13 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../../assets/css/ticket.css";
-import {useSelector, useDispatch} from "react-redux";
-import {getUserWithId} from "../../actions/userActions";
+import { useSelector, useDispatch } from "react-redux";
+import { getUserWithId } from "../../actions/userActions";
 import moment from "moment";
-import {tipOrTicketPayment} from "../../actions/paymentActions";
+import { tipOrTicketPayment } from "../../actions/paymentActions";
 
 function Ticket(props) {
   const dispatch = useDispatch();
-  const stateUser = useSelector(state => state.user);
+  const stateUser = useSelector((state) => state.user);
 
   const [userInfo, setUserInfo] = useState({});
   const [paid, setPaid] = useState(false);
@@ -71,7 +71,7 @@ function Ticket(props) {
                 props.setPaid(true);
               }
             },
-            onError: err => {
+            onError: (err) => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -94,7 +94,7 @@ function Ticket(props) {
             onClick={() => {
               props.setShow(false);
             }}
-            style={{zIndex: "1", padding: "5px"}}
+            style={{ zIndex: "1", padding: "5px" }}
           />
         </div>
         <div className="main_container d-flex flex-column align-items-center">
@@ -109,10 +109,10 @@ function Ticket(props) {
               <div>
                 <img
                   src={userInfo.profileImgURl}
-                  onError={e => {
+                  onError={(e) => {
                     e.target.onerror = null;
                     e.target.src =
-                      "https://artsiam.com:8000/default/profile.jpg";
+                      "https://jeremysLive.com:8000/default/profile.jpg";
                   }}
                 />
               </div>
@@ -127,7 +127,8 @@ function Ticket(props) {
               fontWeight: "500",
               fontSize: "20px",
               letterSpacing: "4px",
-            }}>
+            }}
+          >
             Live Performance
           </h4>
           <div className="text-center">
@@ -150,25 +151,28 @@ function Ticket(props) {
           </div>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             Duration :
           </p>
-          <p style={{letterSpacing: "2px"}}>
+          <p style={{ letterSpacing: "2px" }}>
             {props.streamObj.timer / 60} Minutes
           </p>
 
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             Seats :
           </p>
-          <p style={{letterSpacing: "2px"}}>{props.streamObj.seats}</p>
+          <p style={{ letterSpacing: "2px" }}>{props.streamObj.seats}</p>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             ticket price :
           </p>
-          <p style={{letterSpacing: "2px"}}>$ {props.streamObj.price}</p>
+          <p style={{ letterSpacing: "2px" }}>$ {props.streamObj.price}</p>
 
           <div ref={paypalRef} />
           {/* <div
