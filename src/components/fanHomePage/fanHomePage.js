@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import {
@@ -8,19 +8,19 @@ import {
   removeFromCommunity,
   getUserWithId,
 } from "../../actions/userActions";
-import { getOnlineUserList } from "../../actions/orbActions";
-import { getFollowing } from "../../actions/followActions";
-import { fanJournalData } from "../../actions/paymentActions";
-import { useSelector, useDispatch } from "react-redux";
+import {getOnlineUserList} from "../../actions/orbActions";
+import {getFollowing} from "../../actions/followActions";
+import {fanJournalData} from "../../actions/paymentActions";
+import {useSelector, useDispatch} from "react-redux";
 import Slider from "react-slick";
 import TinderCard from "react-tinder-card";
-import { socket } from "../../socketIO";
-import { useHistory } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
+import {socket} from "../../socketIO";
+import {useHistory} from "react-router-dom";
+import {useMediaQuery} from "react-responsive";
 import swal from "@sweetalert/with-react";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -49,9 +49,9 @@ function FanHomePage(props) {
   const [isLoading, setisLoading] = useState(true);
   const [touchStartY, setTouchStartY] = React.useState(0);
   const [touchStartX, setTouchStartX] = React.useState(0);
-  const stateData = useSelector((state) => state.user);
-  const followData = useSelector((state) => state.follow);
-  const ORBState = useSelector((state) => state.ORB);
+  const stateData = useSelector(state => state.user);
+  const followData = useSelector(state => state.follow);
+  const ORBState = useSelector(state => state.ORB);
   const [category, setCategory] = useState("music");
   const [subcategory, setSubCategory] = useState("ALL");
   const [addToCommunityMsg, setaddToCommunityMsg] = useState("");
@@ -103,12 +103,12 @@ function FanHomePage(props) {
       // await dispatch(getOnlineUserList(eventName, subMusic[0]));
     }
 
-    socket.on("onlineUsers", (userList) => {
+    socket.on("onlineUsers", userList => {
       console.log("userlist ", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
       } else {
@@ -116,7 +116,7 @@ function FanHomePage(props) {
       }
     });
   }
-  const handleDragStart = (e) => {
+  const handleDragStart = e => {
     var img = new Image();
     img.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
@@ -179,12 +179,12 @@ function FanHomePage(props) {
 
     socket.emit("storeLiveFans", localStorage.getItem("id"));
 
-    socket.on("onlineUsers", (userList) => {
+    socket.on("onlineUsers", userList => {
       console.log("userlist in use effect", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
       } else {
@@ -305,22 +305,22 @@ function FanHomePage(props) {
     "aerobics",
   ];
   var musicData = [
-    { url: 123, name: "M1" },
-    { url: 123, name: "M2" },
-    { url: 123, name: "M3" },
-    { url: 123, name: "M4" },
-    { url: 123, name: "M5" },
-    { url: 123, name: "M6" },
-    { url: 123, name: "M7" },
-    { url: 123, name: "M8" },
-    { url: 123, name: "M9" },
-    { url: 123, name: "M10" },
-    { url: 123, name: "M11" },
-    { url: 123, name: "M12" },
-    { url: 123, name: "M13" },
-    { url: 123, name: "M14" },
-    { url: 123, name: "M15" },
-    { url: 123, name: "M16" },
+    {url: 123, name: "M1"},
+    {url: 123, name: "M2"},
+    {url: 123, name: "M3"},
+    {url: 123, name: "M4"},
+    {url: 123, name: "M5"},
+    {url: 123, name: "M6"},
+    {url: 123, name: "M7"},
+    {url: 123, name: "M8"},
+    {url: 123, name: "M9"},
+    {url: 123, name: "M10"},
+    {url: 123, name: "M11"},
+    {url: 123, name: "M12"},
+    {url: 123, name: "M13"},
+    {url: 123, name: "M14"},
+    {url: 123, name: "M15"},
+    {url: 123, name: "M16"},
   ];
 
   var settings = {
@@ -363,7 +363,7 @@ function FanHomePage(props) {
         <div className="profile_images">
           <img src="https://jeremysLive.com:8000/default/profile.jpg" />
 
-          <p style={{ color: "white" }}>{musicData[j].name}</p>
+          <p style={{color: "white"}}>{musicData[j].name}</p>
         </div>
       );
     }
@@ -376,7 +376,7 @@ function FanHomePage(props) {
       await dispatch(removeFromCommunity(fanID));
     }
   };
-  const outOfFrame = (name) => {
+  const outOfFrame = name => {
     console.log("name-=-=-=-=-=", name);
     let index = community
       .map(function (e) {
@@ -398,7 +398,7 @@ function FanHomePage(props) {
       dispatch(addToCommunity(fanID));
     }
   };
-  const outOfFrameFind = async (fanID) => {
+  const outOfFrameFind = async fanID => {
     // setSwipedDown(true);
   };
 
@@ -419,12 +419,12 @@ function FanHomePage(props) {
     // await dispatch(getOnlineUserList(category, value));
     socket.emit("chekCategory", category, value);
 
-    socket.on("onlineUsers", (userList) => {
+    socket.on("onlineUsers", userList => {
       console.log("userlist ", userList);
       if (userList.length) {
         userList = userList.filter(
           (value, index, array) =>
-            index === array.findIndex((data) => value._id == data._id)
+            index === array.findIndex(data => value._id == data._id)
         );
         setCommunityOnline(userList);
       } else {
@@ -433,10 +433,10 @@ function FanHomePage(props) {
     });
   };
 
-  const showProfileDetails = async (Id) => {
+  const showProfileDetails = async Id => {
     console.log("id ", Id);
     await dispatch;
-    history.push("/myStory", { pageNumber: 1, userId: Id, isMystory: false });
+    history.push("/myStory", {pageNumber: 1, userId: Id, isMystory: false});
   };
 
   const callOnlineUserList = async () => {
@@ -449,7 +449,6 @@ function FanHomePage(props) {
     setfind(true);
     setOnlineCheck(false);
     if (onlineCheck === false) getAllArtist();
-    if (onlineCheck) await dispatch(getOnlineUserList(category, subcategory));
   };
 
   const callJournal = async () => {
@@ -462,6 +461,22 @@ function FanHomePage(props) {
     });
   };
 
+  const searchInputChange = async value => {
+    if (value === "") {
+      await dispatch(getAllArtists(category, subcategory));
+    } else {
+      let data = allArtists.filter(event => {
+        return (
+          event.lastName.toLowerCase().includes(value.toLowerCase()) ||
+          event.firstName.toLowerCase().includes(value.toLowerCase())
+        );
+      });
+      console.log("search data", data);
+      let searchedData = [...data];
+      setAllArtists(searchedData);
+    }
+  };
+
   return (
     <div className="container fan_container">
       {console.log("online check checkbox value............... ", onlineCheck)}
@@ -472,7 +487,7 @@ function FanHomePage(props) {
             <div className="tab1">
               <button
                 className="tablinks active"
-                onClick={(event) => {
+                onClick={event => {
                   openCity(event, "music");
                   setCategory("music");
                   setisLoading(true);
@@ -482,15 +497,14 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("music", subMusic[0]));
                   }
-                }}
-              >
+                }}>
                 MUSIC
               </button>
             </div>
             <div className="tab2">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setSubCategory(subFood[0]);
                   setCategory("food");
                   setisLoading(true);
@@ -500,8 +514,7 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("food", subFood[0]));
                   }
-                }}
-              >
+                }}>
                 FOOD
               </button>
             </div>
@@ -516,7 +529,7 @@ function FanHomePage(props) {
                         : "https://jeremysLive.com:8000/default/profile.jpg"
                       : "https://jeremysLive.com:8000/default/profile.jpg"
                   }
-                  onError={(e) => {
+                  onError={e => {
                     e.target.onerror = null;
                     e.target.src =
                       "https://jeremysLive.com:8000/default/profile.jpg";
@@ -524,10 +537,9 @@ function FanHomePage(props) {
                 />
                 <div
                   className="position-relative"
-                  style={{ textAlign: "center" }}
-                >
-                  <span style={{ textTransform: "capitalize" }}>
-                    <i className="fas fa-heart mr-1" style={{ color: "red" }} />{" "}
+                  style={{textAlign: "center"}}>
+                  <span style={{textTransform: "capitalize"}}>
+                    <i className="fas fa-heart mr-1" style={{color: "red"}} />{" "}
                     FOLLOWING: {loggedInUserFollowing}
                   </span>
                 </div>
@@ -536,7 +548,7 @@ function FanHomePage(props) {
             <div className="tab3">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setSubCategory(subStyle[0]);
                   setisLoading(true);
                   openCity(event, "style");
@@ -546,15 +558,14 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("style", subStyle[0]));
                   }
-                }}
-              >
+                }}>
                 STYLE
               </button>
             </div>
             <div className="tab4">
               <button
                 className="tablinks"
-                onClick={(event) => {
+                onClick={event => {
                   setisLoading(true);
                   setSubCategory(subBody[0]);
                   openCity(event, "body");
@@ -564,8 +575,7 @@ function FanHomePage(props) {
                   } else {
                     dispatch(getFromCommunity("body", subBody[0]));
                   }
-                }}
-              >
+                }}>
                 BODY
               </button>
             </div>
@@ -574,8 +584,7 @@ function FanHomePage(props) {
             <Slider
               {...settings}
               className="mb-4"
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subMusic.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -608,8 +617,7 @@ function FanHomePage(props) {
                             subcategory == value
                           );
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -620,8 +628,7 @@ function FanHomePage(props) {
           <div id="food" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subFood.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -654,8 +661,7 @@ function FanHomePage(props) {
                             subcategory == value
                           );
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -666,8 +672,7 @@ function FanHomePage(props) {
           <div id="style" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subStyle.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -694,8 +699,7 @@ function FanHomePage(props) {
                           setisLoading(true);
                           dispatch(getFromCommunity("style", value));
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -706,8 +710,7 @@ function FanHomePage(props) {
           <div id="body" className="tabcontent">
             <Slider
               {...settings}
-              style={{ background: "#333333", marginBottom: "25px" }}
-            >
+              style={{background: "#333333", marginBottom: "25px"}}>
               {subBody.map((value, i) => {
                 return (
                   <div className="cats_content">
@@ -734,8 +737,7 @@ function FanHomePage(props) {
                           setisLoading(true);
                           dispatch(getFromCommunity("body", value));
                         }
-                      }}
-                    >
+                      }}>
                       {value}
                     </h3>
                   </div>
@@ -749,18 +751,45 @@ function FanHomePage(props) {
               alignItems: "right",
               display: "flex",
               flexDirection: "row-reverse",
-            }}
-          >
-            <span>{onlineCheck ? "Currently Live" : "Currently Offline"}</span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                value={onlineCheck}
-                checked={onlineCheck}
-                onChange={() => callOnlineUserList()}
-              />
-              <span className="slider round"></span>
-            </label>
+            }}>
+            {Find ? (
+              <div
+                className="category_empty"
+                style={{height: Find ? "40px" : "20px"}}>
+                <input
+                  type="search"
+                  placeholder="Search.."
+                  style={{display: Find ? "block" : "none"}}
+                  onChange={e => searchInputChange(e.target.value)}
+                />
+              </div>
+            ) : onlineCheck && Find === false ? (
+              <>
+                <span>Currently Live</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    value={onlineCheck}
+                    checked={onlineCheck}
+                    onChange={() => callOnlineUserList()}
+                  />
+                  <span className="slider round"></span>
+                </label>
+              </>
+            ) : (
+              <>
+                <span>Currently Offline</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    value={onlineCheck}
+                    checked={onlineCheck}
+                    onChange={() => callOnlineUserList()}
+                  />
+                  <span className="slider round"></span>
+                </label>
+              </>
+            )}
           </div>
           {isLoading ? (
             <div className="loader my-5"></div>
@@ -772,9 +801,8 @@ function FanHomePage(props) {
                     return (
                       <div
                         className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
+                        style={{textAlign: "center"}}
+                        key={i}>
                         {" "}
                         {/* <div
                         id={fan._id}
@@ -789,10 +817,9 @@ function FanHomePage(props) {
                           // className="swipe col-md-12 "
                           // key={index.id}
 
-                          onSwipe={(dir) => swiped(dir, fan._id)}
+                          onSwipe={dir => swiped(dir, fan._id)}
                           onCardLeftScreen={() => outOfFrame(fan._id)}
-                          preventSwipe={["down", "left", "right"]}
-                        >
+                          preventSwipe={["down", "left", "right"]}>
                           <img
                             onClick={() => showProfileDetails(fan._id)}
                             className="draggableImg"
@@ -802,7 +829,7 @@ function FanHomePage(props) {
                                 ? fan.profileImgURl
                                 : "https://jeremysLive.com:8000/default/profile.jpg"
                             }
-                            onError={(e) => {
+                            onError={e => {
                               e.target.onerror = null;
                               e.target.src =
                                 "https://jeremysLive.com:8000/default/profile.jpg";
@@ -815,7 +842,7 @@ function FanHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ margin: "auto" }}>
+                  <div style={{margin: "auto"}}>
                     <span>
                       No {subcategory}{" "}
                       {category == "music"
@@ -838,9 +865,8 @@ function FanHomePage(props) {
                       // onClick={() => console.log("Clicked-=-=-=")}
                       onClick={() => console.log("Clicked-=-=-=")}
                       className="profile_images col-sm-3 col-md-3  my-3"
-                      style={{ textAlign: "center", cursor: "pointer" }}
-                      key={i}
-                    >
+                      style={{textAlign: "center", cursor: "pointer"}}
+                      key={i}>
                       {/* <div
                         id={fan._id}
                         onDragStart={(e) => handleDragStart(e)}
@@ -853,10 +879,9 @@ function FanHomePage(props) {
                         // ref={this.addToRefs}
                         // className="swipe col-md-12 "
                         // key={index.id}
-                        onSwipe={(dir) => swipedFind(dir, fan._id)}
+                        onSwipe={dir => swipedFind(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrameFind(fan._id)}
-                        preventSwipe={["left", "right", "up", "down"]}
-                      >
+                        preventSwipe={["left", "right", "up", "down"]}>
                         <div>
                           <img
                             onClick={() => showProfileDetails(fan._id)}
@@ -868,7 +893,7 @@ function FanHomePage(props) {
                                 ? fan.profileImgURl
                                 : "https://jeremysLive.com:8000/default/profile.jpg"
                             }
-                            onError={(e) => {
+                            onError={e => {
                               e.target.onerror = null;
                               e.target.src =
                                 "https://jeremysLive.com:8000/default/profile.jpg";
@@ -882,7 +907,7 @@ function FanHomePage(props) {
                   );
                 })
               ) : (
-                <div style={{ margin: "auto" }}>
+                <div style={{margin: "auto"}}>
                   <span>
                     No {subcategory}{" "}
                     {category == "music"
@@ -907,9 +932,8 @@ function FanHomePage(props) {
                     return (
                       <div
                         className="profile_images col-sm-3 col-md-3  my-3"
-                        style={{ textAlign: "center" }}
-                        key={i}
-                      >
+                        style={{textAlign: "center"}}
+                        key={i}>
                         {" "}
                         {/* <div
                         id={fan._id}
@@ -924,10 +948,9 @@ function FanHomePage(props) {
                           // className="swipe col-md-12 "
                           // key={index.id}
 
-                          onSwipe={(dir) => swiped(dir, fan._id)}
+                          onSwipe={dir => swiped(dir, fan._id)}
                           onCardLeftScreen={() => outOfFrame(fan._id)}
-                          preventSwipe={["down", "left", "right"]}
-                        >
+                          preventSwipe={["down", "left", "right"]}>
                           <img
                             onClick={() => showProfileDetails(fan._id)}
                             className="draggableImg"
@@ -937,7 +960,7 @@ function FanHomePage(props) {
                                 ? fan.profileImgURl
                                 : "https://jeremysLive.com:8000/default/profile.jpg"
                             }
-                            onError={(e) => {
+                            onError={e => {
                               e.target.onerror = null;
                               e.target.src =
                                 "https://jeremysLive.com:8000/default/profile.jpg";
@@ -950,7 +973,7 @@ function FanHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{ margin: "auto" }}>
+                  <div style={{margin: "auto"}}>
                     <span>
                       No {subcategory}{" "}
                       {category == "music"
@@ -971,9 +994,8 @@ function FanHomePage(props) {
                   return (
                     <div
                       className="profile_images col-sm-3 col-md-3  my-3"
-                      style={{ textAlign: "center" }}
-                      key={fan._id}
-                    >
+                      style={{textAlign: "center"}}
+                      key={fan._id}>
                       {" "}
                       {/* <div
                         id={fan._id}
@@ -987,10 +1009,9 @@ function FanHomePage(props) {
                         // ref={this.addToRefs}
                         // className="swipe col-md-12 "
                         // key={index.id}
-                        onSwipe={(dir) => swiped(dir, fan._id)}
+                        onSwipe={dir => swiped(dir, fan._id)}
                         onCardLeftScreen={() => outOfFrame(fan._id)}
-                        preventSwipe={["down", "left", "right"]}
-                      >
+                        preventSwipe={["down", "left", "right"]}>
                         <img
                           onClick={() => showProfileDetails(fan._id)}
                           className="draggableImg"
@@ -999,7 +1020,7 @@ function FanHomePage(props) {
                               ? fan.profileImgURl
                               : "https://jeremysLive.com:8000/default/profile.jpg"
                           }
-                          onError={(e) => {
+                          onError={e => {
                             e.target.onerror = null;
                             e.target.src =
                               "https://jeremysLive.com:8000/default/profile.jpg";
@@ -1012,7 +1033,7 @@ function FanHomePage(props) {
                   );
                 })
               ) : (
-                <div style={{ margin: "auto" }}>
+                <div style={{margin: "auto"}}>
                   <span>
                     No {subcategory}{" "}
                     {category == "music"
@@ -1033,12 +1054,11 @@ function FanHomePage(props) {
           <div className="main_links d-flex pt-5 mt-5">
             <div className="down_links">
               <a
-                onClick={(event) => {
+                onClick={event => {
                   setisLoading(true);
                   dispatch(getFromCommunity(category, subcategory));
                   setfind(false);
-                }}
-              >
+                }}>
                 <img
                   src="../assets/images/1.png"
                   style={
@@ -1048,7 +1068,7 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
@@ -1065,7 +1085,7 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
@@ -1074,13 +1094,11 @@ function FanHomePage(props) {
             <div
               className="down_links dropup"
               onClick={() => setMoreIcon()}
-              ref={ref}
-            >
+              ref={ref}>
               <a
                 data-toggle="dropdown"
                 aria-haspopup="true"
-                aria-expanded="false"
-              >
+                aria-expanded="false">
                 <img
                   src="../assets/images/3.png"
                   style={
@@ -1090,17 +1108,16 @@ function FanHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
               </a>
               <div className="link_text mt-2">Settings</div>
-              <div className={menuClass} style={{ background: "#333333" }}>
+              <div className={menuClass} style={{background: "#333333"}}>
                 <ul className="menu_item">
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/profile")}
-                  >
+                    onClick={() => props.history.push("/profile")}>
                     MY PROFILE
                   </li>
                   <li
@@ -1111,14 +1128,12 @@ function FanHomePage(props) {
                         userId: localStorage.getItem("id"),
                         isMystory: true,
                       })
-                    }
-                  >
+                    }>
                     MY PAGES AND PLACES
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => callJournal()}
-                  >
+                    onClick={() => callJournal()}>
                     ACCOUNTING LEDGER
                   </li>
                   <li
@@ -1129,22 +1144,19 @@ function FanHomePage(props) {
                         userId: localStorage.getItem("id"),
                         isMystory: true,
                       })
-                    }
-                  >
+                    }>
                     MY RATINGS AND REVIWS
                   </li>
                   <li
                     className="dropdown-item menu more_list"
-                    onClick={() => props.history.push("/termsCondition")}
-                  >
+                    onClick={() => props.history.push("/termsCondition")}>
                     TERMS AND CONDITIONS
                   </li>
                   <li
                     className="dropdown-item menu more_list"
                     onClick={() => {
                       props.history.push("/customerService");
-                    }}
-                  >
+                    }}>
                     CONTACT
                   </li>
                 </ul>
@@ -1153,8 +1165,7 @@ function FanHomePage(props) {
             <div
               className="down_links"
               onClick={callLogout}
-              style={{ cursor: "pointer" }}
-            >
+              style={{cursor: "pointer"}}>
               <a>
                 <img src="../assets/images/4.png" />
               </a>

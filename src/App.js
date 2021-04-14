@@ -24,6 +24,7 @@ import FanOrbForUser from "./components/ORB/FanOrbForUser";
 import VideoCallBasicCall from "./components/videoCall/VideoCallBasicCall";
 import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
 import VideoCall1 from "./components/videoCall/videoCallHost copy";
+import Privacy from "./components/Privacy";
 
 function App() {
   return (
@@ -77,6 +78,7 @@ function App() {
         <Route exact path="/myCalendar" component={Calendar} />
         <Route path="/one-to-one" component={VideoCallBasicCall} />
         <Route path="/one-to-one-1" component={VideoCallBasicCall1} />
+        <Route path="/privacy-policy" component={Privacy} />
         <PrivateRoute path="/myStory" component={MyStory} />
       </BrowserRouter>
     </div>
