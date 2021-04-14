@@ -258,7 +258,7 @@ body {
   position: relative !important;
 }
 
-#fan-remote-playerlist > div {
+.ORB_main_cat > div {
   /* display: flex;
   flex-direction: row; */
   margin: 20px;

@@ -114,6 +114,17 @@ export const orbReducer = (state = null, action) => {
         ...state,
       };
 
+    case "SET_R_VALUE":
+      return {
+        ...state,
+      };
+
+    case "GET_R_VALUE":
+      return {
+        ...state,
+        Rvalue: action.payload,
+      };
+
     default:
       return state;
   }

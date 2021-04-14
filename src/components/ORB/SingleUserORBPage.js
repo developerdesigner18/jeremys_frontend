@@ -14,6 +14,7 @@ import {
   joinedFan,
   removedJoinFan,
   getLiveStream,
+  getChangedRValue,
 } from "../../actions/orbActions";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
@@ -55,6 +56,7 @@ function SingleUserORBPage(props) {
   const [streamObj, setStreamObj] = useState({});
   const [videoPause, setVideoPause] = useState(false);
   const [audioPause, setAudioPause] = useState(false);
+  const [rValue, setRValue] = useState(false);
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -100,12 +102,14 @@ function SingleUserORBPage(props) {
     setShowTip(false);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     let interval = null;
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
       }, 1000);
+
+      // if (streamObj) await dispatch(getChangedRValue(streamObj._id));
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
@@ -246,13 +250,20 @@ function SingleUserORBPage(props) {
                                 "height:160px; width: 160px; border-radius:50%;"
                               );
                               document
-                                .getElementById("other-fan-remote1")
+                                .getElementById("other-fan-remote")
                                 .appendChild(playerWrapper);
                               if (mediaType == "video") {
                                 user.videoTrack.play(
                                   `player-wrapper-${user.uid}`
                                 );
+                                // if (mediaType === "audio") {
+                                // user.audioTrack.play();
+                                // }
                               } else {
+                                console.log(
+                                  "media-reconnect-start event will be called.............",
+                                  uid
+                                );
                                 rtc.client.on("media-reconnect-start", uid => {
                                   console.log(
                                     "media-reconnect-start event called.............",
@@ -284,7 +295,7 @@ function SingleUserORBPage(props) {
                                 "height:160px; width: 160px; border-radius:50%;"
                               );
                               document
-                                .getElementById("other-fan-remote")
+                                .getElementById("other-fan-remote1")
                                 .appendChild(playerWrapper);
                               if (mediaType == "video") {
                                 user.videoTrack.play(
@@ -324,8 +335,15 @@ function SingleUserORBPage(props) {
                             agoraClass.appendChild(playerWrapper);
                             if (mediaType == "video") {
                               user.videoTrack.play(playerWrapper);
+                              // if()
+                              // user.audioTrack.play();
+
                               // user.videoTrack.play(agoraClass);
                             } else {
+                              console.log(
+                                "media-reconnect-start event will be called.............",
+                                uid
+                              );
                               rtc.client.on("media-reconnect-start", uid => {
                                 console.log(
                                   "media-reconnect-start event called.............",
@@ -405,6 +423,9 @@ function SingleUserORBPage(props) {
           setTime(180);
         }
         setStreamObj(orbState.getLiveStreamData);
+      }
+      if (orbState.Rvalue) {
+        setRValue(orbState.Rvalue.muteForFan);
       }
     }
   }, [orbState]);
@@ -587,10 +608,23 @@ function SingleUserORBPage(props) {
           <div className="r_image">
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
-              <img src="../assets/images/r_image.png" className="m-0" />
+              <img src="../assets/images/Qcolor.png" className="m-0" />
+            ) : props.location.state.type == " star" ||
+              props.location.state.type == "Star" ? (
+              rValue ? (
+                <img
+                  src="../assets/images/r_image.png"
+                  style={{height: "80px", width: "80px"}}
+                />
+              ) : (
+                <img
+                  src="../assets/images/disableR.png"
+                  style={{height: "80px", width: "80px"}}
+                />
+              )
             ) : (
               <img
-                src="../assets/images/Qcolor.png"
+                src="../assets/images/disableR.png"
                 style={{height: "80px", width: "80px"}}
               />
             )}
@@ -624,12 +658,22 @@ function SingleUserORBPage(props) {
                 <p>Take Picture</p>
               </div>
             </a>
-            <a style={{cursor: "pointer"}} onClick={callAudioPause}>
-              <div className="ORB_link d-flex flex-column">
-                <img src="../assets/images/audio.png" />
-                <p>Audio</p>
-              </div>
-            </a>
+            {rValue ? (
+              <a style={{cursor: "pointer"}} onClick={callAudioPause}>
+                <div className="ORB_link d-flex flex-column">
+                  <img src="../assets/images/audio.png" />
+                  <p>Audio</p>
+                </div>
+              </a>
+            ) : (
+              <a style={{cursor: "no-drop"}}>
+                <div className="ORB_link d-flex flex-column">
+                  <img src="../assets/images/audio.png" />
+                  <p>Audio</p>
+                </div>
+              </a>
+            )}
+
             <a style={{cursor: "pointer"}} onClick={callVideoPause}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/camera.png" />

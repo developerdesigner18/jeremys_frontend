@@ -406,3 +406,41 @@ export const storeHostUId = uid => {
       });
   };
 };
+
+export const changeRValue = data => {
+  return dispatch => {
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}api/liveStream/changeMuteValue`,
+        data
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "SET_R_VALUE",
+          });
+        }
+      })
+      .catch(err => {
+        console.log("err..", err);
+      });
+  };
+};
+
+export const getChangedRValue = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/liveStream/getMuteValue?streamId=${data}`
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "GET_R_VALUE",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(err => console.log("error... ", err));
+  };
+};

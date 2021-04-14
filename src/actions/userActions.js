@@ -6,6 +6,7 @@ export const registration = (data, props) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/signup`, data)
       .then(result => {
+        console.log("result... ", result.data.data._id);
         if (result.data.success === true) {
           dispatch({
             type: "SIGN_UP",
@@ -57,7 +58,7 @@ export const login = (data, props) => {
           if (result.data.data.type === "Fan" || data.type === "fan") {
             window.location.replace("/fanHomePage");
           } else {
-            props.history.push("/userHomepage", { type: result.data.type });
+            props.history.push("/userHomepage", {type: result.data.type});
           }
         } else {
           swal("!Oops", result.data.message, "error");

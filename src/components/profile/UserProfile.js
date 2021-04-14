@@ -201,7 +201,7 @@ function UserProfile(props) {
     if (userInfo.paypalEmail) {
       swal({
         text:
-          "Please make sure you have entered correct and proper paypal email address!",
+          "Please enter your PayPal information correctly, to ensure prompt payment.  All charges will be net, of the 18% fee, retained by Jeremy's Live.  You will receive 82% of all the charges as defined, in the terms and conditions.",
         buttons: ["OK", "Yes, I have Checked!"],
       }).then(async function (isConfirm) {
         if (isConfirm) {

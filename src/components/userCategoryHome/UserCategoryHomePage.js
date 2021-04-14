@@ -278,13 +278,13 @@ function UserCategoryHomePage(props) {
                         ? currentUserdata.data.profileImgURl != "" &&
                           currentUserdata.data.profileImgURl != null
                           ? currentUserdata.data.profileImgURl
-                          : "https://artsiam.com:8000/default/profile.jpg"
-                        : "https://artsiam.com:8000/default/profile.jpg"
+                          : "https://jeremyslive.com:8000/default/profile.jpg"
+                        : "https://jeremyslive.com:8000/default/profile.jpg"
                     }
                     onError={e => {
                       e.target.onerror = null;
                       e.target.src =
-                        "https://artsiam.com:8000/default/profile.jpg";
+                        "https://jeremyslive.com:8000/default/profile.jpg";
                     }}
                   />
                   <div
@@ -335,12 +335,12 @@ function UserCategoryHomePage(props) {
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
                                 ? fan.profileImgURl
-                                : "https://artsiam.com:8000/default/profile.jpg"
+                                : "https://jeremyslive.com:8000/default/profile.jpg"
                             }
                             onError={e => {
                               e.target.onerror = null;
                               e.target.src =
-                                "https://artsiam.com:8000/default/profile.jpg";
+                                "https://jeremyslive.com:8000/default/profile.jpg";
                             }}
                             onClick={() =>
                               history.push("/myStory", {
@@ -395,12 +395,12 @@ function UserCategoryHomePage(props) {
                               fan.profileImgURl != "" &&
                               fan.profileImgURl != null
                                 ? fan.profileImgURl
-                                : "https://artsiam.com:8000/default/profile.jpg"
+                                : "https://jeremyslive.com:8000/default/profile.jpg"
                             }
                             onError={e => {
                               e.target.onerror = null;
                               e.target.src =
-                                "https://artsiam.com:8000/default/profile.jpg";
+                                "https://jeremyslive.com:8000/default/profile.jpg";
                             }}
                             onClick={() =>
                               history.push("/myStory", {

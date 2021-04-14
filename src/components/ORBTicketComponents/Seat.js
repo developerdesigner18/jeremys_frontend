@@ -6,6 +6,8 @@ function Seat(props) {
   const storeSeat = () => {
     props.setSeats(seatNo);
     props.setShow(false);
+    let array = [...Array(seatNo)];
+    props.setSeatArray(array);
   };
 
   return (
