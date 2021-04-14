@@ -462,7 +462,6 @@ function ORBPage(props) {
           ) : null}
         </Modal.Body>
       </Modal>
-
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -571,13 +570,38 @@ function ORBPage(props) {
           </div>
         </div>
       </div>
-      <div
-        className="container row ORB_videos_container mt-5 mx-auto player"
-        id="fan-remote-playerlist2"
-      >
-        {isLive ? (subscribedUsers ? null : showHosts()) : null}
-        {subscribedUsers ? showEmptyCircles() : null}
-      </div>
+      {isLive ? (
+        <>
+          {subscribedUsers ? (
+            <div
+              className="container d-flex justify-content-center mt-1"
+              style={{ textAlign: "center", height: "100px" }}
+            >
+              {/* <div className="ORB_main_cat m-0"> */}
+              <img src="../assets/images/live-btn.png" />
+              {/* </div> */}
+            </div>
+          ) : null}
+          <div
+            className={`container row ORB_videos_container mx-auto player ${
+              subscribedUsers ? "mt-0" : "mt-1"
+            }`}
+            id="fan-remote-playerlist2"
+          >
+            {isLive ? (subscribedUsers ? null : showHosts()) : null}
+            {subscribedUsers ? showEmptyCircles() : null}
+          </div>
+          <div
+            className="container d-flex justify-content-center"
+            style={{ textAlign: "center", height: "100px" }}
+          >
+            {/* <div className="ORB_main_cat m-0"> */}
+            <img src="../assets/images/r_image.png" />
+            {/* </div> */}
+          </div>
+        </>
+      ) : null}
+
       <div className="container row ORB_videos_container mt-5 mx-auto  player">
         {isLive ? null : (
           // showHosts()
