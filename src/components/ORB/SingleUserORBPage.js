@@ -4,6 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import {socket} from "../../socketIO";
+// import socketIOClient from "socket.io-client";
 import axios from "axios";
 import swal from "sweetalert";
 import {useHistory} from "react-router-dom";
@@ -14,7 +15,6 @@ import {
   joinedFan,
   removedJoinFan,
   getLiveStream,
-  getChangedRValue,
 } from "../../actions/orbActions";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
@@ -56,7 +56,8 @@ function SingleUserORBPage(props) {
   const [streamObj, setStreamObj] = useState({});
   const [videoPause, setVideoPause] = useState(false);
   const [audioPause, setAudioPause] = useState(false);
-  const [rValue, setRValue] = useState(false);
+  const [rValue, setRvalue] = useState(false);
+  const [socketIO, setSocketIO] = useState(socket);
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -102,14 +103,13 @@ function SingleUserORBPage(props) {
     setShowTip(false);
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     let interval = null;
+
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
       }, 1000);
-
-      // if (streamObj) await dispatch(getChangedRValue(streamObj._id));
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
@@ -123,7 +123,10 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    socket.emit("storeLiveFans", localStorage.getItem("id"));
+    socketIO.emit("storeLiveFans", localStorage.getItem("id"));
+
+    socketIO.on("getRvalue", data => console.log("r value data.. ", data));
+
     document.documentElement.scrollTop = 0;
     await dispatch(getLiveStream(props.location.state.id));
 
@@ -424,9 +427,6 @@ function SingleUserORBPage(props) {
         }
         setStreamObj(orbState.getLiveStreamData);
       }
-      if (orbState.Rvalue) {
-        setRValue(orbState.Rvalue.muteForFan);
-      }
     }
   }, [orbState]);
 
@@ -624,7 +624,7 @@ function SingleUserORBPage(props) {
               )
             ) : (
               <img
-                src="../assets/images/disableR.png"
+                src="../assets/images/Qcolor.png"
                 style={{height: "80px", width: "80px"}}
               />
             )}
@@ -673,7 +673,6 @@ function SingleUserORBPage(props) {
                 </div>
               </a>
             )}
-
             <a style={{cursor: "pointer"}} onClick={callVideoPause}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/camera.png" />

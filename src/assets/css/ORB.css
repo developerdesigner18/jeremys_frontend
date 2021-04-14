@@ -252,6 +252,11 @@ body {
 #other-fan-remote1 .agora_video_player {
   border-radius: 50% !important;
 }
+.fan_ORB_main_small_video .agora_video_player {
+  border-radius: 50% !important;
+  width: 160px !important;
+  height: 153px !important;
+}
 
 #user-remote-playerlist .agora_video_player {
   border-radius: 50% !important;

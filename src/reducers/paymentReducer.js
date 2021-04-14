@@ -25,6 +25,8 @@ const paymentReducer = (state = null, action) => {
       };
 
     case "FAN_JOURNAL_DATA":
+    case "CHEF_JOURNAL_DATA":
+    case "STAR_JOURNAL_DATA":
       return {
         ...state,
         journalData: action.payload,

@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useHistory} from "react-router-dom";
-import {useSelector, useDispatch} from "react-redux";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import "../../assets/css/myStory.css";
 import {
   getUserWithId,
@@ -11,11 +11,16 @@ import {
   checkUserInCommunity,
   addToCommunity,
 } from "../../actions/userActions";
-import {getFollowing, getFollowers} from "../../actions/followActions";
-import {checkUserOnline} from "../../actions/orbActions";
+import { getFollowing, getFollowers } from "../../actions/followActions";
+import { checkUserOnline } from "../../actions/orbActions";
+import {
+  fanJournalData,
+  chefJournalData,
+  starJournalData,
+} from "../../actions/paymentActions";
 import Pagination from "react-js-pagination";
 import StarRatings from "react-star-ratings";
-import {socket} from "../../socketIO";
+import { socket } from "../../socketIO";
 import {
   getJoinedFanList,
   getUserStatus,
@@ -29,10 +34,10 @@ function MyStory(props) {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const stateData = useSelector(state => state.user);
-  const followData = useSelector(state => state.follow);
-  const stateORB = useSelector(state => state.ORB);
-  const paymentState = useSelector(state => state.payment);
+  const stateData = useSelector((state) => state.user);
+  const followData = useSelector((state) => state.follow);
+  const stateORB = useSelector((state) => state.ORB);
+  const paymentState = useSelector((state) => state.payment);
 
   const [userInfo, setUserInfo] = useState();
   const [following, setFollowing] = useState();
@@ -42,7 +47,7 @@ function MyStory(props) {
   const [screenShotCounter, setScreenShotCounter] = useState(0);
   const [rightPart, setRightPart] = useState(props.location.state.pageNumber);
   const [journalDataTemp, setJournalData] = useState([]);
-  const [perPage, setperPage] = React.useState(5);
+  const [perPage, setperPage] = React.useState(4);
   const [perPageReview, setperPageReview] = React.useState(4);
   const [activePage, setactivePage] = useState(0);
   const [Offset, setOffset] = useState(0);
@@ -59,7 +64,7 @@ function MyStory(props) {
   const [connectedFan, setConnectedFan] = useState([]);
 
   const [fanJoined, setFanJoined] = useState(false);
-
+  // console.log("props-==--=", props.location);
   useEffect(async () => {
     dispatch(getUserWithId(props.location.state.userId));
     dispatch(getFollowing(props.location.state.userId));
@@ -68,9 +73,29 @@ function MyStory(props) {
     dispatch(getReviewOfArtist(props.location.state.userId));
     dispatch(checkUserOnline(props.location.state.userId));
     dispatch(checkUserInCommunity(props.location.state.userId));
-    await dispatch(getUserStatus(props.location.state.userId));
-    await dispatch(getJoinedFanList(props.location.state.userId));
-    await dispatch(onlineUserCheck(props.location.state.userId));
+    dispatch(getUserStatus(props.location.state.userId));
+    dispatch(getJoinedFanList(props.location.state.userId));
+    dispatch(onlineUserCheck(props.location.state.userId));
+    if (
+      localStorage.getItem("type") == "fan" ||
+      localStorage.getItem("type") == "Fan"
+    ) {
+      dispatch(
+        fanJournalData(
+          props.location.state.userId,
+          localStorage.getItem("type")
+        )
+      );
+    } else if (
+      localStorage.getItem("type") == "chef" ||
+      localStorage.getItem("type") == "Chef" ||
+      localStorage.getItem("type") == "stylist" ||
+      localStorage.getItem("type") == "Stylist"
+    ) {
+      dispatch(chefJournalData(props.location.state.userId));
+    } else {
+      dispatch(starJournalData(props.location.state.userId));
+    }
   }, []);
 
   useEffect(() => {
@@ -79,7 +104,7 @@ function MyStory(props) {
       if (stateData.userInfo) {
         setUserInfo(stateData.userInfo);
         var publicStory = stateData.userInfo.data.screenShots.filter(
-          element => element.private == "0"
+          (element) => element.private == "0"
         );
         if (props.location.state.isMystory) {
           setScreenShot(stateData.userInfo.data.screenShots);
@@ -93,7 +118,7 @@ function MyStory(props) {
               setReviewData(stateData.reviewOfFan);
             } else {
               var publicFanReview = stateData.reviewOfFan.filter(
-                element => element.hideByFan === false
+                (element) => element.hideByFan === false
               );
               setReviewData(publicFanReview);
             }
@@ -105,7 +130,7 @@ function MyStory(props) {
               setReviewData(stateData.reviewOfArtist);
             } else {
               var publicArtistReview = stateData.reviewOfArtist.filter(
-                element => element.hideByArtist === false
+                (element) => element.hideByArtist === false
               );
               setReviewData(publicArtistReview);
             }
@@ -182,7 +207,7 @@ function MyStory(props) {
   let indexOfLastUser = Offset + perPage;
   let current = journalDataTemp.slice(indexOfFirstUser, indexOfLastUser);
 
-  const handleJournalChange = pageNumberpaginate => {
+  const handleJournalChange = (pageNumberpaginate) => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     setactivePage(selectedPage);
@@ -193,7 +218,7 @@ function MyStory(props) {
   let indexOfLast = OffsetReview + perPageReview;
   let currentreview = reviewData.slice(indexOfFirst, indexOfLast);
 
-  const handleReviewChange = pageNumberpaginate => {
+  const handleReviewChange = (pageNumberpaginate) => {
     const selectedPage = pageNumberpaginate - 1;
     const OffsetReview = selectedPage * perPageReview;
     setactiveReviewPage(selectedPage);
@@ -304,8 +329,9 @@ function MyStory(props) {
             justifyContent: "space-between",
             fontSize: "20px",
             color: "#6c6b6b",
-          }}>
-          <p onClick={() => history.push("/")} style={{cursor: "pointer"}}>
+          }}
+        >
+          <p onClick={() => history.push("/")} style={{ cursor: "pointer" }}>
             &#60; back
           </p>
 
@@ -323,9 +349,14 @@ function MyStory(props) {
                   userInfo
                     ? userInfo.data.profileImgURl
                       ? userInfo.data.profileImgURl
-                      : "https://artsiam.com:8000/default/profile.jpg"
-                    : "https://artsiam.com:8000/default/profile.jpg"
+                      : "https://jeremysLive.com:8000/default/profile.jpg"
+                    : "https://jeremysLive.com:8000/default/profile.jpg"
                 }
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://jeremysLive.com:8000/default/profile.jpg";
+                }}
               />
               <div className="top_chef_details position-absolute d-flex">
                 <div className="chef_desc">
@@ -356,7 +387,8 @@ function MyStory(props) {
                         onClick={() => {
                           goToORB();
                         }}
-                        style={{border: "solid 2px greem"}}></img>
+                        style={{ border: "solid 2px greem" }}
+                      ></img>
                     )}
                   </div>
                 ) : null
@@ -370,7 +402,8 @@ function MyStory(props) {
                       onClick={() => {
                         goToORB();
                       }}
-                      style={{border: "solid 2px greem"}}></img>
+                      style={{ border: "solid 2px greem" }}
+                    ></img>
                   )}
                 </div>
               ) : (
@@ -382,7 +415,8 @@ function MyStory(props) {
                       <img
                         src="../assets/images/button_bg_small.png"
                         onClick={callAddToCommunity}
-                        style={{cursor: "pointer"}}></img>
+                        style={{ cursor: "pointer" }}
+                      ></img>
                       <p>JOIN</p>
                     </>
                   )}
@@ -392,20 +426,23 @@ function MyStory(props) {
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(1)}
-                  style={{fontWeight: rightPart === 1 ? "600" : ""}}>
+                  style={{ fontWeight: rightPart === 1 ? "600" : "" }}
+                >
                   Pages and Places
                 </div>
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(2)}
-                  style={{fontWeight: rightPart === 2 ? "600" : ""}}>
+                  style={{ fontWeight: rightPart === 2 ? "600" : "" }}
+                >
                   Reviews and Comments
                 </div>
                 {isMyStory ? (
                   <div
                     className="mystory_option"
                     onClick={() => setRightPart(3)}
-                    style={{fontWeight: rightPart === 3 ? "600" : ""}}>
+                    style={{ fontWeight: rightPart === 3 ? "600" : "" }}
+                  >
                     Journals
                   </div>
                 ) : (
@@ -453,7 +490,8 @@ function MyStory(props) {
               <>
                 <div
                   className="journal_sec position-relative"
-                  style={{alignItems: "center"}}>
+                  style={{ alignItems: "center" }}
+                >
                   {screenShot ? (
                     screenShot.length > 0 ? (
                       <div>
@@ -527,7 +565,8 @@ function MyStory(props) {
                           width: "100%",
                           height: "100%",
                           alignItems: "center",
-                        }}>
+                        }}
+                      >
                         No review Found
                       </p>
                     ) : (
@@ -542,7 +581,8 @@ function MyStory(props) {
                                     <td>
                                       <img
                                         src={element.artistId.profileImgURl}
-                                        className="fanReviewTable_image"></img>
+                                        className="fanReviewTable_image"
+                                      ></img>
                                     </td>
                                     <td>
                                       <p className="fanReviewTable_time">
@@ -554,7 +594,8 @@ function MyStory(props) {
                                           style={{
                                             textTransform: "uppercase",
                                             fontWeight: "600",
-                                          }}>
+                                          }}
+                                        >
                                           {element.artistId.type}
                                         </p>
                                       </div>
@@ -573,7 +614,8 @@ function MyStory(props) {
                                                 element.hideByFan,
                                                 index
                                               );
-                                            }}></input>
+                                            }}
+                                          ></input>
                                           <label>Hide this page</label>
                                         </div>
                                       ) : (
@@ -586,7 +628,8 @@ function MyStory(props) {
                                     <td>
                                       <img
                                         src={element.fanId.profileImgURl}
-                                        className="fanReviewTable_image"></img>
+                                        className="fanReviewTable_image"
+                                      ></img>
                                     </td>
                                     <td>
                                       <p className="fanReviewTable_time">
@@ -598,7 +641,8 @@ function MyStory(props) {
                                           style={{
                                             textTransform: "uppercase",
                                             fontWeight: "600",
-                                          }}>
+                                          }}
+                                        >
                                           {element.fanId.type}
                                         </p>
                                       </div>
@@ -617,7 +661,8 @@ function MyStory(props) {
                                                 element.hideByArtist,
                                                 index
                                               );
-                                            }}></input>
+                                            }}
+                                          ></input>
                                           <label>Hide this page</label>
                                         </div>
                                       ) : (
@@ -633,7 +678,8 @@ function MyStory(props) {
                                 style={{
                                   textTransform: "uppercase",
                                   fontWeight: "600",
-                                }}>
+                                }}
+                              >
                                 {element.item}
                               </td>
                               <td>
@@ -670,68 +716,171 @@ function MyStory(props) {
                     <table className="tableJournal">
                       {userInfo ? (
                         userInfo.data.type == "Star" ||
+                        userInfo.data.type == "star" ||
+                        userInfo.data.type == "trainer" ||
                         userInfo.data.type == "Trainer" ? (
                           <>
-                            <tr>
-                              <th></th>
-                              <th>DURATION</th>
-                              <th>
-                                TICKET <br></br> SOLD
-                              </th>
-                              <th>
-                                TICKET <br></br> PRICE
-                              </th>
-                              <th>TIPS</th>
-                              <th>
-                                TOTAL <br></br> EARNINGS
-                              </th>
-                            </tr>
-                            {current.map(element => {
-                              return (
+                            {current.length == 0 ? (
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  position: "absolute",
+                                  left: "0",
+                                  top: "0",
+                                  width: "100%",
+                                  height: "100%",
+                                  alignItems: "center",
+                                }}
+                              >
+                                No Earnings Found
+                              </p>
+                            ) : (
+                              <>
+                                {" "}
                                 <tr>
-                                  <td>{element.time}</td>
-                                  <td>{element.duration}</td>
-                                  <td>{element.ticketSold}</td>
-                                  <td>{element.ticketPrice}</td>
-                                  <td>${element.tips}</td>
-                                  <td>${element.total}</td>
+                                  <th></th>
+                                  <th>DURATION</th>
+                                  <th>
+                                    TICKET <br></br> SOLD
+                                  </th>
+                                  <th>
+                                    TICKET <br></br> PRICE
+                                  </th>
+                                  <th>TIPS</th>
+                                  <th>
+                                    TOTAL <br></br> EARNINGS
+                                  </th>
                                 </tr>
-                              );
-                            })}
+                                {current.map((element) => {
+                                  let orderTotal =
+                                    element.soldTicket * element.ticketPrice;
+                                  let totalEarning = orderTotal + element.tips;
+                                  var hours = "00",
+                                    minutes = "00";
+                                  if (element.duraion) {
+                                    hours = Math.floor(element.duraion / 60);
+
+                                    minutes = element.duraion % 60;
+                                    if (minutes < 10) {
+                                      minutes = "0" + minutes;
+                                    }
+                                  }
+                                  return (
+                                    <tr>
+                                      <td>
+                                        <p className="mb-0">
+                                          {moment(element.createdAt).format(
+                                            "DD MMM YYYY"
+                                          )}
+                                        </p>
+                                        <p className="mb-0">
+                                          {moment(element.createdAt).format(
+                                            "HH:mm"
+                                          )}
+                                        </p>
+                                      </td>
+                                      <td>{`${hours} : ${minutes} hours`}</td>
+                                      <td>{element.soldTicket}</td>
+                                      <td>${element.ticketPrice}</td>
+                                      <td>${element.tips}</td>
+                                      <td>${totalEarning}</td>
+                                    </tr>
+                                  );
+                                })}
+                              </>
+                            )}
                           </>
                         ) : userInfo.data.type == "Chef" ||
+                          userInfo.data.type == "chef" ||
+                          userInfo.data.type == "stylist" ||
                           userInfo.data.type == "Stylist" ? (
                           <>
-                            <tr>
-                              <th></th>
-                              <th>ITEMS</th>
-                              <th>ORDER TOTAL</th>
-                              <th>TIPS</th>
-                              <th>TOTAL EARNINGS</th>
-                            </tr>
-                            {current.map(element => {
-                              return (
+                            {current.length == 0 ? (
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  position: "absolute",
+                                  left: "0",
+                                  top: "0",
+                                  width: "100%",
+                                  height: "100%",
+                                  alignItems: "center",
+                                }}
+                              >
+                                No Earnings Found
+                              </p>
+                            ) : (
+                              <>
+                                {/* {console.log("current-=-=-=", current)}{" "} */}
                                 <tr>
-                                  <td>{element.time}</td>
-                                  <td>{element.items}</td>
-                                  <td>${element.orderTotal}</td>
-                                  <td>${element.tips}</td>
-                                  <td>${element.total}</td>
+                                  <th></th>
+                                  <th>ITEMS</th>
+                                  <th>ORDER TOTAL</th>
+                                  <th>TIPS</th>
+                                  <th>TOTAL EARNINGS</th>
                                 </tr>
-                              );
-                            })}
+                                {current.map((element) => {
+                                  let orderTotal = 0;
+
+                                  console.log("element-=-=-=", element);
+
+                                  if (
+                                    element.price &&
+                                    element.price.length > 0
+                                  ) {
+                                    orderTotal = element.price.reduce(
+                                      (a, b) => parseFloat(a) + parseFloat(b),
+                                      0
+                                    );
+                                  }
+                                  return (
+                                    <tr>
+                                      <td>
+                                        <p className="mb-0">
+                                          {moment(element.createdAt).format(
+                                            "DD MMM YYYY"
+                                          )}
+                                        </p>
+                                        <p className="mb-0">
+                                          {moment(element.createdAt).format(
+                                            "HH:mm"
+                                          )}
+                                        </p>
+                                      </td>
+                                      <td>
+                                        {element.item
+                                          ? element.item.map((item) => (
+                                              <p className="mb-0">{item}</p>
+                                            ))
+                                          : "item"}
+                                      </td>
+                                      <td>${orderTotal}</td>
+                                      <td>${element.tip}</td>
+                                      <td>
+                                        $
+                                        {parseFloat(orderTotal) +
+                                          parseFloat(element.tip)}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </>
+                            )}
                           </>
                         ) : (
                           <>
-                            {current.map(element => {
+                            {current.map((element) => {
                               return (
                                 <tr className="fanJurnalTable">
                                   <td>
                                     <img
-                                      src={element.userId.profileImgURl}></img>
+                                      src={element.userId.profileImgURl}
+                                    ></img>
                                   </td>
                                   <td>
-                                    <p>
+                                    <p className="mb-0">
                                       {moment(element.createdAt).format(
                                         "DD MMM YYYY"
                                       ) +
@@ -750,7 +899,8 @@ function MyStory(props) {
                                         style={{
                                           textTransform: "uppercase",
                                           fontWeight: "600",
-                                        }}>
+                                        }}
+                                      >
                                         {element.userId.type}
                                       </p>
                                     </div>
@@ -759,7 +909,8 @@ function MyStory(props) {
                                     style={{
                                       textTransform: "uppercase",
                                       fontWeight: "600",
-                                    }}>
+                                    }}
+                                  >
                                     {element.item.join()}
 
                                     <p>${element.total}</p>

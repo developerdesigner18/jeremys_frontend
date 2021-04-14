@@ -182,7 +182,9 @@ body {
   right: 0;
   text-align: center;
   display: flex;
+  background-color: black;
   justify-content: center;
+  margin-left: 8px;
 }
 .down_chef_links div {
   text-decoration: underline;
@@ -190,12 +192,14 @@ body {
   font-size: 18px;
 }
 .bottom_action {
+  background-color: black;
   bottom: 30px;
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 8px;
 }
 .heart_image img {
   width: 30px;
@@ -320,6 +324,9 @@ p.titleReview {
 }
 .mystory_option:first-child {
   margin-right: 15px;
+}
+.mystory_option:last-child {
+  margin-left: 15px;
 }
 table.tableJournal img {
   height: 70px;

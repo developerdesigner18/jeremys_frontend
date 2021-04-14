@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "../../assets/css/ticket.css";
 
 function GenerateTicket(props) {
@@ -22,7 +22,7 @@ function GenerateTicket(props) {
             onClick={() => {
               props.setShow(false);
             }}
-            style={{zIndex: "1", padding: "5px"}}
+            style={{ zIndex: "1", padding: "5px" }}
           />
         </div>
         <div className="main_container d-flex flex-column align-items-center">
@@ -34,16 +34,16 @@ function GenerateTicket(props) {
               <div className="">
                 <img
                   src={props.userDetail.data.profileImgURl}
-                  onError={e => {
+                  onError={(e) => {
                     e.target.onerror = null;
                     e.target.src =
-                      "https://artsiam.com:8000/default/profile.jpg";
+                      "https://jeremysLive.com:8000/default/profile.jpg";
                   }}
                 />
               </div>
             </div>
           </div>
-          <button className="reciept_button mb-3" style={{cursor: "text"}}>
+          <button className="reciept_button mb-3" style={{ cursor: "text" }}>
             {props.userDetail
               ? props.userDetail.data.firstName +
                 " " +
@@ -56,7 +56,8 @@ function GenerateTicket(props) {
               fontWeight: "500",
               fontSize: "20px",
               letterSpacing: "4px",
-            }}>
+            }}
+          >
             Live Performance
           </h4>
           <div className="text-center">
@@ -79,27 +80,30 @@ function GenerateTicket(props) {
           </div>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             Duration :
           </p>
-          <p className="" style={{letterSpacing: "2px"}}>
+          <p className="" style={{ letterSpacing: "2px" }}>
             {Math.floor(props.time / 60)} Minutes
           </p>
 
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             Seats :
           </p>
-          <p className="" style={{letterSpacing: "2px"}}>
+          <p className="" style={{ letterSpacing: "2px" }}>
             {props.seats}
           </p>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
+            style={{ fontWeight: "600", letterSpacing: "3px" }}
+          >
             ticket price :
           </p>
-          <p className="" style={{letterSpacing: "2px"}}>
+          <p className="" style={{ letterSpacing: "2px" }}>
             $
             <input
               type="number"
@@ -110,7 +114,7 @@ function GenerateTicket(props) {
                 textAlign: "center",
                 verticalAlign: "middle",
               }}
-              onChange={e => setPrice(e.target.value)}
+              onChange={(e) => setPrice(e.target.value)}
             />
           </p>
 

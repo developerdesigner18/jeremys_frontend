@@ -109,7 +109,18 @@ export const updateProfile = data => {
             type: "UPDATE_PROFILE",
             payload: result.data,
           });
-          swal("Info", "User details updated successfully!", "success");
+          swal("Info", "User details updated successfully!", "success").then(
+            () => {
+              if (
+                localStorage.getItem("type") == "fan" ||
+                localStorage.getItem("type") == "Fan"
+              ) {
+                window.location.replace("/fanHomePage");
+              } else {
+                window.location.replace("/userHomepage");
+              }
+            }
+          );
         }
       })
       .catch(err => console.log("error ", err));
