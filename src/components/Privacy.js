@@ -2,7 +2,7 @@ import React from "react";
 
 function Privacy() {
   return (
-    <div>
+    <div className="container">
       <strong>Privacy Policy</strong>
       <p>
         Jeremy's Live built the Jeremy's Live app as a Free app. This SERVICE is
