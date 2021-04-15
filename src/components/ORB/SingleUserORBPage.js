@@ -3,8 +3,8 @@ import html2canvas from "html2canvas";
 import {useDispatch, useSelector} from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
-import {socket} from "../../socketIO";
-// import socketIOClient from "socket.io-client";
+// import {socket} from "../../socketIO";
+import socketIOClient from "socket.io-client";
 import axios from "axios";
 import swal from "sweetalert";
 import {useHistory} from "react-router-dom";
@@ -57,7 +57,8 @@ function SingleUserORBPage(props) {
   const [videoPause, setVideoPause] = useState(false);
   const [audioPause, setAudioPause] = useState(false);
   const [rValue, setRvalue] = useState(false);
-  const [socketIO, setSocketIO] = useState(socket);
+
+  // const socketIO = useRef();
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -123,9 +124,19 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
+    const socketIO = socketIOClient.connect("http://localhost:8000/");
+
     socketIO.emit("storeLiveFans", localStorage.getItem("id"));
 
-    socketIO.on("getRvalue", data => console.log("r value data.. ", data));
+    socketIO.on("getRvalue", data => {
+      console.log("r value data.. ", data);
+
+      data.forEach(value => {
+        if (value.userId == props.location.state.id) {
+          setRvalue(value.rValue);
+        }
+      });
+    });
 
     document.documentElement.scrollTop = 0;
     await dispatch(getLiveStream(props.location.state.id));
@@ -384,11 +395,11 @@ function SingleUserORBPage(props) {
                     );
 
                     // Create an audio track from the audio sampled by a microphone.
-                    rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-                    setFanRTC(prevState => ({
-                      ...prevState,
-                      localAudioTrack: rtc.localAudioTrack,
-                    }));
+                    // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+                    // setFanRTC(prevState => ({
+                    //   ...prevState,
+                    //   localAudioTrack: rtc.localAudioTrack,
+                    // }));
                     // Create a video track from the video captured by a camera.
                     rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
                     setFanRTC(prevState => ({
@@ -397,7 +408,7 @@ function SingleUserORBPage(props) {
                     }));
 
                     rtc.localVideoTrack.play("local-player");
-                    rtc.localAudioTrack.play();
+                    // rtc.localAudioTrack.play();
 
                     // Publish the local audio and video tracks to the channel.
                     await rtc.client.publish([rtc.localVideoTrack]);
@@ -508,7 +519,13 @@ function SingleUserORBPage(props) {
   const callAudioPause = async () => {
     console.log("call audio pause fn... ");
     setAudioPause(!audioPause);
-
+    if (rValue) {
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setFanRTC(prevState => ({
+        ...prevState,
+        localAudioTrack: rtc.localAudioTrack,
+      }));
+    }
     if (fanRTC.localAudioTrack) {
       await fanRTC.localAudioTrack.setEnabled(audioPause);
     }

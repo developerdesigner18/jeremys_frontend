@@ -58,7 +58,7 @@ function ORBPage(props) {
   const [startTime, setStartTime] = useState(0);
   const [ticketPrice, setTicketPrice] = useState(0);
   const [seatArray, setSeatArray] = useState([]);
-  const [isMute, setIsMute] = useState(true);
+  const [isMute, setIsMute] = useState(false);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -284,12 +284,12 @@ function ORBPage(props) {
   const callRoarFunction = () => {
     console.log("call r fn called.....");
     if (isLive) {
-      setIsMute(!isMute);
-
       const dataToPass = {
         userId: localStorage.getItem("id"),
-        rValue: isMute,
+        rValue: !isMute,
       };
+
+      setIsMute(!isMute);
 
       socket.emit("storeRvalue", dataToPass);
     }
@@ -600,7 +600,18 @@ function ORBPage(props) {
             className="container d-flex justify-content-center"
             style={{textAlign: "center", height: "100px"}}>
             {/* <div className="ORB_main_cat m-0"> */}
-            <img src="../assets/images/r_image.png" />
+            {isMute ? (
+              <img
+                src="../assets/images/r_image.png"
+                onClick={callRoarFunction}
+              />
+            ) : (
+              <img
+                src="../assets/images/disableR.png"
+                onClick={callRoarFunction}
+              />
+            )}
+
             {/* </div> */}
           </div>
         </>
