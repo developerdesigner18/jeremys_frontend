@@ -124,7 +124,7 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    const socketIO = socketIOClient.connect("http://localhost:8000/");
+    const socketIO = socketIOClient.connect("https://jeremyslive.com:8000/");
 
     socketIO.emit("storeLiveFans", localStorage.getItem("id"));
 
