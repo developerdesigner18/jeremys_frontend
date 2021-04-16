@@ -558,6 +558,8 @@ function SingleUserORBPage(props) {
               setShow={setShow}
               streamId={streamObj ? streamObj._id : ""}
               userId={props.location.state.id}
+              setPaid={setPaid}
+              setShowTip={setShowTip}
             />
           ) : (
             <Ticket

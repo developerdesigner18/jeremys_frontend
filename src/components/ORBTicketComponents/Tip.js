@@ -2,18 +2,26 @@ import React, {useState, useEffect, useRef} from "react";
 import "../../assets/css/ratings.css";
 import {useDispatch, useSelector} from "react-redux";
 
-import {tipOrTicketPayment} from "../../actions/paymentActions";
 import moment from "moment";
+import {
+  tipOrTicketPayment,
+  paymentForTIcktOrTip,
+  getPaymentDetailsOfStarTrainer,
+} from "../../actions/paymentActions";
+import Modal from "react-bootstrap/Modal";
 
 function Tip(props) {
   const [tipAmount, setTipAmount] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [paypalModal, setPaypalModal] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
 
   const paypalRef = useRef();
+  const paymentState = useSelector(state => state.payment);
 
   const storeTipAmount = value => {
     if (value >= 1 && value <= 100) {
@@ -79,8 +87,107 @@ function Tip(props) {
     }
   }, [tipAmount, loaded]);
 
+  useEffect(() => {
+    if (paymentState) {
+      if (props.type && (props.type == "chef" || props.type == "Chef")) {
+        if (paymentState.paidResponse && !paymentState.paymentDetail) {
+          console.log(paymentState.paidResponse);
+          window.open(paymentState.paidResponse);
+        }
+        if (paymentState.paymentDetail) {
+          // props.setPaid(true);
+          props.setShowTip(false);
+          setLoader(false);
+
+          console.log(
+            "paymentState.paymentDetail-=-=-=",
+            paymentState.paymentDetail
+          );
+        }
+      } else if (
+        props.type &&
+        (props.type == "stylist" || props.type == "Stylist")
+      ) {
+        if (paymentState.paidResponse && !paymentState.paymentDetail) {
+          console.log(paymentState.paidResponse);
+          window.open(paymentState.paidResponse);
+        }
+        if (paymentState.paymentDetail) {
+          props.setPaid(true);
+          props.setShow(false);
+          setLoader(false);
+
+          console.log(
+            "paymentState.paymentDetail-=-=-=",
+            paymentState.paymentDetail
+          );
+        }
+      } else {
+        if (paymentState.paidResponse && !paymentState.ticketReceipt) {
+          console.log(paymentState.paidResponse);
+          window.open(paymentState.paidResponse);
+        }
+        if (paymentState.ticketReceipt) {
+          props.setPaid(true);
+          props.setShow(false);
+          setLoader(false);
+
+          console.log(
+            "paymentState.ticketReceipt-=-=-=",
+            paymentState.ticketReceipt
+          );
+        }
+      }
+    }
+  }, [paymentState]);
+
+  useEffect(async () => {
+    document.addEventListener("visibilitychange", event => {
+      if (document.visibilityState == "visible") {
+        dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+        console.log("tab is active");
+      } else {
+        console.log("tab is inactive");
+      }
+    });
+  }, []);
+
+  const callMakePayment = async () => {
+    console.log("fn called..");
+    setLoader(true);
+    const dataToPass = {
+      userId: props.userId,
+      fanId: localStorage.getItem("id"),
+      streamId: props.streamId,
+      tipAmount: tipAmount,
+      dateTime: moment.utc(),
+    };
+    await dispatch(paymentForTIcktOrTip(dataToPass));
+  };
+
   return (
     <div style={{background: "black"}} className="container">
+      <Modal
+        show={paypalModal}
+        onHide={() => {
+          setPaypalModal(false);
+        }}
+        centered
+        // dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0", background: "black"}}>
+          <div class="d-flex justify-content-end text-muted">
+            <i
+              class="fas fa-times "
+              role="button"
+              onClick={() => {
+                setPaypalModal(false);
+              }}
+              style={{zIndex: "1", padding: "5px"}}
+            />
+          </div>
+        </Modal.Body>
+      </Modal>
       <div className="justify-content-center align-items-center d-flex pt-5">
         <label className="mx-2">Enter Tip amount: </label>
         <input
@@ -96,8 +203,24 @@ function Tip(props) {
         <span style={{color: "red", alignItems: "center"}}>{errorMsg}</span>
       </div>
       <div className="d-flex justify-content-center p-4">
-        <div ref={paypalRef}></div>
-        {/* <button className="btn btn-default btn_submit">Submit</button> */}
+        {/* <div ref={paypalRef}></div> */}
+        <button
+          className="btn btn-default btn_submit"
+          disabled={errorMsg !== ""}
+          onClick={callMakePayment}>
+          Pay
+          {/* {loader ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"></span>
+              <span className="sr-only">Loading...</span>
+            </>
+          ) : (
+            "Pay"
+          )} */}
+        </button>
       </div>
     </div>
   );

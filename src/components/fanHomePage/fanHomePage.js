@@ -1145,7 +1145,7 @@ function FanHomePage(props) {
                         isMystory: true,
                       })
                     }>
-                    MY RATINGS AND REVIWS
+                    MY RATINGS AND REVIEWS
                   </li>
                   <li
                     className="dropdown-item menu more_list"

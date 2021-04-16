@@ -1,22 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import "../../assets/css/ticket.css";
-import { useSelector, useDispatch } from "react-redux";
-import { getUserWithId } from "../../actions/userActions";
+import {useSelector, useDispatch} from "react-redux";
+import {getUserWithId} from "../../actions/userActions";
 import moment from "moment";
-import { tipOrTicketPayment } from "../../actions/paymentActions";
+import {
+  tipOrTicketPayment,
+  paymentForTIcktOrTip,
+  getPaymentDetailsOfStarTrainer,
+} from "../../actions/paymentActions";
+import Modal from "react-bootstrap/Modal";
 
 function Ticket(props) {
   const dispatch = useDispatch();
-  const stateUser = useSelector((state) => state.user);
+  const stateUser = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
 
   const [userInfo, setUserInfo] = useState({});
   const [paid, setPaid] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
   const paypalRef = useRef();
+  const [paypalModal, setPaypalModal] = useState(false);
 
   useEffect(async () => {
     await dispatch(getUserWithId(props.userId));
+
+    document.addEventListener("visibilitychange", event => {
+      if (document.visibilityState == "visible") {
+        dispatch(getPaymentDetailsOfStarTrainer(props.streamObj._id));
+        console.log("tab is active");
+      } else {
+        console.log("tab is inactive");
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -71,7 +87,7 @@ function Ticket(props) {
                 props.setPaid(true);
               }
             },
-            onError: (err) => {
+            onError: err => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -80,6 +96,39 @@ function Ticket(props) {
       }, 500);
     }
   }, [loaded]);
+
+  useEffect(() => {
+    if (paymentState) {
+      console.log("paymentState.ticketReceipt", paymentState.ticketReceipt);
+      if (paymentState.paidResponse && !paymentState.ticketReceipt) {
+        console.log(paymentState.paidResponse);
+        window.open(paymentState.paidResponse);
+        // setPaypalModalSRC(paymentState.paymentResponse);
+        // setPaypalModal(true);
+        // setPaid(true);
+      }
+      if (paymentState.ticketReceipt) {
+        props.setPaid(true);
+
+        console.log(
+          "paymentState.ticketReceipt-=-=-=",
+          paymentState.ticketReceipt
+        );
+      }
+    }
+  }, [paymentState]);
+
+  const callMakePayment = async () => {
+    console.log("fn called..");
+    const dataToPass = {
+      userId: props.userId,
+      fanId: localStorage.getItem("id"),
+      streamId: props.streamObj._id,
+      total: props.streamObj.price,
+      dateTime: moment.utc(),
+    };
+    await dispatch(paymentForTIcktOrTip(dataToPass));
+  };
 
   return (
     <div className="MainwrapperTicket">
@@ -94,9 +143,31 @@ function Ticket(props) {
             onClick={() => {
               props.setShow(false);
             }}
-            style={{ zIndex: "1", padding: "5px" }}
+            style={{zIndex: "1", padding: "5px"}}
           />
         </div>
+        <Modal
+          show={paypalModal}
+          onHide={() => {
+            setPaypalModal(false);
+          }}
+          centered
+          // dialogClassName="modal-ticket"
+          aria-labelledby="example-custom-modal-styling-title">
+          <Modal.Body style={{padding: "0", background: "black"}}>
+            <div class="d-flex justify-content-end text-muted">
+              <i
+                class="fas fa-times "
+                role="button"
+                onClick={() => {
+                  setPaypalModal(false);
+                }}
+                style={{zIndex: "1", padding: "5px"}}
+              />
+            </div>
+          </Modal.Body>
+        </Modal>
+
         <div className="main_container d-flex flex-column align-items-center">
           <div className="text-center">
             <img src="../assets/images/silver_logo.png" />
@@ -109,7 +180,7 @@ function Ticket(props) {
               <div>
                 <img
                   src={userInfo.profileImgURl}
-                  onError={(e) => {
+                  onError={e => {
                     e.target.onerror = null;
                     e.target.src =
                       "https://jeremysLive.com:8000/default/profile.jpg";
@@ -127,8 +198,7 @@ function Ticket(props) {
               fontWeight: "500",
               fontSize: "20px",
               letterSpacing: "4px",
-            }}
-          >
+            }}>
             Live Performance
           </h4>
           <div className="text-center">
@@ -151,38 +221,35 @@ function Ticket(props) {
           </div>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             Duration :
           </p>
-          <p style={{ letterSpacing: "2px" }}>
+          <p style={{letterSpacing: "2px"}}>
             {props.streamObj.timer / 60} Minutes
           </p>
 
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             Seats :
           </p>
-          <p style={{ letterSpacing: "2px" }}>{props.streamObj.seats}</p>
+          <p style={{letterSpacing: "2px"}}>{props.streamObj.seats}</p>
           <p
             className=" text-uppercase mt-2 mb-2"
-            style={{ fontWeight: "600", letterSpacing: "3px" }}
-          >
+            style={{fontWeight: "600", letterSpacing: "3px"}}>
             ticket price :
           </p>
-          <p style={{ letterSpacing: "2px" }}>$ {props.streamObj.price}</p>
+          <p style={{letterSpacing: "2px"}}>$ {props.streamObj.price}</p>
 
-          <div ref={paypalRef} />
-          {/* <div
+          {/* <div ref={paypalRef} /> */}
+          <div
             className="paid_image my-3 pointer "
             role="button"
             onClick={() => {
-              props.setPaid(true);
+              callMakePayment();
             }}>
-            <img src="../assets/images/paid_button.png" />
-          </div> */}
+            <img src="../assets/images/pay.png" />
+          </div>
           {/* <p className="thanks">Thank you from Jeremy’s Live!</p> */}
         </div>
       </div>

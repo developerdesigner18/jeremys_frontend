@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import ReactDOM from "react-dom";
 import "../../assets/css/ticket.css";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import paypal from "paypal-checkout";
-import { getUserWithId } from "../../actions/userActions";
+import {getUserWithId} from "../../actions/userActions";
 import {
   makeOrderPayment,
   makePayment,
@@ -19,8 +19,8 @@ import moment from "moment";
 
 function PayOrder(props) {
   const dispatch = useDispatch();
-  const stateData = useSelector((state) => state.user);
-  const paymentState = useSelector((state) => state.payment);
+  const stateData = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
 
   const [paypalModal, setPaypalModal] = useState(false);
   const [paypalModalSrc, setPaypalModalSRC] = useState(null);
@@ -38,7 +38,7 @@ function PayOrder(props) {
   useEffect(async () => {
     await dispatch(getUserWithId(localStorage.getItem("id")));
 
-    document.addEventListener("visibilitychange", (event) => {
+    document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
         dispatch(getPaymentDetails(props.streamId));
         console.log("tab is active");
@@ -63,10 +63,11 @@ function PayOrder(props) {
         window.open(paymentState.paymentResponse);
         // setPaypalModalSRC(paymentState.paymentResponse);
         // setPaypalModal(true);
-        // setPaid(true);
       }
       if (paymentState.paymentDetail) {
+        setPaid(true);
         props.setPaid(true);
+        setLoaded(false);
 
         console.log(
           "paymentState.paymentDetail-=-=-=",
@@ -78,6 +79,7 @@ function PayOrder(props) {
 
   let load = false;
   const callMakePayment = () => {
+    setLoaded(true);
     const dataToPass = {
       userId: props.userId,
       fanId: user._id,
@@ -166,7 +168,7 @@ function PayOrder(props) {
                 props.setPaid(true);
               }
             },
-            onError: (err) => {
+            onError: err => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -213,7 +215,7 @@ function PayOrder(props) {
               props.setShow(false);
               props.handleClose();
             }}
-            style={{ zIndex: "1", padding: "5px" }}
+            style={{zIndex: "1", padding: "5px"}}
           />
         </div>
         <Modal
@@ -223,9 +225,8 @@ function PayOrder(props) {
           }}
           centered
           // dialogClassName="modal-ticket"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
-          <Modal.Body style={{ padding: "0", background: "black" }}>
+          aria-labelledby="example-custom-modal-styling-title">
+          <Modal.Body style={{padding: "0", background: "black"}}>
             <div class="d-flex justify-content-end text-muted">
               <i
                 class="fas fa-times "
@@ -233,7 +234,7 @@ function PayOrder(props) {
                 onClick={() => {
                   setPaypalModal(false);
                 }}
-                style={{ zIndex: "1", padding: "5px" }}
+                style={{zIndex: "1", padding: "5px"}}
               />
             </div>
             {/* <div id="ppplus"></div>
@@ -301,7 +302,7 @@ function PayOrder(props) {
                 name="item1"
                 value={props.price1}
                 checked={check1}
-                onChange={(e) => getSelectedItem(e, 1)}
+                onChange={e => getSelectedItem(e, 1)}
               />
             </div>
             <div>1</div>
@@ -317,7 +318,7 @@ function PayOrder(props) {
                 name="item1"
                 value={props.price2}
                 checked={check2}
-                onChange={(e) => getSelectedItem(e, 2)}
+                onChange={e => getSelectedItem(e, 2)}
               />
             </div>
             <div>2</div>
@@ -350,15 +351,16 @@ function PayOrder(props) {
               <img src="../assets/images/pay.png" />
             ) : null} */}
 
-            {/* {total == 0 ? 
+            {total == 0 ? null : paid ? (
               <img src="../assets/images/pay.png" />
-            : null} */}
-            <img
-              src="../assets/images/pay.png"
-              className="button"
-              style={{ cursor: "pointer" }}
-              onClick={callMakePayment}
-            />
+            ) : (
+              <img
+                src="../assets/images/pay.png"
+                className="button"
+                style={{cursor: "pointer"}}
+                onClick={() => callMakePayment()}
+              />
+            )}
           </div>
           {/* <div ref={paypalRef} /> */}
           {/* <p class="thanks">Thank you from Jeremy’s Live!</p> */}

@@ -376,7 +376,7 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title">
         <Modal.Body style={{padding: "0"}}>
-          {paid ? (
+          {paid && !showTip ? (
             <Receipt
               setPaid={setPaid}
               streamId={streamDetails ? streamDetails._id : ""}
@@ -389,6 +389,8 @@ function FanChefORB(props) {
               type={streamDetails ? streamDetails.userType : ""}
               userId={props.location.state.id}
               streamId={streamDetails ? streamDetails._id : ""}
+              setPaid={setPaid}
+              setShowTip={setShowTip}
             />
           ) : (
             <PayOrder
