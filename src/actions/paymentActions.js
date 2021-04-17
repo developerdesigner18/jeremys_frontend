@@ -163,3 +163,21 @@ export const paymentForTIcktOrTip = data => {
       .catch(err => console.log("err... ", err));
   };
 };
+
+export const tipPaymentDetail = (streamId, fanId, userId) => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/payment/getTipPaymentInfo?streamId=${streamId}&fanId=${fanId}&userId=${userId}`
+      )
+      .then(result => {
+        if (result.data.code == 200) {
+          dispatch({
+            type: "GET_TIP_PAYMENT",
+            payload: result.data.success,
+          });
+        }
+      })
+      .catch(error => console.log("error....... ", error));
+  };
+};

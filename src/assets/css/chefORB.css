@@ -187,6 +187,9 @@ img.black_logo_img {
   margin-top: 5px;
   margin-bottom: 0;
 }
+.links a div {
+  margin: 0 10px;
+}
 .price_item {
   position: absolute;
   bottom: 0;

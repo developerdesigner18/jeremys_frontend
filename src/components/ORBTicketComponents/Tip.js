@@ -7,6 +7,7 @@ import {
   tipOrTicketPayment,
   paymentForTIcktOrTip,
   getPaymentDetailsOfStarTrainer,
+  tipPaymentDetail,
 } from "../../actions/paymentActions";
 import Modal from "react-bootstrap/Modal";
 
@@ -17,6 +18,7 @@ function Tip(props) {
   const [error, setError] = useState(null);
   const [paypalModal, setPaypalModal] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [paid, setPaid] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -89,53 +91,48 @@ function Tip(props) {
 
   useEffect(() => {
     if (paymentState) {
+      console.log(
+        "paid response.. ",
+        paymentState.paidResponse,
+        paymentState.tipDetail
+      );
       if (props.type && (props.type == "chef" || props.type == "Chef")) {
-        if (paymentState.paidResponse && !paymentState.paymentDetail) {
+        if (paymentState.paidResponse && !paymentState.ticketReceipt) {
           console.log(paymentState.paidResponse);
           window.open(paymentState.paidResponse);
         }
-        if (paymentState.paymentDetail) {
-          // props.setPaid(true);
-          props.setShowTip(false);
-          setLoader(false);
 
-          console.log(
-            "paymentState.paymentDetail-=-=-=",
-            paymentState.paymentDetail
-          );
+        if (paymentState.tipDetail !== undefined) {
+          setPaid(paymentState.tipDetail);
+          props.setShowTip(true);
+          setLoader(true);
         }
       } else if (
         props.type &&
         (props.type == "stylist" || props.type == "Stylist")
       ) {
-        if (paymentState.paidResponse && !paymentState.paymentDetail) {
-          console.log(paymentState.paidResponse);
-          window.open(paymentState.paidResponse);
-        }
-        if (paymentState.paymentDetail) {
-          props.setPaid(true);
-          props.setShow(false);
-          setLoader(false);
-
-          console.log(
-            "paymentState.paymentDetail-=-=-=",
-            paymentState.paymentDetail
-          );
-        }
-      } else {
         if (paymentState.paidResponse && !paymentState.ticketReceipt) {
           console.log(paymentState.paidResponse);
           window.open(paymentState.paidResponse);
         }
-        if (paymentState.ticketReceipt) {
-          props.setPaid(true);
-          props.setShow(false);
-          setLoader(false);
 
-          console.log(
-            "paymentState.ticketReceipt-=-=-=",
-            paymentState.ticketReceipt
-          );
+        if (paymentState.tipDetail !== undefined) {
+          setPaid(paymentState.tipDetail);
+          props.setShowTip(true);
+          setLoader(true);
+        }
+      } else {
+        if (
+          (paymentState.paidResponse && !paymentState.ticketReceipt) ||
+          paymentState.ticketReceipt == undefined
+        ) {
+          console.log(paymentState.paidResponse);
+          window.open(paymentState.paidResponse);
+        }
+        if (paymentState.tipDetail !== undefined) {
+          setPaid(paymentState.tipDetail);
+          props.setShowTip(true);
+          setLoader(true);
         }
       }
     }
@@ -144,6 +141,13 @@ function Tip(props) {
   useEffect(async () => {
     document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
+        dispatch(
+          tipPaymentDetail(
+            props.streamId,
+            localStorage.getItem("id"),
+            props.userId
+          )
+        );
         dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
         console.log("tab is active");
       } else {
@@ -201,9 +205,11 @@ function Tip(props) {
       </div>
       <div className="text-center">
         <span style={{color: "red", alignItems: "center"}}>{errorMsg}</span>
+        <p style={{color: "red"}}>{paid ? "You already give tip!" : ""}</p>
       </div>
-      <div className="d-flex justify-content-center p-4">
+      <div className="d-flex justify-content-center pb-4">
         {/* <div ref={paypalRef}></div> */}
+
         <button
           className="btn btn-default btn_submit"
           disabled={errorMsg !== ""}

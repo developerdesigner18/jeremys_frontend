@@ -354,9 +354,13 @@ function FanChefORB(props) {
   };
 
   const showTipModal = () => {
-    setShowTip(!showTip);
-    setShow(true);
+    setShowTip(true);
+    setShow(false);
     setIsActive(false);
+  };
+
+  const closeTip = () => {
+    setShowTip(false);
   };
 
   return (
@@ -376,21 +380,12 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title">
         <Modal.Body style={{padding: "0"}}>
-          {paid && !showTip ? (
+          {paid ? (
             <Receipt
               setPaid={setPaid}
               streamId={streamDetails ? streamDetails._id : ""}
               setShow={setShow}
               text="chef/stylist"
-            />
-          ) : showTip ? (
-            <Tip
-              setShow={setShow}
-              type={streamDetails ? streamDetails.userType : ""}
-              userId={props.location.state.id}
-              streamId={streamDetails ? streamDetails._id : ""}
-              setPaid={setPaid}
-              setShowTip={setShowTip}
             />
           ) : (
             <PayOrder
@@ -416,6 +411,26 @@ function FanChefORB(props) {
             />
             // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
           )}
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showTip}
+        onHide={closeTip}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {showTip ? (
+            <Tip
+              setShow={setShow}
+              type={streamDetails ? streamDetails.userType : ""}
+              userId={props.location.state.id}
+              streamId={streamDetails ? streamDetails._id : ""}
+              setPaid={setPaid}
+              setShowTip={setShowTip}
+            />
+          ) : null}
         </Modal.Body>
       </Modal>
 

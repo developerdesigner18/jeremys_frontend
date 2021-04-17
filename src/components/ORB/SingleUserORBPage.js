@@ -503,8 +503,12 @@ function SingleUserORBPage(props) {
     console.log("handle tip modal fn called.......... ");
 
     setShowTip(!showTip);
-    setShow(true);
+    setShow(false);
     setIsActive(false);
+  };
+
+  const closeTip = () => {
+    setShowTip(false);
   };
 
   const callVideoPause = async () => {
@@ -553,14 +557,6 @@ function SingleUserORBPage(props) {
               text="star/trainer"
               streamId={streamObj ? streamObj._id : ""}
             />
-          ) : showTip ? (
-            <Tip
-              setShow={setShow}
-              streamId={streamObj ? streamObj._id : ""}
-              userId={props.location.state.id}
-              setPaid={setPaid}
-              setShowTip={setShowTip}
-            />
           ) : (
             <Ticket
               setShow={setShow}
@@ -570,6 +566,22 @@ function SingleUserORBPage(props) {
             />
           )}
         </Modal.Body>
+      </Modal>
+      <Modal
+        show={showTip}
+        onHide={closeTip}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        {showTip ? (
+          <Tip
+            setShow={setShow}
+            streamId={streamObj ? streamObj._id : ""}
+            userId={props.location.state.id}
+            setPaid={setPaid}
+            setShowTip={setShowTip}
+          />
+        ) : null}
       </Modal>
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
