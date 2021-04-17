@@ -18,7 +18,7 @@ function Tip(props) {
   const [error, setError] = useState(null);
   const [paypalModal, setPaypalModal] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [paid, setPaid] = useState(false);
+  const [tipPaid, settipPaid] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -89,84 +89,127 @@ function Tip(props) {
     }
   }, [tipAmount, loaded]);
 
-  useEffect(() => {
-    if (paymentState) {
-      console.log(
-        "paid response.. ",
-        paymentState.paidResponse,
-        paymentState.tipDetail
-      );
-      if (props.type && (props.type == "chef" || props.type == "Chef")) {
-        if (paymentState.paidResponse && !paymentState.ticketReceipt) {
-          console.log(paymentState.paidResponse);
-          window.open(paymentState.paidResponse);
-        }
+  // useEffect(() => {
+  //   if (paymentState) {
+  //     console.log(
+  //       "paid response.. ",
+  //       paymentState.paidResponse,
+  //       paymentState.tipDetail,
+  //       paymentState.paidResponse && !paymentState.tipDetail
+  //     );
+  //     if (paymentState.paidResponse && !paymentState.tipDetail) {
+  //       console.log(paymentState.paidResponse);
+  //       window.open(paymentState.paidResponse);
+  //     }
+  //     if (paymentState.tipDetail) {
+  //       props.setShowTip(false);
+  //       settipPaid(true);
+  //     }
+  //     // if (paymentState.paidResponse) {
+  //     //   if (paymentState.ticketReceipt) {
+  //     //     if (paymentState.ticketReceipt["total"]) {
+  //     //       console.log(paymentState.paidResponse);
+  //     //       window.open(paymentState.paidResponse);
+  //     //     } else {
+  //     //       settipPaid(true);
+  //     //       props.setShowTip(false);
+  //     //     }
+  //     //   } else {
+  //     //     console.log(paymentState.paidResponse);
+  //     //     window.open(paymentState.paidResponse);
+  //     //   }
+  //     // }
+  //     // if (props.type && (props.type == "chef" || props.type == "Chef")) {
+  //     //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
+  //     //     console.log(paymentState.paidResponse);
+  //     //     window.open(paymentState.paidResponse);
+  //     //   }
 
-        if (paymentState.tipDetail !== undefined) {
-          setPaid(paymentState.tipDetail);
-          props.setShowTip(true);
-          setLoader(true);
-        }
-      } else if (
-        props.type &&
-        (props.type == "stylist" || props.type == "Stylist")
-      ) {
-        if (paymentState.paidResponse && !paymentState.ticketReceipt) {
-          console.log(paymentState.paidResponse);
-          window.open(paymentState.paidResponse);
-        }
+  //     //   if (paymentState.tipDetail !== undefined) {
+  //     //     if (paymentState.tipDetail === true) {
+  //     //       settipPaid(paymentState.tipDetail);
+  //     //       props.setShowTip(true);
+  //     //       setLoader(true);
+  //     //     } else {
+  //     //       settipPaid(paymentState.tipDetail);
+  //     //       props.setShowTip(paymentState.tipDetail);
+  //     //       setLoader(paymentState.tipDetail);
+  //     //     }
+  //     //   }
+  //     // } else if (
+  //     //   props.type &&
+  //     //   (props.type == "stylist" || props.type == "Stylist")
+  //     // ) {
+  //     //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
+  //     //     console.log(paymentState.paidResponse);
+  //     //     window.open(paymentState.paidResponse);
+  //     //   }
 
-        if (paymentState.tipDetail !== undefined) {
-          setPaid(paymentState.tipDetail);
-          props.setShowTip(true);
-          setLoader(true);
-        }
-      } else {
-        if (
-          (paymentState.paidResponse && !paymentState.ticketReceipt) ||
-          paymentState.ticketReceipt == undefined
-        ) {
-          console.log(paymentState.paidResponse);
-          window.open(paymentState.paidResponse);
-        }
-        if (paymentState.tipDetail !== undefined) {
-          setPaid(paymentState.tipDetail);
-          props.setShowTip(true);
-          setLoader(true);
-        }
-      }
-    }
-  }, [paymentState]);
+  //     //   if (paymentState.tipDetail !== undefined) {
+  //     //     if (paymentState.tipDetail === true) {
+  //     //       settipPaid(paymentState.tipDetail);
+  //     //       props.setShowTip(true);
+  //     //       setLoader(true);
+  //     //     } else {
+  //     //       settipPaid(paymentState.tipDetail);
+  //     //       props.setShowTip(paymentState.tipDetail);
+  //     //       setLoader(paymentState.tipDetail);
+  //     //     }
+  //     //   }
+  //     // } else {
+  //     //   console.log(paymentState.ticketReceipt, paymentState.tipDetail);
+  //     //   if (paymentState.paidResponse && !paymentState.ticketReceipt) {
+  //     //     console.log(
+  //     //       "for star and ticket... ",
+  //     //       paymentState.paidResponse && !paymentState.ticketReceipt
+  //     //     );
+  //     //     console.log(paymentState.paidResponse);
+  //     //     window.open(paymentState.paidResponse);
+  //     //   }
+  //     //   if (paymentState.tipDetail !== undefined) {
+  //     //     settipPaid(paymentState.tipDetail);
+  //     //     props.setShowTip(true);
+  //     //     setLoader(true);
+  //     //   }
+  //     // }
+  //   }
+  // }, [paymentState]);
 
-  useEffect(async () => {
-    document.addEventListener("visibilitychange", event => {
-      if (document.visibilityState == "visible") {
-        dispatch(
-          tipPaymentDetail(
-            props.streamId,
-            localStorage.getItem("id"),
-            props.userId
-          )
-        );
-        dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
-        console.log("tab is active");
-      } else {
-        console.log("tab is inactive");
-      }
-    });
-  }, []);
+  // useEffect(async () => {
+  //   document.addEventListener("visibilitychange", event => {
+  //     if (document.visibilityState == "visible") {
+  //       dispatch(
+  //         tipPaymentDetail(
+  //           props.streamId,
+  //           localStorage.getItem("id"),
+  //           props.userId
+  //         )
+  //       );
+  //       dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+  //       console.log("tab is active");
+  //     } else {
+  //       console.log("tab is inactive");
+  //     }
+  //   });
+  // }, []);
 
   const callMakePayment = async () => {
     console.log("fn called..");
     setLoader(true);
-    const dataToPass = {
-      userId: props.userId,
-      fanId: localStorage.getItem("id"),
-      streamId: props.streamId,
-      tipAmount: tipAmount,
-      dateTime: moment.utc(),
-    };
-    await dispatch(paymentForTIcktOrTip(dataToPass));
+    if (tipAmount >= 1 && tipAmount <= 100) {
+      setErrorMsg("");
+      // setTipAmount(value);
+      // const dataToPass = {
+      //   userId: props.userId,
+      //   fanId: localStorage.getItem("id"),
+      //   streamId: props.streamId,
+      //   tipAmount: tipAmount,
+      //   dateTime: moment.utc(),
+      // };
+      // await dispatch(paymentForTIcktOrTip(dataToPass));
+    } else {
+      setErrorMsg("You can give tip from $1 to $100");
+    }
   };
 
   return (
@@ -205,7 +248,7 @@ function Tip(props) {
       </div>
       <div className="text-center">
         <span style={{color: "red", alignItems: "center"}}>{errorMsg}</span>
-        <p style={{color: "red"}}>{paid ? "You already give tip!" : ""}</p>
+        <p style={{color: "red"}}>{tipPaid ? "You already give tip!" : ""}</p>
       </div>
       <div className="d-flex justify-content-center pb-4">
         {/* <div ref={paypalRef}></div> */}
@@ -213,7 +256,7 @@ function Tip(props) {
         <button
           className="btn btn-default btn_submit"
           disabled={errorMsg !== ""}
-          onClick={callMakePayment}>
+          onClick={() => callMakePayment()}>
           Pay
           {/* {loader ? (
             <>

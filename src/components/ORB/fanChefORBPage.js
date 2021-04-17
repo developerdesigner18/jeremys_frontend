@@ -427,7 +427,6 @@ function FanChefORB(props) {
               type={streamDetails ? streamDetails.userType : ""}
               userId={props.location.state.id}
               streamId={streamDetails ? streamDetails._id : ""}
-              setPaid={setPaid}
               setShowTip={setShowTip}
             />
           ) : null}
