@@ -208,6 +208,7 @@ function ORBPage(props) {
       // Publish the local audio and video tracks to the channel.
       await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
+      // user-published event
       rtc.client.on("user-published", async (user, mediaType) => {
         console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
         host.push(user);
@@ -268,6 +269,7 @@ function ORBPage(props) {
           });
         }
       });
+      // user-unpulished event
       rtc.client.on("user-unpublished", async (user, mediaType) => {
         let generatedDiv = document.getElementById(
           `player-wrapper-${user.uid}`
@@ -277,6 +279,11 @@ function ORBPage(props) {
         }
         console.log("handleUserUnpublished-==-=-=", user.uid);
         const id = user.uid;
+      });
+
+      // user-joined event
+      rtc.client.on("user-joined", async user => {
+        console.log("user joined event called.......... ", user);
       });
       console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
