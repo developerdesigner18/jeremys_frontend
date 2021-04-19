@@ -365,9 +365,9 @@ function SingleUserORBPage(props) {
                                 );
                               });
                             }
-                            // if (mediaType === "audio") {
-                            //   user.audioTrack.play();
-                            // }
+                            if (mediaType === "audio") {
+                              user.audioTrack.play();
+                            }
                           }
                         });
                       }

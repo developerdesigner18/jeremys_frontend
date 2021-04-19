@@ -174,7 +174,7 @@ export const tipPaymentDetail = (streamId, fanId, userId) => {
         if (result.data.code == 200) {
           dispatch({
             type: "GET_TIP_PAYMENT",
-            payload: result.data.success,
+            payload: result.data.data,
           });
         }
       })

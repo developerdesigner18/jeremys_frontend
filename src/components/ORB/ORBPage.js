@@ -258,7 +258,10 @@ function ORBPage(props) {
           });
         }
         if (mediaType === "audio") {
-          // user.audioTrack.play();
+          if (isMute) {
+            user.audioTrack.play();
+          } else {
+          }
         } else {
           rtc.client.on("media-reconnect-start", uid => {
             console.log("media-reconnect-start event called.............", uid);
