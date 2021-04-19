@@ -24,12 +24,18 @@ function Ticket(props) {
   }, [props]);
 
   useEffect(() => {
-    if (stateData.paymentDetail) {
-      setPaidDetail(stateData.paymentDetail);
-      setloading(true);
-    } else if (stateData.ticketReceipt) {
-      setPaidDetail(stateData.ticketReceipt);
-      setloading(true);
+    if (stateData) {
+      if (stateData.ticketReceipt) {
+        console.log("(stateData.ticketReceipt", stateData.ticketReceipt);
+        if (stateData.ticketReceipt["tipAmount"]) {
+        } else {
+          setPaidDetail(stateData.ticketReceipt);
+          setloading(true);
+        }
+      } else if (stateData.paymentDetail) {
+        setPaidDetail(stateData.paymentDetail);
+        setloading(true);
+      }
     }
   }, [stateData]);
 
