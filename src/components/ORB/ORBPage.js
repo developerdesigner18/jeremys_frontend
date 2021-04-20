@@ -91,7 +91,7 @@ function ORBPage(props) {
 
   React.useEffect(async () => {
     if (time > 0) {
-      if (subscribedUsers) setTimeout(() => setTime(time - 1), 1000);
+      if (isLive) setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
       // await leaveCall();
@@ -281,10 +281,6 @@ function ORBPage(props) {
         const id = user.uid;
       });
 
-      // user-joined event
-      rtc.client.on("user-joined", async user => {
-        console.log("user joined event called.......... ", user);
-      });
       console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal("Info", "Please fill up the show time and seats!", "info");
@@ -443,9 +439,12 @@ function ORBPage(props) {
     setShowTimer(false);
     console.log("time and seat... ", time, seats);
   };
+  let ViewersPercent = 0;
   if (subscribedUsers) {
     var x = document.getElementsByClassName("fan_ORB_main_small_video").length;
-    console.log("seat-====", x);
+    let viewersRatio = x / seats;
+    ViewersPercent = viewersRatio * 100;
+    console.log("x---", x, "seats---", seats, "percent---", ViewersPercent);
   }
   return (
     <div
@@ -559,11 +558,13 @@ function ORBPage(props) {
                   className="progress-bar"
                   role="progressbar"
                   style={{
-                    width: "40%",
+                    width: ViewersPercent,
                   }}
-                  aria-valuenow="100"
+                  aria-valuenow={ViewersPercent}
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100">
+                  {/* {ViewersPercent}% */}
+                </div>
               </div>
             </div>
             <div className="value_container">

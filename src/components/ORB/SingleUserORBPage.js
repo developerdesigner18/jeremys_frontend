@@ -149,6 +149,7 @@ function SingleUserORBPage(props) {
         userId: props.location.state.id,
       };
       await dispatch(removedJoinFan(dataToPass));
+      await leaveCallFromFan();
 
       ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
       return ev.returnValue;
