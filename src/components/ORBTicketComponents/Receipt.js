@@ -61,14 +61,17 @@ function Ticket(props) {
               <img src="../assets/images/silver_logo.png" />
             </div>
             <div class="contact_mail d-flex align-items-center mb-4 mt-3">
-              <div class="contact mr-2">Contact: +1547889</div>
-              <div class="mail ml-2">Email: mail@jeremys.com</div>
+              <div class="contact mr-2">
+                Contact: {paidDetail.userId.contactNumber}
+              </div>
+              <div class="mail ml-2">Email: {paidDetail.userId.emailId}</div>
             </div>
             <button class="reciept_button mb-3">RECEIPT</button>
             <p class="mb-1">RECEIVED FROM:</p>
             <p>
               {paidDetail.userId.firstName + " " + paidDetail.userId.lastName}
             </p>
+            <p>{paidDetail.fanId.startAddress}</p>
             <p class="date">
               Date: {moment(paidDetail.dateTime).format("DD MMM, YYYY")}
             </p>
@@ -92,7 +95,7 @@ function Ticket(props) {
                     <div>{i + 1}</div>
                     <div>{data.name}</div>
                     <div>${data.price}</div>
-                    <div>1</div>
+                    <div>{data.quantity}</div>
                     <div>${data.price}</div>
                   </div>
                 );

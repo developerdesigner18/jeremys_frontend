@@ -95,12 +95,6 @@ function TermsCondition() {
           </li>
           <li>
             <p>
-              “Jeremy’s Live” means: Social E-Commerce 2way Live Streaming
-              Network on both Web and Mobile Platform.
-            </p>
-          </li>
-          <li>
-            <p>
               “Platform” means the relevant Jeremy’s Live technology platform,
               portal or website that, when used in conjunction with the
               Application, enables Users to request or access Solutions;

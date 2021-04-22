@@ -89,124 +89,124 @@ function Tip(props) {
     }
   }, [tipAmount, loaded]);
 
-  // useEffect(() => {
-  //   if (paymentState) {
-  //     console.log(
-  //       "paid response.. ",
-  //       paymentState.paidResponse,
-  //       paymentState.tipDetail,
-  //       paymentState.paidResponse && !paymentState.tipDetail
-  //     );
-  //     if (paymentState.paidResponse && !paymentState.tipDetail) {
-  //       console.log(paymentState.paidResponse);
-  //       window.open(paymentState.paidResponse);
-  //     }
-  //     if (paymentState.tipDetail) {
-  //       props.setShowTip(false);
-  //       settipPaid(true);
-  //     }
-  //     // if (paymentState.paidResponse) {
-  //     //   if (paymentState.ticketReceipt) {
-  //     //     if (paymentState.ticketReceipt["total"]) {
-  //     //       console.log(paymentState.paidResponse);
-  //     //       window.open(paymentState.paidResponse);
-  //     //     } else {
-  //     //       settipPaid(true);
-  //     //       props.setShowTip(false);
-  //     //     }
-  //     //   } else {
-  //     //     console.log(paymentState.paidResponse);
-  //     //     window.open(paymentState.paidResponse);
-  //     //   }
-  //     // }
-  //     // if (props.type && (props.type == "chef" || props.type == "Chef")) {
-  //     //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
-  //     //     console.log(paymentState.paidResponse);
-  //     //     window.open(paymentState.paidResponse);
-  //     //   }
+  useEffect(() => {
+    if (paymentState) {
+      console.log(
+        "paid response.. ",
+        paymentState.paidResponse,
+        paymentState.tipDetail,
+        paymentState.paidResponse && !paymentState.tipDetail
+      );
+      if (paymentState.paidResponse && !paymentState.tipDetail) {
+        console.log(paymentState.paidResponse);
+        window.open(paymentState.paidResponse);
+      }
+      if (paymentState.tipDetail) {
+        props.setShowTip(false);
+        settipPaid(true);
+      }
+      // if (paymentState.paidResponse) {
+      //   if (paymentState.ticketReceipt) {
+      //     if (paymentState.ticketReceipt["total"]) {
+      //       console.log(paymentState.paidResponse);
+      //       window.open(paymentState.paidResponse);
+      //     } else {
+      //       settipPaid(true);
+      //       props.setShowTip(false);
+      //     }
+      //   } else {
+      //     console.log(paymentState.paidResponse);
+      //     window.open(paymentState.paidResponse);
+      //   }
+      // }
+      // if (props.type && (props.type == "chef" || props.type == "Chef")) {
+      //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
+      //     console.log(paymentState.paidResponse);
+      //     window.open(paymentState.paidResponse);
+      //   }
 
-  //     //   if (paymentState.tipDetail !== undefined) {
-  //     //     if (paymentState.tipDetail === true) {
-  //     //       settipPaid(paymentState.tipDetail);
-  //     //       props.setShowTip(true);
-  //     //       setLoader(true);
-  //     //     } else {
-  //     //       settipPaid(paymentState.tipDetail);
-  //     //       props.setShowTip(paymentState.tipDetail);
-  //     //       setLoader(paymentState.tipDetail);
-  //     //     }
-  //     //   }
-  //     // } else if (
-  //     //   props.type &&
-  //     //   (props.type == "stylist" || props.type == "Stylist")
-  //     // ) {
-  //     //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
-  //     //     console.log(paymentState.paidResponse);
-  //     //     window.open(paymentState.paidResponse);
-  //     //   }
+      //   if (paymentState.tipDetail !== undefined) {
+      //     if (paymentState.tipDetail === true) {
+      //       settipPaid(paymentState.tipDetail);
+      //       props.setShowTip(true);
+      //       setLoader(true);
+      //     } else {
+      //       settipPaid(paymentState.tipDetail);
+      //       props.setShowTip(paymentState.tipDetail);
+      //       setLoader(paymentState.tipDetail);
+      //     }
+      //   }
+      // } else if (
+      //   props.type &&
+      //   (props.type == "stylist" || props.type == "Stylist")
+      // ) {
+      //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
+      //     console.log(paymentState.paidResponse);
+      //     window.open(paymentState.paidResponse);
+      //   }
 
-  //     //   if (paymentState.tipDetail !== undefined) {
-  //     //     if (paymentState.tipDetail === true) {
-  //     //       settipPaid(paymentState.tipDetail);
-  //     //       props.setShowTip(true);
-  //     //       setLoader(true);
-  //     //     } else {
-  //     //       settipPaid(paymentState.tipDetail);
-  //     //       props.setShowTip(paymentState.tipDetail);
-  //     //       setLoader(paymentState.tipDetail);
-  //     //     }
-  //     //   }
-  //     // } else {
-  //     //   console.log(paymentState.ticketReceipt, paymentState.tipDetail);
-  //     //   if (paymentState.paidResponse && !paymentState.ticketReceipt) {
-  //     //     console.log(
-  //     //       "for star and ticket... ",
-  //     //       paymentState.paidResponse && !paymentState.ticketReceipt
-  //     //     );
-  //     //     console.log(paymentState.paidResponse);
-  //     //     window.open(paymentState.paidResponse);
-  //     //   }
-  //     //   if (paymentState.tipDetail !== undefined) {
-  //     //     settipPaid(paymentState.tipDetail);
-  //     //     props.setShowTip(true);
-  //     //     setLoader(true);
-  //     //   }
-  //     // }
-  //   }
-  // }, [paymentState]);
+      //   if (paymentState.tipDetail !== undefined) {
+      //     if (paymentState.tipDetail === true) {
+      //       settipPaid(paymentState.tipDetail);
+      //       props.setShowTip(true);
+      //       setLoader(true);
+      //     } else {
+      //       settipPaid(paymentState.tipDetail);
+      //       props.setShowTip(paymentState.tipDetail);
+      //       setLoader(paymentState.tipDetail);
+      //     }
+      //   }
+      // } else {
+      //   console.log(paymentState.ticketReceipt, paymentState.tipDetail);
+      //   if (paymentState.paidResponse && !paymentState.ticketReceipt) {
+      //     console.log(
+      //       "for star and ticket... ",
+      //       paymentState.paidResponse && !paymentState.ticketReceipt
+      //     );
+      //     console.log(paymentState.paidResponse);
+      //     window.open(paymentState.paidResponse);
+      //   }
+      //   if (paymentState.tipDetail !== undefined) {
+      //     settipPaid(paymentState.tipDetail);
+      //     props.setShowTip(true);
+      //     setLoader(true);
+      //   }
+      // }
+    }
+  }, [paymentState]);
 
-  // useEffect(async () => {
-  //   document.addEventListener("visibilitychange", event => {
-  //     if (document.visibilityState == "visible") {
-  //       dispatch(
-  //         tipPaymentDetail(
-  //           props.streamId,
-  //           localStorage.getItem("id"),
-  //           props.userId
-  //         )
-  //       );
-  //       dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
-  //       console.log("tab is active");
-  //     } else {
-  //       console.log("tab is inactive");
-  //     }
-  //   });
-  // }, []);
+  useEffect(async () => {
+    document.addEventListener("visibilitychange", event => {
+      if (document.visibilityState == "visible") {
+        dispatch(
+          tipPaymentDetail(
+            props.streamId,
+            localStorage.getItem("id"),
+            props.userId
+          )
+        );
+        dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+        console.log("tab is active");
+      } else {
+        console.log("tab is inactive");
+      }
+    });
+  }, []);
 
   const callMakePayment = async () => {
     console.log("fn called..");
     setLoader(true);
     if (tipAmount >= 1 && tipAmount <= 100) {
       setErrorMsg("");
-      // setTipAmount(value);
-      // const dataToPass = {
-      //   userId: props.userId,
-      //   fanId: localStorage.getItem("id"),
-      //   streamId: props.streamId,
-      //   tipAmount: tipAmount,
-      //   dateTime: moment.utc(),
-      // };
-      // await dispatch(paymentForTIcktOrTip(dataToPass));
+      // setTipAmount(tipAmount);
+      const dataToPass = {
+        userId: props.userId,
+        fanId: localStorage.getItem("id"),
+        streamId: props.streamId,
+        tipAmount: tipAmount,
+        dateTime: moment.utc(),
+      };
+      await dispatch(paymentForTIcktOrTip(dataToPass));
     } else {
       setErrorMsg("You can give tip from $1 to $100");
     }

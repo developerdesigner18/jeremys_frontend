@@ -688,3 +688,18 @@ export const checkUserInCommunity = userId => {
       });
   };
 };
+
+export const storeUserAddress = data => {
+  return dispatch => {
+    axios
+      .put(`${process.env.REACT_APP_API_URL}api/user/storeAddress`, data)
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "STORE_ADDRESS",
+          });
+        }
+      })
+      .catch(err => console.log("error instoring.. ", err));
+  };
+};

@@ -4,7 +4,7 @@ import "../../assets/css/ticket.css";
 import {useDispatch, useSelector} from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import paypal from "paypal-checkout";
-import {getUserWithId} from "../../actions/userActions";
+import {getUserWithId, storeUserAddress} from "../../actions/userActions";
 import {
   makeOrderPayment,
   makePayment,
@@ -27,16 +27,20 @@ function PayOrder(props) {
   const [user, setUser] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(null);
+  const [quantity1, setQuantity1] = useState(1);
+  const [quantity2, setQuantity2] = useState(1);
   const [total, setTotal] = useState(
-    Number(props.price1) + Number(props.price2)
+    Number(props.price1 * quantity1) + Number(props.price2 * quantity2)
   );
   const [check1, setCheck1] = useState(true);
   const [check2, setCheck2] = useState(true);
   const [paid, setPaid] = useState(false);
+  const [address, setAddress] = useState("");
+
   const paypalRef = useRef();
 
   useEffect(async () => {
-    await dispatch(getUserWithId(localStorage.getItem("id")));
+    await dispatch(getUserWithId(props.userId));
 
     document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
@@ -78,11 +82,16 @@ function PayOrder(props) {
   }, [paymentState]);
 
   let load = false;
-  const callMakePayment = () => {
+  const callMakePayment = async () => {
     setLoaded(true);
+    const dataForAddress = {
+      userId: props.userId,
+      address: address,
+    };
+    await dispatch(storeUserAddress(dataForAddress));
     const dataToPass = {
       userId: props.userId,
-      fanId: user._id,
+      fanId: localStorage.getItem("id"),
       streamId: props.streamId,
       total: total,
       dateTime: moment.utc(),
@@ -102,8 +111,16 @@ function PayOrder(props) {
           : check2
           ? [props.price2]
           : [],
+      quantity:
+        check1 && check2
+          ? [quantity1, quantity2]
+          : check1
+          ? [quantity1]
+          : check2
+          ? [quantity2]
+          : [],
     };
-    dispatch(makePayment(dataToPass));
+    await dispatch(makePayment(dataToPass));
   };
 
   useEffect(() => {
@@ -142,7 +159,7 @@ function PayOrder(props) {
               if (order) {
                 const dataToPass = {
                   userId: props.userId,
-                  fanId: user._id,
+                  fanId: localStorage.getItem("id"),
                   streamId: props.streamId,
                   total: total,
                   dateTime: moment.utc(),
@@ -179,22 +196,60 @@ function PayOrder(props) {
   }, [total, loaded]);
 
   let ans = 0;
+  let itemVal = 0;
   const getSelectedItem = (event, val) => {
     console.log("fn called.................", event.target.value);
     if (val == 1) {
       setCheck1(!check1);
+      itemVal = parseFloat(event.target.value) * quantity1;
     } else if (val == 2) {
       setCheck2(!check2);
+      itemVal = parseFloat(event.target.value) * quantity2;
     }
+    console.log("item val... ", total + itemVal);
     if (event.target.checked) {
-      ans = total + parseFloat(event.target.value);
+      ans = total + itemVal;
     } else {
-      ans = total - parseFloat(event.target.value);
+      ans = total - itemVal;
     }
     console.log("ans............", ans);
 
     setTotal(ans);
     setLoaded(false);
+  };
+
+  const calculateQuantity1 = value => {
+    setQuantity1(value);
+    let item2Price = parseFloat(props.price2) * quantity2;
+    let item1Price = parseFloat(props.price1) * value;
+
+    if (check1 && check2) {
+      ans = item1Price + item2Price;
+      setTotal(ans);
+    } else if (check1) {
+      ans = item1Price;
+      setTotal(ans);
+    } else if (check2) {
+      ans = item2Price;
+      setTotal(ans);
+    }
+  };
+
+  const calculateQuantity2 = value => {
+    setQuantity2(value);
+    let item2Price = parseFloat(props.price2) * value;
+    let item1Price = parseFloat(props.price1) * quantity1;
+
+    if (check1 && check2) {
+      ans = item1Price + item2Price;
+      setTotal(ans);
+    } else if (check1) {
+      ans = item1Price;
+      setTotal(ans);
+    } else if (check2) {
+      ans = item2Price;
+      setTotal(ans);
+    }
   };
   // var ppp = paypal.apps.PPP({
   //   approvalUrl: paypalModalSrc,
@@ -280,12 +335,21 @@ function PayOrder(props) {
             <img src="../assets/images/silver_logo.png" />
           </div>
           <div class="contact_mail d-flex align-items-center mb-4 mt-3">
-            <div class="contact mr-2">Contact: +1547889</div>
-            <div class="mail ml-2">Email: mail@jeremys.com</div>
+            <div class="contact mr-2">Contact: {user.contactNumber}</div>
+            <div class="mail ml-2">Email: {user.emailId}</div>
           </div>
           <button class="reciept_button mb-3">ORDER TOTAL</button>
           <p class="mb-1">BILLED TO:</p>
-          <p>{user.firstName + " " + user.lastName}</p>
+          <p>{props.userInfo.firstName + " " + props.userInfo.lastName}</p>
+          <div>
+            <input
+              type="text"
+              style={{width: "300px"}}
+              placeholder="Enter the address"
+              value={props.userInfo.startAddress}
+              onChange={e => setAddress(e.target.value)}
+            />
+          </div>
           <p class="date">Date: {moment().format("DD MMM, YYYY")}</p>
           <div class="table_down mt-4 d-flex align-items-center">
             <div></div>
@@ -308,7 +372,14 @@ function PayOrder(props) {
             <div>1</div>
             <div>{props.item1}</div>
             <div>${props.price1}</div>
-            <div>1</div>
+            <div>
+              <input
+                type="number"
+                style={{width: "50px"}}
+                onChange={e => calculateQuantity1(e.target.value)}
+                defaultValue={quantity1}
+              />
+            </div>
             <div>${props.price1}</div>
           </div>
           <div class="table_down table_middle mt-1 d-flex align-items-center">
@@ -324,7 +395,14 @@ function PayOrder(props) {
             <div>2</div>
             <div>{props.item2}</div>
             <div>${props.price2}</div>
-            <div>1</div>
+            <div>
+              <input
+                type="number"
+                style={{width: "50px"}}
+                onChange={e => calculateQuantity2(e.target.value)}
+                defaultValue={quantity2}
+              />
+            </div>
             <div>${props.price2}</div>
           </div>
           {/* <div class="tax_container mt-5 d-flex align-items-center">

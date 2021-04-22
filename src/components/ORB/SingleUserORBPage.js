@@ -57,8 +57,9 @@ function SingleUserORBPage(props) {
   const [videoPause, setVideoPause] = useState(false);
   const [audioPause, setAudioPause] = useState(false);
   const [rValue, setRvalue] = useState(false);
+  const [hostId, setHostId] = useState("");
 
-  // const socketIO = useRef();
+  let socketIO;
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
@@ -85,6 +86,7 @@ function SingleUserORBPage(props) {
       : "audience",
   });
   const orbState = useSelector(state => state.ORB);
+  const stateUser = useSelector(state => state.user);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -124,19 +126,27 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    const socketIO = socketIOClient.connect("https://jeremyslive.com:8000/");
+    socketIO = socketIOClient.connect("http://localhost:8000/");
+    console.log("socket io.......", socketIO);
+    console.log("props type... ", props.location.state.type);
 
     socketIO.emit("storeLiveFans", localStorage.getItem("id"));
 
-    socketIO.on("getRvalue", data => {
-      console.log("r value data.. ", data);
+    if (
+      "star" == props.location.state.type ||
+      "Star" == props.location.state.type
+    ) {
+      socketIO.on("getRvalue", data => {
+        console.log("r value data.. ", data);
 
-      data.forEach(value => {
-        if (value.userId == props.location.state.id) {
-          setRvalue(value.rValue);
-        }
+        data.forEach(value => {
+          if (value.userId == props.location.state.id) {
+            setRvalue(value.rValue);
+          }
+        });
       });
-    });
+    } else if ("trainer" == props.type || "Trainer" == props.type) {
+    }
 
     document.documentElement.scrollTop = 0;
     await dispatch(getLiveStream(props.location.state.id));
@@ -194,7 +204,7 @@ function SingleUserORBPage(props) {
                 )
                 .then(async data => {
                   let hostUidResponse = data.data.message.hostUid;
-
+                  setHostId(hostUidResponse);
                   setOptions({
                     ...options,
                     token: result.data.data.agoraToken,
@@ -466,9 +476,9 @@ function SingleUserORBPage(props) {
     console.log("leave call fn called in fan orb page of star/trainer");
     // Destroy the local audio and video tracks.
 
-    if (fanRTC.client && fanRTC.localVideoTrack && fanRTC.localAudioTrack) {
+    if (fanRTC.client && fanRTC.localVideoTrack) {
       fanRTC.localVideoTrack.close();
-      fanRTC.localAudioTrack.close();
+      // fanRTC.localAudioTrack.close();
 
       // Leave the channel.
       await fanRTC.client.leave();
@@ -534,6 +544,19 @@ function SingleUserORBPage(props) {
     if (fanRTC.localAudioTrack) {
       await fanRTC.localAudioTrack.setEnabled(audioPause);
     }
+  };
+
+  const callQFunction = async () => {
+    socketIO = socketIOClient.connect("http://localhost:8000/");
+    const dataToPass = {
+      userId: props.location.state.id,
+      fanObj: {
+        id: localStorage.getItem("id"),
+        uid: hostId,
+        profilePic: stateUser.userInfo.data.profileImgURl,
+      },
+    };
+    socketIO.emit("storeQvalue", dataToPass);
   };
 
   return (
@@ -640,7 +663,11 @@ function SingleUserORBPage(props) {
           <div className="r_image">
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
-              <img src="../assets/images/Qcolor.png" className="m-0" />
+              <img
+                src="../assets/images/Qcolor.png"
+                className="m-0"
+                onClick={callQFunction}
+              />
             ) : props.location.state.type == " star" ||
               props.location.state.type == "Star" ? (
               rValue ? (
@@ -658,6 +685,7 @@ function SingleUserORBPage(props) {
               <img
                 src="../assets/images/Qcolor.png"
                 style={{height: "80px", width: "80px"}}
+                onClick={callQFunction}
               />
             )}
           </div>
@@ -793,7 +821,6 @@ function SingleUserORBPage(props) {
           <div className="row" id="other-fan-remote"></div>
         </div>
       </div>
-
       {showRatingModal ? (
         <div className="reviewFan">
           <AddRating

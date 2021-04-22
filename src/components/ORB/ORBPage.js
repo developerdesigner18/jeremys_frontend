@@ -23,6 +23,7 @@ import Timer from "../ORBTicketComponents/Timer";
 import Seat from "../ORBTicketComponents/Seat";
 import GenerateTicket from "../ORBTicketComponents/GenerateTicket";
 import moment from "moment";
+import socketIOClient from "socket.io-client";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -64,18 +65,44 @@ function ORBPage(props) {
     localAudioTrack: null,
     localVideoTrack: null,
   });
+  const [fansFromQ, setFansFromQ] = useState([]);
   const rtc = {
     client: null,
     localAudioTrack: null,
     localVideoTrack: null,
   };
+
+  let socket;
+
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
   useEffect(async () => {
+    socket = socketIOClient("http://localhost:8000");
     document.documentElement.scrollTop = 0;
     await dispatch(getUserWithId(localStorage.getItem("id")));
+    console.log(
+      "login user type........",
+      localStorage.getItem("type"),
+      socket
+    );
+    if (
+      localStorage.getItem("type") === "trainer" ||
+      localStorage.getItem("type") === "Trainer"
+    ) {
+      console.log("inside if...........");
+      socket.on("getQvalue", data => {
+        console.log("data from q event", data);
+        if (data[localStorage.getItem("id")]) {
+          setFansFromQ(data[localStorage.getItem("id")]);
+        }
+      });
+    }
+
+    socket.on("tipTicketValue", data =>
+      console.log("data from tip ticket event", data)
+    );
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -144,6 +171,9 @@ function ORBPage(props) {
   const callGoToLive = async () => {
     console.log("seats and time... ", seats, time);
     if (seats > 0 && time > 0) {
+      socket = socketIOClient("http://localhost:8000");
+      socket.emit("getIdForTipAmdTicket", localStorage.getItem("id"));
+
       const dataToPass = {
         userId: localStorage.getItem("id").toString(),
         timer: time,
@@ -289,6 +319,7 @@ function ORBPage(props) {
 
   const callRoarFunction = () => {
     console.log("call r fn called.....");
+    const socket = socketIOClient("http://localhost:8000");
     if (isLive) {
       const dataToPass = {
         userId: localStorage.getItem("id"),
@@ -368,7 +399,7 @@ function ORBPage(props) {
       // Leave the channel.
       await ORB.client.leave();
     }
-    socket.disconnect();
+    // socket.disconnect();
     props.history.push("/userHomepage");
     await dispatch(removeOnlineUser());
     await dispatch(deleteStream());
@@ -611,16 +642,43 @@ function ORBPage(props) {
             className="container d-flex justify-content-center"
             style={{textAlign: "center", height: "100px"}}>
             {/* <div className="ORB_main_cat m-0"> */}
-            {isMute ? (
-              <img
-                src="../assets/images/r_image.png"
-                onClick={callRoarFunction}
-              />
+            {localStorage.getItem("type") === "star" ||
+            localStorage.getItem("type") === "Star" ? (
+              isMute ? (
+                <img
+                  src="../assets/images/r_image.png"
+                  onClick={callRoarFunction}
+                />
+              ) : (
+                <img
+                  src="../assets/images/disableR.png"
+                  onClick={callRoarFunction}
+                />
+              )
+            ) : localStorage.getItem("type") === "trainer" ||
+              localStorage.getItem("type") === "Trainer" ? (
+              fansFromQ.length ? (
+                // fansFromQ.map(fan => {
+                //   return (
+                <div
+                  className="ORB_main_cat"
+                  style={{margin: "0", justifyContent: "center"}}>
+                  <img
+                    src={`${fansFromQ[0].profilePic}`}
+                    style={{borderRadius: "50%"}}
+                  />
+                </div>
+              ) : (
+                //   );
+                // })
+                <div className="ORB_main_cat">
+                  <img src="../assets/images/button_bg.png" />
+                </div>
+              )
             ) : (
-              <img
-                src="../assets/images/disableR.png"
-                onClick={callRoarFunction}
-              />
+              <div className="ORB_main_cat">
+                <img src="../assets/images/button_bg.png" />
+              </div>
             )}
 
             {/* </div> */}

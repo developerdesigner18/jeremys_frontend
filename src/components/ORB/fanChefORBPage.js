@@ -298,6 +298,7 @@ function FanChefORB(props) {
 
   useEffect(async () => {
     await dispatch(getJoinedFanList(props.location.state.id));
+    // await leaveCall();
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -408,6 +409,7 @@ function FanChefORB(props) {
               setPaid={setPaid}
               paid={paid}
               handleClose={handleClose}
+              userInfo={userInfo}
             />
             // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
           )}

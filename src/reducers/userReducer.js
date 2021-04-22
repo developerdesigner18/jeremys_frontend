@@ -121,6 +121,11 @@ const userReducer = (state = null, action) => {
         checkInCommunityUser: action.payload,
       };
 
+    case "STORE_ADDRESS":
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }
