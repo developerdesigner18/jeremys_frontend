@@ -79,7 +79,7 @@ function ORBPage(props) {
     setIsOpen(false);
   });
   useEffect(async () => {
-    socket = socketIOClient("http://localhost:8000");
+    socket = socketIOClient("https://jeremyslive.com:8000");
     document.documentElement.scrollTop = 0;
     await dispatch(getUserWithId(localStorage.getItem("id")));
     console.log(
@@ -171,7 +171,7 @@ function ORBPage(props) {
   const callGoToLive = async () => {
     console.log("seats and time... ", seats, time);
     if (seats > 0 && time > 0) {
-      socket = socketIOClient("http://localhost:8000");
+      socket = socketIOClient("https://jeremyslive.com:8000");
       socket.emit("getIdForTipAmdTicket", localStorage.getItem("id"));
 
       const dataToPass = {
@@ -319,7 +319,7 @@ function ORBPage(props) {
 
   const callRoarFunction = () => {
     console.log("call r fn called.....");
-    const socket = socketIOClient("http://localhost:8000");
+    const socket = socketIOClient("https://jeremyslive.com:8000");
     if (isLive) {
       const dataToPass = {
         userId: localStorage.getItem("id"),
