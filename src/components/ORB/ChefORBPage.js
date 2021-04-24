@@ -354,6 +354,24 @@ function ChefORBPage(props) {
     }
   }, [ORBData]);
 
+  const shareOnFB = () => {
+    console.log(
+      "share on fb called.....",
+      `https://facebook.com/sharer/sharer.php?u=${encodedURL}`
+    );
+
+    window.open(`https://facebook.com/sharer/sharer.php?u=${encodedURL}`);
+  };
+
+  const shareOnTwitter = () => {
+    console.log(
+      "share on twitter.................",
+      `https://twitter.com/intent/tweet?url=${encodedURL}`
+    );
+
+    window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
+  };
+
   return (
     <div
       style={{
@@ -721,8 +739,7 @@ function ChefORBPage(props) {
                       style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
-                      <a
-                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnFB}>
                         {" "}
                         <span
                           className="fab fa-facebook-square"
@@ -734,9 +751,7 @@ function ChefORBPage(props) {
                       style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
-                      {" "}
-                      <a
-                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
                           style={{fontSize: "25px"}}></span>{" "}
