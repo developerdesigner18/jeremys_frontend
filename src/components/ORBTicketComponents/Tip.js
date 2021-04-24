@@ -106,7 +106,7 @@ function Tip(props) {
       if (paymentState.tipDetail) {
         props.setShowTip(false);
         settipPaid(true);
-        socket = socketIOClient("http://localhost:8000");
+        socket = socketIOClient("https://jeremyslive.com:8000");
 
         socket.emit("getIdForTipAmdTicket", props.userId);
       }

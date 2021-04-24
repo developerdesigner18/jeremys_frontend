@@ -128,7 +128,7 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    socketIO = socketIOClient.connect("http://localhost:8000");
+    socketIO = socketIOClient.connect("https://jeremyslive.com:8000");
     console.log("socket io.......", socketIO);
     console.log("props type... ", props.location.state.type);
 

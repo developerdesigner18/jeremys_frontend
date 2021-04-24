@@ -81,7 +81,7 @@ function ORBPage(props) {
     setIsOpen(false);
   });
   useEffect(async () => {
-    socket = socketIOClient("http://localhost:8000");
+    socket = socketIOClient("https://jeremyslive.com:8000");
     document.documentElement.scrollTop = 0;
     await dispatch(getUserWithId(localStorage.getItem("id")));
     console.log(
@@ -440,7 +440,7 @@ function ORBPage(props) {
 
   const callShortBreak = async () => {
     console.log("callShortBreak fn callled!!!!!!!!!!!!");
-    socket = socketIOClient("http://localhost:8000");
+    socket = socketIOClient("https://jeremyslive.com:8000");
 
     socket.emit("storeShortBreak", {
       userId: localStorage.getItem("id"),
