@@ -346,7 +346,7 @@ function PayOrder(props) {
               type="text"
               style={{width: "300px"}}
               placeholder="Enter the address"
-              value={props.userInfo.startAddress}
+              defaultValue={props.userInfo.startAddress}
               onChange={e => setAddress(e.target.value)}
             />
           </div>
