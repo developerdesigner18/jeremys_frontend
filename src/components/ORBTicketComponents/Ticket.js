@@ -27,7 +27,9 @@ function Ticket(props) {
 
     document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
-        dispatch(getPaymentDetailsOfStarTrainer(props.streamObj._id));
+        dispatch(
+          getPaymentDetailsOfStarTrainer(props.streamObj._id, props.userId)
+        );
         console.log("tab is active");
       } else {
         console.log("tab is inactive");
@@ -120,6 +122,7 @@ function Ticket(props) {
 
   const callMakePayment = async () => {
     console.log("fn called..");
+
     const dataToPass = {
       userId: props.userId,
       fanId: localStorage.getItem("id"),

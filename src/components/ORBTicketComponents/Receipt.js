@@ -7,6 +7,7 @@ import {
   getPaymentDetailsOfStarTrainer,
 } from "../../actions/paymentActions";
 import moment from "moment";
+import socketIOClient from "socket.io-client";
 
 function Ticket(props) {
   const dispatch = useDispatch();
@@ -14,14 +15,18 @@ function Ticket(props) {
 
   const [paidDetail, setPaidDetail] = useState({});
   const [loading, setloading] = useState(false);
+  let socket;
 
   useEffect(async () => {
+    console.log("props.... ", props);
     if (props.text === "chef/stylist") {
       await dispatch(getPaymentDetails(props.streamId));
     } else {
-      await dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+      await dispatch(
+        getPaymentDetailsOfStarTrainer(props.streamId, props.userId)
+      );
     }
-  }, [props]);
+  }, []);
 
   useEffect(() => {
     if (stateData) {
@@ -31,10 +36,16 @@ function Ticket(props) {
         } else {
           setPaidDetail(stateData.ticketReceipt);
           setloading(true);
+          socket = socketIOClient("http://localhost:8000");
+
+          socket.emit("getIdForTipAmdTicket", props.streamId);
         }
       } else if (stateData.paymentDetail) {
         setPaidDetail(stateData.paymentDetail);
         setloading(true);
+        socket = socketIOClient("http://localhost:8000");
+
+        socket.emit("getIdForTipAmdTicket", props.streamId);
       }
     }
   }, [stateData]);

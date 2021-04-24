@@ -60,6 +60,8 @@ function ORBPage(props) {
   const [ticketPrice, setTicketPrice] = useState(0);
   const [seatArray, setSeatArray] = useState([]);
   const [isMute, setIsMute] = useState(false);
+  const [tipRatio, setTipRatio] = useState(0);
+  const [ticketSold, setTicketSold] = useState(0);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -79,7 +81,7 @@ function ORBPage(props) {
     setIsOpen(false);
   });
   useEffect(async () => {
-    socket = socketIOClient("https://jeremyslive.com:8000");
+    socket = socketIOClient("http://localhost:8000");
     document.documentElement.scrollTop = 0;
     await dispatch(getUserWithId(localStorage.getItem("id")));
     console.log(
@@ -100,9 +102,11 @@ function ORBPage(props) {
       });
     }
 
-    socket.on("tipTicketValue", data =>
-      console.log("data from tip ticket event", data)
-    );
+    socket.on("tipTicketValue", data => {
+      console.log("data from tip ticket event", data);
+      setTipRatio(data.tip);
+      setTicketSold(data.soldTicket);
+    });
 
     window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
@@ -172,7 +176,6 @@ function ORBPage(props) {
     console.log("seats and time... ", seats, time);
     if (seats > 0 && time > 0) {
       socket = socketIOClient("https://jeremyslive.com:8000");
-      socket.emit("getIdForTipAmdTicket", localStorage.getItem("id"));
 
       const dataToPass = {
         userId: localStorage.getItem("id").toString(),
@@ -437,6 +440,12 @@ function ORBPage(props) {
 
   const callShortBreak = async () => {
     console.log("callShortBreak fn callled!!!!!!!!!!!!");
+    socket = socketIOClient("http://localhost:8000");
+
+    socket.emit("storeShortBreak", {
+      userId: localStorage.getItem("id"),
+      breakValue: !isBreak,
+    });
     setIsbreak(!isBreak);
 
     if (ORB.localAudioTrack && ORB.localVideoTrack) {
@@ -571,7 +580,7 @@ function ORBPage(props) {
                   className="progress-bar"
                   role="progressbar"
                   style={{
-                    width: "60%",
+                    width: `${tipRatio / 100}%`,
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
@@ -609,7 +618,7 @@ function ORBPage(props) {
                   className="progress-bar"
                   role="progressbar"
                   style={{
-                    width: "100%",
+                    width: `${ticketSold}%`,
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
@@ -839,14 +848,22 @@ function ORBPage(props) {
             <p>Time</p>
           </div>
         </a>
-        <a
-          style={{cursor: isLive ? "pointer" : "no-drop"}}
-          onClick={callShortBreak}>
-          <div className="ORB_link d-flex flex-column">
-            <img src="../assets/images/short_break.png" />
-            <p>Short Break</p>
-          </div>
-        </a>
+        {isLive ? (
+          <a style={{cursor: "pointer"}}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/short_break.png" />
+              <p>Short Break</p>
+            </div>
+          </a>
+        ) : (
+          <a style={{cursor: "no-drop"}}>
+            <div className="ORB_link d-flex flex-column">
+              <img src="../assets/images/short_break.png" />
+              <p>Short Break</p>
+            </div>
+          </a>
+        )}
+
         <a ref={ref}>
           <div
             className="ORB_link d-flex flex-column dropup"

@@ -10,6 +10,7 @@ import {
   tipPaymentDetail,
 } from "../../actions/paymentActions";
 import Modal from "react-bootstrap/Modal";
+import socketIOClient from "socket.io-client";
 
 function Tip(props) {
   const [tipAmount, setTipAmount] = useState(0);
@@ -24,6 +25,7 @@ function Tip(props) {
 
   const paypalRef = useRef();
   const paymentState = useSelector(state => state.payment);
+  let socket;
 
   const storeTipAmount = value => {
     if (value >= 1 && value <= 100) {
@@ -104,6 +106,9 @@ function Tip(props) {
       if (paymentState.tipDetail) {
         props.setShowTip(false);
         settipPaid(true);
+        socket = socketIOClient("http://localhost:8000");
+
+        socket.emit("getIdForTipAmdTicket", props.userId);
       }
       // if (paymentState.paidResponse) {
       //   if (paymentState.ticketReceipt) {
@@ -185,7 +190,7 @@ function Tip(props) {
             props.userId
           )
         );
-        dispatch(getPaymentDetailsOfStarTrainer(props.streamId));
+        dispatch(getPaymentDetailsOfStarTrainer(props.streamId, props.userId));
         console.log("tab is active");
       } else {
         console.log("tab is inactive");
@@ -195,6 +200,7 @@ function Tip(props) {
 
   const callMakePayment = async () => {
     console.log("fn called..");
+
     setLoader(true);
     if (tipAmount >= 1 && tipAmount <= 100) {
       setErrorMsg("");

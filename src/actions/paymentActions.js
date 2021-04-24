@@ -59,11 +59,11 @@ export const getPaymentDetails = data => {
   };
 };
 
-export const getPaymentDetailsOfStarTrainer = data => {
+export const getPaymentDetailsOfStarTrainer = (data, userId) => {
   return dispatch => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}api/payment/getReceiptForStarOrTrainer?streamId=${data}`
+        `${process.env.REACT_APP_API_URL}api/payment/getReceiptForStarOrTrainerForWeb?streamId=${data}&userId=${userId}`
       )
       .then(result => {
         if (result.data.code === 200) {
@@ -179,5 +179,25 @@ export const tipPaymentDetail = (streamId, fanId, userId) => {
         }
       })
       .catch(error => console.log("error....... ", error));
+  };
+};
+
+export const getTipDetails = userId => {
+  return dispatch => {
+    console.log("stream id........... ", userId);
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/payment/getTipTotal?streamId=${userId}`
+      )
+      .then(result => {
+        console.log("result......... ", result);
+        if (result.data.code === 200) {
+          dispatch({
+            type: "TIP_DETAILS",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(err => console.log("errr......... ", err));
   };
 };

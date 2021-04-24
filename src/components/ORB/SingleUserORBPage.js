@@ -21,6 +21,7 @@ import Receipt from "../ORBTicketComponents/Receipt";
 import Tip from "../ORBTicketComponents/Tip";
 
 import Modal from "react-bootstrap/Modal";
+import {socket} from "../../socketIO";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -58,6 +59,7 @@ function SingleUserORBPage(props) {
   const [audioPause, setAudioPause] = useState(false);
   const [rValue, setRvalue] = useState(false);
   const [hostId, setHostId] = useState("");
+  const [hostBreak, setHostBreak] = useState(false);
 
   let socketIO;
 
@@ -126,7 +128,7 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    socketIO = socketIOClient.connect("https://jeremyslive.com:8000/");
+    socketIO = socketIOClient.connect("http://localhost:8000");
     console.log("socket io.......", socketIO);
     console.log("props type... ", props.location.state.type);
 
@@ -147,6 +149,17 @@ function SingleUserORBPage(props) {
       });
     } else if ("trainer" == props.type || "Trainer" == props.type) {
     }
+
+    socketIO.on("getShortBreakValue", data => {
+      console.log("short break data...", data);
+
+      const foundUser = data.find(
+        ({userId}) => userId === props.location.state.id
+      );
+      if (foundUser) {
+        setHostBreak(foundUser.breakValue);
+      }
+    });
 
     document.documentElement.scrollTop = 0;
     await dispatch(getLiveStream(props.location.state.id));
@@ -580,6 +593,7 @@ function SingleUserORBPage(props) {
               setShow={setShow}
               text="star/trainer"
               streamId={streamObj ? streamObj._id : ""}
+              userId={props.location.state.id}
             />
           ) : (
             <Ticket
@@ -659,6 +673,10 @@ function SingleUserORBPage(props) {
               height: "500px",
               width: "500px",
               borderRadius: "100%",
+              background: hostBreak
+                ? "../assets/images/black_logo.png"
+                : "none",
+              content: hostBreak ? "will be back in…" : "",
             }}></div>
           <div className="r_image">
             {props.location.state.type == "trainer" ||

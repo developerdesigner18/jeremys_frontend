@@ -38,6 +38,12 @@ const paymentReducer = (state = null, action) => {
         tipDetail: action.payload,
       };
 
+    case "TIP_DETAILS":
+      return {
+        ...state,
+        tipList: action.payload,
+      };
+
     default:
       return {
         ...state,

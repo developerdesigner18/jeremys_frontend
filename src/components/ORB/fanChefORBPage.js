@@ -387,6 +387,7 @@ function FanChefORB(props) {
               streamId={streamDetails ? streamDetails._id : ""}
               setShow={setShow}
               text="chef/stylist"
+              userId={props.location.state.id}
             />
           ) : (
             <PayOrder
