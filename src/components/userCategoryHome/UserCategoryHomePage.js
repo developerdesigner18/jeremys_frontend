@@ -220,7 +220,7 @@ function UserCategoryHomePage(props) {
   };
 
   return (
-    <div className="userhomePage">
+    <div className="fan_container ">
       <div className="container">
         <div className="form_container px-3 px-md-5">
           <Header />

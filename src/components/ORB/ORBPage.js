@@ -57,6 +57,8 @@ function ORBPage(props) {
   const [timeOnTicket, setTimeOnTicket] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const [ticketPrice, setTicketPrice] = useState(0);
+  const [fanVideoClicked, setFanVideoClicked] = useState(false);
+  const [fanVideoClickedUid, setFanVideoClickedUid] = useState(null);
   const [seatArray, setSeatArray] = useState([]);
   const [ORB, setORB] = useState({
     client: null,
@@ -117,7 +119,7 @@ function ORBPage(props) {
   const stateUser = useSelector((state) => state.user);
 
   const getImage = () => {
-    console.log("fn called");
+    // console.log("fn called");
     html2canvas(document.querySelector("#capture"), {
       allowTaint: true,
       scrollX: 0,
@@ -138,9 +140,13 @@ function ORBPage(props) {
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
-
+  const onClickVideo = (uid) => {
+    setFanVideoClicked(true);
+    setFanVideoClickedUid(uid);
+    console.log("uid=-=-=-=-=-", uid);
+  };
   const callGoToLive = async () => {
-    console.log("seats and time... ", seats, time);
+    // console.log("seats and time... ", seats, time);
     if (seats > 0 && time > 0) {
       const dataToPass = {
         userId: localStorage.getItem("id").toString(),
@@ -168,7 +174,7 @@ function ORBPage(props) {
           )}`
         )
         .then((result) => {
-          console.log("result-==-=--=", result.data.key);
+          // console.log("result-==-=--=", result.data.key);
           setOptions((prevState) => ({ ...prevState, token: result.data.key }));
           token = result.data.key;
         })
@@ -184,7 +190,7 @@ function ORBPage(props) {
         null
       );
       await dispatch(storeHostUId(uid));
-      console.log("uid Host==-=-=-=", uid);
+      // console.log("uid Host==-=-=-=", uid);
 
       await rtc.client.enableDualStream();
       // Create an audio track from the audio sampled by a microphone.
@@ -206,59 +212,69 @@ function ORBPage(props) {
       // Publish the local audio and video tracks to the channel.
       await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
       rtc.client.on("user-published", async (user, mediaType) => {
-        console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        // console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 
         // Subscribe to a remote user.
-        await rtc.client.subscribe(user, mediaType);
-        await dispatch(changeUserStatus());
-        console.log(
-          "subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-          fanList
-        );
         await dispatch(getJoinedFanList(localStorage.getItem("id")));
 
-        if (mediaType === "video") {
-          subscribedValue = true;
-          setSubscribedUsers(subscribedValue);
-          let agoraClass = document.getElementById("fan-remote-playerlist2");
-          for (let i = 0; i < seats; i++) {
-            let generatedDiv = document.getElementById(
-              `player-wrapper-${user.uid}`
-            );
-            if (generatedDiv) {
-              generatedDiv.remove();
+        var x = document.getElementsByClassName("fan_ORB_small_video_idle")
+          .length;
+        console.log("x-=-=-=-=-", x);
+        if (x <= 2) {
+          await rtc.client.subscribe(user, mediaType);
+          await dispatch(changeUserStatus());
+          // console.log(
+          //   "subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
+          //   fanList
+          // );
+
+          if (mediaType === "video") {
+            subscribedValue = true;
+            setSubscribedUsers(subscribedValue);
+            let agoraClass = document.getElementById("fan-remote-playerlist2");
+            for (let i = 0; i < seats; i++) {
+              let generatedDiv = document.getElementById(
+                `player-wrapper-${user.uid}`
+              );
+              if (generatedDiv) {
+                generatedDiv.remove();
+              }
+              // let playerWrapper = document.createElement("div");
+              // playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
+              // playerWrapper.setAttribute(
+              //   "style",
+              //   "height:155px; width: 100%; border-radius:50%;"
+              // );
+              // document.getElementById(`fan-ORB${i}`).appendChild(playerWrapper);
+              // user.videoTrack.play(`player-wrapper-${user.uid}`);
+              let playerWrapper = document.createElement("div");
+              playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
+              playerWrapper.classList.add("col-md-2");
+              playerWrapper.classList.add("my-1");
+              playerWrapper.classList.add("fan_ORB_main_small_video");
+              playerWrapper.classList.add("fan_ORB_small_video_idle");
+              playerWrapper.addEventListener("click", () => {
+                onClickVideo(user.uid);
+              });
+              playerWrapper.setAttribute(
+                "style",
+                "height:155px; width: 100%; border-radius:50%;"
+              );
+              agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
+              user.videoTrack.play(`player-wrapper-${user.uid}`);
             }
-            // let playerWrapper = document.createElement("div");
-            // playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            // playerWrapper.setAttribute(
-            //   "style",
-            //   "height:155px; width: 100%; border-radius:50%;"
-            // );
-            // document.getElementById(`fan-ORB${i}`).appendChild(playerWrapper);
-            // user.videoTrack.play(`player-wrapper-${user.uid}`);
-            let playerWrapper = document.createElement("div");
-            playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            playerWrapper.classList.add("col-md-2");
-            playerWrapper.classList.add("my-1");
-            playerWrapper.classList.add("fan_ORB_main_small_video");
-            playerWrapper.setAttribute(
-              "style",
-              "height:155px; width: 100%; border-radius:50%;"
-            );
-            agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
-            user.videoTrack.play(`player-wrapper-${user.uid}`);
+          } else {
+            rtc.client.on("media-reconnect-start", (uid) => {
+              // console.log("media-reconnect-start event called.............", uid);
+            });
           }
-        } else {
-          rtc.client.on("media-reconnect-start", (uid) => {
-            console.log("media-reconnect-start event called.............", uid);
-          });
-        }
-        if (mediaType === "audio") {
-          // user.audioTrack.play();
-        } else {
-          rtc.client.on("media-reconnect-start", (uid) => {
-            console.log("media-reconnect-start event called.............", uid);
-          });
+          if (mediaType === "audio") {
+            // user.audioTrack.play();
+          } else {
+            rtc.client.on("media-reconnect-start", (uid) => {
+              // console.log("media-reconnect-start event called.............", uid);
+            });
+          }
         }
       });
       rtc.client.on("user-unpublished", async (user, mediaType) => {
@@ -268,10 +284,10 @@ function ORBPage(props) {
         if (generatedDiv) {
           generatedDiv.remove();
         }
-        console.log("handleUserUnpublished-==-=-=", user.uid);
+        // console.log("handleUserUnpublished-==-=-=", user.uid);
         const id = user.uid;
       });
-      console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+      // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal("Info", "Please fill up the show time and seats!", "info");
     }
@@ -319,7 +335,7 @@ function ORBPage(props) {
     return hosts;
   }
   function showEmptyCircles() {
-    var x = document.getElementsByClassName("fan_ORB_main_small_video").length;
+    var x = document.getElementsByClassName("fan_ORB_small_video_idle").length;
     let hosts = [];
     for (let i = 0; i < parseInt(seats) - x; i++) {
       hosts.push(
@@ -336,6 +352,91 @@ function ORBPage(props) {
       );
     }
     return hosts;
+  }
+  function showDivOnVideoClick() {
+    let agoraClass = document.getElementById("fan-remote-playerlist2");
+    let agoraArray = agoraClass.childNodes;
+    console.log("agaoraArray", agoraArray);
+    for (let i = 0; i < agoraClass.childNodes.length; i++) {
+      if (
+        agoraClass.childNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
+      ) {
+        agoraClass.childNodes[i].classList.add("col-md-12");
+        agoraClass.childNodes[i].classList.remove("fan_ORB_main_small_video");
+        agoraClass.childNodes[i].classList.add("fan_ORB_main_big_video");
+        agoraClass.childNodes[i].setAttribute(
+          "style",
+          "height:500px; width: 500px; border-radius:50%;"
+        );
+        document
+          .getElementById("BigColumn")
+          .appendChild(agoraClass.childNodes[i]);
+      }
+      if (
+        i % 2 == 0 &&
+        agoraClass.childNodes[i].id !== `player-wrapper-${fanVideoClickedUid}`
+      ) {
+        if (document.getElementById("SmallColumnLeft")) {
+          {
+            agoraClass.childNodes[i].classList.remove("m-0");
+            agoraClass.childNodes[i].classList.add("col-md-6");
+            agoraClass.childNodes[i].classList.contains(
+              "fan_ORB_main_small_video"
+            );
+            {
+              agoraClass.childNodes[i].classList.remove(
+                "fan_ORB_main_small_video"
+              );
+              agoraClass.childNodes[i].setAttribute(
+                "style",
+                "height:115px; width: 100%; border-radius:50%;"
+              );
+              // agoraClass.childNodes[i].classList.add("m-auto");
+              agoraClass.childNodes[i].classList.add(
+                "fan_ORB_main_small_video2"
+              );
+            }
+            agoraClass.childNodes[i].classList.add("my-2");
+
+            document
+              .getElementById("SmallColumnLeft")
+              .appendChild(agoraClass.childNodes[i]);
+          }
+        }
+      }
+      if (
+        i % 2 == 1 &&
+        agoraClass.childNodes[i].id !== `player-wrapper-${fanVideoClickedUid}`
+      ) {
+        if (document.getElementById("SmallColumnRight")) {
+          {
+            agoraClass.childNodes[i].classList.add("col-md-6");
+            agoraClass.childNodes[i].classList.remove("m-0");
+            agoraClass.childNodes[i].classList.contains(
+              "fan_ORB_main_small_video"
+            );
+            {
+              agoraClass.childNodes[i].classList.add(
+                "fan_ORB_main_small_video2"
+              );
+              agoraClass.childNodes[i].setAttribute(
+                "style",
+                "height:115px; width: 100%; border-radius:50%;"
+              );
+              agoraClass.childNodes[i].classList.remove(
+                "fan_ORB_main_small_video"
+              );
+              // agoraClass.childNodes[i].classList.add("m-auto");
+            }
+            agoraClass.childNodes[i].classList.add("my-2");
+
+            document
+              .getElementById("SmallColumnRight")
+              .appendChild(agoraClass.childNodes[i]);
+          }
+        }
+      }
+    }
   }
   async function leaveCall() {
     // Destroy the local audio and video tracks.
@@ -357,11 +458,11 @@ function ORBPage(props) {
       let list;
       setTimeout(() => {
         if (stateData.joinedFanList && stateData.joinedFanList.length) {
-          if (stateData.joinedFanList.length >= 15) {
-            swal("Info", "You cannot communicate with this user", "info");
-          } else {
-            setFanList((prevState) => [...prevState, stateData.joinedFanList]);
-          }
+          // if (stateData.joinedFanList.length >= 15) {
+          //   swal("Info", "You cannot communicate with this user", "info");
+          // } else {
+          setFanList((prevState) => [...prevState, stateData.joinedFanList]);
+          // }
         } else {
           setFanList((prevState) => [...prevState, stateData.joinedFanList]);
         }
@@ -371,7 +472,7 @@ function ORBPage(props) {
 
   useEffect(() => {
     if (stateUser) {
-      console.log("state user............. ", stateUser);
+      // console.log("state user............. ", stateUser);
       if (stateUser.userInfo) {
         setUserDetail(stateUser.userInfo);
       }
@@ -383,7 +484,7 @@ function ORBPage(props) {
   );
 
   const callShortBreak = async () => {
-    console.log("callShortBreak fn callled!!!!!!!!!!!!");
+    // console.log("callShortBreak fn callled!!!!!!!!!!!!");
     setIsbreak(!isBreak);
 
     if (ORB.localAudioTrack && ORB.localVideoTrack) {
@@ -394,7 +495,7 @@ function ORBPage(props) {
 
   const showTimerModal = () => {
     setShow(true);
-    setShowTimer(!showTimer);
+    setShowTimer(true);
     setShowTicket(false);
     setShowSeat(false);
 
@@ -405,25 +506,33 @@ function ORBPage(props) {
 
   const showSeatModal = () => {
     setShow(true);
-    setShowSeat(!showSeat);
+    setShowSeat(true);
     setShowTimer(false);
     setShowTicket(false);
   };
 
   const showTicketModal = () => {
     setShow(true);
-    setShowTicket(!showTimer);
+    setShowTicket(true);
     setShowSeat(false);
     setShowTimer(false);
-    console.log("time and seat... ", time, seats);
+    // console.log("time and seat... ", time, seats);
   };
   let ViewersPercent = 0;
   if (subscribedUsers) {
-    var x = document.getElementsByClassName("fan_ORB_main_small_video").length;
+    var x = document.getElementsByClassName("fan_ORB_small_video_idle").length;
     let viewersRatio = x / seats;
     ViewersPercent = viewersRatio * 100;
-    console.log("x---", x, "seats---", seats, "percent---", ViewersPercent);
+    // console.log("x---", x, "seats---", seats, "percent---", ViewersPercent);
   }
+  console.log(
+    "showTimer   ",
+    showTimer,
+    "showSeat",
+    showSeat,
+    "showTicket",
+    showTicket
+  );
   return (
     <div
       style={{
@@ -435,6 +544,11 @@ function ORBPage(props) {
       }}
       id="capture"
     >
+      {console.log(
+        "fanVideoClicked=--=-=",
+        fanVideoClickedUid,
+        fanVideoClicked
+      )}
       <Modal
         show={show}
         onHide={handleClose}
@@ -577,7 +691,7 @@ function ORBPage(props) {
       </div>
       {isLive ? (
         <>
-          {subscribedUsers ? (
+          {isLive ? (
             <div
               className="container d-flex justify-content-center mt-1"
               style={{ textAlign: "center", height: "100px" }}
@@ -593,8 +707,29 @@ function ORBPage(props) {
             }`}
             id="fan-remote-playerlist2"
           >
-            {isLive ? (subscribedUsers ? null : showHosts()) : null}
-            {subscribedUsers ? showEmptyCircles() : null}
+            {showEmptyCircles()}
+          </div>
+          <div
+            className={`container row ORB_videos_container mx-auto player ${
+              subscribedUsers ? "mt-0" : "mt-1"
+            }`}
+          >
+            {" "}
+            {fanVideoClicked ? (
+              <>
+                <div className="col-md-3">
+                  <div className="row" id="SmallColumnLeft"></div>
+                </div>
+                <div
+                  className="col-md-6 d-flex justify-content-center"
+                  id="BigColumn"
+                ></div>
+                <div className="col-md-3">
+                  <div className="row" id="SmallColumnRight"></div>
+                </div>
+                {showDivOnVideoClick()}
+              </>
+            ) : null}
           </div>
           <div
             className="container d-flex justify-content-center"

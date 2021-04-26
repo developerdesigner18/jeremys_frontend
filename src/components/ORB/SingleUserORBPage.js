@@ -262,12 +262,13 @@ function SingleUserORBPage(props) {
                                 );
                                 rtc.client.on(
                                   "media-reconnect-start",
-                                  (uid) => {
-                                    console.log(
-                                      "media-reconnect-start event called.............",
-                                      uid
-                                    );
-                                  }
+                                  uid
+                                  //  => {
+                                  //   console.log(
+                                  //     "media-reconnect-start event called.............",
+                                  //     uid
+                                  //   );
+                                  // }
                                 );
                               }
                             } else {
@@ -303,12 +304,13 @@ function SingleUserORBPage(props) {
                               } else {
                                 rtc.client.on(
                                   "media-reconnect-start",
-                                  (uid) => {
-                                    console.log(
-                                      "media-reconnect-start event called.............",
-                                      uid
-                                    );
-                                  }
+                                  uid
+                                  // => {
+                                  //   console.log(
+                                  //     "media-reconnect-start event called.............",
+                                  //     uid
+                                  //   );
+                                  // }
                                 );
                               }
                             }

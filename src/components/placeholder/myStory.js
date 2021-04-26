@@ -319,7 +319,8 @@ function MyStory(props) {
 
   return (
     <div>
-      <div className="container p-2 main mt-5">
+      <div className="container p-2 mt-1">
+        {/* <div className="container p-2 main mt-5"> */}
         <div className="grey_logo">
           <img src="../assets/images/grey_logo.png" />
         </div>
