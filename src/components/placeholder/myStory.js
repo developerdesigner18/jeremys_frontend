@@ -197,6 +197,7 @@ function MyStory(props) {
   }, [paymentState]);
 
   const moveToNext = () => {
+    console.log("next fn called", screenShotCounter, screenShot.length);
     if (screenShot.length - 1 === screenShotCounter) {
       setScreenShotCounter(0);
     } else {
@@ -204,10 +205,13 @@ function MyStory(props) {
     }
   };
   const moveToPrevious = () => {
-    if (screenShot.length - 1 === screenShotCounter) {
-      setScreenShotCounter(0);
-    } else {
-      setScreenShotCounter(screenShotCounter - 1);
+    console.log("previous fn called", screenShotCounter, screenShot.length);
+    if (screenShotCounter > 0) {
+      if (screenShot.length - 1 === screenShotCounter) {
+        setScreenShotCounter(0);
+      } else {
+        setScreenShotCounter(screenShotCounter - 1);
+      }
     }
   };
 
@@ -528,12 +532,27 @@ function MyStory(props) {
                             )}
                           </div>
                         </div>
+                        {/* <img
+                          className="w-100 nextButton"
+                          src="../assets/images/right_calendar_arrow.png"
+                          style={{transform: "rotate(90)"}}
+                        /> */}
+                        {/* <button onClick={() => moveToPrevious()}>
+                          Previous
+                        </button> */}
+                        <img
+                          className="w-100 nextButton"
+                          src="../assets/images/right_calendar_arrow.png"
+                          style={{transform: "rotate(180deg)"}}
+                          onClick={() => moveToPrevious()}
+                        />
                         <img
                           className="w-100"
                           src={screenShot[screenShotCounter].name}
                         />
+
                         <img
-                          className="w-100 nextButton"
+                          className="w-100 nextButton prev"
                           src="../assets/images/right_calendar_arrow.png"
                           onClick={() => moveToNext()}
                         />

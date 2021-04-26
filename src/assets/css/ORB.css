@@ -221,6 +221,7 @@ body {
 }
 .ORB_link {
   align-items: center;
+  min-width: 70px;
 }
 .ORB_links > a:hover {
   text-decoration: none;

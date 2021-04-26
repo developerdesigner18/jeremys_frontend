@@ -93,9 +93,14 @@ body {
   height: auto !important;
   position: absolute;
   bottom: 35px;
-  right: 25px;
   padding: 0 !important;
   z-index: 99;
+  left: 10px;
+  /* transform: rotate(180deg); */
+}
+.nextButton.prev {
+  right: 20px;
+  left: inherit;
 }
 .position-relative.chef_image_sec {
   z-index: 999;
