@@ -45,7 +45,6 @@ function SingleUserORBPage(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [availableList, setAvailableList] = useState([]);
   const [host, setHost] = useState([]);
-  const [remoteId, setRemoteId] = useState("");
   const ref = useRef();
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
@@ -74,7 +73,7 @@ function SingleUserORBPage(props) {
     localVideoTrack: null,
   });
   let encodedURL = encodeURI(
-    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+    `${process.env.REACT_APP_SOCKET_URL}${window.location.pathname.slice(1)}`
   );
 
   const [options, setOptions] = useState({
@@ -128,7 +127,7 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    socketIO = socketIOClient.connect("https://jeremyslive.com:8000");
+    socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
     console.log("socket io.......", socketIO);
     console.log("props type... ", props.location.state.type);
 
@@ -141,9 +140,15 @@ function SingleUserORBPage(props) {
       socketIO.on("getRvalue", data => {
         console.log("r value data.. ", data);
 
-        data.forEach(value => {
+        data.forEach(async value => {
           if (value.userId == props.location.state.id) {
             setRvalue(value.rValue);
+
+            // if (value.rValue === false) {
+            //   if (fanRTC.localAudioTrack)
+            //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
+            //   rtc.localAudioTrack.setEnabled(value.rValue);
+            // }
           }
         });
       });
@@ -181,7 +186,6 @@ function SingleUserORBPage(props) {
 
   useEffect(async () => {
     let id, role;
-    let token;
 
     console.log("props............ ", props);
     if (
@@ -189,265 +193,227 @@ function SingleUserORBPage(props) {
       props.location.state.name &&
       props.location.state.role
     ) {
+      id = props.location.state.id;
+      role = props.location.state.role;
       const dataToPass = {
-        userId: props.location.state.id,
+        userId: id,
         fanId: localStorage.getItem("id"),
       };
+      await dispatch(joinedFan(dataToPass));
+
       axios
-        .put(
-          `${process.env.REACT_APP_API_URL}api/online/storeJoinedFan`,
-          dataToPass
-        )
-        .then(storeJoinedFan => {
-          // await dispatch(joinedFan(dataToPass));
-          id = props.location.state.id;
-          role = props.location.state.role;
-          setRemoteId(id);
+        .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
+        .then(async result => {
+          console.log("result.......... ", result);
+          let hostUidResponse = result.data.data.uid;
+          setHostId(hostUidResponse);
 
-          axios
-            .get(
-              `${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`
-            )
-            .then(async result => {
-              axios
-                .post(
-                  `${process.env.REACT_APP_API_URL}api/online/getHostInfo`,
+          if (result.data.data.agoraToken) {
+            const token = result.data.data.agoraToken;
+            rtc.client = AgoraRTC.createClient({
+              mode: "live",
+              codec: "vp8",
+            });
+            await rtc.client.setClientRole(role);
+            const uid = await rtc.client.join(
+              process.env.REACT_APP_AGORA_APP_ID,
+              id,
+              token,
+              null
+            );
+            setFanRTC(prevState => ({
+              ...prevState,
+              client: rtc.client,
+            }));
+            rtc.client.on("user-published", async (user, mediaType) => {
+              console.log("handleUserPublished-==-=-=", user.uid);
 
-                  {joinedFanId: localStorage.getItem("id")}
-                )
-                .then(async data => {
-                  let hostUidResponse = data.data.message.hostUid;
-                  setHostId(hostUidResponse);
-                  setOptions({
-                    ...options,
-                    token: result.data.data.agoraToken,
-                    channel: id,
-                  });
+              const id = user.uid;
+              remoteUsers[id] = user;
 
-                  if (result.data.data.agoraToken) {
-                    token = result.data.data.agoraToken;
-                    rtc.client = AgoraRTC.createClient({
-                      mode: "live",
-                      codec: "vp8",
-                    });
-                    setFanRTC(prevState => ({
-                      ...prevState,
-                      client: rtc.client,
-                    }));
-                    await rtc.client.setClientRole(role);
+              let agoraClass = document.getElementById(
+                "user-remote-playerlist"
+              );
 
-                    const uid = await rtc.client.join(
-                      options.appId,
-                      id,
-                      token,
-                      null
-                    );
-                    console.log("Meeting Joined-==-=-=", rtc.client);
-                    rtc.client.on("user-published", async (user, mediaType) => {
-                      console.log("handleUserPublished-==-=-=", user.uid);
+              const remote = await rtc.client.subscribe(user, mediaType);
+              hostUser.push(id);
+              // const uniqueArray = hostUser.filter(function (item, pos) {
+              //   return hostUser.indexOf(item) == pos;
+              // });
+              // setHost(uniqueArray);
+              // console.log("unique array.......... ", uniqueArray);
 
-                      const id = user.uid;
-                      remoteUsers[id] = user;
-
-                      let agoraClass = document.getElementById(
-                        "user-remote-playerlist"
+              if (hostUser.length) {
+                console.log("host.............", hostUser);
+                hostUser.map((host, i) => {
+                  if (parseInt(host) !== parseInt(hostUidResponse)) {
+                    if (i % 2 !== 0) {
+                      console.log("i % 2 == 0", i, i % 2 !== 0);
+                      let generatedDiv = document.getElementById(
+                        `player-wrapper-${user.uid}`
                       );
-
-                      const remote = await rtc.client.subscribe(
-                        user,
-                        mediaType
-                      );
-                      hostUser.push(id);
-                      // const uniqueArray = hostUser.filter(function (item, pos) {
-                      //   return hostUser.indexOf(item) == pos;
-                      // });
-                      // setHost(uniqueArray);
-                      // console.log("unique array.......... ", uniqueArray);
-
-                      if (hostUser.length) {
-                        console.log("host.............", hostUser);
-                        hostUser.map((host, i) => {
-                          if (parseInt(host) !== parseInt(hostUidResponse)) {
-                            if (i % 2 !== 0) {
-                              console.log("i % 2 == 0", i, i % 2 !== 0);
-                              let generatedDiv = document.getElementById(
-                                `player-wrapper-${user.uid}`
-                              );
-                              if (generatedDiv) {
-                                generatedDiv.remove();
-                              }
-                              let playerWrapper = document.createElement("div");
-                              playerWrapper.setAttribute(
-                                "id",
-                                `player-wrapper-${user.uid}`
-                              );
-                              playerWrapper.classList.add("col-md-6");
-                              playerWrapper.classList.add("fan_ORB_main_cat");
-                              playerWrapper.setAttribute(
-                                "style",
-                                "height:160px; width: 160px; border-radius:50%;"
-                              );
-                              document
-                                .getElementById("other-fan-remote")
-                                .appendChild(playerWrapper);
-                              if (mediaType == "video") {
-                                user.videoTrack.play(
-                                  `player-wrapper-${user.uid}`
-                                );
-                                // if (mediaType === "audio") {
-                                // user.audioTrack.play();
-                                // }
-                              } else {
-                                console.log(
-                                  "media-reconnect-start event will be called.............",
-                                  uid
-                                );
-                                rtc.client.on("media-reconnect-start", uid => {
-                                  console.log(
-                                    "media-reconnect-start event called.............",
-                                    uid
-                                  );
-                                });
-                              }
-                            } else {
-                              console.log(
-                                "i % 2 == 0 else................",
-                                i,
-                                i % 2 !== 0
-                              );
-                              let generatedDiv = document.getElementById(
-                                `player-wrapper-${user.uid}`
-                              );
-                              if (generatedDiv) {
-                                generatedDiv.remove();
-                              }
-                              let playerWrapper = document.createElement("div");
-                              playerWrapper.setAttribute(
-                                "id",
-                                `player-wrapper-${user.uid}`
-                              );
-                              playerWrapper.classList.add("col-md-6");
-                              playerWrapper.classList.add("fan_ORB_main_cat");
-                              playerWrapper.setAttribute(
-                                "style",
-                                "height:160px; width: 160px; border-radius:50%;"
-                              );
-                              document
-                                .getElementById("other-fan-remote1")
-                                .appendChild(playerWrapper);
-                              if (mediaType == "video") {
-                                user.videoTrack.play(
-                                  `player-wrapper-${user.uid}`
-                                );
-                              } else {
-                                rtc.client.on("media-reconnect-start", uid => {
-                                  console.log(
-                                    "media-reconnect-start event called.............",
-                                    uid
-                                  );
-                                });
-                              }
-                            }
-                          } else {
-                            console.log(
-                              "host-=-=-=",
-                              host,
-                              host == hostUidResponse
-                            );
-                            let generatedDiv = document.getElementById(
-                              `player-wrapper-${user.uid}`
-                            );
-                            if (generatedDiv) {
-                              generatedDiv.remove();
-                            }
-                            let playerWrapper = document.createElement("div");
-                            playerWrapper.setAttribute(
-                              "id",
-                              `player-wrapper-${user.uid}`
-                            );
-
-                            playerWrapper.setAttribute(
-                              "style",
-                              " height: 500px;width: 500px;border-radius:50%;"
-                            );
-                            agoraClass.appendChild(playerWrapper);
-                            if (mediaType == "video") {
-                              user.videoTrack.play(playerWrapper);
-                              // if()
-                              // user.audioTrack.play();
-
-                              // user.videoTrack.play(agoraClass);
-                            } else {
-                              console.log(
-                                "media-reconnect-start event will be called.............",
-                                uid
-                              );
-                              rtc.client.on("media-reconnect-start", uid => {
-                                console.log(
-                                  "media-reconnect-start event called.............",
-                                  uid
-                                );
-                              });
-                            }
-                            if (mediaType === "audio") {
-                              user.audioTrack.play();
-                            }
-                          }
-                        });
+                      if (generatedDiv) {
+                        generatedDiv.remove();
                       }
-                    });
-                    rtc.client.on(
-                      "user-unpublished",
-                      async (user, mediaType) => {
-                        let generatedDiv = document.getElementById(
-                          `player-wrapper-${user.uid}`
+                      let playerWrapper = document.createElement("div");
+                      playerWrapper.setAttribute(
+                        "id",
+                        `player-wrapper-${user.uid}`
+                      );
+                      playerWrapper.classList.add("col-md-6");
+                      playerWrapper.classList.add("fan_ORB_main_cat");
+                      playerWrapper.setAttribute(
+                        "style",
+                        "height:165px; width: 115px; border-radius:50%;"
+                      );
+                      document
+                        .getElementById("other-fan-remote")
+                        .appendChild(playerWrapper);
+                      if (mediaType == "video") {
+                        user.videoTrack.play(`player-wrapper-${user.uid}`);
+                        // if (mediaType === "audio") {
+                        // user.audioTrack.play();
+                        // }
+                      } else {
+                        console.log(
+                          "media-reconnect-start event will be called.............",
+                          uid
                         );
-                        if (generatedDiv) {
-                          generatedDiv.remove();
-                        }
-                        console.log("handleUserUnpublished-==-=-=", user.uid);
-                        setTimeout(() => {
-                          const id = user.uid;
-                          delete remoteUsers[id];
-
-                          let index = hostUser.indexOf(id);
-                          if (index > -1) {
-                            hostUser.splice(index, 1);
-                          }
-                        }, 180000);
+                        rtc.client.on(
+                          "media-reconnect-start",
+                          uid
+                          //  => {
+                          //   console.log(
+                          //     "media-reconnect-start event called.............",
+                          //     uid
+                          //   );
+                          // }
+                        );
                       }
+                    } else {
+                      console.log(
+                        "i % 2 == 0 else................",
+                        i,
+                        i % 2 !== 0
+                      );
+                      let generatedDiv = document.getElementById(
+                        `player-wrapper-${user.uid}`
+                      );
+                      if (generatedDiv) {
+                        generatedDiv.remove();
+                      }
+                      let playerWrapper = document.createElement("div");
+                      playerWrapper.setAttribute(
+                        "id",
+                        `player-wrapper-${user.uid}`
+                      );
+                      playerWrapper.classList.add("col-md-6");
+                      playerWrapper.classList.add("fan_ORB_main_cat");
+                      playerWrapper.setAttribute(
+                        "style",
+                        "height:165px; width: 115px; border-radius:50%;"
+                      );
+                      document
+                        .getElementById("other-fan-remote1")
+                        .appendChild(playerWrapper);
+                      if (mediaType == "video") {
+                        user.videoTrack.play(`player-wrapper-${user.uid}`);
+                      } else {
+                        rtc.client.on(
+                          "media-reconnect-start",
+                          uid
+                          // => {
+                          //   console.log(
+                          //     "media-reconnect-start event called.............",
+                          //     uid
+                          //   );
+                          // }
+                        );
+                      }
+                    }
+                  } else {
+                    console.log("host-=-=-=", host, host == hostUidResponse);
+                    let generatedDiv = document.getElementById(
+                      `player-wrapper-${user.uid}`
+                    );
+                    if (generatedDiv) {
+                      generatedDiv.remove();
+                    }
+                    let playerWrapper = document.createElement("div");
+                    playerWrapper.setAttribute(
+                      "id",
+                      `player-wrapper-${user.uid}`
                     );
 
-                    // Create an audio track from the audio sampled by a microphone.
-                    // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-                    // setFanRTC(prevState => ({
-                    //   ...prevState,
-                    //   localAudioTrack: rtc.localAudioTrack,
-                    // }));
-                    // Create a video track from the video captured by a camera.
-                    rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-                    setFanRTC(prevState => ({
-                      ...prevState,
-                      localVideoTrack: rtc.localVideoTrack,
-                    }));
+                    playerWrapper.setAttribute(
+                      "style",
+                      " height: 500px;width: 500px;border-radius:50%;"
+                    );
+                    agoraClass.appendChild(playerWrapper);
+                    console.log("remote user media type... ", mediaType);
 
-                    rtc.localVideoTrack.play("local-player");
-                    // rtc.localAudioTrack.play();
-
-                    // Publish the local audio and video tracks to the channel.
-                    await rtc.client.publish([rtc.localVideoTrack]);
+                    if (mediaType == "video") {
+                      user.videoTrack.play(playerWrapper);
+                    }
+                    if (mediaType == "audio") {
+                      user.audioTrack.play();
+                    }
+                    // else {
+                    //   rtc.client.on("media-reconnect-start", uid => {
+                    //     console.log(
+                    //       "media-reconnect-start event called.............",
+                    //       uid
+                    //     );
+                    //   });
+                    // }
                   }
                 });
-            })
-            .catch(error => {
-              console.log("error........", error);
+              }
             });
+            rtc.client.on("user-unpublished", async (user, mediaType) => {
+              let generatedDiv = document.getElementById(
+                `player-wrapper-${user.uid}`
+              );
+              if (generatedDiv) {
+                generatedDiv.remove();
+              }
+              console.log("handleUserUnpublished-==-=-=", user.uid);
+              setTimeout(() => {
+                const id = user.uid;
+                delete remoteUsers[id];
+
+                let index = hostUser.indexOf(id);
+                if (index > -1) {
+                  hostUser.splice(index, 1);
+                }
+              }, 180000);
+            });
+
+            // Create an audio track from the audio sampled by a microphone.
+            // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            // setFanRTC(prevState => ({
+            //   ...prevState,
+            //   localAudioTrack: rtc.localAudioTrack,
+            // }));
+            // Create a video track from the video captured by a camera.
+            rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
+            setFanRTC(prevState => ({
+              ...prevState,
+              localVideoTrack: rtc.localVideoTrack,
+            }));
+
+            rtc.localVideoTrack.play("local-player");
+            // rtc.localAudioTrack.play();
+
+            // Publish the local audio and video tracks to the channel.
+            await rtc.client.publish([rtc.localVideoTrack]);
+          }
         })
         .catch(error => {
           console.log("error........", error);
         });
     }
-  }, []);
+  }, [props.location.state.id]);
 
   useEffect(() => {
     if (orbState) {
@@ -547,20 +513,21 @@ function SingleUserORBPage(props) {
   const callAudioPause = async () => {
     console.log("call audio pause fn... ");
     setAudioPause(!audioPause);
-    if (rValue) {
-      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      setFanRTC(prevState => ({
-        ...prevState,
-        localAudioTrack: rtc.localAudioTrack,
-      }));
-    }
+    // if (rValue) {
+    //   rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    //   setFanRTC(prevState => ({
+    //     ...prevState,
+    //     localAudioTrack: rtc.localAudioTrack,
+    //   }));
+    // }
     if (fanRTC.localAudioTrack) {
       await fanRTC.localAudioTrack.setEnabled(audioPause);
     }
+    console.log(audioPause);
   };
 
   const callQFunction = async () => {
-    socketIO = socketIOClient.connect("https://jeremyslive.com:8000/");
+    socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
     const dataToPass = {
       userId: props.location.state.id,
       fanObj: {
@@ -588,6 +555,24 @@ function SingleUserORBPage(props) {
     );
 
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
+  };
+
+  const onRclick = async () => {
+    if (rValue) {
+      if (fanRTC.localAudioTrack) {
+        await fanRTC.localAudioTrack.setEnabled(rValue);
+      } else {
+        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setFanRTC(prevState => ({
+          ...prevState,
+          localAudioTrack: rtc.localAudioTrack,
+        }));
+      }
+    } else {
+      if (fanRTC.localAudioTrack) {
+        await fanRTC.localAudioTrack.setEnabled(rValue);
+      }
+    }
   };
 
   return (
@@ -691,11 +676,16 @@ function SingleUserORBPage(props) {
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-              background: hostBreak
-                ? "../assets/images/black_logo.png"
-                : "none",
-              content: hostBreak ? "will be back in…" : "",
-            }}></div>
+            }}>
+            <div style={{zIndex: "2"}} className="break_display_text">
+              <img src="../assets/images/black_logo.png" alt="logo" />
+
+              <p style={{justifyContent: "center"}}>
+                {hostBreak ? "will be back in…" : ""}
+              </p>
+            </div>
+          </div>
+
           <div className="r_image">
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
@@ -708,8 +698,9 @@ function SingleUserORBPage(props) {
               props.location.state.type == "Star" ? (
               rValue ? (
                 <img
-                  src="../assets/images/r_image.png"
-                  style={{height: "80px", width: "80px"}}
+                  src="../assets/images/Applause_bold with_roar.png"
+                  style={{height: "100px", width: "100px", cursor: "pointer"}}
+                  onClick={onRclick}
                 />
               ) : (
                 <img

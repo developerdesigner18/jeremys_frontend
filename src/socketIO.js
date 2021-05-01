@@ -1,6 +1,6 @@
 import socketIOClient from "socket.io-client";
 
-export const socket = socketIOClient("https://jeremyslive.com:8000", {
+export const socket = socketIOClient(process.env.REACT_APP_SOCKET_URL, {
   jsonp: false,
   transports: ["websocket"], // you need to explicitly tell it to use websockets
   reconnection: true,

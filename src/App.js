@@ -25,6 +25,7 @@ import VideoCallBasicCall from "./components/videoCall/VideoCallBasicCall";
 import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
 import VideoCall1 from "./components/videoCall/videoCallHost copy";
 import Privacy from "./components/Privacy";
+import ORBPageOLD from "./components/ORB/ORBPageOld";
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
         <PrivateRoute path="/userHomepage" component={UserCategoryHomePage} />
         <PrivateRoute path="/customerService" component={CustomerService} />
         <PrivateRoute path="/ORBpage" component={ORBPage} />
+        <PrivateRoute path="/ORBpageOLD" component={ORBPageOLD} />
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
         <PrivateRoute path="/fanChefORB" component={FanChefORB} />

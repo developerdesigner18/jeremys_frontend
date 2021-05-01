@@ -50,7 +50,7 @@
 }
 .fan_container {
   margin: 0 auto !important;
-  padding: 0;
+  padding: 10px 0;
   box-sizing: border-box;
   font-family: proxima-nova;
   color: #ffffff;

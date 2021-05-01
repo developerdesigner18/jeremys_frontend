@@ -106,9 +106,9 @@ function Tip(props) {
       if (paymentState.tipDetail) {
         props.setShowTip(false);
         settipPaid(true);
-        socket = socketIOClient("https://jeremyslive.com:8000");
+        socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
-        socket.emit("getIdForTipAmdTicket", props.userId);
+        socket.emit("getIdForTipAmdTicket", props.streamId);
       }
       // if (paymentState.paidResponse) {
       //   if (paymentState.ticketReceipt) {

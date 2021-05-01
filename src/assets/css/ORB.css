@@ -238,6 +238,20 @@ body {
   border: solid 1px red;
   border-radius: 50%;
 }
+/* #user-remote-playerlist {
+  position: relative;
+} */
+.break_display_text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 
 #fan-remote-playerlist .agora_video_player {
   border-radius: 50% !important;
@@ -252,11 +266,23 @@ body {
 
 #other-fan-remote1 .agora_video_player {
   border-radius: 50% !important;
+  width: 128px !important;
+  height: 120px !important;
 }
 .fan_ORB_main_small_video .agora_video_player {
   border-radius: 50% !important;
-  width: 160px !important;
+  width: 153px !important;
   height: 153px !important;
+}
+.fan_ORB_main_small_video2 .agora_video_player {
+  border-radius: 50% !important;
+  width: 112px !important;
+  height: 115px !important;
+}
+.fan_ORB_main_big_video .agora_video_player {
+  border-radius: 50% !important;
+  width: 100% !important;
+  height: 400 !important;
 }
 
 #user-remote-playerlist .agora_video_player {

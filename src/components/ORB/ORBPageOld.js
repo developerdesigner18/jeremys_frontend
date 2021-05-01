@@ -41,7 +41,7 @@ const useOutsideClick = (ref, callback) => {
   });
 };
 
-function ORBPage(props) {
+function ORBPageOLD(props) {
   const [isLive, setIsLive] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [fanList, setFanList] = useState([]);
@@ -176,7 +176,30 @@ function ORBPage(props) {
   const onClickVideo = uid => {
     setFanVideoClicked(true);
     setFanVideoClickedUid(uid);
-    console.log("uid=-=-=-=-=-", uid);
+    console.log("uid... ", uid);
+
+    let agoraClass = document.getElementById("fan-remote-playerlist2");
+    let agoraArray = agoraClass.childNodes;
+    document.getElementById("fan-remote-playerlist2").style.display = "none";
+    console.log("agaoraArray", agoraArray, fanVideoClickedUid);
+    for (let i = 0; i < agoraClass.childNodes.length; i++) {
+      if (agoraClass.childNodes[i].id == `player-wrapper-${uid}`) {
+        agoraClass.childNodes[i].classList.add("col-md-12");
+        agoraClass.childNodes[i].classList.remove("fan_ORB_main_small_video");
+        agoraClass.childNodes[i].classList.add("fan_ORB_main_big_video");
+        agoraClass.childNodes[i].setAttribute(
+          "style",
+          "height:500px; width: 1080px; border-radius:50%;margin-left:110%"
+        );
+        document
+          .getElementById("BigColumn")
+          .appendChild(agoraClass.childNodes[i]);
+
+        document.getElementById("BigColumn").addEventListener("click", () => {
+          closedBigORB(uid);
+        });
+      }
+    }
   };
   const callGoToLive = async () => {
     // console.log("seats and time... ", seats, time);
@@ -357,19 +380,6 @@ function ORBPage(props) {
   function showHosts() {
     let hosts = [];
     for (let i = 0; i < parseInt(seats) + 1; i++) {
-      if (i == 3) {
-        hosts.push(
-          <div
-            className={`ORB_main_cat ${subscribedUsers ? "col-md-2" : null}`}
-            id={`fan-ORB${i}`}>
-            {subscribedUsers ? (
-              <></>
-            ) : (
-              <img src="../assets/images/live-btn.png" />
-            )}
-          </div>
-        );
-      }
       // else if (i == 17) {
       //   hosts.push(
       //     <div className="ORB_main_cat" id={`fan-ORB${i}`}>
@@ -380,17 +390,15 @@ function ORBPage(props) {
       //     </div>
       //   );
       // }
-      else {
-        hosts.push(
-          <div className="ORB_main_cat" id={`fan-ORB${i}`}>
-            {subscribedUsers ? (
-              <></>
-            ) : (
-              <img src="../assets/images/button_bg.png" />
-            )}
-          </div>
-        );
-      }
+      hosts.push(
+        <div className="ORB_main_cat" id={`fan-ORB${i}`}>
+          {subscribedUsers ? (
+            <></>
+          ) : (
+            <img src="../assets/images/button_bg.png" />
+          )}
+        </div>
+      );
     }
     return hosts;
   }
@@ -415,8 +423,6 @@ function ORBPage(props) {
   function showDivOnVideoClick() {
     let agoraClass = document.getElementById("fan-remote-playerlist2");
     let agoraArray = agoraClass.childNodes;
-    let seatLength = document.getElementsByClassName("fan_ORB_small_video_idle")
-      .length;
     console.log("agaoraArray", agoraArray, fanVideoClickedUid);
     for (let i = 0; i < agoraClass.childNodes.length; i++) {
       if (
@@ -433,7 +439,102 @@ function ORBPage(props) {
           .getElementById("BigColumn")
           .appendChild(agoraClass.childNodes[i]);
         document.getElementById("BigColumn").addEventListener("click", () => {
-          closedBigORB();
+          // closedBigORB();
+          let bigColumnDiv = document.getElementById(`BigColumn`);
+          let bigColumnChildNodes = bigColumnDiv.childNodes;
+          let leftColumnDiv = document.getElementById(`SmallColumnLeft`);
+          let leftColumnChildNodes = leftColumnDiv.childNodes;
+          let rightColumnDiv = document.getElementById(`SmallColumnRight`);
+          let rightColumnChildNodes = rightColumnDiv.childNodes;
+          setFanVideoClicked(false);
+
+          console.log(
+            "big columns... ",
+            rightColumnChildNodes,
+            leftColumnChildNodes
+          );
+          for (let i = 0; i < bigColumnChildNodes.length; i++) {
+            if (
+              bigColumnChildNodes[i].id ==
+              `player-wrapper-${fanVideoClickedUid}`
+            ) {
+              bigColumnChildNodes[i].classList.add("col-md-2");
+              bigColumnChildNodes[i].classList.remove("fan_ORB_main_big_video");
+              bigColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
+              bigColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
+              bigColumnChildNodes[i].setAttribute(
+                "style",
+                "height:165px; width: 100%; border-radius:50%;"
+              );
+              agoraClass.insertBefore(
+                bigColumnChildNodes[i],
+                agoraClass.childNodes[0]
+              );
+              // document
+              //   .getElementById("fan-remote-playerlist2")
+              //   .appendChild(bigColumnChildNodes[i]);
+            }
+          }
+          if (leftColumnChildNodes.length) {
+            for (let i = 0; i < leftColumnChildNodes.length; i++) {
+              if (
+                leftColumnChildNodes[i].id !==
+                `player-wrapper-${fanVideoClickedUid}`
+              ) {
+                leftColumnChildNodes[i].classList.add("col-md-2");
+                leftColumnChildNodes[i].classList.remove(
+                  "fan_ORB_main_big_video"
+                );
+                leftColumnChildNodes[i].classList.add(
+                  "fan_ORB_main_small_video"
+                );
+                leftColumnChildNodes[i].classList.add(
+                  "fan_ORB_small_video_idle"
+                );
+                leftColumnChildNodes[i].setAttribute(
+                  "style",
+                  "height:165px; width: 100%; border-radius:50%;"
+                );
+                agoraClass.insertBefore(
+                  leftColumnChildNodes[i],
+                  agoraClass.childNodes[0]
+                );
+                // document
+                //   .getElementById("fan-remote-playerlist2")
+                //   .appendChild(leftColumnChildNodes[i]);
+              }
+            }
+          }
+          if (rightColumnChildNodes.length) {
+            for (let i = 0; i < rightColumnChildNodes.length; i++) {
+              if (
+                rightColumnChildNodes[i].id !==
+                `player-wrapper-${fanVideoClickedUid}`
+              ) {
+                rightColumnChildNodes[i].classList.add("col-md-2");
+                rightColumnChildNodes[i].classList.remove(
+                  "fan_ORB_main_big_video"
+                );
+                rightColumnChildNodes[i].classList.add(
+                  "fan_ORB_main_small_video"
+                );
+                rightColumnChildNodes[i].classList.add(
+                  "fan_ORB_small_video_idle"
+                );
+                rightColumnChildNodes[i].setAttribute(
+                  "style",
+                  "height:165px; width: 100%; border-radius:50%;"
+                );
+                agoraClass.insertBefore(
+                  rightColumnChildNodes[i],
+                  agoraClass.childNodes[0]
+                );
+                // document
+                //   .getElementById("fan-remote-playerlist2")
+                //   .appendChild(rightColumnChildNodes[i]);
+              }
+            }
+          }
         });
       }
       if (
@@ -616,123 +717,42 @@ function ORBPage(props) {
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
   };
 
-  const closedBigORB = () => {
-    console.log("closed fn clicked on big column...");
-
+  const closedBigORB = uid => {
     console.log(
-      "main list",
-      document.getElementById("fan-remote-playerlist2").childNodes
+      "closed fn clicked on big column...",
+      document.getElementById("BigColumn"),
+      document.getElementById("fan-remote-playerlist2")
     );
-
-    let bigColumnDiv = document.getElementById(`BigColumn`);
-    let bigColumnChildNodes = bigColumnDiv.childNodes;
-    let leftColumnDiv = document.getElementById(`SmallColumnLeft`);
-    let leftColumnChildNodes = leftColumnDiv.childNodes;
-    let rightColumnDiv = document.getElementById(`SmallColumnRight`);
-    let rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
+    let seatLength = document.getElementsByClassName("fan_ORB_small_video_idle")
+      .length;
 
-    console.log(
-      "columns........... ",
-      bigColumnChildNodes,
-      leftColumnChildNodes,
-      rightColumnChildNodes
+    // document.getElementById("BigColumn").style.display = "none";
+    let agoraClass = document.getElementById("fan-remote-playerlist2");
+    let agoraArray = agoraClass.childNodes;
+    console.log("agaoraArray", agoraArray, uid);
+    // if (agoraClass.childNodes[i].id !== `player-wrapper-${uid}`) {
+    let playerWrapper = document.createElement("div");
+    playerWrapper.setAttribute("id", `player-wrapper-${uid}`);
+    playerWrapper.classList.add("col-md-2");
+    playerWrapper.classList.add("my-1");
+    playerWrapper.classList.add("fan_ORB_main_small_video");
+    playerWrapper.classList.add("fan_ORB_small_video_idle");
+
+    playerWrapper.setAttribute(
+      "style",
+      "height:165px; width: 100%; border-radius:50%;"
     );
-    if (bigColumnChildNodes.length) {
-      for (let i = 0; i < bigColumnChildNodes.length; i++) {
-        if (
-          bigColumnChildNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
-        ) {
-          bigColumnChildNodes[i].classList.add("col-md-2");
-          bigColumnChildNodes[i].classList.remove("fan_ORB_main_big_video");
-          bigColumnChildNodes[i].classList.remove("col-md-12");
-          bigColumnChildNodes[i].classList.remove("my-1");
-          bigColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
-          bigColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-          bigColumnChildNodes[i].setAttribute(
-            "style",
-            "height:165px; width: 100%; border-radius:50%;"
-          );
-          console.log("bigColumnChildNodes[i]", bigColumnChildNodes[i]);
-          document
-            .getElementById("fan-remote-playerlist2")
-            .appendChild(bigColumnChildNodes[i]);
-        } else {
-          console.log("big coulmn else... ", bigColumnChildNodes[i]);
-        }
-      }
-    }
-    if (leftColumnChildNodes.length) {
-      for (let i = 0; i < leftColumnChildNodes.length; i++) {
-        console.log(
-          leftColumnChildNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
-        );
-        if (
-          leftColumnChildNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
-        ) {
-          leftColumnChildNodes[i].classList.add("col-md-2");
-          leftColumnChildNodes[i].classList.remove("fan_ORB_main_big_video");
-          leftColumnChildNodes[i].classList.remove("col-md-6");
-          leftColumnChildNodes[i].classList.remove("mx-0");
-          leftColumnChildNodes[i].classList.remove("my-2");
-          leftColumnChildNodes[i].classList.remove("my-1");
-          leftColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
-          leftColumnChildNodes[i].classList.remove("fan_ORB_main_small_video2");
-          leftColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-          leftColumnChildNodes[i].setAttribute(
-            "style",
-            "height:165px; width: 100%; border-radius:50%;"
-          );
-        } else {
-          console.log("leftColumnChildNodes[i],", leftColumnChildNodes[i]);
-          leftColumnChildNodes[i].classList.remove("col-md-6");
-          leftColumnChildNodes[i].classList.remove("mx-0");
-          leftColumnChildNodes[i].classList.remove("my-2");
-          leftColumnChildNodes[i].classList.remove("fan_ORB_main_small_video2");
-          leftColumnChildNodes[i].classList.remove("my-1");
-          leftColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
-          leftColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-          document
-            .getElementById("fan-remote-playerlist2")
-            .appendChild(leftColumnChildNodes[i]);
-        }
-      }
-    }
-    if (rightColumnChildNodes.length) {
-      for (let i = 0; i < rightColumnChildNodes.length; i++) {
-        console.log(
-          rightColumnChildNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
-        );
-        if (
-          rightColumnChildNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
-        ) {
-          rightColumnChildNodes[i].classList.add("col-md-2");
-          rightColumnChildNodes[i].classList.remove("fan_ORB_main_big_video");
-          rightColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
-          rightColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-          rightColumnChildNodes[i].classList.remove(
-            "fan_ORB_main_small_video2"
-          );
-          rightColumnChildNodes[i].setAttribute(
-            "style",
-            "height:165px; width: 100%; border-radius:50%;"
-          );
-        } else {
-          console.log("rightColumnChildNodes[i],", rightColumnChildNodes[i]);
-          rightColumnChildNodes[i].classList.remove("col-md-6");
-          rightColumnChildNodes[i].classList.remove("mx-0");
-          rightColumnChildNodes[i].classList.remove("my-2");
-          rightColumnChildNodes[i].classList.remove("my-1");
-          rightColumnChildNodes[i].classList.remove(
-            "fan_ORB_main_small_video2"
-          );
-          document
+    // document
+    //   .getElementById("fan-remote-playerlist2")
+    //   .appendChild(agoraClass.childNodes[i]);
+    agoraClass.insertBefore(
+      playerWrapper,
+      agoraClass.childNodes[seatLength + 1]
+    );
+    // }
 
-            .getElementById("fan-remote-playerlist2")
-            .appendChild(rightColumnChildNodes[i]);
-        }
-      }
-    }
+    document.getElementById("fan-remote-playerlist2").style.display = "block";
   };
 
   return (
@@ -853,7 +873,7 @@ function ORBPage(props) {
                   aria-valuenow={ViewersPercent}
                   aria-valuemin="0"
                   aria-valuemax="100">
-                </div>
+                </div>{" "}
               </div> */}
               <p>{ViewersPercent}</p>
             </div>
@@ -890,20 +910,28 @@ function ORBPage(props) {
               {/* </div> */}
             </div>
           ) : null}
-          <div
+          {/* <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}
             id="fan-remote-playerlist2">
             {showEmptyCircles()}
+          </div> */}
+          <div
+            className={`container row ORB_videos_container mx-auto player ${
+              subscribedUsers ? "mt-0" : "mt-1"
+            }`}
+            id="fan-remote-playerlist2">
+            {isLive ? (subscribedUsers ? null : showHosts()) : null}
+            {subscribedUsers ? showEmptyCircles() : null}
           </div>
           <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}>
             {" "}
-            {/* {fanVideoClicked ? (
-              <>
+            {fanVideoClicked ? (
+              <div id="clickedDiv">
                 <div className="col-md-3">
                   <div className="row" id="SmallColumnLeft"></div>
                 </div>
@@ -913,9 +941,9 @@ function ORBPage(props) {
                 <div className="col-md-3">
                   <div className="row" id="SmallColumnRight"></div>
                 </div>
-                {showDivOnVideoClick()}
-              </>
-            ) : null} */}
+                {/* {showDivOnVideoClick()} */}
+              </div>
+            ) : null}
           </div>
           <div
             className="container d-flex justify-content-center"
@@ -1209,4 +1237,4 @@ function ORBPage(props) {
   );
 }
 
-export default ORBPage;
+export default ORBPageOLD;

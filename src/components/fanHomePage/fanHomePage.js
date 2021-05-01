@@ -199,6 +199,22 @@ function FanHomePage(props) {
 
     // dispatch(getOnlineUserList(category, subcategory));
 
+    // window.addEventListener("popstate", () => {
+    //   console.log("pop state... ", window.history.state);
+    //   // let confirmBool = window.confirm(
+    //   //   "You pressed a Back button! Are you sure?!"
+    //   // );
+    //   if (window.history.state && window.history.state.state.role) {
+    //     window.history.pushState(null, null, "/fanHomePage");
+    //     swal(
+    //       "Info",
+    //       "You must have to go from user's passport",
+    //       "info"
+    //     ).then(() => history.push("/fanHomePage"));
+    //   }
+
+    // });
+
     return () => {
       // ComponentWillUnmount in Class Component
 
@@ -478,9 +494,9 @@ function FanHomePage(props) {
   };
 
   return (
-    <div className="container fan_container">
+    <div className=" fan_container">
       {console.log("online check checkbox value............... ", onlineCheck)}
-      <div className="form_container px-3 px-md-5">
+      <div className="container form_container px-3 px-md-5">
         <Header />
         <div className="tabs_image">
           <div className="tab">

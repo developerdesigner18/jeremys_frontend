@@ -36,14 +36,14 @@ function Ticket(props) {
         } else {
           setPaidDetail(stateData.ticketReceipt);
           setloading(true);
-          socket = socketIOClient("https://jeremyslive.com:8000");
+          socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
           socket.emit("getIdForTipAmdTicket", props.streamId);
         }
       } else if (stateData.paymentDetail) {
         setPaidDetail(stateData.paymentDetail);
         setloading(true);
-        socket = socketIOClient("https://jeremyslive.com:8000");
+        socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
         socket.emit("getIdForTipAmdTicket", props.streamId);
       }

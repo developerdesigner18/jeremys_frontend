@@ -19,6 +19,7 @@ function Register(props) {
   const [confpass, setConfpass] = useState("");
   const [image, setImage] = useState("");
   const [showImage, setShowImage] = useState("");
+  const [loaded, setLoaded] = useState(false);
 
   const onImageChange = e => {
     console.log("image... ", e.target.files[0]);
@@ -47,6 +48,7 @@ function Register(props) {
     } else if (password !== confpass) {
       swal("!Oops", "Password and confirm password must be same", "error");
     } else {
+      setLoaded(true);
       let fd = new FormData();
       fd.append("firstName", firstName);
       fd.append("lastName", lastName);
@@ -73,6 +75,14 @@ function Register(props) {
     };
     reader.readAsDataURL(event.target.files[0]);
   };
+
+  useEffect(() => {
+    if (stateData) {
+      if (stateData.createdUser) {
+        setLoaded(false);
+      }
+    }
+  }, [stateData]);
 
   return (
     <div style={{background: "black"}}>
@@ -195,7 +205,7 @@ function Register(props) {
             </div>
             <div className="create_ac_container d-flex justify-content-center mt-5">
               <button className="create_ac" type="submit">
-                Create My Account
+                {loaded ? "Loading..." : "Create My Account"}
               </button>
             </div>
             <div className="privacy">
