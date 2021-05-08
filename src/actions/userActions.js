@@ -62,7 +62,7 @@ export const login = (data, props) => {
             result.data.data.type === "Admin" ||
             data.type === "admin"
           ) {
-            props.history.push("/admin", {type: result.data.type});
+            props.history.push("/admin/", {type: result.data.type});
           } else {
             props.history.push("/userHomepage", {type: result.data.type});
           }
