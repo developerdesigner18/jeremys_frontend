@@ -68,7 +68,7 @@ function PaymentManagement() {
   useEffect(() => {
     if (adminState) {
       if (adminState.paymentList) {
-        console.log("adminState.paymentList", adminState.paymentList.length);
+        console.log("adminState.paymentList", adminState.paymentList);
         setPaymentData(adminState.paymentList);
       }
     }
@@ -85,7 +85,7 @@ function PaymentManagement() {
             field: "userId.profileImgURl",
             render: rowData => (
               <img
-                src={rowData.userId.profileImgURl}
+                src={rowData.profileImgURl}
                 style={{width: 40, height: 40, borderRadius: "50%"}}
               />
             ),
