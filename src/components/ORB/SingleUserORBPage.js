@@ -761,7 +761,7 @@ function SingleUserORBPage(props) {
               />
             )}
           </div>
-          <div className="container justify-content-center d-flex ORB_links mt-5">
+          <div className="container justify-content-center d-flex ORB_links mt-5 position-relative">
             {streamObj.price == 0 ? (
               <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
