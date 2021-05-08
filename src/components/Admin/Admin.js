@@ -279,7 +279,7 @@ function Admin() {
                   <li
                     className="dropdown-item menu text-align-center p-0"
                     onClick={callLogout}
-                    style={{paddingTop: "5px"}}>
+                    style={{paddingTop: "5px", cursor: "pointer"}}>
                     <i className="fas fa-sign-out-alt" aria-hidden="true"></i>
                     Log Out
                   </li>
