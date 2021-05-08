@@ -288,7 +288,8 @@ function Admin() {
               </div>
             </nav>
 
-            {window.location.pathname === "/admin/" ? (
+            {window.location.pathname === "/admin/" ||
+            window.location.pathname === "/admin" ? (
               <Box display="flex" height={500}>
                 <Box
                   m="auto"
