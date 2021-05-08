@@ -297,8 +297,9 @@ function Admin() {
                   height={150}
                   width={300}
                   // bgcolor="white"
-                  style={{cursor: "pointer"}}
-                  onClick={goToUser}>
+                  // style={{cursor: "pointer"}}
+                  // onClick={goToUser}
+                >
                   <div style={{textAlign: "center", paddingTop: "10px"}}>
                     <i className="fas fa-users fa-7x"></i>
                     <p style={{color: "white"}}>Users</p>
@@ -310,8 +311,9 @@ function Admin() {
                   height={150}
                   width={300}
                   // bgcolor="white"
-                  onClick={goToPayment}
-                  style={{cursor: "pointer"}}>
+                  // onClick={goToPayment}
+                  // style={{ cursor: "pointer" }}
+                >
                   <div style={{textAlign: "center", paddingTop: "10px"}}>
                     <i className="fas fa-money-check-alt fa-7x"></i>
                     <p style={{color: "white"}}>Payments</p>
