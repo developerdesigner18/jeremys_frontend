@@ -82,7 +82,7 @@ function PaymentManagement() {
         columns={[
           {
             title: "Profile Image",
-            field: "userId.profileImage",
+            field: "userId.profileImgURl",
             render: rowData => (
               <img
                 src={rowData.userId.profileImgURl}
