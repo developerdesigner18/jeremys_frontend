@@ -22,6 +22,7 @@ import Tip from "../ORBTicketComponents/Tip";
 
 import Modal from "react-bootstrap/Modal";
 import {socket} from "../../socketIO";
+import {getUserWithId} from "../../actions/userActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -49,16 +50,17 @@ function SingleUserORBPage(props) {
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [time, setTime] = useState(180);
-  const [col1, setCol1] = useState(false);
-  const [col2, setCol2] = useState(false);
   const [paid, setPaid] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [streamObj, setStreamObj] = useState({});
   const [videoPause, setVideoPause] = useState(false);
   const [audioPause, setAudioPause] = useState(false);
   const [rValue, setRvalue] = useState(false);
+  const [qValue, setQvalue] = useState(false);
   const [hostId, setHostId] = useState("");
   const [hostBreak, setHostBreak] = useState(false);
+  const [user, setUser] = useState({});
+  const [fanUid, setFanUid] = useState();
 
   let socketIO;
 
@@ -128,8 +130,8 @@ function SingleUserORBPage(props) {
 
   useEffect(async () => {
     socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-    console.log("socket io.......", socketIO);
     console.log("props type... ", props.location.state.type);
+    await dispatch(getUserWithId(localStorage.getItem("id")));
 
     socketIO.emit("storeLiveFans", localStorage.getItem("id"));
 
@@ -152,7 +154,45 @@ function SingleUserORBPage(props) {
           }
         });
       });
-    } else if ("trainer" == props.type || "Trainer" == props.type) {
+    } else if (
+      "trainer" == props.location.state.type ||
+      "Trainer" == props.location.state.type
+    ) {
+      socketIO.on("getPassedQValue", async data => {
+        console.log("data from q... ", data);
+
+        if (
+          data.userId === props.location.state.id &&
+          data.fanId === localStorage.getItem("id")
+        ) {
+          setQvalue(data.qValue);
+
+          if (data.qValue) {
+            rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            setFanRTC(prevState => ({
+              ...prevState,
+              localAudioTrack: rtc.localAudioTrack,
+            }));
+          }
+        }
+      });
+
+      socketIO.on("remainingFans", async data => {
+        console.log("remaining fans.........", data);
+
+        if (
+          data[props.location.state.id] &&
+          data[props.location.state.id].length
+        ) {
+          for (let user of data[props.location.state.id]) {
+            if (user.fanObj.id !== localStorage.getItem("id")) {
+              if (fanRTC.localAudioTrack) {
+                await fanRTC.localAudioTrack.setEnabled(false);
+              }
+            }
+          }
+        }
+      });
     }
 
     socketIO.on("getShortBreakValue", data => {
@@ -188,11 +228,7 @@ function SingleUserORBPage(props) {
     let id, role;
 
     console.log("props............ ", props);
-    if (
-      props.location.state.id &&
-      props.location.state.name &&
-      props.location.state.role
-    ) {
+    if (props.location.state.id && props.location.state.role) {
       id = props.location.state.id;
       role = props.location.state.role;
       const dataToPass = {
@@ -206,7 +242,7 @@ function SingleUserORBPage(props) {
         .then(async result => {
           console.log("result.......... ", result);
           let hostUidResponse = result.data.data.uid;
-          setHostId(hostUidResponse);
+          setHostId(prevId => (prevId = hostUidResponse));
 
           if (result.data.data.agoraToken) {
             const token = result.data.data.agoraToken;
@@ -221,6 +257,7 @@ function SingleUserORBPage(props) {
               token,
               null
             );
+            setFanUid(uid);
             setFanRTC(prevState => ({
               ...prevState,
               client: rtc.client,
@@ -431,6 +468,14 @@ function SingleUserORBPage(props) {
     }
   }, [orbState]);
 
+  useEffect(() => {
+    if (stateUser) {
+      if (stateUser.userInfo) {
+        setUser(stateUser.userInfo);
+      }
+    }
+  }, [stateUser]);
+
   const getImage = () => {
     console.log("fn called");
     html2canvas(document.querySelector("#capture"), {
@@ -527,13 +572,14 @@ function SingleUserORBPage(props) {
   };
 
   const callQFunction = async () => {
+    console.log("q fn called");
     socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
     const dataToPass = {
       userId: props.location.state.id,
       fanObj: {
         id: localStorage.getItem("id"),
-        uid: hostId,
-        profilePic: stateUser.userInfo.data.profileImgURl,
+        uid: fanUid,
+        profilePic: user.data.profileImgURl,
       },
     };
     socketIO.emit("storeQvalue", dataToPass);
@@ -669,15 +715,16 @@ function SingleUserORBPage(props) {
           <div className="row" id="other-fan-remote1"></div>
         </div>
         <div className="col-md-6 text-center">
-          <div
-            className="border border-light rounded-circle mx-auto mb-3"
-            id="user-remote-playerlist"
-            style={{
-              height: "500px",
-              width: "500px",
-              borderRadius: "100%",
-            }}>
-            <div style={{zIndex: "2"}} className="break_display_text">
+          <div>
+            <div
+              className="border border-light rounded-circle mx-auto mb-3"
+              id="user-remote-playerlist"
+              style={{
+                height: "500px",
+                width: "500px",
+                borderRadius: "100%",
+              }}></div>
+            <div className="break_display_text">
               <img src="../assets/images/black_logo.png" alt="logo" />
 
               <p style={{justifyContent: "center"}}>
@@ -689,11 +736,9 @@ function SingleUserORBPage(props) {
           <div className="r_image">
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
-              <img
-                src="../assets/images/Qcolor.png"
-                className="m-0"
-                onClick={callQFunction}
-              />
+              <div onClick={() => callQFunction()}>
+                <img src="../assets/images/Qcolor.png" className="m-0" />
+              </div>
             ) : props.location.state.type == " star" ||
               props.location.state.type == "Star" ? (
               rValue ? (
@@ -712,7 +757,7 @@ function SingleUserORBPage(props) {
               <img
                 src="../assets/images/Qcolor.png"
                 style={{height: "80px", width: "80px"}}
-                onClick={callQFunction}
+                onClick={() => callQFunction()}
               />
             )}
           </div>
@@ -745,7 +790,24 @@ function SingleUserORBPage(props) {
                 <p>Take Picture</p>
               </div>
             </a>
-            {rValue ? (
+            {props.location.state.type === "star" ||
+            props.location.state.type === "Star" ? (
+              rValue ? (
+                <a style={{cursor: "pointer"}} onClick={callAudioPause}>
+                  <div className="ORB_link d-flex flex-column">
+                    <img src="../assets/images/audio.png" />
+                    <p>Audio</p>
+                  </div>
+                </a>
+              ) : (
+                <a style={{cursor: "no-drop"}}>
+                  <div className="ORB_link d-flex flex-column">
+                    <img src="../assets/images/audio.png" />
+                    <p>Audio</p>
+                  </div>
+                </a>
+              )
+            ) : qValue ? (
               <a style={{cursor: "pointer"}} onClick={callAudioPause}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/audio.png" />

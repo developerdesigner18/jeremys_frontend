@@ -58,6 +58,11 @@ export const login = (data, props) => {
           localStorage.setItem("id", result.data.data._id);
           if (result.data.data.type === "Fan" || data.type === "fan") {
             window.location.replace("/fanHomePage");
+          } else if (
+            result.data.data.type === "Admin" ||
+            data.type === "admin"
+          ) {
+            props.history.push("/admin", {type: result.data.type});
           } else {
             props.history.push("/userHomepage", {type: result.data.type});
           }

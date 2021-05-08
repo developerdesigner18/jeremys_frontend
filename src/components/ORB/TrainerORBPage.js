@@ -41,7 +41,7 @@ const useOutsideClick = (ref, callback) => {
   });
 };
 
-function ORBPage(props) {
+function TrainerORBPage(props) {
   const [isLive, setIsLive] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [fanList, setFanList] = useState([]);
@@ -70,6 +70,7 @@ function ORBPage(props) {
     localVideoTrack: null,
   });
   const [fansFromQ, setFansFromQ] = useState([]);
+  const [fanProfileClick, setFanProfileClick] = useState(false);
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -175,13 +176,19 @@ function ORBPage(props) {
   };
   const onClickVideo = uid => {
     setFanVideoClicked(true);
+    setFanProfileClick(false);
     setFanVideoClickedUid(uid);
     console.log("uid=-=-=-=-=-", uid);
 
     let agoraClass = document.getElementById("fan-remote-playerlist2");
     let agoraArray = agoraClass.childNodes;
+
     console.log("agaoraArray", agoraArray);
     for (let i = 0; i < agoraClass.childNodes.length; i++) {
+      console.log(
+        "sdfsdf",
+        agoraClass.childNodes[i].id == `player-wrapper-${uid}`
+      );
       if (agoraClass.childNodes[i].id == `player-wrapper-${uid}`) {
         agoraClass.childNodes[i].classList.add("col-md-12");
         agoraClass.childNodes[i].classList.remove("fan_ORB_main_small_video");
@@ -197,6 +204,70 @@ function ORBPage(props) {
           closedBigORB(uid);
         });
       }
+      // if (
+      //   i % 2 == 0 &&
+      //   agoraClass.childNodes[i].id !== `player-wrapper-${uid}`
+      // ) {
+      //   if (document.getElementById("SmallColumnLeft")) {
+      //     {
+      //       agoraClass.childNodes[i].classList.remove("m-0");
+      //       agoraClass.childNodes[i].classList.add("col-md-6");
+      //       agoraClass.childNodes[i].classList.contains(
+      //         "fan_ORB_main_small_video"
+      //       );
+      //       {
+      //         agoraClass.childNodes[i].classList.remove(
+      //           "fan_ORB_main_small_video"
+      //         );
+      //         agoraClass.childNodes[i].setAttribute(
+      //           "style",
+      //           "height:165px; width: 100%; border-radius:50%;"
+      //         );
+      //         // agoraClass.childNodes[i].classList.add("m-auto");
+      //         agoraClass.childNodes[i].classList.add(
+      //           "fan_ORB_main_small_video2"
+      //         );
+      //       }
+      //       agoraClass.childNodes[i].classList.add("my-2");
+
+      //       document
+      //         .getElementById("SmallColumnLeft")
+      //         .appendChild(agoraClass.childNodes[i]);
+      //     }
+      //   }
+      // }
+      // if (
+      //   i % 2 == 1 &&
+      //   agoraClass.childNodes[i].id !== `player-wrapper-${uid}`
+      // ) {
+      //   if (document.getElementById("SmallColumnRight")) {
+      //     {
+      //       agoraClass.childNodes[i].classList.add("col-md-6");
+      //       agoraClass.childNodes[i].classList.remove("m-0");
+      //       agoraClass.childNodes[i].classList.contains(
+      //         "fan_ORB_main_small_video"
+      //       );
+      //       {
+      //         agoraClass.childNodes[i].classList.add(
+      //           "fan_ORB_main_small_video2"
+      //         );
+      //         agoraClass.childNodes[i].setAttribute(
+      //           "style",
+      //           "height:165px; width: 100%; border-radius:50%;"
+      //         );
+      //         agoraClass.childNodes[i].classList.remove(
+      //           "fan_ORB_main_small_video"
+      //         );
+      //         // agoraClass.childNodes[i].classList.add("m-auto");
+      //       }
+      //       agoraClass.childNodes[i].classList.add("my-2");
+
+      //       document
+      //         .getElementById("SmallColumnRight")
+      //         .appendChild(agoraClass.childNodes[i]);
+      //     }
+      //   }
+      // }
     }
   };
   const callGoToLive = async () => {
@@ -289,10 +360,10 @@ function ORBPage(props) {
         // if (x <= 2) {
         await rtc.client.subscribe(user, mediaType);
         await dispatch(changeUserStatus());
-        // console.log(
-        //   "subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-        //   fanList
-        // );
+        console.log(
+          "subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
+          user.uid
+        );
 
         if (mediaType === "video") {
           subscribedValue = true;
@@ -360,21 +431,6 @@ function ORBPage(props) {
     }
   };
 
-  const callRoarFunction = () => {
-    console.log("call r fn called.....");
-    const socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
-    if (isLive) {
-      const dataToPass = {
-        userId: localStorage.getItem("id"),
-        rValue: !isMute,
-      };
-
-      setIsMute(!isMute);
-
-      socket.emit("storeRvalue", dataToPass);
-    }
-  };
-
   function showHosts() {
     let hosts = [];
     for (let i = 0; i < parseInt(seats) + 1; i++) {
@@ -436,10 +492,13 @@ function ORBPage(props) {
   function showDivOnVideoClick() {
     let agoraClass = document.getElementById("fan-remote-playerlist2");
     let agoraArray = agoraClass.childNodes;
-    let seatLength = document.getElementsByClassName("fan_ORB_small_video_idle")
-      .length;
-    console.log("agaoraArray", agoraArray, fanVideoClickedUid);
+
+    console.log("agaoraArray", agoraArray);
     for (let i = 0; i < agoraClass.childNodes.length; i++) {
+      console.log(
+        "sdfsdf",
+        agoraClass.childNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
+      );
       if (
         agoraClass.childNodes[i].id == `player-wrapper-${fanVideoClickedUid}`
       ) {
@@ -615,7 +674,6 @@ function ORBPage(props) {
     var x = document.getElementsByClassName("fan_ORB_small_video_idle").length;
     let viewersRatio = x / seats;
     // ViewersPercent = viewersRatio * 100;
-    // ViewersPercent = viewersRatio.toFixed(2);
     ViewersPercent = x;
     // console.log("x---", x, "seats---", seats, "percent---", ViewersPercent);
   }
@@ -641,19 +699,21 @@ function ORBPage(props) {
   const closedBigORB = uid => {
     console.log("closed fn clicked on big column...");
 
-    console.log(
-      "main list",
-      document.getElementById("fan-remote-playerlist2").childNodes
-    );
     const fanRemote = document.getElementById("fan-remote-playerlist2");
-    let bigColumnDiv = document.getElementById(`BigColumn`);
-    let bigColumnChildNodes = bigColumnDiv.childNodes;
-    let leftColumnDiv = document.getElementById(`SmallColumnLeft`);
-    let leftColumnChildNodes = leftColumnDiv.childNodes;
-    let rightColumnDiv = document.getElementById(`SmallColumnRight`);
-    let rightColumnChildNodes = rightColumnDiv.childNodes;
+    const bigColumnDiv = document.getElementById(`BigColumn`);
+    const bigColumnChildNodes = bigColumnDiv.childNodes;
+    const leftColumnDiv = document.getElementById(`SmallColumnLeft`);
+    const leftColumnChildNodes = leftColumnDiv.childNodes;
+    const rightColumnDiv = document.getElementById(`SmallColumnRight`);
+    const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
 
+    console.log(
+      "columns........... ",
+      fanRemote.childNodes,
+      fanVideoClickedUid,
+      uid
+    );
     if (bigColumnChildNodes.length) {
       for (let i = 0; i < bigColumnChildNodes.length; i++) {
         if (bigColumnChildNodes[i].id == `player-wrapper-${uid}`) {
@@ -667,6 +727,7 @@ function ORBPage(props) {
             "style",
             "height:165px; width: 100%; border-radius:50%;"
           );
+          console.log("bigColumnChildNodes[i]", bigColumnChildNodes[i]);
           fanRemote.insertBefore(
             bigColumnChildNodes[i],
             fanRemote.childNodes[0]
@@ -679,7 +740,6 @@ function ORBPage(props) {
     //     if (
     //       leftColumnChildNodes[i].id !== `player-wrapper-${fanVideoClickedUid}`
     //     ) {
-    //       console.log("leftColumnChildNodes[i],", leftColumnChildNodes[i]);
     //       leftColumnChildNodes[i].classList.remove("col-md-6");
     //       leftColumnChildNodes[i].classList.remove("mx-0");
     //       leftColumnChildNodes[i].classList.remove("my-2");
@@ -687,10 +747,6 @@ function ORBPage(props) {
     //       leftColumnChildNodes[i].classList.remove("my-1");
     //       leftColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
     //       leftColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-    //       leftColumnChildNodes[i].setAttribute(
-    //         "style",
-    //         "height:165px; width: 100%; border-radius:50%;"
-    //       );
     //       fanRemote.insertBefore(
     //         leftColumnChildNodes[i],
     //         fanRemote.childNodes[0]
@@ -710,12 +766,6 @@ function ORBPage(props) {
     //       rightColumnChildNodes[i].classList.remove(
     //         "fan_ORB_main_small_video2"
     //       );
-    //       rightColumnChildNodes[i].classList.add("fan_ORB_main_small_video");
-    //       rightColumnChildNodes[i].classList.add("fan_ORB_small_video_idle");
-    //       rightColumnChildNodes[i].setAttribute(
-    //         "style",
-    //         "height:165px; width: 100%; border-radius:50%;"
-    //       );
     //       fanRemote.insertBefore(
     //         rightColumnChildNodes[i],
     //         fanRemote.childNodes[0]
@@ -723,6 +773,92 @@ function ORBPage(props) {
     //     }
     //   }
     // }
+  };
+
+  const onFanProfileClick = (uid, fanId) => {
+    console.log("uid...", uid, document.getElementById("FanBigColumn"));
+    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
+    setFanProfileClick(true);
+    setFanVideoClickedUid(uid);
+    socket.emit("passQValue", {
+      userId: localStorage.getItem("id"),
+      qValue: true,
+      fanId: fanId,
+    });
+
+    const fanRemote = document.getElementById("fan-remote-playerlist2");
+    const fanBigColumn = document.getElementById("FanBigColumn");
+
+    for (let i = 0; i < fanRemote.childNodes.length; i++) {
+      console.log(
+        "fan remote... ",
+        fanRemote.childNodes[i].id == `player-wrapper-${uid}`
+      );
+      if (fanRemote.childNodes[i].id == `player-wrapper-${uid}`) {
+        fanRemote.childNodes[i].classList.add("col-md-12");
+        fanRemote.childNodes[i].classList.remove("fan_ORB_main_small_video");
+        fanRemote.childNodes[i].classList.add("fan_ORB_main_big_video");
+        fanRemote.childNodes[i].setAttribute(
+          "style",
+          "height:500px; width: 500px; border-radius:50%;"
+        );
+        fanBigColumn.appendChild(fanRemote.childNodes[i]);
+        fanBigColumn.addEventListener("click", () => {
+          setFanProfileClick(false);
+          setFanVideoClicked(false);
+          let removeFan = fansFromQ.splice(0, 1);
+          setFansFromQ([...fansFromQ]);
+
+          console.log(
+            "fans array........ ",
+            fanRemote.childNodes,
+            fanBigColumn.childNodes
+          );
+          socket.emit("removeFanFromQ", {
+            userId: localStorage.getItem("id"),
+            uid: uid,
+          });
+          if (fanBigColumn.childNodes.length) {
+            for (let index in fanBigColumn.childNodes) {
+              if (
+                fanBigColumn.childNodes[index].id == `player-wrapper-${uid}`
+              ) {
+                // let playerWrapper = document.createElement("div");
+                fanBigColumn.childNodes[index].setAttribute(
+                  "id",
+                  `player-wrapper-${uid}`
+                );
+                fanBigColumn.childNodes[index].classList.add("col-md-2");
+                fanBigColumn.childNodes[index].classList.add("my-1");
+                fanBigColumn.childNodes[index].classList.add(
+                  "fan_ORB_main_small_video"
+                );
+                fanBigColumn.childNodes[index].classList.add(
+                  "fan_ORB_small_video_idle"
+                );
+                fanBigColumn.childNodes[index].classList.remove("col-md-12");
+                fanBigColumn.childNodes[index].classList.remove(
+                  "fan_ORB_main_big_video"
+                );
+                fanBigColumn.childNodes[index].addEventListener("click", () => {
+                  setFanVideoClicked(true);
+                  onClickVideo(uid);
+                });
+                fanBigColumn.childNodes[index].setAttribute(
+                  "style",
+                  "height:165px; width: 100%; border-radius:50%;"
+                );
+                // fanRemote.appendChild(playerWrapper);
+                fanRemote.insertBefore(
+                  fanBigColumn.childNodes[index],
+                  fanRemote.childNodes[0]
+                );
+              }
+            }
+          }
+        });
+      }
+    }
   };
 
   return (
@@ -900,56 +1036,57 @@ function ORBPage(props) {
                 {/* {showDivOnVideoClick()} */}
               </>
             ) : null}
+            {fansFromQ.length ? (
+              <>
+                <div className="col-md-3">
+                  <div className="row">
+                    <div className="col-md-6 ORB_main_cat"></div>
+                  </div>
+                </div>
+                <div
+                  className="col-md-6 d-flex justify-content-center"
+                  id="FanBigColumn"></div>
+                <div className="col-md-3">
+                  <div className="row">
+                    <div className="col-md-6 ORB_main_cat"></div>
+                  </div>
+                </div>
+              </>
+            ) : null}
           </div>
           <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}
             id="fan-remote-playerlist2">
-            {showEmptyCircles()}
+            {fanProfileClick === false && fanVideoClicked === false
+              ? showEmptyCircles()
+              : null}
           </div>
           <div
             className="container d-flex justify-content-center"
             style={{textAlign: "center", height: "100px"}}>
             {/* <div className="ORB_main_cat m-0"> */}
-            {localStorage.getItem("type") === "star" ||
-            localStorage.getItem("type") === "Star" ? (
-              isMute ? (
-                <img
-                  src="../assets/images/r_image.png"
-                  onClick={callRoarFunction}
-                />
-              ) : (
-                <img
-                  src="../assets/images/disableR.png"
-                  onClick={callRoarFunction}
-                />
-              )
-            ) : localStorage.getItem("type") === "trainer" ||
-              localStorage.getItem("type") === "Trainer" ? (
-              fansFromQ.length ? (
-                // fansFromQ.map(fan => {
-                //   return (
-                <div
-                  className="ORB_main_cat"
-                  style={{margin: "0", justifyContent: "center"}}>
-                  <img
-                    src={`${fansFromQ[0].profilePic}`}
-                    style={{borderRadius: "50%"}}
-                  />
-                </div>
-              ) : (
-                //   );
-                // })
-                <div className="ORB_main_cat">
-                  <img src="../assets/images/button_bg.png" />
-                </div>
-              )
-            ) : (
-              <div className="ORB_main_cat">
-                <img src="../assets/images/button_bg.png" />
-              </div>
-            )}
+            {/*  fansFromQ.map(fan => { */}
+            {/*   return ( */}
+            <div className="ORB_main_cat">
+              <img
+                src={
+                  fansFromQ.length
+                    ? `${fansFromQ[0].profilePic}`
+                    : `../assets/images/q.png`
+                }
+                style={{
+                  borderRadius: "50%",
+                  height: fansFromQ.length ? "105px" : "100px",
+                  width: fansFromQ.length ? "105px" : "",
+                  marginBottom: fansFromQ.length ? "3px" : "",
+                }}
+                onClick={() =>
+                  onFanProfileClick(fansFromQ[0].uid, fansFromQ[0].id)
+                }
+              />
+            </div>
 
             {/* </div> */}
           </div>
@@ -1200,4 +1337,4 @@ function ORBPage(props) {
   );
 }
 
-export default ORBPage;
+export default TrainerORBPage;

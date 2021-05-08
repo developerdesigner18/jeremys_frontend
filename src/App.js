@@ -26,6 +26,10 @@ import VideoCallBasicCall1 from "./components/videoCall/VideoCallBasicCall1";
 import VideoCall1 from "./components/videoCall/videoCallHost copy";
 import Privacy from "./components/Privacy";
 import ORBPageOLD from "./components/ORB/ORBPageOld";
+import TrainerORBPage from "./components/ORB/TrainerORBPage";
+import Admin from "./components/Admin/Admin";
+import UserManagement from "./components/Admin/UserManagement";
+import PaymentManagement from "./components/Admin/PaymentManagement";
 
 function App() {
   return (
@@ -39,6 +43,9 @@ function App() {
               localStorage.getItem("type") == "fan" ||
               localStorage.getItem("type") == "Fan" ? (
                 <Redirect to="/fanHomePage" />
+              ) : localStorage.getItem("type") == "admin" ||
+                localStorage.getItem("type") == "Admin" ? (
+                <Redirect to="/admin" />
               ) : (
                 <Redirect to="/userHomepage" />
               )
@@ -65,6 +72,7 @@ function App() {
         <PrivateRoute path="/userHomepage" component={UserCategoryHomePage} />
         <PrivateRoute path="/customerService" component={CustomerService} />
         <PrivateRoute path="/ORBpage" component={ORBPage} />
+        <PrivateRoute path="/trainerORBpage" component={TrainerORBPage} />
         <PrivateRoute path="/ORBpageOLD" component={ORBPageOLD} />
         <PrivateRoute path="/fanORB" component={SingleUserORBPage} />
         <PrivateRoute path="/chefORB" component={ChefORBPage} />
@@ -82,6 +90,11 @@ function App() {
         <Route path="/one-to-one-1" component={VideoCallBasicCall1} />
         <Route path="/privacy-policy" component={Privacy} />
         <PrivateRoute path="/myStory" component={MyStory} />
+
+        {/*============ admin route ========================*/}
+        <AdminRoute path="/admin" component={Admin} />
+        <AdminRoute path="/admin/user" component={UserManagement} />
+        <AdminRoute path="/admin/payment" component={PaymentManagement} />
       </BrowserRouter>
     </div>
   );
@@ -114,6 +127,29 @@ function App() {
         {...rest}
         render={props =>
           !localStorage.getItem("id") ? (
+            React.createElement(component, props)
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
+        }
+      />
+    );
+  }
+
+  function AdminRoute({component, ...rest}) {
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          localStorage.getItem("type") == "Admin" ||
+          localStorage.getItem("type") == "admin" ? (
             React.createElement(component, props)
           ) : (
             <Redirect

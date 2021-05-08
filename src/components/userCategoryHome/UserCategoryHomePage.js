@@ -124,6 +124,11 @@ function UserCategoryHomePage(props) {
         localStorage.getItem("type") == "stylist"
       ) {
         props.history.push("/stylistORB");
+      } else if (
+        localStorage.getItem("type") == "Trainer" ||
+        localStorage.getItem("type") == "trainer"
+      ) {
+        props.history.push("/trainerORBpage");
       } else {
         props.history.push("/ORBpage");
       }

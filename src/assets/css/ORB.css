@@ -186,6 +186,10 @@ body {
   object-fit: contain;
   border-radius: 50%;
 }
+.r_image {
+  position: relative;
+  z-index: 9;
+}
 .r_image img {
   /* width: 100%; */
   margin: 20px;
