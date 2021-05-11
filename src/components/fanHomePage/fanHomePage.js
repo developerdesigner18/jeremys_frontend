@@ -7,6 +7,7 @@ import {
   addToCommunity,
   removeFromCommunity,
   getUserWithId,
+  checkUserInCommunity,
 } from "../../actions/userActions";
 import {getOnlineUserList} from "../../actions/orbActions";
 import {getFollowing} from "../../actions/followActions";
@@ -451,7 +452,8 @@ function FanHomePage(props) {
 
   const showProfileDetails = async Id => {
     console.log("id ", Id);
-    await dispatch;
+    await dispatch(checkUserInCommunity(Id));
+
     history.push("/myStory", {pageNumber: 1, userId: Id, isMystory: false});
   };
 

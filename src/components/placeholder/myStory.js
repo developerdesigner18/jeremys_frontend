@@ -72,7 +72,7 @@ function MyStory(props) {
     dispatch(getReviewOfFan(props.location.state.userId));
     dispatch(getReviewOfArtist(props.location.state.userId));
     dispatch(checkUserOnline(props.location.state.userId));
-    dispatch(checkUserInCommunity(props.location.state.userId));
+    // dispatch(checkUserInCommunity(props.location.state.userId));
     dispatch(getUserStatus(props.location.state.userId));
     dispatch(getJoinedFanList(props.location.state.userId));
     dispatch(onlineUserCheck(props.location.state.userId));
@@ -141,7 +141,13 @@ function MyStory(props) {
         setUserInfo(stateData.updatedValue);
         setScreenShot(stateData.updatedValue.data.screenShots);
       }
-      if (stateData.checkInCommunityUser) {
+      console.log(
+        "stateData.checkInCommunityUser",
+        stateData.checkInCommunityUser
+      );
+      if (stateData.checkInCommunityUser === true) {
+        setInCommunity(stateData.checkInCommunityUser);
+      } else if (stateData.checkInCommunityUser === false) {
         setInCommunity(stateData.checkInCommunityUser);
       }
     }
@@ -388,6 +394,7 @@ function MyStory(props) {
               <div className="live_text_div">
                 <h1 className="live_text_h1">{isOnline ? "LIVE" : ""}</h1>
               </div>
+              {console.log("community and online... ", inCommunity, isOnline)}
               {inCommunity ? (
                 isOnline ? (
                   <div className="golive_logo">
@@ -420,7 +427,8 @@ function MyStory(props) {
                 <div className="join_logo">
                   {isMyStory ? (
                     <></>
-                  ) : (
+                  ) : localStorage.getItem("type") === "fan" ||
+                    localStorage.getItem("type") === "Fan" ? (
                     <>
                       <img
                         src="../assets/images/button_bg_small.png"
@@ -428,7 +436,7 @@ function MyStory(props) {
                         style={{cursor: "pointer"}}></img>
                       <p>JOIN</p>
                     </>
-                  )}
+                  ) : null}
                 </div>
               )}
               <div className="down_chef_links position-absolute">

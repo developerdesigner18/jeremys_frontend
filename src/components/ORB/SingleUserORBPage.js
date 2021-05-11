@@ -23,6 +23,7 @@ import Tip from "../ORBTicketComponents/Tip";
 import Modal from "react-bootstrap/Modal";
 import {socket} from "../../socketIO";
 import {getUserWithId} from "../../actions/userActions";
+import moment from "moment";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -104,7 +105,7 @@ function SingleUserORBPage(props) {
     setIsActive(true);
   };
   const handleShow = () => {
-    setIsActive(false);
+    if (!paid) setIsActive(false);
     setShow(true);
     setShowTip(false);
   };
@@ -456,10 +457,20 @@ function SingleUserORBPage(props) {
     if (orbState) {
       console.log("orb state........... ", orbState);
       if (orbState.getLiveStreamData) {
+        const sessionTime = moment(orbState.getLiveStreamData.createdAt);
+        const currentTime = moment();
+        const diffTime = currentTime.diff(sessionTime, "seconds");
+        const timeToDisplay = orbState.getLiveStreamData.timer - diffTime;
+        console.log(
+          "time and hours.......",
+          diffTime,
+          orbState.getLiveStreamData.timer,
+          timeToDisplay
+        );
         if (paid) {
-          setTime(orbState.getLiveStreamData.timer);
+          setTime(timeToDisplay);
         } else if (orbState.getLiveStreamData.price == 0) {
-          setTime(orbState.getLiveStreamData.timer);
+          setTime(timeToDisplay);
         } else if (orbState.getLiveStreamData.price !== 0) {
           setTime(180);
         }
@@ -539,11 +550,13 @@ function SingleUserORBPage(props) {
 
     setShowTip(!showTip);
     setShow(false);
-    setIsActive(false);
+    if (!paid) setIsActive(false);
   };
 
   const closeTip = () => {
     setShowTip(false);
+    setShow(false);
+    setIsActive(true);
   };
 
   const callVideoPause = async () => {
@@ -667,6 +680,7 @@ function SingleUserORBPage(props) {
             userId={props.location.state.id}
             setPaid={setPaid}
             setShowTip={setShowTip}
+            closeTip={closeTip}
           />
         ) : null}
       </Modal>

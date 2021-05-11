@@ -673,6 +673,14 @@ export const getFanList = () => {
 
 export const checkUserInCommunity = userId => {
   return dispatch => {
+    console.log(
+      "checkUserInCommunity fn called...............",
+      `${
+        process.env.REACT_APP_API_URL
+      }api/community/checkUserFollowing?loginUserId=${localStorage.getItem(
+        "id"
+      )}&userId=${userId}`
+    );
     axios
       .get(
         `${
@@ -682,7 +690,14 @@ export const checkUserInCommunity = userId => {
         )}&userId=${userId}`
       )
       .then(result => {
+        console.log("result.data.. ", result.data);
         if (result.data.code === 200) {
+          dispatch({
+            type: "CHECK_IN_COMMUNITY",
+            payload: result.data.success,
+          });
+        } else {
+          console.log("result in else......");
           dispatch({
             type: "CHECK_IN_COMMUNITY",
             payload: result.data.success,

@@ -125,6 +125,12 @@ export const orbReducer = (state = null, action) => {
         Rvalue: action.payload,
       };
 
+    case "GET_EXIST_JOIN_FAN":
+      return {
+        ...state,
+        existFan: action.payload,
+      };
+
     default:
       return state;
   }

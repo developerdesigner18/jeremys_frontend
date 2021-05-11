@@ -104,7 +104,7 @@ function Tip(props) {
         window.open(paymentState.paidResponse);
       }
       if (paymentState.tipDetail) {
-        props.setShowTip(false);
+        props.closeTip();
         settipPaid(true);
         socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 

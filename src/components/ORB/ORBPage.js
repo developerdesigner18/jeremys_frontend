@@ -298,6 +298,12 @@ function ORBPage(props) {
           subscribedValue = true;
           setSubscribedUsers(subscribedValue);
           let agoraClass = document.getElementById("fan-remote-playerlist2");
+          console.log(
+            "check condition of seat and users.......",
+            x,
+            seats,
+            x <= seats
+          );
           for (let i = 0; i < seats; i++) {
             let generatedDiv = document.getElementById(
               `player-wrapper-${user.uid}`
@@ -305,14 +311,6 @@ function ORBPage(props) {
             if (generatedDiv) {
               generatedDiv.remove();
             }
-            // let playerWrapper = document.createElement("div");
-            // playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            // playerWrapper.setAttribute(
-            //   "style",
-            //   "height:155px; width: 100%; border-radius:50%;"
-            // );
-            // document.getElementById(`fan-ORB${i}`).appendChild(playerWrapper);
-            // user.videoTrack.play(`player-wrapper-${user.uid}`);
             let playerWrapper = document.createElement("div");
             playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
             playerWrapper.classList.add("col-md-2");

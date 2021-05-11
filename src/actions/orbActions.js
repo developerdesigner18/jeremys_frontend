@@ -190,6 +190,11 @@ export const checkUserOnline = data => {
             type: "CHECK_ONLNIE_USER",
             payload: result.data.success,
           });
+        } else {
+          dispatch({
+            type: "CHECK_ONLNIE_USER",
+            payload: result.data.success,
+          });
         }
       })
       .catch(err => {
@@ -206,6 +211,11 @@ export const joinedFan = data => {
         if (result.data.code === 201) {
           dispatch({
             type: "STORE_JOINED_FAN",
+          });
+        } else if (result.data.code === 409) {
+          dispatch({
+            type: "GET_EXIST_JOIN_FAN",
+            payload: result.data,
           });
         }
       })
@@ -319,6 +329,11 @@ export const onlineUserCheck = data => {
       )
       .then(result => {
         if (result.data.success) {
+          dispatch({
+            type: "CHECK_ONLNIE_USER",
+            payload: result.data.success,
+          });
+        } else {
           dispatch({
             type: "CHECK_ONLNIE_USER",
             payload: result.data.success,
