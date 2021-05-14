@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import React, {useState, useEffect, useRef} from "react";
+import {useHistory} from "react-router-dom";
 import "../../assets/css/homepage.css";
-import { getUser, logout } from "../../actions/userActions";
-import { useSelector, useDispatch } from "react-redux";
-import { storeFanStatus } from "../../actions/orbActions";
+import {getUser, logout} from "../../actions/userActions";
+import {useSelector, useDispatch} from "react-redux";
+import {storeFanStatus} from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -24,7 +24,7 @@ const useOutsideClick = (ref, callback) => {
 function Header(props) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const stateData = useSelector((state) => state.user);
+  const stateData = useSelector(state => state.user);
   const ref = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -89,18 +89,37 @@ function Header(props) {
 
   return (
     <div className="container p-3 p-md-3 cust_home_page">
-      <header>
+      <header></header>
+
+      <div className="header_icons welcome_user">
         <div>
           {localStorage.getItem("id") ? null : (
-            <div>
-              {/* <p className="m-0">SIGN UP EARLY</p>
-              <p className="m-0">SIGN UP TODAY!</p>
-              <p className="m-0">FULL LAUNCH APRIL 10!</p> */}
+            <div className="icon_detail">
+              <p className="m-0">Download the Mobile App</p>
+              <p className="m-0">Sign-Up it's FREE!</p>
+              <div className="d-flex header_advertise">
+                <img src="../assets/images/ios.png" alt="ios" />
+                <a href="https://play.google.com/store/apps/details?id=com.jeremyslive">
+                  <img src="../assets/images/googlePlay.png" alt="playStore" />
+                </a>
+              </div>
             </div>
           )}
         </div>
+        <div className="main_sec custom_main_sec">
+          <div className="header_logo">
+            <img
+              src={`../assets/images/logo_without_live.png`}
+              onClick={goToHome}
+              style={{
+                cursor: "pointer",
+              }}
+            />
+            <p className="go_live_header mt-1 mb-0">Go Live!</p>
+          </div>
+        </div>
         {localStorage.getItem("token") ? (
-          <span style={{ position: "relative" }} ref={ref}>
+          <span style={{position: "relative"}} ref={ref}>
             <i className="fa fa-user mx-2" aria-hidden="true"></i>
             {"welcome " +
               localStorage.getItem("name")[0].toUpperCase() +
@@ -110,53 +129,30 @@ function Header(props) {
         ) : (
           <div>
             <div className="d-flex align-items-center hader_top">
-              <a
-                className="login"
-                onClick={goToLogin}
-                style={{ cursor: "pointer" }}
-              >
-                Login
-              </a>
-              <a
-                className="login"
-                onClick={goToRegister}
-                style={{ cursor: "pointer" }}
-              >
-                Register
-              </a>
+              <div className="action">
+                <a className="login">Web</a>
+                <a
+                  className="login"
+                  onClick={goToRegister}
+                  style={{cursor: "pointer"}}>
+                  &nbsp;&nbsp;Sign-Up
+                </a>
+              </div>
+              <p className="login">It's FREE!</p>
             </div>
-            <div className="d-flex justify-content-end">
-              <a onClick={goToRegister} style={{ cursor: "pointer" }}>
-                sign up - It's FREE!
-              </a>
+            <div className="d-flex justify-content-center">
+              <img
+                src="../assets/images/web.png"
+                alt="web"
+                onClick={goToLogin}
+                style={{cursor: "pointer"}}
+              />
             </div>
           </div>
         )}
-      </header>
-      <div className="main_sec custom_main_sec">
-        <div className="logo">
-          <img
-            src={`../assets/images/logo_without_live.png`}
-            onClick={goToHome}
-            style={{
-              cursor: "pointer",
-            }}
-          />
-          {localStorage.getItem("type") === "Fan" ||
-          localStorage.getItem("type") === "fan" ? (
-            <p
-              className="go_live mt-1 mb-0"
-              style={{ cursor: "pointer" }}
-              onClick={changeStatus}
-            >
-              Go Live!
-            </p>
-          ) : (
-            <p className="go_live mt-1 mb-0">Go Live!</p>
-          )}
-        </div>
       </div>
-      <div className="hero_text text-center mb-4"></div>
+
+      {/* <div className="hero_text text-center mb-4"></div> */}
     </div>
   );
 }
