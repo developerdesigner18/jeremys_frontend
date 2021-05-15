@@ -98,7 +98,7 @@ function Header(props) {
               <p className="m-0">Download the Mobile App</p>
               <p className="m-0">Sign-Up it's FREE!</p>
               <div className="d-flex header_advertise">
-                {/* <img src="../assets/images/ios.png" alt="ios" /> */}
+                <img src="../assets/images/ios.png" alt="ios" />
                 <a
                   href="https://play.google.com/store/apps/details?id=com.jeremyslive"
                   target="_blank"
