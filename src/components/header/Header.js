@@ -99,7 +99,10 @@ function Header(props) {
               <p className="m-0">Sign-Up it's FREE!</p>
               <div className="d-flex header_advertise">
                 {/* <img src="../assets/images/ios.png" alt="ios" /> */}
-                <a href="https://play.google.com/store/apps/details?id=com.jeremyslive">
+                <a
+                  href="https://play.google.com/store/apps/details?id=com.jeremyslive"
+                  target="_blank"
+                  rel="noopener noreferrer">
                   <img src="../assets/images/googlePlay.png" alt="playStore" />
                 </a>
               </div>
