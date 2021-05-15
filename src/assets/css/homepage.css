@@ -312,3 +312,12 @@ a.login:first-child {
     font-size: 40px;
   }
 }
+
+@media (max-width: 767px) {
+  .cust_home_page .header_icons {
+    display: block;
+  }
+  .float_button {
+    height: 111px !important;
+  }
+}
