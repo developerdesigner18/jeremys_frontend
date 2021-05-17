@@ -92,7 +92,7 @@ function Header(props) {
       <header></header>
 
       <div className="header_icons welcome_user">
-        <div>
+        <div className="mobile_icon">
           {localStorage.getItem("id") ? null : (
             <div className="icon_detail">
               <p className="m-0">Download the Mobile App</p>
@@ -130,7 +130,7 @@ function Header(props) {
               "!"}
           </span>
         ) : (
-          <div>
+          <div className="web_icon">
             <div className="d-flex align-items-center hader_top">
               <div className="action">
                 <a className="login">Web</a>

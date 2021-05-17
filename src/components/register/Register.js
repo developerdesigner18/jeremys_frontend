@@ -87,9 +87,9 @@ function Register(props) {
   return (
     <div style={{background: "black"}}>
       <Header />
-      <div className="container p-5 main mt-5">
+      <div className="container p-2 p-md-5 p- main mt-5">
         <form method="post" onSubmit={e => callRegister(e)}>
-          <div className="tab">
+          <div className="tab tab_in_mobile">
             <button
               className="tablinks"
               type="button"

@@ -467,9 +467,9 @@ input:checked + .slider:before {
   }
   button.tablinks {
     padding: 0;
-    height: 60px;
-    width: 60px;
-    font-size: 10px;
+    height: 45px;
+    width: 45px;
+    font-size: 8px;
   }
   button.meet_greet_tablinks {
     padding: 0;
@@ -479,7 +479,14 @@ input:checked + .slider:before {
     font-weight: 600;
   }
   .fan_image {
-    margin: 0 20px !important;
+    margin: 0 10px !important;
+  }
+  .fan_image img {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  .fan_image {
+    font-size: 12px;
   }
   .adminPaginate {
     justify-content: center;

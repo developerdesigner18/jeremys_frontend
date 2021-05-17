@@ -213,11 +213,19 @@ button.create_ac {
 
 @media (max-width: 767px) {
   .form_right_container {
-    flex-direction: COLUMN-REVERSE;
-    display: FLEX;
+    flex-direction: column-reverse;
+    display: flex;
     margin-top: 0px;
   }
   .upload {
     margin-top: 20px;
+  }
+  .tab_in_mobile > button {
+    height: 120px;
+    width: 120px;
+  }
+  .tab_in_mobile {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }

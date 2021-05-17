@@ -314,10 +314,20 @@ a.login:first-child {
 }
 
 @media (max-width: 767px) {
-  .cust_home_page .header_icons {
-    display: block;
-  }
   .float_button {
     height: 111px !important;
+  }
+  .header_icons.welcome_user {
+    flex-direction: column;
+    align-items: center;
+  }
+  .main_sec.custom_main_sec {
+    order: 1;
+  }
+  .mobile_icon {
+    order: 2;
+  }
+  .web_icon {
+    order: 3;
   }
 }
