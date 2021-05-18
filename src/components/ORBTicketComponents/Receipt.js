@@ -6,6 +6,7 @@ import {
   getPaymentDetails,
   getPaymentDetailsOfStarTrainer,
 } from "../../actions/paymentActions";
+import {removeFan3MinuteCount} from "../../actions/orbActions";
 import moment from "moment";
 import socketIOClient from "socket.io-client";
 
@@ -28,7 +29,7 @@ function Ticket(props) {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (stateData) {
       if (stateData.ticketReceipt) {
         console.log("(stateData.ticketReceipt", stateData.ticketReceipt);
@@ -36,9 +37,21 @@ function Ticket(props) {
         } else {
           setPaidDetail(stateData.ticketReceipt);
           setloading(true);
+          const sessionTime = moment(props.streamObj.createdAt);
+          const currentTime = moment();
+          const diffTime = currentTime.diff(sessionTime, "seconds");
+          const timeToDisplay = props.streamObj.timer - diffTime;
+          props.setTime(timeToDisplay);
+          props.setFreeSessionCompleted(false);
+
           socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
           socket.emit("getIdForTipAmdTicket", props.streamId);
+          const dataToPass = {
+            fanId: localStorage.getItem("id"),
+            userId: props.userId,
+          };
+          await dispatch(removeFan3MinuteCount(dataToPass));
         }
       } else if (stateData.paymentDetail) {
         setPaidDetail(stateData.paymentDetail);
@@ -46,6 +59,12 @@ function Ticket(props) {
         socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
         socket.emit("getIdForTipAmdTicket", props.streamId);
+        props.setFreeSessionCompleted(false);
+        const dataToPass = {
+          fanId: localStorage.getItem("id"),
+          userId: props.userId,
+        };
+        await dispatch(removeFan3MinuteCount(dataToPass));
       }
     }
   }, [stateData]);

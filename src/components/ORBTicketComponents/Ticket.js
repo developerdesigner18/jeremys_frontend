@@ -144,7 +144,11 @@ function Ticket(props) {
             className="fas fa-times "
             role="button"
             onClick={() => {
-              props.setShow(false);
+              if (props.freeSessionCompleted) {
+                props.setShow(true);
+              } else {
+                props.setShow(false);
+              }
             }}
             style={{zIndex: "1", padding: "5px"}}
           />

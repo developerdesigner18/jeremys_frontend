@@ -248,7 +248,7 @@ function ORBPage(props) {
       await dispatch(storeHostUId(uid));
       console.log("uid Host==-=-=-=", uid);
 
-      await rtc.client.enableDualStream();
+      // await rtc.client.enableDualStream();
       // Create an audio track from the audio sampled by a microphone.
       rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({
         encoderConfig: {
@@ -283,63 +283,55 @@ function ORBPage(props) {
 
         // Subscribe to a remote user.
 
-        var x = document.getElementsByClassName("fan_ORB_small_video_idle")
-          .length;
-        console.log("x-=-=-=-=-", x);
-        // if (x <= 2) {
-        await rtc.client.subscribe(user, mediaType);
-        await dispatch(changeUserStatus());
-        // console.log(
-        //   "subscribe success-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=",
-        //   fanList
-        // );
+        var x = document.getElementsByClassName(
+          "fan_ORB_small_video_idle"
+        ).length;
+        const seatCount = seats - 1;
+        console.log("x-=-=-=-=-", x, seats, x <= seatCount);
+        if (x <= seatCount) {
+          await rtc.client.subscribe(user, mediaType);
+          await dispatch(changeUserStatus());
 
-        if (mediaType === "video") {
-          subscribedValue = true;
-          setSubscribedUsers(subscribedValue);
-          let agoraClass = document.getElementById("fan-remote-playerlist2");
-          console.log(
-            "check condition of seat and users.......",
-            x,
-            seats,
-            x <= seats
-          );
-          for (let i = 0; i < seats; i++) {
-            let generatedDiv = document.getElementById(
-              `player-wrapper-${user.uid}`
-            );
-            if (generatedDiv) {
-              generatedDiv.remove();
+          if (mediaType === "video") {
+            subscribedValue = true;
+            setSubscribedUsers(subscribedValue);
+            let agoraClass = document.getElementById("fan-remote-playerlist2");
+            for (let i = 0; i < seatCount; i++) {
+              let generatedDiv = document.getElementById(
+                `player-wrapper-${user.uid}`
+              );
+              if (generatedDiv) {
+                generatedDiv.remove();
+              }
+              let playerWrapper = document.createElement("div");
+              playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
+              playerWrapper.classList.add("col-md-2");
+              playerWrapper.classList.add("my-1");
+              playerWrapper.classList.add("fan_ORB_main_small_video");
+              playerWrapper.classList.add("fan_ORB_small_video_idle");
+              playerWrapper.addEventListener("click", () => {
+                onClickVideo(user.uid);
+              });
+              playerWrapper.setAttribute(
+                "style",
+                "height:165px; width: 100%; border-radius:50%;"
+              );
+              agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
+              user.videoTrack.play(`player-wrapper-${user.uid}`);
             }
-            let playerWrapper = document.createElement("div");
-            playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-            playerWrapper.classList.add("col-md-2");
-            playerWrapper.classList.add("my-1");
-            playerWrapper.classList.add("fan_ORB_main_small_video");
-            playerWrapper.classList.add("fan_ORB_small_video_idle");
-            playerWrapper.addEventListener("click", () => {
-              onClickVideo(user.uid);
+          } else {
+            rtc.client.on("media-reconnect-start", uid => {
+              // console.log("media-reconnect-start event called.............", uid);
             });
-            playerWrapper.setAttribute(
-              "style",
-              "height:165px; width: 100%; border-radius:50%;"
-            );
-            agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
-            user.videoTrack.play(`player-wrapper-${user.uid}`);
           }
-        } else {
-          rtc.client.on("media-reconnect-start", uid => {
-            // console.log("media-reconnect-start event called.............", uid);
-          });
+          if (mediaType === "audio") {
+            // user.audioTrack.play();
+          } else {
+            rtc.client.on("media-reconnect-start", uid => {
+              // console.log("media-reconnect-start event called.............", uid);
+            });
+          }
         }
-        if (mediaType === "audio") {
-          // user.audioTrack.play();
-        } else {
-          rtc.client.on("media-reconnect-start", uid => {
-            // console.log("media-reconnect-start event called.............", uid);
-          });
-        }
-        // }
       });
       // user-unpulished event
       rtc.client.on("user-unpublished", async (user, mediaType) => {
@@ -434,8 +426,9 @@ function ORBPage(props) {
   function showDivOnVideoClick() {
     let agoraClass = document.getElementById("fan-remote-playerlist2");
     let agoraArray = agoraClass.childNodes;
-    let seatLength = document.getElementsByClassName("fan_ORB_small_video_idle")
-      .length;
+    let seatLength = document.getElementsByClassName(
+      "fan_ORB_small_video_idle"
+    ).length;
     console.log("agaoraArray", agoraArray, fanVideoClickedUid);
     for (let i = 0; i < agoraClass.childNodes.length; i++) {
       if (

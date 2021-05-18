@@ -215,9 +215,10 @@ function FanHomePage(props) {
     //   }
 
     // });
-
+    console.log("fan home page.....");
     return () => {
       // ComponentWillUnmount in Class Component
+      console.log("componenet will mount");
 
       socket.on("disconnect", () => {
         console.log("disconnect from client side called");

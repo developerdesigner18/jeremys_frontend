@@ -10,11 +10,9 @@ export const storeScreenShot = data => {
           dispatch({
             type: "STORE_SCREENSHOT",
           });
-          swal(
-            "Success",
-            "Screen shot saved successfully",
-            "success"
-          ).then(() => window.scrollTo());
+          swal("Success", "Screen shot saved successfully", "success").then(
+            () => window.scrollTo()
+          );
         }
       })
       .catch(error => console.log("error while storing ss", error));
@@ -457,5 +455,61 @@ export const getChangedRValue = data => {
         }
       })
       .catch(err => console.log("error... ", err));
+  };
+};
+
+export const getFanJoined3MinuteCount = (userId, fanId) => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/attemptCheck/getJoinedFanData?userId=${userId}&fanId=${fanId}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "GET_FAN_3MIN_COUNT",
+            payload: result.data.success,
+          });
+        }
+      })
+      .catch(err => console.log("errr... ", err));
+  };
+};
+
+export const storeFan3MinuteCount = data => {
+  return dispatch => {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/attemptCheck/storeFanJoinData`,
+        data
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "STORE_FAN_FOR_3MIN",
+          });
+        }
+      })
+      .catch(err => console.log("err........ ", err));
+  };
+};
+
+export const removeFan3MinuteCount = userId => {
+  return dispatch => {
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_URL}api/attemptCheck/removedFanFromDB`,
+        {
+          data: userId,
+        }
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "REMOVE_FAN_FOR_3MIN",
+          });
+        }
+      })
+      .catch(err => console.log("errrrr...", err));
   };
 };

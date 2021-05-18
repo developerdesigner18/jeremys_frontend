@@ -19,10 +19,14 @@ import {
   joinedFan,
   removedJoinFan,
   getJoinedFanList,
+  removeFan3MinuteCount,
+  storeFan3MinuteCount,
+  getFanJoined3MinuteCount,
 } from "../../actions/orbActions";
 import {getUserWithId} from "../../actions/userActions";
 import Tip from "../ORBTicketComponents/Tip";
 import PayOrder from "../ORBTicketComponents/PayOrder";
+import {getPaymentDetails} from "../../actions/paymentActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -60,12 +64,29 @@ function FanChefORB(props) {
 
   const [show, setShow] = useState(false);
   const [showTip, setShowTip] = useState(false);
+  const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
+  const [exitCalled, setExitCalled] = useState(false);
+  const mount = useRef();
   const handleClose = () => {
     // setTime(pauseTime);
     // setPauseTime(0);
-    setIsActive(true);
-    setShow(false);
-    console.log("on close time..... ", time, pauseTime);
+    // setIsActive(true);
+    // setShow(false);
+    // console.log("on close time..... ", time, pauseTime);
+    console.log("session completed value.. ", freeSessionCompleted, paid);
+    if (freeSessionCompleted) {
+      if (paid) {
+        setShow(false);
+        setTime(0);
+        setIsActive(false);
+      } else {
+        setShow(true);
+        setIsActive(true);
+      }
+    } else {
+      setShow(false);
+      setIsActive(true);
+    }
   };
   const handleCloseReciept = () => {
     setPaid(false);
@@ -75,11 +96,9 @@ function FanChefORB(props) {
   const handleShow = () => {
     if (subscribed) {
       console.log("fan time......... ", time);
-      setIsActive(false);
+      if (!paid) setIsActive(false);
       setShow(true);
       setShowTip(false);
-      // setPauseTime(time);
-      // setTime(0);
     }
   };
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
@@ -97,6 +116,7 @@ function FanChefORB(props) {
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
+  const paymentState = useSelector(state => state.payment);
   const history = useHistory();
 
   const [stream, setStream] = useState(false);
@@ -122,14 +142,19 @@ function FanChefORB(props) {
   useEffect(() => {
     let interval = null;
     console.log("time & isactive... ", time, isActive);
-    if (isActive && !paid && time > 0) {
+    console.log(
+      "checking payment done or not ",
+      paid,
+      paymentState && paymentState.paymentDetail
+    );
+    if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
       }, 1000);
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
-      setShowRating(true);
+      if (!paid) setShowRating(true);
     }
     return () => clearInterval(interval);
   }, [time, isActive]);
@@ -275,7 +300,7 @@ function FanChefORB(props) {
     }
   }, [stateData]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (StreamData) {
       console.log("streamdata orb............... ", StreamData);
       if (StreamData.streamData) {
@@ -284,6 +309,9 @@ function FanChefORB(props) {
         setBanner2Img(StreamData.streamData.message.chefBanners[1]);
         setItem1Image(StreamData.streamData.message.chefItems[0].pic);
         setItem2Image(StreamData.streamData.message.chefItems[1].pic);
+
+        if (StreamData.streamData && StreamData.streamData.message)
+          await dispatch(getPaymentDetails(StreamData.streamData.message._id));
       }
 
       if (StreamData.joinedFanList) {
@@ -293,29 +321,133 @@ function FanChefORB(props) {
           swal("Info", "No other fan can join!", "info");
         }
       }
+
+      if (
+        StreamData.fan3minCount === true ||
+        StreamData.fan3minCount === false
+      ) {
+        setFreeSessionCompleted(StreamData.fan3minCount);
+        mount.current = StreamData.fan3minCount;
+        if (
+          StreamData.fan3minCount === true &&
+          StreamData.streamData &&
+          !paid
+        ) {
+          setIsActive(false);
+          handleShow();
+        } else {
+          handleClose();
+        }
+      }
     }
   }, [StreamData]);
 
   useEffect(async () => {
-    await dispatch(getJoinedFanList(props.location.state.id));
-    // await leaveCall();
+    if (!mount.current) {
+      console.log("in if!!!!!!!");
+      //componenet did mount
 
-    window.addEventListener("beforeunload", async ev => {
-      console.log("before unload evenet called ", ev);
+      await dispatch(getJoinedFanList(props.location.state.id));
 
+      await dispatch(
+        getFanJoined3MinuteCount(
+          props.location.state.id,
+          localStorage.getItem("id")
+        )
+      );
+    } else {
+      console.log("in else.........");
+      if (StreamData.streamData && StreamData.streamData.message)
+        await dispatch(getPaymentDetails(StreamData.streamData.message._id));
+    }
+
+    return async () => {
+      console.log("component will un mount fn called...", paid);
+
+      if (
+        chefRTC.client &&
+        chefRTC.localVideoTrack &&
+        chefRTC.localAudioTrack
+      ) {
+        chefRTC.localAudioTrack.close();
+        chefRTC.localVideoTrack.close();
+
+        // Leave the channel.
+        await chefRTC.client.leave();
+      }
       const dataToPass = {
         fanId: localStorage.getItem("id"),
         userId: props.location.state.id,
       };
       await dispatch(removedJoinFan(dataToPass));
 
-      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
-      return ev.returnValue;
-    });
+      if (paymentState && paymentState.paymentDetail) {
+        await dispatch(removeFan3MinuteCount(dataToPass));
+      } else {
+        await dispatch(storeFan3MinuteCount(dataToPass));
+      }
+    };
   }, []);
 
+  useEffect(async () => {
+    // await dispatch(getJoinedFanList(props.location.state.id));
+    // // await leaveCall();
+    // await dispatch(
+    //   getFanJoined3MinuteCount(
+    //     props.location.state.id,
+    //     localStorage.getItem("id")
+    //   )
+    // );
+    // window.addEventListener("beforeunload", async ev => {
+    //   console.log("before unload evenet called ", ev);
+    //   console.log(
+    //     "paid or not... ",
+    //     paid,
+    //     paymentState && paymentState.paymentDetail
+    //   );
+    //   // await leaveCall();
+    //   if (
+    //     chefRTC.client &&
+    //     chefRTC.localVideoTrack &&
+    //     chefRTC.localAudioTrack
+    //   ) {
+    //     chefRTC.localAudioTrack.close();
+    //     chefRTC.localVideoTrack.close();
+    //     // Leave the channel.
+    //     await chefRTC.client.leave();
+    //   }
+    //   const dataToPass = {
+    //     fanId: localStorage.getItem("id"),
+    //     userId: props.location.state.id,
+    //   };
+    //   await dispatch(removedJoinFan(dataToPass));
+    //   if (paymentState && paymentState.paymentDetail) {
+    //     await dispatch(removeFan3MinuteCount(dataToPass));
+    //   } else {
+    //     await dispatch(storeFan3MinuteCount(dataToPass));
+    //   }
+    //   ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+    //   return ev.returnValue;
+    // });
+  }, []);
+
+  useEffect(() => {
+    if (paymentState) {
+      if (paymentState.paymentDetail && paymentState.paymentDetail["total"]) {
+        setTime(0);
+        // if (exitCalled === false) setShowRating(false);
+        setShowRating(false);
+      }
+    }
+  }, [paymentState]);
+
   async function leaveCall() {
-    console.log("leave call fn called in fan orb page of chef");
+    setExitCalled(true);
+    console.log(
+      "leave call fn called in fan orb page of chef",
+      paid,
+      paymentState && paymentState.paymentDetail
+    );
     // Destroy the local audio and video tracks.
     console.log("rtc.. ", chefRTC);
     if (chefRTC.client && chefRTC.localVideoTrack && chefRTC.localAudioTrack) {
@@ -331,6 +463,13 @@ function FanChefORB(props) {
       userId: props.location.state.id,
     };
     await dispatch(removedJoinFan(dataToPass));
+
+    if (paymentState && paymentState.paymentDetail) {
+      await dispatch(removeFan3MinuteCount(dataToPass));
+    } else {
+      await dispatch(storeFan3MinuteCount(dataToPass));
+    }
+
     setShowRating(true);
   }
 
@@ -406,6 +545,9 @@ function FanChefORB(props) {
               setShow={setShow}
               text="chef/stylist"
               userId={props.location.state.id}
+              streamObj={streamDetails}
+              setFreeSessionCompleted={setFreeSessionCompleted}
+              freeSessionCompleted={freeSessionCompleted}
             />
           ) : (
             <PayOrder
@@ -429,6 +571,7 @@ function FanChefORB(props) {
               paid={paid}
               handleClose={handleClose}
               userInfo={userInfo}
+              freeSessionCompleted={freeSessionCompleted}
             />
             // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
           )}

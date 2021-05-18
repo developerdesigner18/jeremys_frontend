@@ -12,7 +12,7 @@ import {
   addToCommunity,
 } from "../../actions/userActions";
 import {getFollowing, getFollowers} from "../../actions/followActions";
-import {checkUserOnline} from "../../actions/orbActions";
+import {checkUserOnline, getLiveStream} from "../../actions/orbActions";
 import {
   fanJournalData,
   chefJournalData,
@@ -64,6 +64,7 @@ function MyStory(props) {
   const [connectedFan, setConnectedFan] = useState([]);
 
   const [fanJoined, setFanJoined] = useState(false);
+  const [streamData, setStreamData] = useState({});
   // console.log("props-==--=", props.location);
   useEffect(async () => {
     dispatch(getUserWithId(props.location.state.userId));
@@ -76,6 +77,7 @@ function MyStory(props) {
     dispatch(getUserStatus(props.location.state.userId));
     dispatch(getJoinedFanList(props.location.state.userId));
     dispatch(onlineUserCheck(props.location.state.userId));
+    dispatch(getLiveStream(props.location.state.userId));
     if (
       localStorage.getItem("type") == "fan" ||
       localStorage.getItem("type") == "Fan"
@@ -180,8 +182,8 @@ function MyStory(props) {
           setIsOnline(true);
         }
       }
-      if (stateORB.getJoinedFanList && stateORB.getJoinedFanList.length) {
-        setConnectedFan(stateORB.getJoinedFanList);
+      if (stateORB.joinedFanList && stateORB.joinedFanList.length) {
+        setConnectedFan(stateORB.joinedFanList);
       }
       console.log("stateORB.isFanJoin...........", stateORB.checkOnlineUser);
       if (
@@ -189,6 +191,9 @@ function MyStory(props) {
         stateORB.checkOnlineUser == false
       ) {
         setFanJoined(stateORB.checkOnlineUser);
+      }
+      if (stateORB.getLiveStreamData) {
+        setStreamData(stateORB.getLiveStreamData);
       }
     }
   }, [stateORB]);
@@ -305,28 +310,37 @@ function MyStory(props) {
       userInfo.data.type === "trainer" ||
       userInfo.data.type === "Trainer"
     ) {
-      if (connectedFan.length <= 15) {
-        history.push("/fanORB", {
-          name: userInfo
-            ? userInfo.data.firstName
-              ? userInfo.data.firstName
-              : ""
-            : "",
-          id: userInfo ? userInfo.data._id : "",
-          role: "host",
-          type: userInfo ? userInfo.data.type : "",
-        });
-      } else if (connectedFan.length > 15) {
-        history.push("/fanORB", {
-          name: userInfo
-            ? userInfo.data.firstName
-              ? userInfo.data.firstName
-              : ""
-            : "",
-          id: userInfo ? userInfo.data._id : "",
-          role: "audience",
-          type: userInfo ? userInfo.data.type : "",
-        });
+      if (streamData) {
+        console.log("streamdata... ", streamData, connectedFan.length);
+        if (connectedFan.length < streamData.seats) {
+          if (connectedFan.length <= 15) {
+            history.push("/fanORB", {
+              name: userInfo
+                ? userInfo.data.firstName
+                  ? userInfo.data.firstName
+                  : ""
+                : "",
+              id: userInfo ? userInfo.data._id : "",
+              role: "host",
+              type: userInfo ? userInfo.data.type : "",
+            });
+          } else if (connectedFan.length > 15) {
+            history.push("/fanORB", {
+              name: userInfo
+                ? userInfo.data.firstName
+                  ? userInfo.data.firstName
+                  : ""
+                : "",
+              id: userInfo ? userInfo.data._id : "",
+              role: "audience",
+              type: userInfo ? userInfo.data.type : "",
+            });
+          }
+        } else {
+          swal("Info", "Seats are not available!", "info").then(() =>
+            history.push("/fanHomePage")
+          );
+        }
       }
     }
   };

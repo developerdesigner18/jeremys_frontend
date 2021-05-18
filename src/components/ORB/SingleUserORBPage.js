@@ -15,6 +15,9 @@ import {
   joinedFan,
   removedJoinFan,
   getLiveStream,
+  removeFan3MinuteCount,
+  storeFan3MinuteCount,
+  getFanJoined3MinuteCount,
 } from "../../actions/orbActions";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
@@ -24,6 +27,7 @@ import Modal from "react-bootstrap/Modal";
 import {socket} from "../../socketIO";
 import {getUserWithId} from "../../actions/userActions";
 import moment from "moment";
+import {getPaymentDetailsOfStarTrainer} from "../../actions/paymentActions";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -62,6 +66,9 @@ function SingleUserORBPage(props) {
   const [hostBreak, setHostBreak] = useState(false);
   const [user, setUser] = useState({});
   const [fanUid, setFanUid] = useState();
+  const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
+
+  const mount = useRef();
 
   let socketIO;
 
@@ -91,6 +98,7 @@ function SingleUserORBPage(props) {
   });
   const orbState = useSelector(state => state.ORB);
   const stateUser = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -100,19 +108,150 @@ function SingleUserORBPage(props) {
 
   const [show, setShow] = useState(false);
   const [showTip, setShowTip] = useState(false);
+
   const handleClose = () => {
-    setShow(false);
+    console.log("session completed value.. ", freeSessionCompleted, paid);
+    if (freeSessionCompleted) {
+      if (paid) {
+        setShow(false);
+      } else {
+        setShow(true);
+      }
+    } else {
+      setShow(false);
+    }
     setIsActive(true);
   };
   const handleShow = () => {
-    if (!paid) setIsActive(false);
     setShow(true);
     setShowTip(false);
+    if (!paid && streamObj && streamObj.price !== 0) setIsActive(false);
   };
+
+  // useEffect(() => {
+  //   console.log(
+  //     "use effect with free session state called!!!!!!!!!!",
+  //     freeSessionCompleted
+  //   );
+  //   setShow(true);
+  // }, [freeSessionCompleted]);
+
+  // useEffect(async () => {
+  //   socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+  //   console.log("props type... ", props.match.path, window.location.pathname);
+  //   await dispatch(getUserWithId(localStorage.getItem("id")));
+
+  //   socketIO.emit("storeLiveFans", localStorage.getItem("id"));
+
+  //   if (
+  //     "star" == props.location.state.type ||
+  //     "Star" == props.location.state.type
+  //   ) {
+  //     socketIO.on("getRvalue", data => {
+  //       console.log("r value data.. ", data);
+
+  //       data.forEach(async value => {
+  //         if (value.userId == props.location.state.id) {
+  //           setRvalue(value.rValue);
+
+  //           // if (value.rValue === false) {
+  //           //   if (fanRTC.localAudioTrack)
+  //           //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
+  //           //   rtc.localAudioTrack.setEnabled(value.rValue);
+  //           // }
+  //         }
+  //       });
+  //     });
+  //   } else if (
+  //     "trainer" == props.location.state.type ||
+  //     "Trainer" == props.location.state.type
+  //   ) {
+  //     socketIO.on("getPassedQValue", async data => {
+  //       console.log("data from q... ", data);
+
+  //       if (
+  //         data.userId === props.location.state.id &&
+  //         data.fanId === localStorage.getItem("id")
+  //       ) {
+  //         setQvalue(data.qValue);
+
+  //         if (data.qValue) {
+  //           rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+  //           setFanRTC(prevState => ({
+  //             ...prevState,
+  //             localAudioTrack: rtc.localAudioTrack,
+  //           }));
+  //         }
+  //       }
+  //     });
+
+  //     socketIO.on("remainingFans", async data => {
+  //       console.log("remaining fans.........", data);
+
+  //       if (
+  //         data[props.location.state.id] &&
+  //         data[props.location.state.id].length
+  //       ) {
+  //         for (let user of data[props.location.state.id]) {
+  //           if (user.fanObj.id !== localStorage.getItem("id")) {
+  //             if (fanRTC.localAudioTrack) {
+  //               await fanRTC.localAudioTrack.setEnabled(false);
+  //             }
+  //           }
+  //         }
+  //       }
+  //     });
+  //   }
+
+  //   socketIO.on("getShortBreakValue", data => {
+  //     console.log("short break data...", data);
+
+  //     const foundUser = data.find(
+  //       ({userId}) => userId === props.location.state.id
+  //     );
+  //     if (foundUser) {
+  //       setHostBreak(foundUser.breakValue);
+  //     }
+  //   });
+
+  //   document.documentElement.scrollTop = 0;
+  //   await dispatch(getLiveStream(props.location.state.id));
+
+  //   await dispatch(
+  //     getFanJoined3MinuteCount(
+  //       props.location.state.id,
+  //       localStorage.getItem("id")
+  //     )
+  //   );
+
+  //   if (
+  //     props.match.path === "/fanORB" ||
+  //     window.location.pathname === "/fanORB"
+  //   ) {
+  //     window.addEventListener("beforeunload", async ev => {
+  //       console.log("before unload evenet called ", ev);
+  //       if (streamObj) {
+  //         await dispatch(
+  //           getPaymentDetailsOfStarTrainer(
+  //             streamObj._id,
+  //             props.location.state.id
+  //           )
+  //         );
+  //       }
+
+  //       await leaveCallFromFan();
+
+  //       ev.returnValue =
+  //         "Live streaming will be closed. Sure you want to leave?";
+  //       return ev.returnValue;
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     let interval = null;
 
+    // console.log("time and isactive.....", time, isActive);
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -130,99 +269,136 @@ function SingleUserORBPage(props) {
   });
 
   useEffect(async () => {
-    socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-    console.log("props type... ", props.location.state.type);
-    await dispatch(getUserWithId(localStorage.getItem("id")));
+    if (!mount.current) {
+      socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+      document.documentElement.scrollTop = 0;
+      await dispatch(getLiveStream(props.location.state.id));
 
-    socketIO.emit("storeLiveFans", localStorage.getItem("id"));
+      console.log("props type... ", props.match.path, window.location.pathname);
+      await dispatch(getUserWithId(localStorage.getItem("id")));
 
-    if (
-      "star" == props.location.state.type ||
-      "Star" == props.location.state.type
-    ) {
-      socketIO.on("getRvalue", data => {
-        console.log("r value data.. ", data);
+      socketIO.emit("storeLiveFans", localStorage.getItem("id"));
 
-        data.forEach(async value => {
-          if (value.userId == props.location.state.id) {
-            setRvalue(value.rValue);
+      if (
+        "star" == props.location.state.type ||
+        "Star" == props.location.state.type
+      ) {
+        socketIO.on("getRvalue", data => {
+          console.log("r value data.. ", data);
 
-            // if (value.rValue === false) {
-            //   if (fanRTC.localAudioTrack)
-            //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
-            //   rtc.localAudioTrack.setEnabled(value.rValue);
-            // }
+          data.forEach(async value => {
+            if (value.userId == props.location.state.id) {
+              setRvalue(value.rValue);
+
+              // if (value.rValue === false) {
+              //   if (fanRTC.localAudioTrack)
+              //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
+              //   rtc.localAudioTrack.setEnabled(value.rValue);
+              // }
+            }
+          });
+        });
+      } else if (
+        "trainer" == props.location.state.type ||
+        "Trainer" == props.location.state.type
+      ) {
+        socketIO.on("getPassedQValue", async data => {
+          console.log("data from q... ", data);
+
+          if (
+            data.userId === props.location.state.id &&
+            data.fanId === localStorage.getItem("id")
+          ) {
+            setQvalue(data.qValue);
+
+            if (data.qValue) {
+              rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+              setFanRTC(prevState => ({
+                ...prevState,
+                localAudioTrack: rtc.localAudioTrack,
+              }));
+            }
           }
         });
-      });
-    } else if (
-      "trainer" == props.location.state.type ||
-      "Trainer" == props.location.state.type
-    ) {
-      socketIO.on("getPassedQValue", async data => {
-        console.log("data from q... ", data);
 
-        if (
-          data.userId === props.location.state.id &&
-          data.fanId === localStorage.getItem("id")
-        ) {
-          setQvalue(data.qValue);
+        socketIO.on("remainingFans", async data => {
+          console.log("remaining fans.........", data);
 
-          if (data.qValue) {
-            rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            setFanRTC(prevState => ({
-              ...prevState,
-              localAudioTrack: rtc.localAudioTrack,
-            }));
-          }
-        }
-      });
-
-      socketIO.on("remainingFans", async data => {
-        console.log("remaining fans.........", data);
-
-        if (
-          data[props.location.state.id] &&
-          data[props.location.state.id].length
-        ) {
-          for (let user of data[props.location.state.id]) {
-            if (user.fanObj.id !== localStorage.getItem("id")) {
-              if (fanRTC.localAudioTrack) {
-                await fanRTC.localAudioTrack.setEnabled(false);
+          if (
+            data[props.location.state.id] &&
+            data[props.location.state.id].length
+          ) {
+            for (let user of data[props.location.state.id]) {
+              if (user.fanObj.id !== localStorage.getItem("id")) {
+                if (fanRTC.localAudioTrack) {
+                  await fanRTC.localAudioTrack.setEnabled(false);
+                }
               }
             }
           }
+        });
+      }
+
+      socketIO.on("getShortBreakValue", data => {
+        console.log("short break data...", data);
+
+        const foundUser = data.find(
+          ({userId}) => userId === props.location.state.id
+        );
+        if (foundUser) {
+          setHostBreak(foundUser.breakValue);
         }
       });
+
+      await dispatch(
+        getFanJoined3MinuteCount(
+          props.location.state.id,
+          localStorage.getItem("id")
+        )
+      );
+      if (streamObj) {
+        await dispatch(
+          getPaymentDetailsOfStarTrainer(streamObj._id, props.location.state.id)
+        );
+      }
+    } else {
+      if (streamObj) {
+        await dispatch(
+          getPaymentDetailsOfStarTrainer(streamObj._id, props.location.state.id)
+        );
+      }
     }
 
-    socketIO.on("getShortBreakValue", data => {
-      console.log("short break data...", data);
+    return async () => {
+      console.log("component will unmount called ", paid);
+      // Destroy the local audio and video tracks.
 
-      const foundUser = data.find(
-        ({userId}) => userId === props.location.state.id
-      );
-      if (foundUser) {
-        setHostBreak(foundUser.breakValue);
+      // socketIO.disconnect();
+      if (fanRTC.client && fanRTC.localVideoTrack) {
+        fanRTC.localVideoTrack.close();
+
+        // Leave the channel.
+        await fanRTC.client.leave();
       }
-    });
-
-    document.documentElement.scrollTop = 0;
-    await dispatch(getLiveStream(props.location.state.id));
-
-    window.addEventListener("beforeunload", async ev => {
-      console.log("before unload evenet called ", ev);
-
+      if (fanRTC.localAudioTrack) {
+        fanRTC.localAudioTrack.close();
+      }
       const dataToPass = {
         fanId: localStorage.getItem("id"),
         userId: props.location.state.id,
       };
       await dispatch(removedJoinFan(dataToPass));
-      await leaveCallFromFan();
 
-      ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
-      return ev.returnValue;
-    });
+      if (paid) {
+        console.log("paid true....");
+        await dispatch(removeFan3MinuteCount(dataToPass));
+      } else {
+        console.log("paid false....");
+        if (streamObj && streamObj.price !== 0) {
+          await dispatch(storeFan3MinuteCount(dataToPass));
+        }
+      }
+    };
   }, []);
 
   useEffect(async () => {
@@ -275,14 +451,9 @@ function SingleUserORBPage(props) {
 
               const remote = await rtc.client.subscribe(user, mediaType);
               hostUser.push(id);
-              // const uniqueArray = hostUser.filter(function (item, pos) {
-              //   return hostUser.indexOf(item) == pos;
-              // });
-              // setHost(uniqueArray);
-              // console.log("unique array.......... ", uniqueArray);
 
               if (hostUser.length) {
-                console.log("host.............", hostUser);
+                const fanLength = hostUser.length - 1;
                 hostUser.map((host, i) => {
                   if (parseInt(host) !== parseInt(hostUidResponse)) {
                     if (i % 2 !== 0) {
@@ -453,10 +624,17 @@ function SingleUserORBPage(props) {
     }
   }, [props.location.state.id]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (orbState) {
       console.log("orb state........... ", orbState);
+      console.log("host.............", hostUser.length, streamObj);
       if (orbState.getLiveStreamData) {
+        await dispatch(
+          getPaymentDetailsOfStarTrainer(
+            orbState.getLiveStreamData._id,
+            props.location.state.id
+          )
+        );
         const sessionTime = moment(orbState.getLiveStreamData.createdAt);
         const currentTime = moment();
         const diffTime = currentTime.diff(sessionTime, "seconds");
@@ -469,12 +647,32 @@ function SingleUserORBPage(props) {
         );
         if (paid) {
           setTime(timeToDisplay);
+          const dataToPass = {
+            fanId: localStorage.getItem("id"),
+            userId: props.location.state.id,
+          };
+          await dispatch(removeFan3MinuteCount(dataToPass));
         } else if (orbState.getLiveStreamData.price == 0) {
           setTime(timeToDisplay);
+          handleClose();
+          setPaid(false);
         } else if (orbState.getLiveStreamData.price !== 0) {
           setTime(180);
         }
         setStreamObj(orbState.getLiveStreamData);
+      }
+      if (orbState.fan3minCount === true || orbState.fan3minCount === false) {
+        setFreeSessionCompleted(orbState.fan3minCount);
+        mount.current = orbState.fan3minCount;
+        if (
+          orbState.getLiveStreamData &&
+          orbState.fan3minCount === true &&
+          !paid
+        ) {
+          handleShow();
+        } else {
+          handleClose();
+        }
       }
     }
   }, [orbState]);
@@ -486,6 +684,29 @@ function SingleUserORBPage(props) {
       }
     }
   }, [stateUser]);
+
+  useEffect(() => {
+    if (paymentState) {
+      if (paymentState.ticketReceipt && paymentState.ticketReceipt["total"]) {
+        if (streamObj) {
+          const sessionTime = moment(streamObj.createdAt);
+          const currentTime = moment();
+          const diffTime = currentTime.diff(sessionTime, "seconds");
+          const timeToDisplay = streamObj.timer - diffTime;
+          setTime(timeToDisplay);
+        }
+        setPaid(true);
+      }
+    }
+  }, [paymentState]);
+
+  useEffect(async () => {
+    console.log("session free is completed", streamObj);
+  }, [freeSessionCompleted]);
+
+  useEffect(() => {
+    console.log("paid is true............");
+  }, [paid]);
 
   const getImage = () => {
     console.log("fn called");
@@ -508,7 +729,9 @@ function SingleUserORBPage(props) {
   };
 
   async function leaveCallFromFan() {
-    console.log("leave call fn called in fan orb page of star/trainer");
+    window.onbeforeunload = null;
+    console.log("leave call fn called in fan orb page of star/trainer", paid);
+
     // Destroy the local audio and video tracks.
 
     if (fanRTC.client && fanRTC.localVideoTrack) {
@@ -518,11 +741,40 @@ function SingleUserORBPage(props) {
       // Leave the channel.
       await fanRTC.client.leave();
     }
+    if (fanRTC.localAudioTrack) {
+      fanRTC.localAudioTrack.close();
+    }
     const dataToPass = {
       fanId: localStorage.getItem("id"),
       userId: props.location.state.id,
     };
     await dispatch(removedJoinFan(dataToPass));
+
+    // if (Object.keys(paymentState).length) {
+    //   if (paymentState.ticketReceipt) {
+    //     if (paymentState.ticketReceipt["total"]) {
+    //       setPaid(true);
+    //       console.log("in else... ");
+    //       await dispatch(removeFan3MinuteCount(dataToPass));
+    //     }
+    //   }
+    // } else {
+    //   console.log("payment state in else!!!!!!!!!!!");
+    //   await dispatch(storeFan3MinuteCount(dataToPass));
+    // }
+    // if (freeSessionCompleted === false) {
+    //   console.log("in else.........");
+    //   await dispatch(storeFan3MinuteCount(dataToPass));
+    // }
+    if (paid) {
+      console.log("paid true....");
+      await dispatch(removeFan3MinuteCount(dataToPass));
+    } else {
+      console.log("paid false....");
+      if (streamObj && streamObj.price !== 0) {
+        await dispatch(storeFan3MinuteCount(dataToPass));
+      }
+    }
     setShowRatingModal(true);
   }
 
@@ -550,7 +802,7 @@ function SingleUserORBPage(props) {
 
     setShowTip(!showTip);
     setShow(false);
-    if (!paid) setIsActive(false);
+    if (!paid && streamObj && streamObj.price !== 0) setIsActive(false);
   };
 
   const closeTip = () => {
@@ -656,6 +908,10 @@ function SingleUserORBPage(props) {
               text="star/trainer"
               streamId={streamObj ? streamObj._id : ""}
               userId={props.location.state.id}
+              setTime={setTime}
+              streamObj={streamObj}
+              setFreeSessionCompleted={setFreeSessionCompleted}
+              freeSessionCompleted={freeSessionCompleted}
             />
           ) : (
             <Ticket
@@ -663,6 +919,7 @@ function SingleUserORBPage(props) {
               setPaid={setPaid}
               streamObj={streamObj}
               userId={props.location.state.id}
+              freeSessionCompleted={freeSessionCompleted}
             />
           )}
         </Modal.Body>

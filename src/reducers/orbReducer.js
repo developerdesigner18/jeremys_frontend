@@ -131,6 +131,22 @@ export const orbReducer = (state = null, action) => {
         existFan: action.payload,
       };
 
+    case "GET_FAN_3MIN_COUNT":
+      return {
+        ...state,
+        fan3minCount: action.payload,
+      };
+
+    case "STORE_FAN_FOR_3MIN":
+      return {
+        ...state,
+      };
+
+    case "REMOVE_FAN_FOR_3MIN":
+      return {
+        ...state,
+      };
+
     default:
       return state;
   }
