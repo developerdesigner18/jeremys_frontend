@@ -867,7 +867,11 @@ function ORBPage(props) {
               className="container d-flex justify-content-center mt-1"
               style={{textAlign: "center", height: "100px"}}>
               {/* <div className="ORB_main_cat m-0"> */}
-              <img src="../assets/images/live-btn.png" />
+              <img
+                src="../assets/images/live-btn.png"
+                width="120"
+                height="120"
+              />
               {/* </div> */}
             </div>
           ) : null}
@@ -914,6 +918,8 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
+                  height="120"
+                  width="120"
                 />
               )
             ) : localStorage.getItem("type") === "trainer" ||
