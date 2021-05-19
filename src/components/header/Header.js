@@ -95,8 +95,10 @@ function Header(props) {
         <div className="mobile_icon">
           {localStorage.getItem("id") ? null : (
             <div className="icon_detail">
-              <p className="m-0">Download the Mobile App</p>
-              <p className="m-0">Sign-Up it's FREE!</p>
+              {/* <p className="m-0">Download the Mobile App</p>
+              <p className="m-0">Sign-Up it's FREE!</p> */}
+              <p className="m-0">Download the Android App today!</p>
+              <p className="m-0">Apple IOS available June 30!</p>
               <div className="d-flex header_advertise">
                 {/* <img src="../assets/images/ios.png" alt="ios" /> */}
                 <a
@@ -148,7 +150,7 @@ function Header(props) {
                 src="../assets/images/web.png"
                 alt="web"
                 onClick={goToLogin}
-                style={{cursor: "pointer"}}
+                style={{cursor: "pointer", height: "auto", width: "250px"}}
               />
             </div>
           </div>
