@@ -548,21 +548,21 @@ function SingleUserORBPage(props) {
                     if (generatedDiv) {
                       generatedDiv.remove();
                     }
-                    let playerWrapper = document.createElement("div");
-                    playerWrapper.setAttribute(
-                      "id",
-                      `player-wrapper-${user.uid}`
-                    );
+                    // let playerWrapper = document.createElement("div");
+                    // playerWrapper.setAttribute(
+                    //   "id",
+                    //   `player-wrapper-${user.uid}`
+                    // );
 
-                    playerWrapper.setAttribute(
-                      "style",
-                      " height: 500px;width: 500px;border-radius:50%;"
-                    );
-                    agoraClass.appendChild(playerWrapper);
+                    // playerWrapper.setAttribute(
+                    //   "style",
+                    //   " height: 500px;width: 500px;border-radius:50%;"
+                    // );
+                    // agoraClass.appendChild(playerWrapper);
                     console.log("remote user media type... ", mediaType);
 
                     if (mediaType == "video") {
-                      user.videoTrack.play(playerWrapper);
+                      user.videoTrack.play("user-remote-playerlist");
                     }
                     if (mediaType == "audio") {
                       user.audioTrack.play();
