@@ -66,7 +66,22 @@ function FanHomePage(props) {
     query: "(max-device-width: 767px)",
   });
   if (isMobileDevice) {
-    swal("Info", "To use live streaming use mobile application", "info");
+    swal(
+      <div>
+        <h3 style={{color: "#AEB0BC", textAlign: "center"}}>Hello!</h3>
+        <p
+          style={{
+            color: "#E4E4E7",
+            textAlign: "left",
+            fontSize: "20px",
+          }}>
+          Thank you for visiting Jeremy's Live! You will need to download the
+          Jeremy's Live App from this website or access the website through a
+          Computer Browser
+        </p>
+        <h3 style={{color: "#AEB0BC", textAlign: "center"}}>SEE YOU SOON!</h3>
+      </div>
+    );
   }
 
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
