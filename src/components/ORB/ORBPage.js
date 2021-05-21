@@ -251,11 +251,11 @@ function ORBPage(props) {
       // await rtc.client.enableDualStream();
       // Create an audio track from the audio sampled by a microphone.
       rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({
-        encoderConfig: {
-          sampleRate: 48000,
-          stereo: true,
-          bitrate: 128,
-        },
+        // encoderConfig: {
+        //   sampleRate: 48000,
+        //   stereo: true,
+        //   bitrate: 128,
+        // },
         AEC: true,
         AGC: true,
         ANS: true,
@@ -264,6 +264,8 @@ function ORBPage(props) {
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
       }));
+      rtc.localAudioTrack.setVolume(18);
+
       // Create a video track from the video captured by a camera.
       rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
       setORB(prevState => ({
