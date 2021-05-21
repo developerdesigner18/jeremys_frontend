@@ -128,7 +128,7 @@ function TrainerORBPage(props) {
       if (isLive) setTimeout(() => setTime(time - 1), 1000);
     } else {
       setTime(0);
-      // await leaveCall();
+      if (isLive) await leaveCall();
     }
   });
 
