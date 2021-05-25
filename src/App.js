@@ -80,7 +80,7 @@ function App() {
         <PrivateRoute path="/fanStylistORB" component={FanChefORB} />
         <PrivateRoute path="/stylistORB" component={ChefORBPage} />
         <PrivateRoute path="/artistProfile" component={ArtistsProfile} />
-        <PrivateRoute path="/videoChatHost" component={VideoChat} />
+        <Route path="/videoChatHost" component={VideoChat} />
         <PrivateRoute path="/videoCallBasic" component={VideoCall1} />
         <PrivateRoute path="/videoChatAttendee" component={VideoChatAttendee} />
         <PrivateRoute path="/userORB" component={FanOrbForUser} />

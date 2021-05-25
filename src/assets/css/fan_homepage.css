@@ -354,6 +354,7 @@ button.tablinks.active {
 }
 .down_links li {
   cursor: pointer;
+  color: white;
 }
 .down_links .dropdown-item.active,
 .down_links .dropdown-item:active {
