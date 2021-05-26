@@ -9,7 +9,6 @@ import swal from "sweetalert";
 import Modal from "react-bootstrap/Modal";
 
 import {
-  storeScreenShot,
   storeOnlineUser,
   removeOnlineUser,
   getJoinedFanList,
@@ -24,6 +23,7 @@ import Seat from "../ORBTicketComponents/Seat";
 import GenerateTicket from "../ORBTicketComponents/GenerateTicket";
 import moment from "moment";
 import socketIOClient from "socket.io-client";
+import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -64,6 +64,7 @@ function TrainerORBPage(props) {
   const [isMute, setIsMute] = useState(false);
   const [tipRatio, setTipRatio] = useState(0);
   const [ticketSold, setTicketSold] = useState(0);
+  const [imageModal, setImageModal] = useState(false);
   const [ORB, setORB] = useState({
     client: null,
     localAudioTrack: null,
@@ -152,25 +153,6 @@ function TrainerORBPage(props) {
   const stateData = useSelector(state => state.ORB);
   const stateUser = useSelector(state => state.user);
 
-  const getImage = () => {
-    // console.log("fn called");
-    html2canvas(document.querySelector("#capture"), {
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-    }).then(canvas => {
-      let file;
-      canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
-        let fd = new FormData();
-        fd.append("id", localStorage.getItem("id"));
-        fd.append("image", file);
-        fd.append("starName", "starName");
-
-        await dispatch(storeScreenShot(fd));
-      });
-    });
-  };
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
@@ -335,7 +317,7 @@ function TrainerORBPage(props) {
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
       }));
-      rtc.localAudioTrack.setVolume(18);
+      // rtc.localAudioTrack.setVolume(18);
 
       // Create a video track from the video captured by a camera.
       rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
@@ -345,7 +327,7 @@ function TrainerORBPage(props) {
       }));
 
       rtc.localVideoTrack.play("local-player");
-      rtc.localAudioTrack.play();
+      // rtc.localAudioTrack.play();
 
       // Publish the local audio and video tracks to the channel.
       await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
@@ -861,6 +843,16 @@ function TrainerORBPage(props) {
     }
   };
 
+  const showImageModal = () => {
+    setImageModal(true);
+    setShow(false);
+  };
+
+  const closeImageModal = () => {
+    setImageModal(false);
+    setShow(false);
+  };
+
   return (
     <div
       style={{
@@ -897,6 +889,22 @@ function TrainerORBPage(props) {
                 setTicketPrice={setTicketPrice}
               />
             ) : null
+          ) : null}
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={imageModal}
+        onHide={closeImageModal}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {imageModal ? (
+            <ScreenShotUpload
+              closeImageModal={closeImageModal}
+              imageModal={imageModal}
+            />
           ) : null}
         </Modal.Body>
       </Modal>
@@ -1223,7 +1231,7 @@ function TrainerORBPage(props) {
         )}
 
         {isLive ? (
-          <a onClick={getImage}>
+          <a onClick={showImageModal}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/take_picture.png" />
               <p>Take Picture</p>

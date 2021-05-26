@@ -5,8 +5,9 @@ import {getUserWithId} from "../../actions/userActions";
 import moment from "moment";
 import {
   tipOrTicketPayment,
-  paymentForTIcktOrTip,
-  getPaymentDetailsOfStarTrainer,
+  paymentForTicket,
+  getTicketDetail,
+  makeTicketEmpty,
 } from "../../actions/paymentActions";
 import Modal from "react-bootstrap/Modal";
 
@@ -25,12 +26,11 @@ function Ticket(props) {
   useEffect(async () => {
     await dispatch(getUserWithId(props.userId));
 
-    document.addEventListener("visibilitychange", event => {
+    document.addEventListener("visibilitychange", async event => {
       if (document.visibilityState == "visible") {
-        dispatch(
-          getPaymentDetailsOfStarTrainer(props.streamObj._id, props.userId)
-        );
-        console.log("tab is active");
+        await dispatch(getTicketDetail(props.streamObj._id));
+        await dispatch(makeTicketEmpty());
+        console.log("tab is active in ticket");
       } else {
         console.log("tab is inactive");
       }
@@ -99,28 +99,25 @@ function Ticket(props) {
     }
   }, [loaded]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (paymentState) {
-      console.log("paymentState.ticketReceipt", paymentState.ticketReceipt);
-      if (paymentState.paidResponse && !paymentState.ticketReceipt) {
-        console.log(paymentState.paidResponse);
-        window.open(paymentState.paidResponse);
-        // setPaypalModalSRC(paymentState.paymentResponse);
-        // setPaypalModal(true);
-        // setPaid(true);
-      }
-      if (paymentState.ticketReceipt) {
+      console.log("paymentState.ticketReceipt", paymentState.ticketInfo);
+      if (paymentState.ticketInfo) {
+        console.log("ticket info..");
         props.setPaid(true);
-
-        console.log(
-          "paymentState.ticketReceipt-=-=-=",
-          paymentState.ticketReceipt
-        );
+        props.setFreeSessionCompleted(false);
+      }
+      if (paymentState.ticketUrl && !paymentState.ticketInfo) {
+        console.log("paymentState.ticketUrl && !paymentState.ticketInfo");
+        console.log(paymentState.ticketUrl);
+        window.open(paymentState.ticketUrl);
+        // await dispatch(getTicketDetail(props.streamObj._id));
+        // props.handleClose();
       }
     }
   }, [paymentState]);
 
-  const callMakePayment = async () => {
+  async function callMakePayment() {
     console.log("fn called..");
 
     const dataToPass = {
@@ -130,8 +127,8 @@ function Ticket(props) {
       total: props.streamObj.price,
       dateTime: moment.utc(),
     };
-    await dispatch(paymentForTIcktOrTip(dataToPass));
-  };
+    await dispatch(paymentForTicket(dataToPass));
+  }
 
   return (
     <div className="MainwrapperTicket">

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, useCallback} from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,7 +7,6 @@ import axios from "axios";
 import {socket} from "../../socketIO";
 
 import {
-  storeScreenShot,
   storeChefOrbDetails,
   storeOnlineUser,
   removeOnlineUser,
@@ -21,6 +20,7 @@ import Receipt from "../ORBTicketComponents/Receipt";
 import swal from "sweetalert";
 import {getTipDetails} from "../../actions/paymentActions";
 import TipList from "../ORBTicketComponents/TipList";
+import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -56,6 +56,7 @@ function ChefORBPage(props) {
   const [streamResponse, setStreamResponse] = useState({});
   const [tipsList, setTipsList] = useState([]);
   const [tip, setTip] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
   const handleShow = () => {
     if (isLive) setShow(true);
   };
@@ -65,6 +66,7 @@ function ChefORBPage(props) {
     localVideoTrack: null,
   });
   const ref = useRef();
+  const webcam = useRef();
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
@@ -99,26 +101,6 @@ function ChefORBPage(props) {
     localVideoTrack: null,
   };
 
-  const getImage = () => {
-    console.log("fn called");
-    html2canvas(document.querySelector("#capture"), {
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      useCORS: true,
-    }).then(canvas => {
-      let file;
-      canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
-        let fd = new FormData();
-        fd.append("id", localStorage.getItem("id"));
-        fd.append("starName", "starName");
-        fd.append("image", file);
-
-        await dispatch(storeScreenShot(fd));
-      });
-    });
-  };
   const goToLivePage = async () => {
     await dispatch(storeOnlineUser());
 
@@ -178,7 +160,11 @@ function ChefORBPage(props) {
       );
 
       // Create an audio track from the audio sampled by a microphone.
-      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({
+        AEC: true,
+        AGC: true,
+        ANS: true,
+      });
       setRTC(prevState => ({
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
@@ -222,7 +208,7 @@ function ChefORBPage(props) {
       });
 
       rtc.localVideoTrack.play("local-player");
-      rtc.localAudioTrack.play();
+      // rtc.localAudioTrack.play();
       console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal(
@@ -372,6 +358,18 @@ function ChefORBPage(props) {
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
   };
 
+  const showImageModal = () => {
+    setImageModal(true);
+    setShow(false);
+    setTip(false);
+  };
+
+  const closeImageModal = () => {
+    setImageModal(false);
+    setShow(false);
+    setTip(false);
+  };
+
   return (
     <div
       style={{
@@ -412,6 +410,22 @@ function ChefORBPage(props) {
         <Modal.Body style={{padding: "0"}}>
           {tip ? (
             <TipList setTip={setTip} streamId={streamResponse._id} />
+          ) : null}
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={imageModal}
+        onHide={closeImageModal}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {imageModal ? (
+            <ScreenShotUpload
+              closeImageModal={closeImageModal}
+              imageModal={imageModal}
+            />
           ) : null}
         </Modal.Body>
       </Modal>
@@ -691,7 +705,7 @@ function ChefORBPage(props) {
             )}
 
             {isLive ? (
-              <a onClick={getImage}>
+              <a onClick={showImageModal}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/take_picture.png" />
                   <p>Take Picture</p>
@@ -895,6 +909,7 @@ function ChefORBPage(props) {
           </div>
         </div>
       </div>
+      {/* <canvas id="canvas"></canvas> */}
     </div>
   );
 }

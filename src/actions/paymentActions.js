@@ -164,6 +164,25 @@ export const paymentForTIcktOrTip = data => {
   };
 };
 
+export const paymentForTicket = data => {
+  return dispatch => {
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}api/payment/tipOrTicketPayment`,
+        data
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "TICKET_PAYMENT",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(err => console.log("err... ", err));
+  };
+};
+
 export const tipPaymentDetail = (streamId, fanId, userId) => {
   return dispatch => {
     axios
@@ -199,5 +218,52 @@ export const getTipDetails = userId => {
         }
       })
       .catch(err => console.log("errr......... ", err));
+  };
+};
+
+export const getTicketDetail = data => {
+  return dispatch => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}api/payment/getTicketForWeb?streamId=${data}`
+      )
+      .then(result => {
+        if (result.data.code === 200) {
+          dispatch({
+            type: "TICKET_INFO",
+            payload: result.data.data,
+          });
+        }
+      })
+      .catch(error => console.log("eror... ", error));
+  };
+};
+
+export const makeTicketEmpty = () => {
+  console.log("make ticket empty");
+  return dispatch => {
+    dispatch({
+      type: "TICKET_PAYMENT",
+      payload: "",
+    });
+  };
+};
+
+export const makeTipEmpty = () => {
+  console.log("make tip empty");
+  return dispatch => {
+    dispatch({
+      type: "TIP_DETAILS",
+      payload: null,
+    });
+  };
+};
+
+export const makeOrderEmpty = () => {
+  return dispatch => {
+    dispatch({
+      type: "MAKE_PAYMENT",
+      payload: "",
+    });
   };
 };

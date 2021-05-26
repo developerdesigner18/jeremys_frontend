@@ -8,6 +8,7 @@ import {
   paymentForTIcktOrTip,
   getPaymentDetailsOfStarTrainer,
   tipPaymentDetail,
+  makeTipEmpty,
 } from "../../actions/paymentActions";
 import Modal from "react-bootstrap/Modal";
 import socketIOClient from "socket.io-client";
@@ -99,17 +100,26 @@ function Tip(props) {
         paymentState.tipDetail,
         paymentState.paidResponse && !paymentState.tipDetail
       );
+      // if (paymentState.tipDetail) {
+      //   console.log("tip response..");
+      //   props.closeTip();
+      //   settipPaid(true);
+      //   socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
+
+      //   socket.emit("getIdForTipAmdTicket", props.streamId);
+      //   if (props.paid) {
+      //     props.setTime(0);
+      //     props.closeTip();
+      //   } else {
+      //     props.setIsActive(true);
+      //   }
+      // }
       if (paymentState.paidResponse && !paymentState.tipDetail) {
+        console.log("payment url reponse");
         console.log(paymentState.paidResponse);
         window.open(paymentState.paidResponse);
       }
-      if (paymentState.tipDetail) {
-        props.closeTip();
-        settipPaid(true);
-        socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
-        socket.emit("getIdForTipAmdTicket", props.streamId);
-      }
       // if (paymentState.paidResponse) {
       //   if (paymentState.ticketReceipt) {
       //     if (paymentState.ticketReceipt["total"]) {
@@ -191,12 +201,33 @@ function Tip(props) {
           )
         );
         dispatch(getPaymentDetailsOfStarTrainer(props.streamId, props.userId));
+        // dispatch(makeTipEmpty());
         console.log("tab is active");
       } else {
         console.log("tab is inactive");
       }
     });
   }, []);
+
+  useEffect(async () => {
+    if (paymentState) {
+      if (paymentState.tipDetail) {
+        console.log("tip response..");
+        props.closeTip();
+        settipPaid(true);
+        await dispatch(makeTipEmpty());
+        socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
+
+        socket.emit("getIdForTipAmdTicket", props.streamId);
+        if (props.paid) {
+          // props.setTime(0);
+          props.closeTip();
+        } else {
+          props.setIsActive(true);
+        }
+      }
+    }
+  }, [paymentState && paymentState.tipDetail]);
 
   const callMakePayment = async () => {
     console.log("fn called..");

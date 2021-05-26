@@ -27,7 +27,8 @@ import Modal from "react-bootstrap/Modal";
 import {socket} from "../../socketIO";
 import {getUserWithId} from "../../actions/userActions";
 import moment from "moment";
-import {getPaymentDetailsOfStarTrainer} from "../../actions/paymentActions";
+import {getTicketDetail} from "../../actions/paymentActions";
+import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -67,6 +68,7 @@ function SingleUserORBPage(props) {
   const [user, setUser] = useState({});
   const [fanUid, setFanUid] = useState();
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
 
   const mount = useRef();
 
@@ -232,7 +234,7 @@ function SingleUserORBPage(props) {
   //       console.log("before unload evenet called ", ev);
   //       if (streamObj) {
   //         await dispatch(
-  //           getPaymentDetailsOfStarTrainer(
+  //           getTicketDetail(
   //             streamObj._id,
   //             props.location.state.id
   //           )
@@ -357,15 +359,11 @@ function SingleUserORBPage(props) {
         )
       );
       if (streamObj) {
-        await dispatch(
-          getPaymentDetailsOfStarTrainer(streamObj._id, props.location.state.id)
-        );
+        await dispatch(getTicketDetail(streamObj._id));
       }
     } else {
       if (streamObj) {
-        await dispatch(
-          getPaymentDetailsOfStarTrainer(streamObj._id, props.location.state.id)
-        );
+        await dispatch(getTicketDetail(streamObj._id));
       }
     }
 
@@ -629,12 +627,7 @@ function SingleUserORBPage(props) {
       console.log("orb state........... ", orbState);
       console.log("host.............", hostUser.length, streamObj);
       if (orbState.getLiveStreamData) {
-        await dispatch(
-          getPaymentDetailsOfStarTrainer(
-            orbState.getLiveStreamData._id,
-            props.location.state.id
-          )
-        );
+        await dispatch(getTicketDetail(orbState.getLiveStreamData._id));
         const sessionTime = moment(orbState.getLiveStreamData.createdAt);
         const currentTime = moment();
         const diffTime = currentTime.diff(sessionTime, "seconds");
@@ -687,15 +680,22 @@ function SingleUserORBPage(props) {
 
   useEffect(() => {
     if (paymentState) {
-      if (paymentState.ticketReceipt && paymentState.ticketReceipt["total"]) {
-        if (streamObj) {
-          const sessionTime = moment(streamObj.createdAt);
-          const currentTime = moment();
-          const diffTime = currentTime.diff(sessionTime, "seconds");
-          const timeToDisplay = streamObj.timer - diffTime;
-          setTime(timeToDisplay);
+      console.log("totak field", paymentState.ticketReceipt);
+      if (paymentState.ticketInfo) {
+        if (paymentState.ticketInfo["total"]) {
+          console.log("inside if of get receipt for star and trainer");
+          if (streamObj) {
+            const sessionTime = moment(streamObj.createdAt);
+            const currentTime = moment();
+            const diffTime = currentTime.diff(sessionTime, "seconds");
+            const timeToDisplay = streamObj.timer - diffTime;
+            setTime(timeToDisplay);
+          }
+          setPaid(true);
+          setFreeSessionCompleted(false);
+        } else {
+          setPaid(false);
         }
-        setPaid(true);
       }
     }
   }, [paymentState]);
@@ -703,30 +703,6 @@ function SingleUserORBPage(props) {
   useEffect(async () => {
     console.log("session free is completed", streamObj);
   }, [freeSessionCompleted]);
-
-  useEffect(() => {
-    console.log("paid is true............");
-  }, [paid]);
-
-  const getImage = () => {
-    console.log("fn called");
-    html2canvas(document.querySelector("#capture"), {
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-    }).then(canvas => {
-      let file;
-      canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
-        let fd = new FormData();
-        fd.append("id", localStorage.getItem("id"));
-        fd.append("image", file);
-        fd.append("starName", "starName");
-
-        await dispatch(storeScreenShot(fd));
-      });
-    });
-  };
 
   async function leaveCallFromFan() {
     window.onbeforeunload = null;
@@ -886,6 +862,20 @@ function SingleUserORBPage(props) {
     }
   };
 
+  const showImageModal = () => {
+    setImageModal(true);
+    setShow(false);
+    setShowTip(false);
+    // if (paid) setIsActive(false);
+  };
+
+  const closeImageModal = () => {
+    setImageModal(false);
+    setShow(false);
+    setShowTip(false);
+    // if (paid) setIsActive(true);
+  };
+
   return (
     <div
       style={{
@@ -895,6 +885,7 @@ function SingleUserORBPage(props) {
         marginTop: "-48px",
       }}
       id="capture">
+      {console.log("paid.....", paid)}
       <Modal
         show={show}
         onHide={handleClose}
@@ -920,6 +911,9 @@ function SingleUserORBPage(props) {
               streamObj={streamObj}
               userId={props.location.state.id}
               freeSessionCompleted={freeSessionCompleted}
+              paid={paid}
+              handleClose={handleClose}
+              setFreeSessionCompleted={setFreeSessionCompleted}
             />
           )}
         </Modal.Body>
@@ -935,12 +929,31 @@ function SingleUserORBPage(props) {
             setShow={setShow}
             streamId={streamObj ? streamObj._id : ""}
             userId={props.location.state.id}
-            setPaid={setPaid}
             setShowTip={setShowTip}
             closeTip={closeTip}
+            paid={paid}
+            setTime={setTime}
+            setIsActive={setIsActive}
           />
         ) : null}
       </Modal>
+
+      <Modal
+        show={imageModal}
+        onHide={closeImageModal}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {imageModal ? (
+            <ScreenShotUpload
+              closeImageModal={closeImageModal}
+              imageModal={imageModal}
+            />
+          ) : null}
+        </Modal.Body>
+      </Modal>
+
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -1055,7 +1068,7 @@ function SingleUserORBPage(props) {
                 <p>Seat</p>
               </div>
             </a> */}
-            <a onClick={getImage} style={{cursor: "pointer"}}>
+            <a onClick={showImageModal} style={{cursor: "pointer"}}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>

@@ -9,6 +9,7 @@ import {
   makeOrderPayment,
   makePayment,
   getPaymentDetails,
+  makeOrderEmpty,
 } from "../../actions/paymentActions";
 import moment from "moment";
 
@@ -45,6 +46,7 @@ function PayOrder(props) {
     document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
         dispatch(getPaymentDetails(props.streamId));
+        dispatch(makeOrderEmpty());
         console.log("tab is active");
       } else {
         console.log("tab is inactive");
@@ -62,6 +64,10 @@ function PayOrder(props) {
 
   useEffect(() => {
     if (paymentState) {
+      console.log(
+        "payment state... ",
+        paymentState.paymentResponse && !paymentState.paymentDetail
+      );
       if (paymentState.paymentResponse && !paymentState.paymentDetail) {
         console.log(paymentState.paymentResponse);
         window.open(paymentState.paymentResponse);

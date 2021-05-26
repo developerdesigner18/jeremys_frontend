@@ -44,6 +44,18 @@ const paymentReducer = (state = null, action) => {
         tipList: action.payload,
       };
 
+    case "TICKET_INFO":
+      return {
+        ...state,
+        ticketInfo: action.payload,
+      };
+
+    case "TICKET_PAYMENT":
+      return {
+        ...state,
+        ticketUrl: action.payload,
+      };
+
     default:
       return {
         ...state,

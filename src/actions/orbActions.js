@@ -9,6 +9,7 @@ export const storeScreenShot = data => {
         if (result.status === 200) {
           dispatch({
             type: "STORE_SCREENSHOT",
+            payload: result.data.status,
           });
           swal("Success", "Screen shot saved successfully", "success").then(
             () => window.scrollTo()

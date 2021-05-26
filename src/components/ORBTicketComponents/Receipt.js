@@ -4,7 +4,9 @@ import "../../assets/css/ticket.css";
 
 import {
   getPaymentDetails,
-  getPaymentDetailsOfStarTrainer,
+  getTicketDetail,
+  makeTicketEmpty,
+  makeOrderEmpty,
 } from "../../actions/paymentActions";
 import {removeFan3MinuteCount} from "../../actions/orbActions";
 import moment from "moment";
@@ -22,20 +24,26 @@ function Ticket(props) {
     console.log("props.... ", props);
     if (props.text === "chef/stylist") {
       await dispatch(getPaymentDetails(props.streamId));
+      await dispatch(makeOrderEmpty());
     } else {
-      await dispatch(
-        getPaymentDetailsOfStarTrainer(props.streamId, props.userId)
-      );
+      await dispatch(getTicketDetail(props.streamId));
+      await dispatch(makeTicketEmpty());
     }
   }, []);
 
   useEffect(async () => {
     if (stateData) {
-      if (stateData.ticketReceipt) {
-        console.log("(stateData.ticketReceipt", stateData.ticketReceipt);
-        if (stateData.ticketReceipt["tipAmount"]) {
-        } else {
-          setPaidDetail(stateData.ticketReceipt);
+      console.log(
+        "(stateData.ticketInfo",
+        stateData.ticketInfo,
+        "\nstateData.paymentDetail",
+        stateData.paymentDetail
+      );
+      if (stateData.ticketInfo) {
+        console.log("inside if of tip/total amount");
+        if (stateData.ticketInfo["total"]) {
+          // } else {
+          setPaidDetail(stateData.ticketInfo);
           setloading(true);
           const sessionTime = moment(props.streamObj.createdAt);
           const currentTime = moment();
@@ -52,13 +60,17 @@ function Ticket(props) {
             userId: props.userId,
           };
           await dispatch(removeFan3MinuteCount(dataToPass));
+          // props.setShow(false);
         }
-      } else if (stateData.paymentDetail) {
+      }
+      if (stateData.paymentDetail) {
+        console.log("payment of total order.......");
         setPaidDetail(stateData.paymentDetail);
         setloading(true);
         socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
         socket.emit("getIdForTipAmdTicket", props.streamId);
+        // props.setShow(false);
         props.setFreeSessionCompleted(false);
         const dataToPass = {
           fanId: localStorage.getItem("id"),
@@ -111,13 +123,15 @@ function Ticket(props) {
               Account Name:{" "}
               {paidDetail.fanId.firstName + " " + paidDetail.fanId.lastName}
             </p>
-            <div class="table_down mt-4 d-flex align-items-center">
-              <div>NO.</div>
-              <div>DESCRIPTION</div>
-              <div>PRICE</div>
-              <div>QUANTITY</div>
-              <div>TOTAL</div>
-            </div>
+            {paidDetail.itemsData.length ? (
+              <div class="table_down mt-4 d-flex align-items-center">
+                <div>NO.</div>
+                <div>DESCRIPTION</div>
+                <div>PRICE</div>
+                <div>QUANTITY</div>
+                <div>TOTAL</div>
+              </div>
+            ) : null}
             {paidDetail.itemsData.length ? (
               paidDetail.itemsData.map((data, i) => {
                 return (

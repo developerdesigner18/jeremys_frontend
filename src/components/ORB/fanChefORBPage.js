@@ -27,6 +27,7 @@ import {getUserWithId} from "../../actions/userActions";
 import Tip from "../ORBTicketComponents/Tip";
 import PayOrder from "../ORBTicketComponents/PayOrder";
 import {getPaymentDetails} from "../../actions/paymentActions";
+import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
   const handleClick = e => {
@@ -66,6 +67,7 @@ function FanChefORB(props) {
   const [showTip, setShowTip] = useState(false);
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
   const [exitCalled, setExitCalled] = useState(false);
+  const [imageModal, setImageModal] = useState(false);
   const mount = useRef();
   const handleClose = () => {
     // setTime(pauseTime);
@@ -159,38 +161,6 @@ function FanChefORB(props) {
     return () => clearInterval(interval);
   }, [time, isActive]);
 
-  const getImage = () => {
-    console.log("fn called");
-    // let canvas = document.createElement("canvas");
-    // let ctx = canvas.getContext("2d");
-
-    // //draw image to canvas. scale to target dimensions
-    // console.log("canvas.......... ", ctx);
-    // ctx.drawImage(document.querySelector("#capture1"), 0, 0);
-
-    // //convert to desired file format
-    // let dataURI = canvas.toDataURL("image/jpeg"); // can also use 'image/png'
-    // console.log("datauri ", dataURI);
-    html2canvas(document.querySelector("#capture1"), {
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      useCORS: true,
-    }).then(canvas => {
-      let file;
-      // console.log('canvas',canvas.toBlob());
-      canvas.toBlob(async blob => {
-        file = new File([blob], "fileName.jpg", {type: "image/jpeg"});
-        let fd = new FormData();
-        fd.append("id", localStorage.getItem("id"));
-        fd.append("image", file);
-        fd.append("starName", "starName");
-
-        await dispatch(storeScreenShot(fd));
-      });
-    });
-  };
-
   useEffect(async () => {
     document.documentElement.scrollTop = 0;
     let id, name;
@@ -263,7 +233,11 @@ function FanChefORB(props) {
           });
 
           // Create an audio track from the audio sampled by a microphone.
-          rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+          rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack({
+            AEC: true,
+            AGC: true,
+            ANS: true,
+          });
           setChefRTC(prevState => ({
             ...prevState,
             localAudioTrack: rtc.localAudioTrack,
@@ -277,7 +251,7 @@ function FanChefORB(props) {
           }));
 
           rtc.localVideoTrack.play("local-player");
-          rtc.localAudioTrack.play();
+          // rtc.localAudioTrack.play();
 
           // Publish the local audio and video tracks to the channel.
           await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
@@ -435,8 +409,8 @@ function FanChefORB(props) {
     if (paymentState) {
       if (paymentState.paymentDetail && paymentState.paymentDetail["total"]) {
         setTime(0);
-        // if (exitCalled === false) setShowRating(false);
-        setShowRating(false);
+        if (exitCalled === false) setShowRating(false);
+        // setShowRating(false);
       }
     }
   }, [paymentState]);
@@ -521,6 +495,20 @@ function FanChefORB(props) {
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
   };
 
+  const showImageModal = () => {
+    setImageModal(true);
+    setShow(false);
+    setShowTip(false);
+    // if (paid) setIsActive(false);
+  };
+
+  const closeImageModal = () => {
+    setImageModal(false);
+    setShow(false);
+    setShowTip(false);
+    // if (paid) setIsActive(true);
+  };
+
   return (
     <div
       style={{
@@ -592,11 +580,30 @@ function FanChefORB(props) {
               userId={props.location.state.id}
               streamId={streamDetails ? streamDetails._id : ""}
               setShowTip={setShowTip}
+              closeTip={closeTip}
+              paid={paid}
+              setTime={setTime}
+              setIsActive={setIsActive}
             />
           ) : null}
         </Modal.Body>
       </Modal>
 
+      <Modal
+        show={imageModal}
+        onHide={closeImageModal}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {imageModal ? (
+            <ScreenShotUpload
+              closeImageModal={closeImageModal}
+              imageModal={imageModal}
+            />
+          ) : null}
+        </Modal.Body>
+      </Modal>
       <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
@@ -751,7 +758,7 @@ function FanChefORB(props) {
                 <p>Tip</p>
               </div>
             </a>
-            <a onClick={getImage}>
+            <a onClick={showImageModal}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>

@@ -3,6 +3,7 @@ export const orbReducer = (state = null, action) => {
     case "STORE_SCREENSHOT":
       return {
         ...state,
+        storedValue: action.payload,
       };
     case "STORE_CHEF_ORB_DETAILS":
       return {
