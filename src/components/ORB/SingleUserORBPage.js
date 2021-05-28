@@ -117,7 +117,7 @@ function SingleUserORBPage(props) {
       if (paid) {
         setShow(false);
       } else {
-        setShow(true);
+        if (streamObj && props.location.state.id) setShow(true);
       }
     } else {
       setShow(false);
@@ -261,7 +261,8 @@ function SingleUserORBPage(props) {
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
-      setShowRatingModal(true);
+      // setShowRatingModal(true);
+      leaveCallFromFan();
     }
     return () => clearInterval(interval);
   }, [time, isActive]);

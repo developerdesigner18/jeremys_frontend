@@ -253,7 +253,7 @@ export const makeTipEmpty = () => {
   console.log("make tip empty");
   return dispatch => {
     dispatch({
-      type: "TIP_DETAILS",
+      type: "TICKET_TIP_PAYMENT",
       payload: null,
     });
   };

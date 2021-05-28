@@ -614,7 +614,7 @@ function FanChefORB(props) {
             <div className="timer" style={{color: "#626262"}}>
               {paid ? null : (
                 <>
-                  <p>Timer</p>
+                  <span className="value_name">Timer</span>
                   <p style={{fontWeight: "600"}}>
                     {Math.floor(time / 60) < 10
                       ? "0" + Math.floor(time / 60)

@@ -92,7 +92,7 @@ function Tip(props) {
     }
   }, [tipAmount, loaded]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (paymentState) {
       console.log(
         "paid response.. ",
@@ -118,75 +118,8 @@ function Tip(props) {
         console.log("payment url reponse");
         console.log(paymentState.paidResponse);
         window.open(paymentState.paidResponse);
+        await dispatch(makeTipEmpty());
       }
-
-      // if (paymentState.paidResponse) {
-      //   if (paymentState.ticketReceipt) {
-      //     if (paymentState.ticketReceipt["total"]) {
-      //       console.log(paymentState.paidResponse);
-      //       window.open(paymentState.paidResponse);
-      //     } else {
-      //       settipPaid(true);
-      //       props.setShowTip(false);
-      //     }
-      //   } else {
-      //     console.log(paymentState.paidResponse);
-      //     window.open(paymentState.paidResponse);
-      //   }
-      // }
-      // if (props.type && (props.type == "chef" || props.type == "Chef")) {
-      //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
-      //     console.log(paymentState.paidResponse);
-      //     window.open(paymentState.paidResponse);
-      //   }
-
-      //   if (paymentState.tipDetail !== undefined) {
-      //     if (paymentState.tipDetail === true) {
-      //       settipPaid(paymentState.tipDetail);
-      //       props.setShowTip(true);
-      //       setLoader(true);
-      //     } else {
-      //       settipPaid(paymentState.tipDetail);
-      //       props.setShowTip(paymentState.tipDetail);
-      //       setLoader(paymentState.tipDetail);
-      //     }
-      //   }
-      // } else if (
-      //   props.type &&
-      //   (props.type == "stylist" || props.type == "Stylist")
-      // ) {
-      //   if (paymentState.paidResponse && paymentState.tipDetail === undefined) {
-      //     console.log(paymentState.paidResponse);
-      //     window.open(paymentState.paidResponse);
-      //   }
-
-      //   if (paymentState.tipDetail !== undefined) {
-      //     if (paymentState.tipDetail === true) {
-      //       settipPaid(paymentState.tipDetail);
-      //       props.setShowTip(true);
-      //       setLoader(true);
-      //     } else {
-      //       settipPaid(paymentState.tipDetail);
-      //       props.setShowTip(paymentState.tipDetail);
-      //       setLoader(paymentState.tipDetail);
-      //     }
-      //   }
-      // } else {
-      //   console.log(paymentState.ticketReceipt, paymentState.tipDetail);
-      //   if (paymentState.paidResponse && !paymentState.ticketReceipt) {
-      //     console.log(
-      //       "for star and ticket... ",
-      //       paymentState.paidResponse && !paymentState.ticketReceipt
-      //     );
-      //     console.log(paymentState.paidResponse);
-      //     window.open(paymentState.paidResponse);
-      //   }
-      //   if (paymentState.tipDetail !== undefined) {
-      //     settipPaid(paymentState.tipDetail);
-      //     props.setShowTip(true);
-      //     setLoader(true);
-      //   }
-      // }
     }
   }, [paymentState]);
 
@@ -200,8 +133,7 @@ function Tip(props) {
             props.userId
           )
         );
-        dispatch(getPaymentDetailsOfStarTrainer(props.streamId, props.userId));
-        // dispatch(makeTipEmpty());
+        // dispatch(getPaymentDetailsOfStarTrainer(props.streamId, props.userId));
         console.log("tab is active");
       } else {
         console.log("tab is inactive");
@@ -213,7 +145,7 @@ function Tip(props) {
     if (paymentState) {
       if (paymentState.tipDetail) {
         console.log("tip response..");
-        props.closeTip();
+        // props.closeTip();
         settipPaid(true);
         await dispatch(makeTipEmpty());
         socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
@@ -221,13 +153,17 @@ function Tip(props) {
         socket.emit("getIdForTipAmdTicket", props.streamId);
         if (props.paid) {
           // props.setTime(0);
-          props.closeTip();
+          // props.closeTip();
         } else {
           props.setIsActive(true);
         }
       }
     }
   }, [paymentState && paymentState.tipDetail]);
+
+  useEffect(async () => {
+    await dispatch(makeTipEmpty());
+  }, []);
 
   const callMakePayment = async () => {
     console.log("fn called..");

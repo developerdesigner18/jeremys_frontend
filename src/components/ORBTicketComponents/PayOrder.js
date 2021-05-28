@@ -77,7 +77,7 @@ function PayOrder(props) {
       if (paymentState.paymentDetail) {
         setPaid(true);
         props.setPaid(true);
-        setLoaded(false);
+        // setLoaded(false);
 
         console.log(
           "paymentState.paymentDetail-=-=-=",
@@ -89,7 +89,7 @@ function PayOrder(props) {
 
   let load = false;
   const callMakePayment = async () => {
-    setLoaded(true);
+    // setLoaded(true);
     const dataForAddress = {
       userId: props.userId,
       address: address,
