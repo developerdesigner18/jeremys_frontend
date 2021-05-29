@@ -468,20 +468,22 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "500px",
             }}>
-            <input
-              type="file"
-              onChange={e => Banner1Change(e)}
-              style={{
-                cursor: "pointer",
-                position: "absolute",
-                margin: "0",
-                padding: "0",
-                height: "100%",
-                outline: "none",
-                opacity: "0",
-                width: "44%",
-              }}
-            />
+            {isLive ? null : (
+              <input
+                type="file"
+                onChange={e => Banner1Change(e)}
+                style={{
+                  cursor: isLive ? "none" : "pointer",
+                  position: "absolute",
+                  margin: "0",
+                  padding: "0",
+                  height: "100%",
+                  outline: "none",
+                  opacity: "0",
+                  width: "44%",
+                }}
+              />
+            )}
           </div>
           <div
             className="rectangle_video"
@@ -498,20 +500,22 @@ function ChefORBPage(props) {
               zIndex: "1",
               height: "500px",
             }}>
-            <input
-              type="file"
-              onChange={e => Banner2Change(e)}
-              style={{
-                position: "absolute",
-                margin: "0",
-                padding: "0",
-                height: "100%",
-                outline: "none",
-                cursor: "pointer",
-                opacity: "0",
-                width: "44%",
-              }}
-            />
+            {isLive ? null : (
+              <input
+                type="file"
+                onChange={e => Banner2Change(e)}
+                style={{
+                  position: "absolute",
+                  margin: "0",
+                  padding: "0",
+                  height: "100%",
+                  outline: "none",
+                  cursor: isLive ? "none" : "pointer",
+                  opacity: "0",
+                  width: "44%",
+                }}
+              />
+            )}
           </div>
           <div className="justify-content-center go_live_logo">
             {isLive ? (
@@ -565,24 +569,41 @@ function ChefORBPage(props) {
                   : `url("../assets/images/left-bg4-full.png")`,
               }}>
               <div className="item">
-                <input
-                  type="text"
-                  onChange={e => {
-                    setItem1(e.target.value);
-                  }}
-                  value={item1}
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    color: "rgb(178, 178, 178)",
-                    textAlign: "center",
-                    verticalAlign: "middle",
-                    borderRadius: "34px",
-                    height: "100%",
-                    border: "3px solid #9297a8",
-                    outline: "none",
-                  }}
-                />
+                {isLive ? (
+                  <p
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      color: "rgb(178, 178, 178)",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      borderRadius: "34px",
+                      height: "100%",
+                      border: "3px solid #9297a8",
+                      outline: "none",
+                    }}>
+                    {item1}
+                  </p>
+                ) : (
+                  <input
+                    type="text"
+                    onChange={e => {
+                      setItem1(e.target.value);
+                    }}
+                    value={item1}
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      color: "rgb(178, 178, 178)",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      borderRadius: "34px",
+                      height: "100%",
+                      border: "3px solid #9297a8",
+                      outline: "none",
+                    }}
+                  />
+                )}
               </div>
             </div>
             <div className="price">
@@ -618,20 +639,23 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "250px",
             }}>
-            <input
-              type="file"
-              onChange={e => FoodImageChange(e, "1")}
-              style={{
-                cursor: "pointer",
-                position: "absolute",
-                margin: "0",
-                padding: "0",
-                height: "100%",
-                outline: "none",
-                width: "100%",
-                opacity: "0",
-              }}
-            />
+            {isLive ? null : (
+              <input
+                type="file"
+                onChange={e => FoodImageChange(e, "1")}
+                style={{
+                  cursor: isLive ? "none" : "pointer",
+                  position: "absolute",
+                  margin: "0",
+                  padding: "0",
+                  height: "100%",
+                  outline: "none",
+                  width: "100%",
+                  opacity: "0",
+                }}
+              />
+            )}
+
             <div className="price_item">
               {/* <div className="price">
                 <p style={{ marginTop: "15px" }}>$</p>
@@ -798,20 +822,23 @@ function ChefORBPage(props) {
               cursor: "pointer",
               height: "250px",
             }}>
-            <input
-              type="file"
-              onChange={e => FoodImageChange(e, "2")}
-              style={{
-                cursor: "pointer",
-                position: "absolute",
-                margin: "0",
-                padding: "0",
-                height: "100%",
-                width: "100%",
-                outline: "none",
-                opacity: "0",
-              }}
-            />
+            {isLive ? null : (
+              <input
+                type="file"
+                onChange={e => FoodImageChange(e, "2")}
+                style={{
+                  cursor: isLive ? "none" : "pointer",
+                  position: "absolute",
+                  margin: "0",
+                  padding: "0",
+                  height: "100%",
+                  width: "100%",
+                  outline: "none",
+                  opacity: "0",
+                }}
+              />
+            )}
+
             <div className="price_item">
               {/* <div className="price">
                 <p style={{ marginTop: "15px" }}>$</p>{" "}
@@ -866,24 +893,41 @@ function ChefORBPage(props) {
                   : `url("../assets/images/left-bg4-full.png")`,
               }}>
               <div className="item">
-                <input
-                  type="text"
-                  onChange={e => {
-                    setItem2(e.target.value);
-                  }}
-                  value={item2}
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    color: "rgb(178, 178, 178)",
-                    textAlign: "center",
-                    verticalAlign: "middle",
-                    borderRadius: "34px",
-                    height: "100%",
-                    border: "3px solid #9297a8",
-                    outline: "none",
-                  }}
-                />
+                {isLive ? (
+                  <p
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      color: "rgb(178, 178, 178)",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      borderRadius: "34px",
+                      height: "100%",
+                      border: "3px solid #9297a8",
+                      outline: "none",
+                    }}>
+                    {item2}
+                  </p>
+                ) : (
+                  <input
+                    type="text"
+                    onChange={e => {
+                      setItem2(e.target.value);
+                    }}
+                    value={item2}
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      color: "rgb(178, 178, 178)",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      borderRadius: "34px",
+                      height: "100%",
+                      border: "3px solid #9297a8",
+                      outline: "none",
+                    }}
+                  />
+                )}
               </div>
             </div>
             <div className="price">

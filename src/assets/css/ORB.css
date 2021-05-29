@@ -247,7 +247,7 @@ body {
 } */
 .break_display_text {
   position: absolute;
-  top: 0;
+  top: 80;
   left: 0;
   right: 0;
   bottom: 0;

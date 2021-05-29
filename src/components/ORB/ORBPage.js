@@ -1083,14 +1083,14 @@ function ORBPage(props) {
           <a style={{cursor: "no-drop"}}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/seat.png" />
-              <p>Seat</p>
+              <p>Seats</p>
             </div>
           </a>
         ) : (
           <a style={{cursor: "pointer"}} onClick={showSeatModal}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/seat.png" />
-              <p>Seat</p>
+              <p>Seats</p>
             </div>
           </a>
         )}
@@ -1116,7 +1116,10 @@ function ORBPage(props) {
           onClick={showTimerModal}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
-            <p>Time</p>
+            <p>
+              Show-Time <br />
+              Duration
+            </p>
           </div>
         </a>
         {isLive ? (

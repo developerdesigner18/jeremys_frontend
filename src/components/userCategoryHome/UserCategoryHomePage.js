@@ -245,12 +245,11 @@ function UserCategoryHomePage(props) {
                       localStorage.getItem("type") === "advertiser"
                         ? "10px"
                         : "25px",
-                    // fontSize:
-                    //   (setMobileResponsive &&
-                    //     localStorage.getItem("type") === "Advertiser") ||
-                    //   localStorage.getItem("type") === "advertiser"
-                    //     ? "7px"
-                    //     : "10px",
+                    width:
+                      localStorage.getItem("type") === "star" ||
+                      localStorage.getItem("type") === "Star"
+                        ? "115px"
+                        : "100px",
                   }}>
                   {localStorage.getItem("type") === "Chef" ||
                   localStorage.getItem("type") === "chef"
@@ -266,7 +265,7 @@ function UserCategoryHomePage(props) {
                     ? "Stylist"
                     : localStorage.getItem("type") === "Star" ||
                       localStorage.getItem("type") === "star"
-                    ? "Stage"
+                    ? "Start Stage Set-Up"
                     : localStorage.getItem("type") === "artist" ||
                       localStorage.getItem("type") === "Artist"
                     ? "Stage"
