@@ -581,6 +581,7 @@ function ChefORBPage(props) {
                       height: "100%",
                       border: "3px solid #9297a8",
                       outline: "none",
+                      paddingTop: "70px",
                     }}>
                     {item1}
                   </p>
@@ -924,6 +925,7 @@ function ChefORBPage(props) {
                       height: "100%",
                       border: "3px solid #9297a8",
                       outline: "none",
+                      paddingTop: "70px",
                     }}>
                     {item2}
                   </p>
