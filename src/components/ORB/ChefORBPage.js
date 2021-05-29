@@ -607,21 +607,40 @@ function ChefORBPage(props) {
               </div>
             </div>
             <div className="price">
-              <p style={{marginTop: "15px"}}>$</p>
-              <input
-                type="number"
-                value={`${price}`}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  background: "transparent",
-                  border: "none",
-                  color: "#b2b2b2",
-                  textAlign: "center",
-                  verticalAlign: "middle",
-                  height: "100%",
-                  borderRadius: "100%",
-                }}></input>
+              {isLive ? (
+                <p
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    height: "100%",
+                    borderRadius: "100%",
+                    marginTop: "70px",
+                  }}>
+                  ${`${price}`}
+                </p>
+              ) : (
+                <>
+                  <p style={{marginTop: "15px"}}>$</p>
+                  <input
+                    type="number"
+                    value={`${price}`}
+                    onChange={handleChange}
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      border: "none",
+                      color: "#b2b2b2",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      height: "100%",
+                      borderRadius: "100%",
+                    }}></input>
+                </>
+              )}
             </div>
           </div>
           <div
@@ -931,24 +950,43 @@ function ChefORBPage(props) {
               </div>
             </div>
             <div className="price">
-              <p style={{marginTop: "15px"}}>$</p>{" "}
-              <input
-                type="number"
-                onChange={e => {
-                  setPrice2(e.target.value);
-                }}
-                value={`${price2}`}
-                style={{
-                  width: "100%",
-                  background: "transparent",
-                  border: "none",
-                  color: "#b2b2b2",
-                  textAlign: "center",
-                  verticalAlign: "middle",
-                  height: "100%",
-                  borderRadius: "100%",
-                }}
-              />
+              {isLive ? (
+                <p
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    color: "#b2b2b2",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    height: "100%",
+                    borderRadius: "100%",
+                    marginTop: "70px",
+                  }}>
+                  ${`${price2}`}
+                </p>
+              ) : (
+                <>
+                  <p style={{marginTop: "15px"}}>$</p>{" "}
+                  <input
+                    type="number"
+                    onChange={e => {
+                      setPrice2(e.target.value);
+                    }}
+                    value={`${price2}`}
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      border: "none",
+                      color: "#b2b2b2",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      height: "100%",
+                      borderRadius: "100%",
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
