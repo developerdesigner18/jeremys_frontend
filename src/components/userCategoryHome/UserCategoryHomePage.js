@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../assets/css/fan_homepage.css";
 import Header from "../header/Header";
 import {
@@ -7,14 +7,14 @@ import {
   getFromCommunity,
   getFanList,
 } from "../../actions/userActions";
-import {getFollowers} from "../../actions/followActions";
-import {useSelector, useDispatch} from "react-redux";
+import { getFollowers } from "../../actions/followActions";
+import { useSelector, useDispatch } from "react-redux";
 import Pagination from "react-js-pagination";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -33,8 +33,8 @@ function UserCategoryHomePage(props) {
   const history = useHistory();
   const dispatch = useDispatch();
   const [currentUserdata, setCurrentUserdata] = useState();
-  const stateData = useSelector(state => state.user);
-  const followData = useSelector(state => state.follow);
+  const stateData = useSelector((state) => state.user);
+  const followData = useSelector((state) => state.follow);
   const [Find, setfind] = useState(false);
   const [allFans, setAllFans] = useState([]);
   const [starsFollowers, setstarsFollowers] = useState([]);
@@ -56,7 +56,7 @@ function UserCategoryHomePage(props) {
     setIsOpen(false);
   });
 
-  const handleDragStart = e => {
+  const handleDragStart = (e) => {
     var img = new Image();
     img.src =
       "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
@@ -95,14 +95,14 @@ function UserCategoryHomePage(props) {
   const goToHome = () => {
     props.history.push("/");
   };
-  const handlePageChange = pageNumberpaginate => {
+  const handlePageChange = (pageNumberpaginate) => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     console.log("pageNumberpaginate-=-=-=-==--=", pageNumberpaginate);
     setactivePage(selectedPage);
     setOffset(offset);
   };
-  const handleFollowerPageChange = pageNumberpaginate => {
+  const handleFollowerPageChange = (pageNumberpaginate) => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     setactiveFollowerPage(selectedPage);
@@ -142,8 +142,8 @@ function UserCategoryHomePage(props) {
       });
     }
   };
-  const searchInputChange = value => {
-    var data = allFans.filter(event => {
+  const searchInputChange = (value) => {
+    var data = allFans.filter((event) => {
       return (
         event.lastName.toLowerCase().includes(value.toLowerCase()) ||
         event.firstName.toLowerCase().includes(value.toLowerCase())
@@ -235,7 +235,7 @@ function UserCategoryHomePage(props) {
               <div className="tab2">
                 <button
                   className="tablinks_responsive"
-                  onClick={event => {
+                  onClick={(event) => {
                     openCity(event, "food");
                     goToORB();
                   }}
@@ -251,7 +251,8 @@ function UserCategoryHomePage(props) {
                     //   localStorage.getItem("type") === "advertiser"
                     //     ? "7px"
                     //     : "10px",
-                  }}>
+                  }}
+                >
                   {localStorage.getItem("type") === "Chef" ||
                   localStorage.getItem("type") === "chef"
                     ? "Chefs Table"
@@ -266,10 +267,10 @@ function UserCategoryHomePage(props) {
                     ? "Stylist"
                     : localStorage.getItem("type") === "Star" ||
                       localStorage.getItem("type") === "star"
-                    ? "Stage"
+                    ? "Start Stage Set-Up"
                     : localStorage.getItem("type") === "artist" ||
                       localStorage.getItem("type") === "Artist"
-                    ? "Stage"
+                    ? "Start Stage Set-Up"
                     : ""}
                 </button>
               </div>
@@ -286,7 +287,7 @@ function UserCategoryHomePage(props) {
                           : "https://jeremysLive.com:8000/default/profile.jpg"
                         : "https://jeremysLive.com:8000/default/profile.jpg"
                     }
-                    onError={e => {
+                    onError={(e) => {
                       e.target.onerror = null;
                       e.target.src =
                         "https://jeremysLive.com:8000/default/profile.jpg";
@@ -294,9 +295,13 @@ function UserCategoryHomePage(props) {
                   />
                   <div
                     className="position-relative"
-                    style={{textAlign: "center"}}>
-                    <span style={{textTransform: "capitalize"}}>
-                      <i className="fas fa-heart mr-1" style={{color: "red"}} />{" "}
+                    style={{ textAlign: "center" }}
+                  >
+                    <span style={{ textTransform: "capitalize" }}>
+                      <i
+                        className="fas fa-heart mr-1"
+                        style={{ color: "red" }}
+                      />{" "}
                       FOLLOWERS: {starsFollowers}
                     </span>
                   </div>
@@ -305,10 +310,11 @@ function UserCategoryHomePage(props) {
               <div className="tab3">
                 <button
                   className="meet_greet_tablinks"
-                  onClick={event => {
+                  onClick={(event) => {
                     // openCity(event, "style");
                     goToORB();
-                  }}>
+                  }}
+                >
                   Say Hello!
                 </button>
               </div>
@@ -317,12 +323,13 @@ function UserCategoryHomePage(props) {
             <div id="music" className="tabcontent active">
               <div
                 className="category_empty"
-                style={{height: Find ? "40px" : "20px"}}>
+                style={{ height: Find ? "40px" : "20px" }}
+              >
                 <input
                   type="search"
                   placeholder="Search.."
-                  style={{display: Find ? "block" : "none"}}
-                  onChange={e => searchInputChange(e.target.value)}
+                  style={{ display: Find ? "block" : "none" }}
+                  onChange={(e) => searchInputChange(e.target.value)}
                 />
               </div>
               <div className=" row vids">
@@ -331,8 +338,9 @@ function UserCategoryHomePage(props) {
                     return (
                       <div
                         className="profile_images col-md-3 col-sm-6 "
-                        style={{textAlign: "center"}}
-                        key={i}>
+                        style={{ textAlign: "center" }}
+                        key={i}
+                      >
                         <div>
                           <img
                             className="draggableImg"
@@ -342,7 +350,7 @@ function UserCategoryHomePage(props) {
                                 ? fan.profileImgURl
                                 : "https://jeremysLive.com:8000/default/profile.jpg"
                             }
-                            onError={e => {
+                            onError={(e) => {
                               e.target.onerror = null;
                               e.target.src =
                                 "https://jeremysLive.com:8000/default/profile.jpg";
@@ -362,7 +370,7 @@ function UserCategoryHomePage(props) {
                     );
                   })
                 ) : (
-                  <div style={{marginLeft: "10px"}}>No fans Found</div>
+                  <div style={{ marginLeft: "10px" }}>No fans Found</div>
                 )}
               </div>
               <Pagination
@@ -377,12 +385,13 @@ function UserCategoryHomePage(props) {
             <div id="find" className="tabcontent">
               <div
                 className="category_empty"
-                style={{height: Find ? "40px" : "20px"}}>
+                style={{ height: Find ? "40px" : "20px" }}
+              >
                 <input
                   type="search"
                   placeholder="Search.."
-                  style={{display: Find ? "block" : "none"}}
-                  onChange={e => searchInputChange(e.target.value)}
+                  style={{ display: Find ? "block" : "none" }}
+                  onChange={(e) => searchInputChange(e.target.value)}
                 />
               </div>
               <div className=" row vids">
@@ -391,8 +400,9 @@ function UserCategoryHomePage(props) {
                     return (
                       <div
                         className="profile_images col-md-3 col-sm-6 "
-                        style={{textAlign: "center"}}
-                        key={i}>
+                        style={{ textAlign: "center" }}
+                        key={i}
+                      >
                         <div>
                           <img
                             className="draggableImg"
@@ -402,7 +412,7 @@ function UserCategoryHomePage(props) {
                                 ? fan.profileImgURl
                                 : "https://jeremysLive.com:8000/default/profile.jpg"
                             }
-                            onError={e => {
+                            onError={(e) => {
                               e.target.onerror = null;
                               e.target.src =
                                 "https://jeremysLive.com:8000/default/profile.jpg";
@@ -452,13 +462,14 @@ function UserCategoryHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : {cursor: "pointer"}
+                      : { cursor: "pointer" }
                   }
-                  onClick={event => {
+                  onClick={(event) => {
                     setfind(false);
                     openCity(event, "music");
                     clickOnHome();
-                  }}>
+                  }}
+                >
                   <img src="../assets/images/1.png" />
                 </a>
                 <div className="link_text">Home</div>
@@ -472,13 +483,14 @@ function UserCategoryHomePage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : {cursor: "pointer"}
+                      : { cursor: "pointer" }
                   }
-                  onClick={event => {
+                  onClick={(event) => {
                     openCity(event, "find");
 
                     getAllfans();
-                  }}>
+                  }}
+                >
                   <img src="../assets/images/2.png" />
                 </a>
                 <div className="link_text">Find</div>
@@ -486,11 +498,13 @@ function UserCategoryHomePage(props) {
               <div
                 className="down_links dropup"
                 onClick={() => setMoreIcon()}
-                ref={ref}>
+                ref={ref}
+              >
                 <a
                   data-toggle="dropdown"
                   aria-haspopup="true"
-                  aria-expanded="false">
+                  aria-expanded="false"
+                >
                   <img
                     src="../assets/images/3.png"
                     style={
@@ -500,16 +514,17 @@ function UserCategoryHomePage(props) {
                             cursor: "pointer",
                             borderRadius: "100%",
                           }
-                        : {cursor: "pointer"}
+                        : { cursor: "pointer" }
                     }
                   />
                 </a>
                 <div className="link_text">Settings</div>
-                <div className={menuClass} style={{background: "#333333"}}>
+                <div className={menuClass} style={{ background: "#333333" }}>
                   <ul className="menu_item">
                     <li
                       className="dropdown-item menu more_list"
-                      onClick={() => props.history.push("/profile")}>
+                      onClick={() => props.history.push("/profile")}
+                    >
                       MY PROFILE
                     </li>
                     <li
@@ -520,7 +535,8 @@ function UserCategoryHomePage(props) {
                           userId: localStorage.getItem("id"),
                           isMystory: true,
                         })
-                      }>
+                      }
+                    >
                       MY PAGES AND PLACES
                     </li>
                     <li
@@ -531,7 +547,8 @@ function UserCategoryHomePage(props) {
                           userId: localStorage.getItem("id"),
                           isMystory: true,
                         })
-                      }>
+                      }
+                    >
                       MY CALENDAR
                     </li>
                     <li
@@ -542,7 +559,8 @@ function UserCategoryHomePage(props) {
                           userId: localStorage.getItem("id"),
                           isMystory: true,
                         })
-                      }>
+                      }
+                    >
                       ACCOUNTING LEDGER
                     </li>
                     <li
@@ -553,19 +571,22 @@ function UserCategoryHomePage(props) {
                           userId: localStorage.getItem("id"),
                           isMystory: true,
                         })
-                      }>
+                      }
+                    >
                       MY RATINGS AND REVIEWS
                     </li>
                     <li
                       className="dropdown-item menu more_list"
-                      onClick={() => props.history.push("/termsCondition")}>
+                      onClick={() => props.history.push("/termsCondition")}
+                    >
                       TERMS AND CONDITIONS
                     </li>
                     <li
                       className="dropdown-item menu more_list"
                       onClick={() => {
                         props.history.push("/customerService");
-                      }}>
+                      }}
+                    >
                       CONTACT
                     </li>
                   </ul>
@@ -574,7 +595,8 @@ function UserCategoryHomePage(props) {
               <div
                 className="down_links"
                 onClick={callLogout}
-                style={{cursor: "pointer"}}>
+                style={{ cursor: "pointer" }}
+              >
                 <a>
                   <img src="../assets/images/4.png" />
                 </a>

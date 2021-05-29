@@ -108,7 +108,7 @@ body {
   min-width: 200px;
 }
 .value_container:not(:last-child) {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .ORB_video_live {
   display: block;
@@ -245,9 +245,12 @@ body {
 /* #user-remote-playerlist {
   position: relative;
 } */
+.value_container > p {
+  margin-bottom: 0;
+}
 .break_display_text {
   position: absolute;
-  top: 0;
+  top: 120px;
   left: 0;
   right: 0;
   bottom: 0;
