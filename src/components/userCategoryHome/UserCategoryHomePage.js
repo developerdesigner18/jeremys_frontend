@@ -245,11 +245,12 @@ function UserCategoryHomePage(props) {
                       localStorage.getItem("type") === "advertiser"
                         ? "10px"
                         : "25px",
-                    width:
-                      localStorage.getItem("type") === "star" ||
-                      localStorage.getItem("type") === "Star"
-                        ? "115px"
-                        : "100px",
+                    // fontSize:
+                    //   (setMobileResponsive &&
+                    //     localStorage.getItem("type") === "Advertiser") ||
+                    //   localStorage.getItem("type") === "advertiser"
+                    //     ? "7px"
+                    //     : "10px",
                   }}>
                   {localStorage.getItem("type") === "Chef" ||
                   localStorage.getItem("type") === "chef"
@@ -268,7 +269,7 @@ function UserCategoryHomePage(props) {
                     ? "Start Stage Set-Up"
                     : localStorage.getItem("type") === "artist" ||
                       localStorage.getItem("type") === "Artist"
-                    ? "Stage"
+                    ? "Start Stage Set-Up"
                     : ""}
                 </button>
               </div>

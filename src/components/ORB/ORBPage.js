@@ -1117,8 +1117,7 @@ function ORBPage(props) {
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>
-              Show-Time <br />
-              Duration
+              Show Time <br /> Duration
             </p>
           </div>
         </a>
