@@ -249,7 +249,19 @@ function ORBPage(props) {
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
       }));
-      // rtc.localAudioTrack.setVolume(18);
+      AgoraRTC.onMicrophoneChanged = async changedDevice => {
+        // When plugging in a device, switch to a device that is newly plugged in.
+        if (changedDevice.state === "ACTIVE") {
+          rtc.localAudioTrack.setDevice(changedDevice.device.deviceId);
+          // Switch to an existing device when the current device is unplugged.
+        } else if (
+          changedDevice.device.label === rtc.localAudioTrack.getTrackLabel()
+        ) {
+          const oldMicrophones = await AgoraRTC.getMicrophones();
+          oldMicrophones[0] &&
+            rtc.localAudioTrack.setDevice(oldMicrophones[0].deviceId);
+        }
+      };
 
       // Create a video track from the video captured by a camera.
       rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
