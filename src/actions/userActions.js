@@ -2,10 +2,10 @@ import axios from "axios";
 import swal from "sweetalert";
 
 export const registration = (data, props) => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/signup`, data)
-      .then(result => {
+      .then((result) => {
         if (result.data.success === true) {
           dispatch({
             type: "SIGN_UP",
@@ -35,7 +35,7 @@ export const registration = (data, props) => {
           );
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("error ", err);
         swal("Error!", err.toString(), "error");
       });
@@ -43,10 +43,10 @@ export const registration = (data, props) => {
 };
 
 export const login = (data, props) => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/signin`, data)
-      .then(result => {
+      .then((result) => {
         if (result.data.success === true) {
           dispatch({
             type: "SIGN_IN",
@@ -62,20 +62,20 @@ export const login = (data, props) => {
             result.data.data.type === "Admin" ||
             data.type === "admin"
           ) {
-            props.history.push("/admin/", {type: result.data.type});
+            props.history.push("/admin/dashboard", { type: result.data.type });
           } else {
-            props.history.push("/userHomepage", {type: result.data.type});
+            props.history.push("/userHomepage", { type: result.data.type });
           }
         } else {
           swal("!Oops", result.data.message, "error");
         }
       })
-      .catch(err => swal("Error!", err.toString(), "error"));
+      .catch((err) => swal("Error!", err.toString(), "error"));
   };
 };
 
 export const getUser = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get(
         `${
@@ -87,7 +87,7 @@ export const getUser = () => {
           },
         }
       )
-      .then(result => {
+      .then((result) => {
         if (result.status === 201) {
           dispatch({
             type: "GET_USER",
@@ -97,19 +97,19 @@ export const getUser = () => {
           console.log("error while retriving api ", result);
         }
       })
-      .catch(error => console.log("error in get user api ", error));
+      .catch((error) => console.log("error in get user api ", error));
   };
 };
 
-export const updateProfile = data => {
-  return dispatch => {
+export const updateProfile = (data) => {
+  return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/user/updateProfile`, data, {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
-      .then(result => {
+      .then((result) => {
         if (result.status === 200) {
           dispatch({
             type: "UPDATE_PROFILE",
@@ -129,12 +129,12 @@ export const updateProfile = data => {
           );
         }
       })
-      .catch(err => console.log("error ", err));
+      .catch((err) => console.log("error ", err));
   };
 };
 
-export const forgotPassword = data => {
-  return dispatch => {
+export const forgotPassword = (data) => {
+  return (dispatch) => {
     swal({
       title: "processing...",
       text: "Plase wait for some time",
@@ -145,7 +145,7 @@ export const forgotPassword = data => {
     });
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/forgetpassword`, data)
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
@@ -168,17 +168,17 @@ export const forgotPassword = data => {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         swal("oops!", err.toString(), "error");
       });
   };
 };
 
-export const resetPassword = data => {
-  return dispatch => {
+export const resetPassword = (data) => {
+  return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/resetpassword`, data)
-      .then(result => {
+      .then((result) => {
         if (result.status === 200) {
           dispatch({
             type: "RESET_PASSWORD",
@@ -188,33 +188,33 @@ export const resetPassword = data => {
           );
         }
       })
-      .catch(err => {
+      .catch((err) => {
         swal("Error", err.toString());
       });
   };
 };
 
-export const logout = data => {
-  return dispatch => {
+export const logout = (data) => {
+  return (dispatch) => {
     axios
       .patch(`${process.env.REACT_APP_API_URL}auth/logout`, data)
-      .then(result => {
+      .then((result) => {
         if (result.status === 200) {
           dispatch({
             type: "LOGOUT",
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         swal("Error", err.toString());
       });
   };
 };
 
-export const getUserWithId = data => dispatch => {
+export const getUserWithId = (data) => (dispatch) => {
   axios
     .get(`${process.env.REACT_APP_API_URL}auth/getUserWithId?id=${data}`)
-    .then(result => {
+    .then((result) => {
       if (result.status === 200) {
         dispatch({
           type: "USER_INFO",
@@ -222,18 +222,18 @@ export const getUserWithId = data => dispatch => {
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("error in get user with id", err);
       swal("Error", err.toString());
     });
 };
 
-export const deactivateUserAccount = data => {
-  return dispatch => {
+export const deactivateUserAccount = (data) => {
+  return (dispatch) => {
     console.log("fn called ", data);
     axios
       .post(`${process.env.REACT_APP_API_URL}auth/accountDeactivation`, data)
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.status === 200) {
           dispatch({
@@ -249,7 +249,7 @@ export const deactivateUserAccount = data => {
           swal("Error", "Something went wrong!", "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
       });
   };
@@ -274,7 +274,7 @@ export const addInterest = (
 
   console.log("fitnessChoices-=-=-=-", fitnessChoices);
 
-  return dispatch => {
+  return (dispatch) => {
     // http://localhost:8000/
     axios
       .post(
@@ -293,7 +293,7 @@ export const addInterest = (
           },
         }
       )
-      .then(res => {
+      .then((res) => {
         console.log("response add Interes.....", res.data);
         let message = res.data.message.toString();
         // console.log("message-=-=", message.toString());
@@ -316,18 +316,18 @@ export const addInterest = (
           swal("", message.charAt(0).toUpperCase() + message.slice(1), "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
         // swal("Error", error.response.data.message, "error");
       });
   };
 };
 
-export const storeContactUs = data => {
-  return dispatch => {
+export const storeContactUs = (data) => {
+  return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/contact/storeContactUs`, data)
-      .then(result => {
+      .then((result) => {
         console.log("result of api ", result);
         if (result.status === 200) {
           dispatch({
@@ -347,21 +347,21 @@ export const storeContactUs = data => {
           );
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error........", error);
       });
   };
 };
 
 export const getAllFans = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get(`${process.env.REACT_APP_API_URL}api/user/getAllFans`, {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
-      .then(result => {
+      .then((result) => {
         console.log("result of api ", result);
         if (result.status === 200) {
           dispatch({
@@ -371,21 +371,21 @@ export const getAllFans = () => {
           console.log("result DATA of api -=-==--==-=-=", result.data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error........", error);
       });
   };
 };
 
 export const getAllFollower = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get(
         `${
           process.env.REACT_APP_API_URL
         }api/community/getMyFollowers/${localStorage.getItem("id")}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result of api get all followers ", result);
         if (result.status === 200) {
           dispatch({
@@ -395,14 +395,14 @@ export const getAllFollower = () => {
           console.log("result DATA of api -=-==--==-=-=", result.data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error........", error);
       });
   };
 };
 
 export const getAllArtists = (category, subCategory) => {
-  return dispatch => {
+  return (dispatch) => {
     let type;
     if (category == "music") {
       type = "star";
@@ -426,7 +426,7 @@ export const getAllArtists = (category, subCategory) => {
           },
         }
       )
-      .then(result => {
+      .then((result) => {
         // console.log("result of api ", result);
         if (result.status === 200) {
           dispatch({
@@ -439,13 +439,13 @@ export const getAllArtists = (category, subCategory) => {
           // );
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error........", error);
       });
   };
 };
 
-export const getFromCommunity = (category, subCategory) => dispatch => {
+export const getFromCommunity = (category, subCategory) => (dispatch) => {
   console.log("get from community parameter ", category, subCategory);
   let type;
   if (category == "music") {
@@ -463,7 +463,7 @@ export const getFromCommunity = (category, subCategory) => dispatch => {
       type: type,
       subCategory: subCategory,
     })
-    .then(res => {
+    .then((res) => {
       // console.log("response for getFromCommunity=-=-=-", res.data);
       if (res.data.success == true) {
         dispatch({
@@ -477,7 +477,7 @@ export const getFromCommunity = (category, subCategory) => dispatch => {
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       dispatch({
         type: "GET_FROM_COMMUNITY_ERROR",
         payload: err.response.data,
@@ -488,13 +488,13 @@ export const getFromCommunity = (category, subCategory) => dispatch => {
       // );
     });
 };
-export const addToCommunity = communityId => dispatch => {
+export const addToCommunity = (communityId) => (dispatch) => {
   axios
     .post(`${process.env.REACT_APP_API_URL}api/community/addToCommunity`, {
       userId: localStorage.getItem("id"),
       communityId: communityId,
     })
-    .then(res => {
+    .then((res) => {
       if (res.data.success == true) {
         dispatch({
           type: "ADD_TO_COMMUNITY_SUCCESS",
@@ -510,7 +510,7 @@ export const addToCommunity = communityId => dispatch => {
         swal("", res.data.message, "warning");
       }
     })
-    .catch(err => {
+    .catch((err) => {
       dispatch({
         type: "ADD_TO_COMMUNITY_ERROR",
         payload: err.response.data.message,
@@ -520,13 +520,13 @@ export const addToCommunity = communityId => dispatch => {
       // console.log("Err response for addToCommunity-=-=-=-=", err.response.data);
     });
 };
-export const removeFromCommunity = communityId => dispatch => {
+export const removeFromCommunity = (communityId) => (dispatch) => {
   axios
     .post(`${process.env.REACT_APP_API_URL}api/community/removeFromCommunity`, {
       userId: localStorage.getItem("id"),
       communityId: communityId,
     })
-    .then(res => {
+    .then((res) => {
       if (res.data.success == true) {
         dispatch({
           type: "REMOVE_FROM_COMMUNITY_SUCCESS",
@@ -542,7 +542,7 @@ export const removeFromCommunity = communityId => dispatch => {
       }
       // console.log("response for remveFromCommunity=-=-=-", res.data);
     })
-    .catch(err => {
+    .catch((err) => {
       dispatch({
         type: "REMOVE_FROM_COMMUNITY_ERROR",
         payload: err.response.data.message,
@@ -556,15 +556,15 @@ export const removeFromCommunity = communityId => dispatch => {
     });
 };
 
-export const hideTheStory = data => {
-  return dispatch => {
+export const hideTheStory = (data) => {
+  return (dispatch) => {
     console.log("hideTheStory ", data);
     axios
       .post(
         `${process.env.REACT_APP_API_URL}api/user/setScreenShotPrivate`,
         data
       )
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
@@ -576,18 +576,18 @@ export const hideTheStory = data => {
           swal("Error", result.data.message, "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
       });
   };
 };
 
-export const hideReview = data => {
-  return dispatch => {
+export const hideReview = (data) => {
+  return (dispatch) => {
     console.log("hideTheStory ", data);
     axios
       .post(`${process.env.REACT_APP_API_URL}api/reviews/updateHide`, data)
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
@@ -598,18 +598,18 @@ export const hideReview = data => {
           swal("Error", result.data.message, "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
       });
   };
 };
 
-export const getReviewOfFan = data => {
-  return dispatch => {
+export const getReviewOfFan = (data) => {
+  return (dispatch) => {
     console.log("getFanReviews ", data);
     axios
       .get(`${process.env.REACT_APP_API_URL}api/reviews/getFanReviews/${data}`)
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
@@ -620,20 +620,20 @@ export const getReviewOfFan = data => {
           swal("Error", result.data.message, "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
       });
   };
 };
 
-export const getReviewOfArtist = data => {
-  return dispatch => {
+export const getReviewOfArtist = (data) => {
+  return (dispatch) => {
     console.log("getArtistReviews ", data);
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/reviews/getArtistReviews/${data}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result ", result);
         if (result.data.success === true) {
           dispatch({
@@ -644,21 +644,21 @@ export const getReviewOfArtist = data => {
           swal("Error", result.data.message, "error");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in api ", error);
       });
   };
 };
 
 export const getFanList = () => {
-  return dispatch => {
+  return (dispatch) => {
     axios
       .get(
         `${
           process.env.REACT_APP_API_URL
         }api/community/getFanList?id=${localStorage.getItem("id")}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result of get fan list ", result.data);
         if (result.data.success) {
           dispatch({
@@ -667,12 +667,12 @@ export const getFanList = () => {
           });
         }
       })
-      .catch(error => console.log("error get fan list ", error));
+      .catch((error) => console.log("error get fan list ", error));
   };
 };
 
-export const checkUserInCommunity = userId => {
-  return dispatch => {
+export const checkUserInCommunity = (userId) => {
+  return (dispatch) => {
     console.log(
       "checkUserInCommunity fn called...............",
       `${
@@ -689,7 +689,7 @@ export const checkUserInCommunity = userId => {
           "id"
         )}&userId=${userId}`
       )
-      .then(result => {
+      .then((result) => {
         console.log("result.data.. ", result.data);
         if (result.data.code === 200) {
           dispatch({
@@ -704,23 +704,23 @@ export const checkUserInCommunity = userId => {
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error in check user in community ", error);
       });
   };
 };
 
-export const storeUserAddress = data => {
-  return dispatch => {
+export const storeUserAddress = (data) => {
+  return (dispatch) => {
     axios
       .put(`${process.env.REACT_APP_API_URL}api/user/storeAddress`, data)
-      .then(result => {
+      .then((result) => {
         if (result.data.code === 200) {
           dispatch({
             type: "STORE_ADDRESS",
           });
         }
       })
-      .catch(err => console.log("error instoring.. ", err));
+      .catch((err) => console.log("error instoring.. ", err));
   };
 };
