@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/ticket.css";
 
 import {
@@ -8,13 +8,13 @@ import {
   makeTicketEmpty,
   makeOrderEmpty,
 } from "../../actions/paymentActions";
-import {removeFan3MinuteCount} from "../../actions/orbActions";
+import { removeFan3MinuteCount } from "../../actions/orbActions";
 import moment from "moment";
 import socketIOClient from "socket.io-client";
 
 function Ticket(props) {
   const dispatch = useDispatch();
-  const stateData = useSelector(state => state.payment);
+  const stateData = useSelector((state) => state.payment);
 
   const [paidDetail, setPaidDetail] = useState({});
   const [loading, setloading] = useState(false);
@@ -63,7 +63,7 @@ function Ticket(props) {
           // props.setShow(false);
         }
       }
-      if (stateData.paymentDetail) {
+      if (stateData.paymentDetail != null) {
         console.log("payment of total order.......");
         setPaidDetail(stateData.paymentDetail);
         setloading(true);
@@ -71,7 +71,12 @@ function Ticket(props) {
 
         socket.emit("getIdForTipAmdTicket", props.streamId);
         // props.setShow(false);
-        props.setFreeSessionCompleted(false);
+        if (
+          localStorage.getItem("type") === "fan" ||
+          localStorage.getItem("type") === "Fan"
+        ) {
+          props.setFreeSessionCompleted(false);
+        }
         const dataToPass = {
           fanId: localStorage.getItem("id"),
           userId: props.userId,
@@ -94,7 +99,7 @@ function Ticket(props) {
             onClick={() => {
               props.setShow(false);
             }}
-            style={{zIndex: "1", padding: "5px"}}
+            style={{ zIndex: "1", padding: "5px" }}
           />
         </div>
         {loading ? (

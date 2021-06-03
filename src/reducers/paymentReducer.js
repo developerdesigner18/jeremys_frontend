@@ -17,6 +17,11 @@ const paymentReducer = (state = null, action) => {
         ...state,
         paymentDetail: action.payload,
       };
+    case "GET_PAYMENT_ERROR":
+      return {
+        ...state,
+        paymentDetail: null,
+      };
 
     case "GET_TICKET_PAYMENT":
       return {

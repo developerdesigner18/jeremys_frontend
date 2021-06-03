@@ -608,7 +608,7 @@ function TrainerORBPage(props) {
   }, [stateUser]);
 
   let encodedURL = encodeURI(
-    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+    `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
 
   const callShortBreak = async () => {
