@@ -71,6 +71,7 @@ function ORBPage(props) {
     localVideoTrack: null,
   });
   const [fansFromQ, setFansFromQ] = useState([]);
+  const [fansWithR, setFansWithR] = useState([]);
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -109,6 +110,10 @@ function ORBPage(props) {
       console.log("data from tip ticket event", data);
       setTipRatio(data.tip);
       setTicketSold(data.soldTicket);
+    });
+
+    socket.on("getFanRValue", data => {
+      setFansWithR(data);
     });
 
     window.addEventListener("beforeunload", async ev => {
@@ -324,7 +329,13 @@ function ORBPage(props) {
             });
           }
           if (mediaType === "audio") {
-            // user.audioTrack.play();
+            if (fansWithR.length) {
+              for (let info of fansWithR) {
+                if (info === user.uid) {
+                  user.audioTrack.play();
+                }
+              }
+            }
           } else {
             rtc.client.on("media-reconnect-start", uid => {
               // console.log("media-reconnect-start event called.............", uid);
@@ -936,15 +947,18 @@ function ORBPage(props) {
             localStorage.getItem("type") === "Star" ? (
               isMute ? (
                 <img
-                  src="../assets/images/r_image.png"
+                  src="../assets/images/Background_r.png"
                   onClick={callRoarFunction}
+                  height="130"
+                  width="130"
+                  className="rimage_style"
                 />
               ) : (
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
-                  height="120"
-                  width="120"
+                  // height="120"
+                  // width="120"
                 />
               )
             ) : localStorage.getItem("type") === "trainer" ||

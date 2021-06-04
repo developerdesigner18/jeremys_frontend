@@ -37,10 +37,12 @@ function PayOrder(props) {
   const [check2, setCheck2] = useState(true);
   const [paid, setPaid] = useState(false);
   const [address, setAddress] = useState("");
+  const [fanDetail, setFanDetail] = useState(props.userInfo);
 
   const paypalRef = useRef();
 
   useEffect(async () => {
+    console.log("props... ", props);
     await dispatch(getUserWithId(props.userId));
 
     document.addEventListener("visibilitychange", event => {
@@ -349,13 +351,13 @@ function PayOrder(props) {
           </div>
           <button class="reciept_button mb-3">ORDER TOTAL</button>
           <p class="mb-1">BILLED TO:</p>
-          <p>{props.userInfo.firstName + " " + props.userInfo.lastName}</p>
+          <p>{fanDetail.firstName + " " + fanDetail.lastName}</p>
           <div>
             <input
               type="text"
               style={{width: "300px"}}
               placeholder="Enter the address"
-              defaultValue={props.userInfo.startAddress}
+              defaultValue={fanDetail.startAddress}
               onChange={e => setAddress(e.target.value)}
             />
           </div>

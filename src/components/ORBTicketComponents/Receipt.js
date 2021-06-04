@@ -71,7 +71,12 @@ function Ticket(props) {
 
         socket.emit("getIdForTipAmdTicket", props.streamId);
         // props.setShow(false);
-        props.setFreeSessionCompleted(false);
+        if (
+          localStorage.getItem("type") === "fan" ||
+          localStorage.getItem("type") === "Fan"
+        ) {
+          props.setFreeSessionCompleted(false);
+        }
         const dataToPass = {
           fanId: localStorage.getItem("id"),
           userId: props.userId,

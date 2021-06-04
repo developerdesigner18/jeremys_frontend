@@ -225,7 +225,11 @@ export const getTicketDetail = data => {
   return dispatch => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}api/payment/getTicketForWeb?streamId=${data}`
+        `${
+          process.env.REACT_APP_API_URL
+        }api/payment/getTicketForWeb?streamId=${data}&fanId=${localStorage.getItem(
+          "id"
+        )}`
       )
       .then(result => {
         if (result.data.code === 200) {

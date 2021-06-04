@@ -523,7 +523,7 @@ function UserCategoryHomePage(props) {
                       }>
                       MY PAGES AND PLACES
                     </li>
-                    <li
+                    {/* <li
                       className="dropdown-item menu more_list"
                       onClick={() =>
                         history.push("/myCalendar", {
@@ -533,7 +533,7 @@ function UserCategoryHomePage(props) {
                         })
                       }>
                       MY CALENDAR
-                    </li>
+                    </li> */}
                     <li
                       className="dropdown-item menu more_list"
                       onClick={() =>

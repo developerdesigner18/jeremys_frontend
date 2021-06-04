@@ -7,7 +7,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import swal from "sweetalert";
-import {useHistory} from "react-router-dom";
+import {useHistory, Prompt} from "react-router-dom";
 import AddRating from "../Rating/AddRating";
 import {
   storeScreenShot,
@@ -112,7 +112,12 @@ function SingleUserORBPage(props) {
   const [showTip, setShowTip] = useState(false);
 
   const handleClose = () => {
-    console.log("session completed value.. ", freeSessionCompleted, paid);
+    console.log(
+      "session completed value.. ",
+      freeSessionCompleted,
+      paid,
+      isActive
+    );
     if (freeSessionCompleted) {
       if (paid) {
         setShow(false);
@@ -121,8 +126,9 @@ function SingleUserORBPage(props) {
       }
     } else {
       setShow(false);
+      setIsActive(true);
     }
-    setIsActive(true);
+    // setIsActive(true);
   };
   const handleShow = () => {
     setShow(true);
@@ -130,130 +136,119 @@ function SingleUserORBPage(props) {
     if (!paid && streamObj && streamObj.price !== 0) setIsActive(false);
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     "use effect with free session state called!!!!!!!!!!",
-  //     freeSessionCompleted
-  //   );
-  //   setShow(true);
-  // }, [freeSessionCompleted]);
-
-  // useEffect(async () => {
-  //   socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-  //   console.log("props type... ", props.match.path, window.location.pathname);
-  //   await dispatch(getUserWithId(localStorage.getItem("id")));
-
-  //   socketIO.emit("storeLiveFans", localStorage.getItem("id"));
-
-  //   if (
-  //     "star" == props.location.state.type ||
-  //     "Star" == props.location.state.type
-  //   ) {
-  //     socketIO.on("getRvalue", data => {
-  //       console.log("r value data.. ", data);
-
-  //       data.forEach(async value => {
-  //         if (value.userId == props.location.state.id) {
-  //           setRvalue(value.rValue);
-
-  //           // if (value.rValue === false) {
-  //           //   if (fanRTC.localAudioTrack)
-  //           //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
-  //           //   rtc.localAudioTrack.setEnabled(value.rValue);
-  //           // }
-  //         }
-  //       });
-  //     });
-  //   } else if (
-  //     "trainer" == props.location.state.type ||
-  //     "Trainer" == props.location.state.type
-  //   ) {
-  //     socketIO.on("getPassedQValue", async data => {
-  //       console.log("data from q... ", data);
-
-  //       if (
-  //         data.userId === props.location.state.id &&
-  //         data.fanId === localStorage.getItem("id")
-  //       ) {
-  //         setQvalue(data.qValue);
-
-  //         if (data.qValue) {
-  //           rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-  //           setFanRTC(prevState => ({
-  //             ...prevState,
-  //             localAudioTrack: rtc.localAudioTrack,
-  //           }));
-  //         }
-  //       }
-  //     });
-
-  //     socketIO.on("remainingFans", async data => {
-  //       console.log("remaining fans.........", data);
-
-  //       if (
-  //         data[props.location.state.id] &&
-  //         data[props.location.state.id].length
-  //       ) {
-  //         for (let user of data[props.location.state.id]) {
-  //           if (user.fanObj.id !== localStorage.getItem("id")) {
-  //             if (fanRTC.localAudioTrack) {
-  //               await fanRTC.localAudioTrack.setEnabled(false);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     });
-  //   }
-
-  //   socketIO.on("getShortBreakValue", data => {
-  //     console.log("short break data...", data);
-
-  //     const foundUser = data.find(
-  //       ({userId}) => userId === props.location.state.id
-  //     );
-  //     if (foundUser) {
-  //       setHostBreak(foundUser.breakValue);
-  //     }
-  //   });
-
-  //   document.documentElement.scrollTop = 0;
-  //   await dispatch(getLiveStream(props.location.state.id));
-
-  //   await dispatch(
-  //     getFanJoined3MinuteCount(
-  //       props.location.state.id,
-  //       localStorage.getItem("id")
-  //     )
-  //   );
-
-  //   if (
-  //     props.match.path === "/fanORB" ||
-  //     window.location.pathname === "/fanORB"
-  //   ) {
-  //     window.addEventListener("beforeunload", async ev => {
-  //       console.log("before unload evenet called ", ev);
-  //       if (streamObj) {
-  //         await dispatch(
-  //           getTicketDetail(
-  //             streamObj._id,
-  //             props.location.state.id
-  //           )
-  //         );
-  //       }
-
-  //       await leaveCallFromFan();
-
-  //       ev.returnValue =
-  //         "Live streaming will be closed. Sure you want to leave?";
-  //       return ev.returnValue;
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    //   console.log(
+    //     "use effect with free session state called!!!!!!!!!!",
+    //     freeSessionCompleted
+    //   );
+    //   setShow(true);
+    // }, [freeSessionCompleted]);
+    // useEffect(async () => {
+    //   socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+    //   console.log("props type... ", props.match.path, window.location.pathname);
+    //   await dispatch(getUserWithId(localStorage.getItem("id")));
+    //   socketIO.emit("storeLiveFans", localStorage.getItem("id"));
+    //   if (
+    //     "star" == props.location.state.type ||
+    //     "Star" == props.location.state.type
+    //   ) {
+    //     socketIO.on("getRvalue", data => {
+    //       console.log("r value data.. ", data);
+    //       data.forEach(async value => {
+    //         if (value.userId == props.location.state.id) {
+    //           setRvalue(value.rValue);
+    //           // if (value.rValue === false) {
+    //           //   if (fanRTC.localAudioTrack)
+    //           //     await fanRTC.localAudioTrack.setEnabled(value.rValue);
+    //           //   rtc.localAudioTrack.setEnabled(value.rValue);
+    //           // }
+    //         }
+    //       });
+    //     });
+    //   } else if (
+    //     "trainer" == props.location.state.type ||
+    //     "Trainer" == props.location.state.type
+    //   ) {
+    //     socketIO.on("getPassedQValue", async data => {
+    //       console.log("data from q... ", data);
+    //       if (
+    //         data.userId === props.location.state.id &&
+    //         data.fanId === localStorage.getItem("id")
+    //       ) {
+    //         setQvalue(data.qValue);
+    //         if (data.qValue) {
+    //           rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    //           setFanRTC(prevState => ({
+    //             ...prevState,
+    //             localAudioTrack: rtc.localAudioTrack,
+    //           }));
+    //         }
+    //       }
+    //     });
+    //     socketIO.on("remainingFans", async data => {
+    //       console.log("remaining fans.........", data);
+    //       if (
+    //         data[props.location.state.id] &&
+    //         data[props.location.state.id].length
+    //       ) {
+    //         for (let user of data[props.location.state.id]) {
+    //           if (user.fanObj.id !== localStorage.getItem("id")) {
+    //             if (fanRTC.localAudioTrack) {
+    //               await fanRTC.localAudioTrack.setEnabled(false);
+    //             }
+    //           }
+    //         }
+    //       }
+    //     });
+    //   }
+    //   socketIO.on("getShortBreakValue", data => {
+    //     console.log("short break data...", data);
+    //     const foundUser = data.find(
+    //       ({userId}) => userId === props.location.state.id
+    //     );
+    //     if (foundUser) {
+    //       setHostBreak(foundUser.breakValue);
+    //     }
+    //   });
+    //   document.documentElement.scrollTop = 0;
+    //   await dispatch(getLiveStream(props.location.state.id));
+    //   await dispatch(
+    //     getFanJoined3MinuteCount(
+    //       props.location.state.id,
+    //       localStorage.getItem("id")
+    //     )
+    //   );
+    //   if (
+    //     props.match.path === "/fanORB" ||
+    //     window.location.pathname === "/fanORB"
+    //   ) {
+    // window.addEventListener("beforeunload", async ev => {
+    //   console.log("before unload evenet called ", ev);
+    //   if (freeSessionCompleted) {
+    //     if (fanRTC.client && fanRTC.localVideoTrack) {
+    //       fanRTC.localVideoTrack.close();
+    //       // Leave the channel.
+    //       await fanRTC.client.leave();
+    //     }
+    //     if (fanRTC.localAudioTrack) {
+    //       fanRTC.localAudioTrack.close();
+    //     }
+    //     const dataToPass = {
+    //       fanId: localStorage.getItem("id"),
+    //       userId: props.location.state.id,
+    //     };
+    //     await dispatch(removedJoinFan(dataToPass));
+    //   }
+    //   ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
+    //   return ev.returnValue;
+    // });
+    //   }
+  });
 
   useEffect(() => {
     let interval = null;
 
-    // console.log("time and isactive.....", time, isActive);
+    console.log("time and isactive.....", time, isActive);
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -372,7 +367,6 @@ function SingleUserORBPage(props) {
       console.log("component will unmount called ", paid);
       // Destroy the local audio and video tracks.
 
-      // socketIO.disconnect();
       if (fanRTC.client && fanRTC.localVideoTrack) {
         fanRTC.localVideoTrack.close();
 
@@ -701,10 +695,6 @@ function SingleUserORBPage(props) {
     }
   }, [paymentState]);
 
-  useEffect(async () => {
-    console.log("session free is completed", streamObj);
-  }, [freeSessionCompleted]);
-
   async function leaveCallFromFan() {
     window.onbeforeunload = null;
     console.log("leave call fn called in fan orb page of star/trainer", paid);
@@ -825,6 +815,15 @@ function SingleUserORBPage(props) {
       },
     };
     socketIO.emit("storeQvalue", dataToPass);
+    if (fanRTC.localAudioTrack) {
+      await fanRTC.localAudioTrack.setEnabled(true);
+    } else {
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      setFanRTC(prevState => ({
+        ...prevState,
+        localAudioTrack: rtc.localAudioTrack,
+      }));
+    }
   };
 
   const shareOnFB = () => {
@@ -847,6 +846,9 @@ function SingleUserORBPage(props) {
 
   const onRclick = async () => {
     if (rValue) {
+      socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+      socketIO.emit("passFanUIDForR", fanUid);
+
       if (fanRTC.localAudioTrack) {
         await fanRTC.localAudioTrack.setEnabled(rValue);
       } else {
@@ -886,6 +888,30 @@ function SingleUserORBPage(props) {
         marginTop: "-48px",
       }}
       id="capture">
+      <Prompt
+        message={(location, action) => {
+          if (action === "POP") {
+            console.log("Backing up...");
+            // Add your back logic here
+            if (fanRTC.client && fanRTC.localVideoTrack) {
+              fanRTC.localVideoTrack.close();
+
+              // Leave the channel.
+              fanRTC.client.leave();
+            }
+            if (fanRTC.localAudioTrack) {
+              fanRTC.localAudioTrack.close();
+            }
+            const dataToPass = {
+              fanId: localStorage.getItem("id"),
+              userId: props.location.state.id,
+            };
+            dispatch(removedJoinFan(dataToPass));
+          }
+
+          return true;
+        }}
+      />
       {console.log("paid.....", paid)}
       <Modal
         show={show}
@@ -1021,15 +1047,20 @@ function SingleUserORBPage(props) {
           <div className="r_image">
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
-              <div onClick={() => callQFunction()}>
-                <img src="../assets/images/Qcolor.png" className="m-0" />
+              <div>
+                <img
+                  src="../assets/images/Qcolor.png"
+                  className="m-0"
+                  onClick={() => callQFunction()}
+                  style={{cursor: "pointer"}}
+                />
               </div>
             ) : props.location.state.type == " star" ||
               props.location.state.type == "Star" ? (
               rValue ? (
                 <img
                   src="../assets/images/Applause_bold with_roar.png"
-                  style={{height: "100px", width: "100px", cursor: "pointer"}}
+                  style={{cursor: "pointer", height: "120px", width: "120px"}}
                   onClick={onRclick}
                 />
               ) : (

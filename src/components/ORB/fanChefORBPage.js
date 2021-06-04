@@ -3,12 +3,11 @@ import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
 import {useDispatch, useSelector} from "react-redux";
 import swal from "sweetalert";
-import {useHistory} from "react-router-dom";
+import {useHistory, Prompt} from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
 import {socket} from "../../socketIO";
-import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
 
 import Modal from "react-bootstrap/Modal";
@@ -70,12 +69,15 @@ function FanChefORB(props) {
   const [imageModal, setImageModal] = useState(false);
   const mount = useRef();
   const handleClose = () => {
-    // setTime(pauseTime);
     // setPauseTime(0);
     // setIsActive(true);
     // setShow(false);
-    // console.log("on close time..... ", time, pauseTime);
-    console.log("session completed value.. ", freeSessionCompleted, paid);
+    console.log(
+      "session completed value.. ",
+      freeSessionCompleted,
+      paid,
+      isActive
+    );
     if (freeSessionCompleted) {
       if (paid) {
         setShow(false);
@@ -144,11 +146,7 @@ function FanChefORB(props) {
   useEffect(() => {
     let interval = null;
     console.log("time & isactive... ", time, isActive);
-    console.log(
-      "checking payment done or not ",
-      paid,
-      paymentState && paymentState.paymentDetail
-    );
+
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -156,7 +154,8 @@ function FanChefORB(props) {
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
-      if (!paid) setShowRating(true);
+      // if (!paid) setShowRating(true);
+      if (!paid) leaveCall();
     }
     return () => clearInterval(interval);
   }, [time, isActive]);
@@ -164,8 +163,7 @@ function FanChefORB(props) {
   useEffect(async () => {
     document.documentElement.scrollTop = 0;
     let id, name;
-    if (localStorage.getItem("token"))
-      await dispatch(getUserWithId(localStorage.getItem("id")));
+
     if (props.location.state.name && props.location.state.id) {
       id = props.location.state.id;
       name = props.location.state.name;
@@ -320,6 +318,8 @@ function FanChefORB(props) {
     if (!mount.current) {
       console.log("in if!!!!!!!");
       //componenet did mount
+      if (localStorage.getItem("token"))
+        await dispatch(getUserWithId(localStorage.getItem("id")));
 
       await dispatch(getJoinedFanList(props.location.state.id));
 
@@ -519,6 +519,32 @@ function FanChefORB(props) {
         marginBottom: "-16px",
       }}
       id="capture1">
+      <Prompt
+        message={(location, action) => {
+          if (action === "POP") {
+            console.log("Backing up...");
+            // Add your back logic here
+            if (
+              chefRTC.client &&
+              chefRTC.localVideoTrack &&
+              chefRTC.localAudioTrack
+            ) {
+              chefRTC.localAudioTrack.close();
+              chefRTC.localVideoTrack.close();
+
+              // Leave the channel.
+              chefRTC.client.leave();
+            }
+            const dataToPass = {
+              fanId: localStorage.getItem("id"),
+              userId: props.location.state.id,
+            };
+            dispatch(removedJoinFan(dataToPass));
+          }
+
+          return true;
+        }}
+      />
       <Modal
         show={show}
         onHide={handleClose}
@@ -537,7 +563,7 @@ function FanChefORB(props) {
               setFreeSessionCompleted={setFreeSessionCompleted}
               freeSessionCompleted={freeSessionCompleted}
             />
-          ) : (
+          ) : userInfo ? (
             <PayOrder
               setShow={setShow}
               price1={
@@ -561,8 +587,8 @@ function FanChefORB(props) {
               userInfo={userInfo}
               freeSessionCompleted={freeSessionCompleted}
             />
-            // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
-          )}
+          ) : // <Ticket setShow={setShow} paid={paid} setPaid={setPaid} />
+          null}
         </Modal.Body>
       </Modal>
 
