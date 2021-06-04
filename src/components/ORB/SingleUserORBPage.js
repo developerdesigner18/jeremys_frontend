@@ -1007,7 +1007,7 @@ function SingleUserORBPage(props) {
         <div className="col-md-6 text-center">
           <div>
             <div
-              className="border border-light rounded-circle mx-auto mb-3"
+              className="border  rounded-circle mx-auto mb-3"
               id="user-remote-playerlist"
               style={{
                 height: "500px",

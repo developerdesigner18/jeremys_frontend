@@ -325,7 +325,7 @@ function FanOrbForUser(props) {
         </div>
         <div className="col-md-6 text-center">
           <div
-            className="border border-light rounded-circle mx-auto mb-3"
+            className="rounded-circle mx-auto mb-3"
             id="user-remote-playerlist"
             style={{
               height: "500px",
