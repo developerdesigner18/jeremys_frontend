@@ -331,6 +331,12 @@ function ORBPage(props) {
           if (mediaType === "audio") {
             if (fansWithR.length) {
               for (let info of fansWithR) {
+                console.log(
+                  "check condition.. ",
+                  info === user.uid,
+                  info,
+                  user.uid
+                );
                 if (info === user.uid) {
                   user.audioTrack.play();
                 }
