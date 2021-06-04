@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {BrowserRouter, Route, Redirect} from "react-router-dom";
+import React, { Component } from "react";
+import { BrowserRouter, Route, Redirect } from "react-router-dom";
 import ArtistsProfile from "./components/artistsProfile/artistsProfile";
 import CustomerService from "./components/CustomerService";
 import fanHomePage from "./components/fanHomePage/fanHomePage";
@@ -17,7 +17,7 @@ import TermsCondition from "./components/TermsCondition";
 import UserCategoryHomePage from "./components/userCategoryHome/UserCategoryHomePage";
 import VideoChat from "./components/videoCall/videoCallHost";
 import VideoChatAttendee from "./components/videoCall/videoCallAttendee";
-import {isAuthenticate} from "./utill";
+import { isAuthenticate } from "./utill";
 import MyStory from "./components/placeholder/myStory";
 import FanChefORB from "./components/ORB/fanChefORBPage";
 import FanOrbForUser from "./components/ORB/FanOrbForUser";
@@ -27,7 +27,7 @@ import VideoCall1 from "./components/videoCall/videoCallHost copy";
 import Privacy from "./components/Privacy";
 import ORBPageOLD from "./components/ORB/ORBPageOld";
 import TrainerORBPage from "./components/ORB/TrainerORBPage";
-import Admin from "./components/Admin/Admin";
+import Dashboard from "./components/Admin/Dashboard";
 import UserManagement from "./components/Admin/UserManagement";
 import PaymentManagement from "./components/Admin/PaymentManagement";
 
@@ -45,7 +45,7 @@ function App() {
                 <Redirect to="/fanHomePage" />
               ) : localStorage.getItem("type") == "admin" ||
                 localStorage.getItem("type") == "Admin" ? (
-                <Redirect to="/admin" />
+                <Redirect to="/admin/dashboard" />
               ) : (
                 <Redirect to="/userHomepage" />
               )
@@ -92,18 +92,18 @@ function App() {
         <PrivateRoute path="/myStory" component={MyStory} />
 
         {/*============ admin route ========================*/}
-        <AdminRoute path="/admin" component={Admin} />
+        <AdminRoute path="/admin/dashboard" component={Dashboard} />
         <AdminRoute path="/admin/user" component={UserManagement} />
         <AdminRoute path="/admin/payment" component={PaymentManagement} />
       </BrowserRouter>
     </div>
   );
 
-  function PrivateRoute({component: Component, ...rest}) {
+  function PrivateRoute({ component: Component, ...rest }) {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           localStorage.getItem("id") ? (
             <Component {...props} />
           ) : (
@@ -121,11 +121,11 @@ function App() {
     );
   }
 
-  function PublicRoute({component, ...rest}) {
+  function PublicRoute({ component, ...rest }) {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           !localStorage.getItem("id") ? (
             React.createElement(component, props)
           ) : (
@@ -143,11 +143,11 @@ function App() {
     );
   }
 
-  function AdminRoute({component, ...rest}) {
+  function AdminRoute({ component, ...rest }) {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           localStorage.getItem("type") == "Admin" ||
           localStorage.getItem("type") == "admin" ? (
             React.createElement(component, props)

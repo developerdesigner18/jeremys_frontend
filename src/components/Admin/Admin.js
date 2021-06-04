@@ -1,7 +1,7 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../assets/css/adminSidebar.css";
-import {Route, Switch, useHistory} from "react-router";
-import {BrowserRouter, Link} from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router";
+import { BrowserRouter, Link } from "react-router-dom";
 import {
   Drawer,
   List,
@@ -13,6 +13,7 @@ import {
   Typography,
   Icon,
 } from "@material-ui/core";
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import {
   AppsTwoTone,
   ArrowBackIosTwoTone,
@@ -37,19 +38,20 @@ import {
   ArrowDownward,
   AddBox,
   ChevronLeft,
-  GroupIcon,
 } from "@material-ui/icons";
+import GroupIcon from "@material-ui/icons/Group";
+import CreditCardIcon from "@material-ui/icons/CreditCard";
 import clsx from "clsx";
 import PaymentManagement from "./PaymentManagement";
 import UserManagement from "./UserManagement";
 import MaterialTable from "material-table";
-import {forwardRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getUsersForAdmin} from "../../actions/adminAction";
+import { forwardRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsersForAdmin } from "../../actions/adminAction";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "block",
   },
@@ -111,7 +113,7 @@ function Admin() {
   const [usersData, setUsersData] = useState([]);
 
   const dispatch = useDispatch();
-  const adminState = useSelector(state => state.admin);
+  const adminState = useSelector((state) => state.admin);
 
   useEffect(async () => {
     await dispatch(getUsersForAdmin());
@@ -203,13 +205,14 @@ function Admin() {
               [classes.drawerOpen]: open,
               [classes.drawerClose]: !open,
             }),
-          }}>
+          }}
+        >
           <div onMouseEnter={handleDrawerOpen} onMouseLeave={handleDrawerClose}>
             <List>
               {open == true ? (
                 <>
                   <ListItem button>
-                    <ListItemIcon style={{color: "white"}}>
+                    <ListItemIcon style={{ color: "white" }}>
                       <ArrowForwardIosTwoTone />
                     </ListItemIcon>
                   </ListItem>
@@ -217,35 +220,56 @@ function Admin() {
               ) : (
                 <>
                   <ListItem button>
-                    <ListItemIcon style={{color: "white"}}>
+                    <ListItemIcon style={{ color: "white" }}>
                       <ArrowBackIosTwoTone />
                     </ListItemIcon>
                   </ListItem>
                 </>
               )}
-              <Link to="/admin/user">
-                <ListItem button key="UserManagement">
-                  <ListItemIcon style={{color: "white"}}>
-                    <AppsTwoTone />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{color: "white"}}
-                    primary="User Management"
-                  />
-                </ListItem>
-              </Link>
 
-              <Link to="/admin/payment">
-                <ListItem button key="PaymentManagement">
-                  <ListItemIcon style={{color: "white"}}>
-                    <ClassTwoTone />
-                  </ListItemIcon>
-                  <ListItemText
-                    style={{color: "white"}}
-                    primary="Payment Management"
-                  />
-                </ListItem>
-              </Link>
+              <ListItem
+                button
+                key="Dashboard"
+                onClick={() => {
+                  history.push("/admin/dashboard");
+                }}
+              >
+                <ListItemIcon style={{ color: "white" }}>
+                  <DashboardIcon />
+                </ListItemIcon>
+                <ListItemText style={{ color: "white" }} primary="Dashboard" />
+              </ListItem>
+              <ListItem
+                button
+                key="UserManagement"
+                onClick={() => {
+                  history.push("/admin/user");
+                }}
+              >
+                <ListItemIcon style={{ color: "white" }}>
+                  <GroupIcon />
+                </ListItemIcon>
+                <ListItemText
+                  style={{ color: "white" }}
+                  primary="User Management"
+                />
+              </ListItem>
+
+              <ListItem
+                button
+                key="PaymentManagement"
+                onClick={() => {
+                  history.push("/admin/payment");
+                }}
+              >
+                <ListItemIcon style={{ color: "white" }}>
+                  <CreditCardIcon />
+                </ListItemIcon>
+                <ListItemText
+                  style={{ color: "white" }}
+                  primary="Payment Management"
+                />
+              </ListItem>
             </List>
           </div>
         </Drawer>
@@ -260,12 +284,13 @@ function Admin() {
                     data-widget="control-sidebar"
                     data-slide="true"
                     role="button"
-                    style={{color: "white"}}
+                    style={{ color: "white" }}
                     data-toggle="dropdown"
                     id="dropdownMenuButton"
-                    onClick={toggleValue}>
-                    <span style={{position: "relative"}} ref={ref}>
-                      {"welcome " +
+                    onClick={toggleValue}
+                  >
+                    <span style={{ position: "relative" }} ref={ref}>
+                      {"Welcome " +
                         localStorage.getItem("name")[0].toUpperCase() +
                         localStorage.getItem("name").slice(1) +
                         "!"}
@@ -279,7 +304,8 @@ function Admin() {
                   <li
                     className="dropdown-item menu text-align-center p-0"
                     onClick={callLogout}
-                    style={{paddingTop: "5px", cursor: "pointer"}}>
+                    style={{ paddingTop: "5px", cursor: "pointer" }}
+                  >
                     <i className="fas fa-sign-out-alt" aria-hidden="true"></i>
                     Log Out
                   </li>
@@ -288,7 +314,7 @@ function Admin() {
               </div>
             </nav>
 
-            {window.location.pathname === "/admin/" ||
+            {/* {window.location.pathname === "/admin/" ||
             window.location.pathname === "/admin" ? (
               <Box display="flex" height={500}>
                 <Box
@@ -300,10 +326,12 @@ function Admin() {
                   // style={{cursor: "pointer"}}
                   // onClick={goToUser}
                 >
-                  <div style={{textAlign: "center", paddingTop: "10px"}}>
-                    <i className="fas fa-users fa-7x"></i>
-                    <p style={{color: "white"}}>Users</p>
-                  </div>
+                  <Link to="/admin/user">
+                    <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                      <i className="fas fa-users fa-7x"></i>
+                      <p style={{ color: "white" }}>Users</p>
+                    </div>
+                  </Link>
                 </Box>
                 <Box
                   m="auto"
@@ -314,15 +342,88 @@ function Admin() {
                   // onClick={goToPayment}
                   // style={{ cursor: "pointer" }}
                 >
-                  <div style={{textAlign: "center", paddingTop: "10px"}}>
-                    <i className="fas fa-money-check-alt fa-7x"></i>
-                    <p style={{color: "white"}}>Payments</p>
-                  </div>
+                  <Link to="/admin/payment">
+                    <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                      <i className="fas fa-money-check-alt fa-7x"></i>
+                      <p style={{ color: "white" }}>Payments</p>
+                    </div>
+                  </Link>
                 </Box>
               </Box>
-            ) : null}
-
+            ) : null} */}
+            {/* <Box display="flex" height={500}>
+              <Box
+                m="auto"
+                border={1}
+                height={150}
+                width={300}
+                // bgcolor="white"
+                // style={{cursor: "pointer"}}
+                // onClick={goToUser}
+              >
+                <Link to="/admin/user">
+                  <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                    <i className="fas fa-users fa-7x"></i>
+                    <p style={{ color: "white" }}>Users</p>
+                  </div>
+                </Link>
+              </Box>
+              <Box
+                m="auto"
+                border={1}
+                height={150}
+                width={300}
+                // bgcolor="white"
+                // onClick={goToPayment}
+                // style={{ cursor: "pointer" }}
+              >
+                <Link to="/admin/payment">
+                  <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                    <i className="fas fa-money-check-alt fa-7x"></i>
+                    <p style={{ color: "white" }}>Payments</p>
+                  </div>
+                </Link>
+              </Box>
+            </Box> */}
+            {/* 
             <Switch>
+              <Route exact path="/admin/dashboard">
+                <Box display="flex" height={500}>
+                  <Box
+                    m="auto"
+                    border={1}
+                    height={150}
+                    width={300}
+                    // bgcolor="white"
+                    // style={{cursor: "pointer"}}
+                    // onClick={goToUser}
+                  >
+                    <Link to="/admin/user">
+                      <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                        <i className="fas fa-users fa-7x"></i>
+                        <p style={{ color: "white" }}>Users</p>
+                      </div>
+                    </Link>
+                  </Box>
+                  <Box
+                    m="auto"
+                    border={1}
+                    height={150}
+                    width={300}
+                    // bgcolor="white"
+                    // onClick={goToPayment}
+                    // style={{ cursor: "pointer" }}
+                  >
+                    <Link to="/admin/payment">
+                      <div style={{ textAlign: "center", paddingTop: "10px" }}>
+                        <i className="fas fa-money-check-alt fa-7x"></i>
+                        <p style={{ color: "white" }}>Payments</p>
+                      </div>
+                    </Link>
+                  </Box>
+                </Box>
+              </Route>
+
               <Route exact path="/admin/user">
                 <div className="container">
                   <MaterialTable
@@ -332,15 +433,24 @@ function Admin() {
                       {
                         title: "Profile Image",
                         field: "profileImgURl",
-                        render: rowData => (
+                        render: (rowData) => (
                           <img
                             src={rowData.profileImgURl}
-                            style={{width: 40, height: 40, borderRadius: "50%"}}
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: "50%",
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "https://jeremysLive.com:8000/default/profile.jpg";
+                            }}
                           />
                         ),
                       },
-                      {title: "First Name", field: "firstName"},
-                      {title: "Last Name", field: "lastName"},
+                      { title: "First Name", field: "firstName" },
+                      { title: "Last Name", field: "lastName" },
                       {
                         title: "Type",
                         field: "type",
@@ -351,10 +461,12 @@ function Admin() {
                   />
                 </div>
               </Route>
+
               <Route exact path="/admin/payment">
                 <PaymentManagement />
               </Route>
             </Switch>
+         */}
           </div>
         </main>
       </div>

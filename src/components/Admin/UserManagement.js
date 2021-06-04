@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   ViewColumn,
@@ -25,10 +25,11 @@ import {
   ArrowForwardIosTwoTone,
 } from "@material-ui/icons";
 import MaterialTable from "material-table";
-import {forwardRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {getUsersForAdmin} from "../../actions/adminAction";
+import { forwardRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUsersForAdmin } from "../../actions/adminAction";
 import "../../assets/css/adminSidebar.css";
+import Admin from "./Admin";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -58,7 +59,7 @@ function UserManagement() {
   const [usersData, setUsersData] = useState([]);
 
   const dispatch = useDispatch();
-  const adminState = useSelector(state => state.admin);
+  const adminState = useSelector((state) => state.admin);
 
   useEffect(async () => {
     await dispatch(getUsersForAdmin());
@@ -75,21 +76,64 @@ function UserManagement() {
 
   return (
     <div>
-      <div className="container">
+      <Admin />
+      <main>
+        <div className="container">
+          <MaterialTable
+            icons={tableIcons}
+            title="Users"
+            columns={[
+              {
+                title: "Profile Image",
+                field: "profileImgURl",
+                render: (rowData) => (
+                  <img
+                    src={rowData.profileImgURl}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                    }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://jeremysLive.com:8000/default/profile.jpg";
+                    }}
+                  />
+                ),
+              },
+              { title: "First Name", field: "firstName" },
+              { title: "Last Name", field: "lastName" },
+              {
+                title: "Type",
+                field: "type",
+              },
+              // {field: "_id"},
+            ]}
+            data={usersData}
+          />
+        </div>
+      </main>{" "}
+      {/* <div className="container">
         <MaterialTable
           icons={tableIcons}
           title="Users"
           columns={[
-            {title: "First Name", field: "firstName"},
-            {title: "Last Name", field: "lastName"},
+            { title: "First Name", field: "firstName" },
+            { title: "Last Name", field: "lastName" },
             {
               title: "Type",
               field: "type",
             },
-            {title: "Profile Image", field: "profileImage"},
+            { title: "Profile Image", field: "profileImage" },
           ]}
           data={[
-            {name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63},
+            {
+              name: "Mehmet",
+              surname: "Baran",
+              birthYear: 1987,
+              birthCity: 63,
+            },
             {
               name: "Zerya Betül",
               surname: "Baran",
@@ -103,6 +147,7 @@ function UserManagement() {
           }}
         />
       </div>
+     */}
     </div>
   );
 }

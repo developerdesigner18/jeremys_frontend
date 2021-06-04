@@ -110,7 +110,7 @@ function FanChefORB(props) {
     setIsOpen(!isOpen);
   };
   let encodedURL = encodeURI(
-    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+    `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
@@ -640,13 +640,17 @@ function FanChefORB(props) {
             <div className="timer" style={{color: "#626262"}}>
               {paid ? null : (
                 <>
-                  <span className="value_name">Timer</span>
-                  <p style={{fontWeight: "600"}}>
-                    {Math.floor(time / 60) < 10
-                      ? "0" + Math.floor(time / 60)
-                      : Math.floor(time / 60)}
-                    :{time % 60 < 10 ? "0" + (time % 60) : time % 60}
-                  </p>
+                  <div className="values">
+                    <div className="value_container">
+                      <span className="value_name">Timer</span>
+                      <p style={{fontWeight: "600"}}>
+                        {Math.floor(time / 60) < 10
+                          ? "0" + Math.floor(time / 60)
+                          : Math.floor(time / 60)}
+                        :{time % 60 < 10 ? "0" + (time % 60) : time % 60}
+                      </p>
+                    </div>
+                  </div>
                 </>
               )}
             </div>

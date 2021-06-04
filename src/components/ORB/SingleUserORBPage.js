@@ -85,7 +85,7 @@ function SingleUserORBPage(props) {
     localVideoTrack: null,
   });
   let encodedURL = encodeURI(
-    `${process.env.REACT_APP_SOCKET_URL}${window.location.pathname.slice(1)}`
+    `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
 
   const [options, setOptions] = useState({

@@ -8,7 +8,7 @@ import { socket } from "../../socketIO";
 import { storeScreenShot, getUserToken } from "../../actions/orbActions";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -40,7 +40,7 @@ function FanOrbForUser(props) {
     localVideoTrack: null,
   });
   let encodedURL = encodeURI(
-    `${process.env.REACT_APP_API_URL}${window.location.pathname.slice(1)}`
+    `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
   const constraints = {
     audio: true,
@@ -55,7 +55,7 @@ function FanOrbForUser(props) {
     token: null,
     role: "host",
   });
-  const orbState = useSelector(state => state.ORB);
+  const orbState = useSelector((state) => state.ORB);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -69,7 +69,7 @@ function FanOrbForUser(props) {
   useEffect(async () => {
     await dispatch(getUserToken("600ebd311e4f0fa7acc3d716"));
 
-    socket.on("listOnlineFans", arg => {
+    socket.on("listOnlineFans", (arg) => {
       console.log("list ", arg);
     });
   }, []);
@@ -82,7 +82,7 @@ function FanOrbForUser(props) {
 
     if (orbState) {
       rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-      setFanRTC(prevState => ({ ...prevState, client: rtc.client }));
+      setFanRTC((prevState) => ({ ...prevState, client: rtc.client }));
       await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
         options.appId,
@@ -124,14 +124,14 @@ function FanOrbForUser(props) {
     }
   }, [orbState]);
 
-  const success = stream => {
+  const success = (stream) => {
     setStream(stream);
     videoRef.current.srcObject = stream;
     console.log("stream ", stream);
   };
 
   // called when getUserMedia() fails - see below
-  const failure = e => {
+  const failure = (e) => {
     console.log("getUserMedia Error: ", e);
     alert(e.toString());
   };
@@ -142,9 +142,9 @@ function FanOrbForUser(props) {
       allowTaint: true,
       scrollX: 0,
       scrollY: -window.scrollY,
-    }).then(canvas => {
+    }).then((canvas) => {
       let file;
-      canvas.toBlob(async blob => {
+      canvas.toBlob(async (blob) => {
         file = new File([blob], "fileName.jpg", { type: "image/jpeg" });
         let fd = new FormData();
         fd.append("id", localStorage.getItem("id"));
@@ -175,7 +175,8 @@ function FanOrbForUser(props) {
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <div className="main_ORB_section container pt-5 mt-5 d-flex">
         <div className="ORB_logo">
           <img src="../assets/images/grey_logo.png" />
@@ -212,7 +213,8 @@ function FanOrbForUser(props) {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -221,7 +223,8 @@ function FanOrbForUser(props) {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -230,7 +233,8 @@ function FanOrbForUser(props) {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -239,7 +243,8 @@ function FanOrbForUser(props) {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -248,7 +253,8 @@ function FanOrbForUser(props) {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -257,7 +263,8 @@ function FanOrbForUser(props) {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
             <div className="value_container">
@@ -266,7 +273,8 @@ function FanOrbForUser(props) {
                 className="progress"
                 style={{
                   width: "70px",
-                }}>
+                }}
+              >
                 <div
                   className="progress-bar"
                   role="progressbar"
@@ -275,7 +283,8 @@ function FanOrbForUser(props) {
                   }}
                   aria-valuenow="100"
                   aria-valuemin="0"
-                  aria-valuemax="100"></div>
+                  aria-valuemax="100"
+                ></div>
               </div>
             </div>
           </div>
@@ -322,7 +331,8 @@ function FanOrbForUser(props) {
               height: "500px",
               width: "500px",
               borderRadius: "100%",
-            }}></div>
+            }}
+          ></div>
           <div className="r_image">
             {isLive ? (
               <img
@@ -374,7 +384,8 @@ function FanOrbForUser(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}>
+                onClick={() => setMoreIcon()}
+              >
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -394,7 +405,8 @@ function FanOrbForUser(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}>
+                  }}
+                >
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
@@ -403,11 +415,13 @@ function FanOrbForUser(props) {
                       // onClick={() => props.history.push("/profile")}
                     >
                       <a
-                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}>
+                        href={`https://facebook.com/sharer/sharer.php?u=${encodedURL}`}
+                      >
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}></span>
+                          style={{ fontSize: "25px" }}
+                        ></span>
                       </a>
                     </li>
                     <li
@@ -417,10 +431,12 @@ function FanOrbForUser(props) {
                     >
                       {" "}
                       <a
-                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}>
+                        href={`https://twitter.com/intent/tweet?url=${encodedURL}`}
+                      >
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}></span>{" "}
+                          style={{ fontSize: "25px" }}
+                        ></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -437,7 +453,8 @@ function FanOrbForUser(props) {
             <a href="#">
               <div
                 className="ORB_link d-flex flex-column"
-                onClick={() => leaveCall()}>
+                onClick={() => leaveCall()}
+              >
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
               </div>
