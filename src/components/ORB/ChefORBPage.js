@@ -555,7 +555,14 @@ function ChefORBPage(props) {
             >
               {subscribed ? (
                 // joinedFanList.length === 0 ? (
-                <div id="chef-remote-playerlist"></div>
+                <>
+                  <div id="chef-remote-playerlist"></div>
+                  <img
+                    className="black_logo_img"
+                    src="../assets/images/black_logo.png"
+                    alt="logo"
+                  />
+                </>
               ) : (
                 // ) : null
                 <>

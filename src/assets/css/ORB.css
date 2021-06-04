@@ -322,6 +322,19 @@ body {
   background: #000000;
   border: 2px solid #ffffff;
 }
+.fan_image_ORB img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 30px;
+}
+.rimage_style {
+  position: relative;
+  top: -11px;
+  left: -1px;
+}
+.orb_fan_placeholder {
+}
 
 @media (max-width: 991px) {
   .ORB_videos_container {
