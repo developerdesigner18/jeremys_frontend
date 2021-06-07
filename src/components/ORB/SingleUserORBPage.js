@@ -855,7 +855,7 @@ function SingleUserORBPage(props) {
       if (fanRTC.localAudioTrack) {
         await fanRTC.localAudioTrack.setEnabled(rValue);
       } else {
-        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
         let clientPublished = await fanRTC.client.publish([
           rtc.localAudioTrack,
         ]);
@@ -868,7 +868,7 @@ function SingleUserORBPage(props) {
     } else {
       if (fanRTC.localAudioTrack) {
         await fanRTC.localAudioTrack.setEnabled(rValue);
-        await fanRTC.client.unpublish(rtc.localAudioTrack);
+        await fanRTC.client.unpublish(fanRTC.localAudioTrack);
       }
     }
   };
