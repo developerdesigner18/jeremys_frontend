@@ -384,6 +384,11 @@ function TrainerORBPage(props) {
             });
           }
           if (mediaType === "audio") {
+            console.log(
+              "inside media type audio.. ",
+              fansFromQ.length,
+              fanVideoClicked
+            );
             if (fansFromQ.length) {
               if (fanVideoClicked) {
                 if (fansFromQ[0].uid === user.uid) {
@@ -406,8 +411,16 @@ function TrainerORBPage(props) {
         if (generatedDiv) {
           generatedDiv.remove();
         }
-        // console.log("handleUserUnpublished-==-=-=", user.uid);
+
         const id = user.uid;
+        if (fansFromQ.length) {
+          // if (fansFromQ[0].uid === id) {
+          let removeFan = fansFromQ.splice(0, 1);
+          setFansFromQ([...fansFromQ]);
+          setFanProfileClick(false);
+          setFanVideoClicked(false);
+          // }
+        }
       });
       // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
@@ -1058,7 +1071,7 @@ function TrainerORBPage(props) {
                   </div>
                 </div>
                 <div
-                  className="col-md-6 d-flex justify-content-center"
+                  className="col-md-6 d-flex justify-content-center mb-2"
                   id="FanBigColumn"></div>
                 <div className="col-md-3">
                   <div className="row">
