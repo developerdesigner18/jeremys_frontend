@@ -860,27 +860,35 @@ function SingleUserORBPage(props) {
 
   const onRclick = async () => {
     setrEnable(!rEnable);
-    if (rValue) {
-      // socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-      // socketIO.emit("passFanUIDForR", fanUid);
+    // if (rValue) {
+    //   // socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+    //   // socketIO.emit("passFanUIDForR", fanUid);
 
-      if (fanRTC.localAudioTrack) {
-        await fanRTC.localAudioTrack.setEnabled(false);
-        await fanRTC.client.unpublish(fanRTC.localAudioTrack);
-      } else {
-        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        let clientPublished = await fanRTC.client.publish(rtc.localAudioTrack);
-        console.log("clientPublished", clientPublished);
-        setFanRTC(prevState => ({
-          ...prevState,
-          localAudioTrack: rtc.localAudioTrack,
-        }));
-      }
-    } else {
-      if (fanRTC.localAudioTrack) {
-        await fanRTC.localAudioTrack.setEnabled(rValue);
-        await fanRTC.client.unpublish(fanRTC.localAudioTrack);
-      }
+    //   if (fanRTC.localAudioTrack) {
+    //     await fanRTC.localAudioTrack.setEnabled(false);
+    //     await fanRTC.client.unpublish(fanRTC.localAudioTrack);
+    //   } else {
+    //     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    //     let clientPublished = await fanRTC.client.publish(rtc.localAudioTrack);
+    //     console.log("clientPublished", clientPublished);
+    //     setFanRTC(prevState => ({
+    //       ...prevState,
+    //       localAudioTrack: rtc.localAudioTrack,
+    //     }));
+    //   }
+    // } else {
+    //   if (fanRTC.localAudioTrack) {
+    //     await fanRTC.localAudioTrack.setEnabled(rValue);
+    //     await fanRTC.client.unpublish(fanRTC.localAudioTrack);
+    //   }
+    // }
+    if (rValue) {
+      fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      await fanRTC.client.publish(fanRTC.localAudioTrack);
+      setFanRTC(prevState => ({
+        ...prevState,
+        localAudioTrack: fanRTC.localAudioTrack,
+      }));
     }
   };
 
