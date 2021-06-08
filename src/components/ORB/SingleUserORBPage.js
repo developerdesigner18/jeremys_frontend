@@ -342,6 +342,11 @@ function SingleUserORBPage(props) {
                 }
               }
             }
+          } else {
+            if (rtc.localAudioTrack) {
+              await rtc.localAudioTrack.setEnabled(false);
+              await rtc.client.unpublish(rtc.localAudioTrack);
+            }
           }
         });
       }
