@@ -296,6 +296,7 @@ function SingleUserORBPage(props) {
                 setRvalue(value.rValue);
                 if (rtc.localAudioTrack) {
                   await rtc.localAudioTrack.setEnabled(value.rValue);
+                  await rtc.client.unpublish(rtc.localAudioTrack);
                 }
                 // await fanRTC.client.unpublish(rtc.localAudioTrack);
               }
@@ -883,11 +884,11 @@ function SingleUserORBPage(props) {
     //   }
     // }
     if (rValue) {
-      fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      await fanRTC.client.publish(fanRTC.localAudioTrack);
+      rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      await fanRTC.client.publish(rtc.localAudioTrack);
       setFanRTC(prevState => ({
         ...prevState,
-        localAudioTrack: fanRTC.localAudioTrack,
+        localAudioTrack: rtc.localAudioTrack,
       }));
     }
   };
