@@ -890,7 +890,6 @@ function TrainerORBPage(props) {
         marginTop: "-48px",
       }}
       id="capture">
-      {console.log("fans from q..,. ", fansFromQ)}
       <Modal
         show={show}
         onHide={handleClose}
