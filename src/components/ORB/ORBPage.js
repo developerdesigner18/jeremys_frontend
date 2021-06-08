@@ -330,19 +330,29 @@ function ORBPage(props) {
             });
           }
           if (mediaType === "audio") {
+            console.log("data-=-=medialType-=-==--=Audio");
+
+            // socket.on("getFanRValue", (data) => {
+            //   console.log("data-=-=", data);
+
+            //   console.log("1st if", data);
+            //   if (data.length) {
+            //     console.log("2nd if");
+            //     for (let info of data) {
+            //       console.log("3rd if");
+            //       console.log(
+            //         "check condition.. ",
+            //         info === user.uid,
+            //         info,
+            //         user.uid
+            //       );
+            //       if (info === user.uid) {
+            //         console.log("4th if");
             user.audioTrack.play();
-            // if (fansWithR.length) {
-            //   for (let info of fansWithR) {
-            //     console.log(
-            //       "check condition.. ",
-            //       info === user.uid,
-            //       info,
-            //       user.uid
-            //     );
-            //      if (info === user.uid) {
-            //      }
+            //       }
+            //     }
             //   }
-            // }
+            // });
           } else {
             rtc.client.on("media-reconnect-start", uid => {
               // console.log("media-reconnect-start event called.............", uid);

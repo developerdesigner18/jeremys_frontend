@@ -389,13 +389,14 @@ function TrainerORBPage(props) {
               fansFromQ.length,
               fanVideoClicked
             );
-            if (fansFromQ.length) {
-              if (fanVideoClicked) {
-                if (fansFromQ[0].uid === user.uid) {
-                  user.audioTrack.play();
-                }
-              }
-            }
+            user.audioTrack.play();
+            // if (fansFromQ.length) {
+            //   if (fanVideoClicked) {
+            //     if (fansFromQ[0].uid === user.uid) {
+            //       user.audioTrack.play();
+            //     }
+            //   }
+            // }
           } else {
             rtc.client.on("media-reconnect-start", uid => {
               // console.log("media-reconnect-start event called.............", uid);
@@ -405,22 +406,29 @@ function TrainerORBPage(props) {
       });
       // user-unpulished event
       rtc.client.on("user-unpublished", async (user, mediaType) => {
+        const fanRemote = document.getElementById("fan-remote-playerlist2");
+        const fanBigColumn = document.getElementById("FanBigColumn");
+        console.log(
+          "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=fansFromQ-==-=-=",
+          user.uid,
+          "fansFromQ",
+          fansFromQ
+        );
+
         let generatedDiv = document.getElementById(
           `player-wrapper-${user.uid}`
         );
         if (generatedDiv) {
           generatedDiv.remove();
         }
-
         const id = user.uid;
-        if (fansFromQ.length) {
-          // if (fansFromQ[0].uid === id) {
-          let removeFan = fansFromQ.splice(0, 1);
-          setFansFromQ([...fansFromQ]);
-          setFanProfileClick(false);
-          setFanVideoClicked(false);
-          // }
-        }
+        // if (fansFromQ.length) {
+        // if (fansFromQ[0].uid === id) {
+        setFansFromQ([...fansFromQ]);
+        setFanProfileClick(false);
+        setFanVideoClicked(false);
+        // }
+        // }
       });
       // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
@@ -882,6 +890,7 @@ function TrainerORBPage(props) {
         marginTop: "-48px",
       }}
       id="capture">
+      {console.log("fans from q..,. ", fansFromQ)}
       <Modal
         show={show}
         onHide={handleClose}

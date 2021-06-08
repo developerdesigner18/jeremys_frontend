@@ -69,6 +69,7 @@ function SingleUserORBPage(props) {
   const [fanUid, setFanUid] = useState();
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
   const [imageModal, setImageModal] = useState(false);
+  const [rEnable, setrEnable] = useState(false);
 
   const mount = useRef();
 
@@ -287,12 +288,16 @@ function SingleUserORBPage(props) {
           data.forEach(async value => {
             if (value.userId == props.location.state.id) {
               setRvalue(value.rValue);
+              setrEnable(value.rValue);
 
               if (value.rValue === false) {
-                if (fanRTC.localAudioTrack) {
-                  await fanRTC.localAudioTrack.setEnabled(value.rValue);
+                console.log("fan rtc.. ", fanRTC, rtc);
+                setrEnable(value.rValue);
+                setRvalue(value.rValue);
+                if (rtc.localAudioTrack) {
+                  await rtc.localAudioTrack.setEnabled(value.rValue);
                 }
-                await fanRTC.client.unpublish(fanRTC.localAudioTrack);
+                // await fanRTC.client.unpublish(rtc.localAudioTrack);
               }
             }
           });
@@ -316,13 +321,13 @@ function SingleUserORBPage(props) {
                 ...prevState,
                 localAudioTrack: rtc.localAudioTrack,
               }));
-              await fanRTC.client.publish(rtc.localAudioTrack);
+              await rtc.client.publish(rtc.localAudioTrack);
             }
           }
         });
 
         socketIO.on("remainingFans", async data => {
-          console.log("remaining fans.........", data);
+          console.log("remaining fans.........", data, fanRTC, rtc);
 
           if (
             data[props.location.state.id] &&
@@ -330,8 +335,9 @@ function SingleUserORBPage(props) {
           ) {
             for (let user of data[props.location.state.id]) {
               if (user.fanObj.id !== localStorage.getItem("id")) {
-                if (fanRTC.localAudioTrack) {
-                  await fanRTC.localAudioTrack.setEnabled(false);
+                if (rtc.localAudioTrack) {
+                  await rtc.localAudioTrack.setEnabled(false);
+                  await rtc.client.unpublish(rtc.localAudioTrack);
                 }
               }
             }
@@ -853,19 +859,18 @@ function SingleUserORBPage(props) {
   };
 
   const onRclick = async () => {
+    setrEnable(!rEnable);
     if (rValue) {
       // socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
       // socketIO.emit("passFanUIDForR", fanUid);
 
       if (fanRTC.localAudioTrack) {
-        await fanRTC.localAudioTrack.setEnabled(rValue);
+        await fanRTC.localAudioTrack.setEnabled(false);
+        await fanRTC.client.unpublish(fanRTC.localAudioTrack);
       } else {
         rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        fanRTC.client
-          .publish(rtc.localAudioTrack)
-          .then(data => console.log("publish success", data))
-          .catch(err => console.log("error... ", err));
-
+        let clientPublished = await fanRTC.client.publish(rtc.localAudioTrack);
+        console.log("clientPublished", clientPublished);
         setFanRTC(prevState => ({
           ...prevState,
           localAudioTrack: rtc.localAudioTrack,
@@ -874,7 +879,7 @@ function SingleUserORBPage(props) {
     } else {
       if (fanRTC.localAudioTrack) {
         await fanRTC.localAudioTrack.setEnabled(rValue);
-        await rtc.client.unpublish(rtc.localAudioTrack);
+        await fanRTC.client.unpublish(fanRTC.localAudioTrack);
       }
     }
   };
@@ -926,7 +931,6 @@ function SingleUserORBPage(props) {
           return true;
         }}
       />
-      {console.log("paid.....", paid)}
       <Modal
         show={show}
         onHide={handleClose}
