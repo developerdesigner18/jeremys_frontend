@@ -488,9 +488,6 @@ function SingleUserORBPage(props) {
                         .appendChild(playerWrapper);
                       if (mediaType == "video") {
                         user.videoTrack.play(`player-wrapper-${user.uid}`);
-                        // if (mediaType === "audio") {
-                        // user.audioTrack.play();
-                        // }
                       } else {
                         console.log(
                           "media-reconnect-start event will be called.............",
@@ -546,6 +543,14 @@ function SingleUserORBPage(props) {
                           //   );
                           // }
                         );
+                      }
+                    }
+                    if (mediaType === "audio") {
+                      if (
+                        props.location.state.type === "star" ||
+                        props.location.state.type === "Star"
+                      ) {
+                        if (rValue) user.audioTrack.play();
                       }
                     }
                   } else {
@@ -866,8 +871,8 @@ function SingleUserORBPage(props) {
   };
 
   const onRclick = async () => {
-    console.log("rtc... ", rtc, fanRTC);
-    setrEnable(!rEnable);
+    console.log("rtc... ", rtc, fanRTC, rEnable);
+
     // if (rValue) {
     //   // socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
     //   // socketIO.emit("passFanUIDForR", fanUid);
@@ -891,6 +896,7 @@ function SingleUserORBPage(props) {
     //   }
     // }
     if (rValue) {
+      setrEnable(!rEnable);
       fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
       setFanRTC(prevState => ({
         ...prevState,
