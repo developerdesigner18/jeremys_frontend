@@ -72,6 +72,7 @@ function ORBPage(props) {
   });
   const [fansFromQ, setFansFromQ] = useState([]);
   const [fansWithR, setFansWithR] = useState([]);
+  const [availableHost, setAvailableHost] = useState([]);
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -300,6 +301,8 @@ function ORBPage(props) {
           if (mediaType === "video") {
             subscribedValue = true;
             setSubscribedUsers(subscribedValue);
+            host.push(user);
+            setAvailableHost([...host]);
             let agoraClass = document.getElementById("fan-remote-playerlist2");
             for (let i = 0; i < seatCount; i++) {
               let generatedDiv = document.getElementById(
@@ -389,6 +392,15 @@ function ORBPage(props) {
       setIsMute(!isMute);
 
       socket.emit("storeRvalue", dataToPass);
+      console.log("is mute value... ", isMute);
+      if (isMute) {
+        console.log("available host.. ", availableHost);
+        if (availableHost.length) {
+          for (let user of availableHost) {
+            ORB.client.unsubscribe(user, "audio");
+          }
+        }
+      }
     }
   };
 
@@ -966,14 +978,16 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/Background_r.png"
                   onClick={callRoarFunction}
-                  height="130"
-                  width="130"
+                  // height="130"
+                  // width="130"
                   className="rimage_style"
+                  style={{cursor: "pointer"}}
                 />
               ) : (
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
+                  style={{cursor: "pointer"}}
                   // height="120"
                   // width="120"
                 />

@@ -72,6 +72,7 @@ function TrainerORBPage(props) {
   });
   const [fansFromQ, setFansFromQ] = useState([]);
   const [fanProfileClick, setFanProfileClick] = useState(false);
+  const [availableHost, setAvailableHost] = useState([]);
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -352,6 +353,8 @@ function TrainerORBPage(props) {
           );
 
           if (mediaType === "video") {
+            host.push(user);
+            setAvailableHost([...host]);
             subscribedValue = true;
             setSubscribedUsers(subscribedValue);
             let agoraClass = document.getElementById("fan-remote-playerlist2");
@@ -823,6 +826,11 @@ function TrainerORBPage(props) {
             fanRemote.childNodes,
             fanBigColumn.childNodes
           );
+          console.log("available host.. ", availableHost);
+          const foundRemoteUser = availableHost.find(
+            userinfo => userinfo.uid === uid
+          );
+          ORB.client.unsubscribe(foundRemoteUser, "audio");
           socket.emit("removeFanFromQ", {
             userId: localStorage.getItem("id"),
             uid: uid,
