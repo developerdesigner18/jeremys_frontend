@@ -335,7 +335,9 @@ function SingleUserORBPage(props) {
             data[props.location.state.id].length
           ) {
             for (let user of data[props.location.state.id]) {
-              if (user.fanObj.id !== localStorage.getItem("id")) {
+              console.log("user from trainer......", user);
+              if (user.id !== localStorage.getItem("id")) {
+                setQvalue(false);
                 if (rtc.localAudioTrack) {
                   // await rtc.localAudioTrack.setEnabled(false);
                   // await rtc.client.unpublish(rtc.localAudioTrack);
@@ -380,6 +382,16 @@ function SingleUserORBPage(props) {
 
     return async () => {
       console.log("component will unmount called ", paid);
+      if (
+        props.location.state.type === "trainer" ||
+        props.location.state.type === "Trainer"
+      ) {
+        socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+        socketIO.emit("removeFanFromQ", {
+          userId: props.location.state.id,
+          uid: fanUid,
+        });
+      }
       // Destroy the local audio and video tracks.
 
       if (fanRTC.client && fanRTC.localVideoTrack) {
@@ -741,22 +753,6 @@ function SingleUserORBPage(props) {
     };
     await dispatch(removedJoinFan(dataToPass));
 
-    // if (Object.keys(paymentState).length) {
-    //   if (paymentState.ticketReceipt) {
-    //     if (paymentState.ticketReceipt["total"]) {
-    //       setPaid(true);
-    //       console.log("in else... ");
-    //       await dispatch(removeFan3MinuteCount(dataToPass));
-    //     }
-    //   }
-    // } else {
-    //   console.log("payment state in else!!!!!!!!!!!");
-    //   await dispatch(storeFan3MinuteCount(dataToPass));
-    // }
-    // if (freeSessionCompleted === false) {
-    //   console.log("in else.........");
-    //   await dispatch(storeFan3MinuteCount(dataToPass));
-    // }
     if (paid) {
       console.log("paid true....");
       await dispatch(removeFan3MinuteCount(dataToPass));
@@ -767,10 +763,21 @@ function SingleUserORBPage(props) {
       }
     }
     setShowRatingModal(true);
+    if (
+      props.location.state.type === "trainer" ||
+      props.location.state.type === "Trainer"
+    ) {
+      socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+      socketIO.emit("removeFanFromQ", {
+        userId: props.location.state.id,
+        uid: fanUid,
+      });
+    }
   }
 
   const closeModal = async () => {
     console.log("close modal.......");
+
     if (fanRTC.client && fanRTC.localVideoTrack && fanRTC.localAudioTrack) {
       fanRTC.localVideoTrack.close();
       fanRTC.localAudioTrack.close();

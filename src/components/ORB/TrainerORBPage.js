@@ -105,6 +105,11 @@ function TrainerORBPage(props) {
           setFansFromQ(data[localStorage.getItem("id")]);
         }
       });
+
+      socket.on("remainingFans", async data => {
+        console.log("remainging fans...", data);
+        setFansFromQ(data[localStorage.getItem("id")]);
+      });
     }
 
     socket.on("tipTicketValue", data => {
@@ -596,6 +601,8 @@ function TrainerORBPage(props) {
   }
   async function leaveCall() {
     // Destroy the local audio and video tracks.
+    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
+
     if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
       ORB.localAudioTrack.close();
       ORB.localVideoTrack.close();
@@ -603,10 +610,10 @@ function TrainerORBPage(props) {
       // Leave the channel.
       await ORB.client.leave();
     }
-    // socket.disconnect();
-    props.history.push("/userHomepage");
+    socket.disconnect();
     await dispatch(removeOnlineUser());
     await dispatch(deleteStream());
+    props.history.push("/userHomepage");
   }
 
   useEffect(() => {
