@@ -400,6 +400,13 @@ function ORBPage(props) {
             ORB.client.unsubscribe(user, "audio");
           }
         }
+      } else {
+        console.log("available host for subscribe.. ", availableHost);
+        if (availableHost.length) {
+          for (let user of availableHost) {
+            ORB.client.subscribe(user, "audio");
+          }
+        }
       }
     }
   };
@@ -943,7 +950,7 @@ function ORBPage(props) {
 
           <div
             className={`container row ORB_videos_container mx-auto player ${
-              subscribedUsers ? "mt-0" : "mt-1"
+              subscribedUsers ? "mt-4" : "mt-1"
             }`}>
             {" "}
             {fanVideoClicked ? (
@@ -978,8 +985,8 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/Background_r.png"
                   onClick={callRoarFunction}
-                  // height="130"
-                  // width="130"
+                  height="140"
+                  width="140"
                   className="rimage_style"
                   style={{cursor: "pointer"}}
                 />
@@ -987,7 +994,6 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
-                  style={{cursor: "pointer"}}
                   // height="120"
                   // width="120"
                 />
