@@ -1131,11 +1131,11 @@ function TrainerORBPage(props) {
                   src={
                     fansFromQ.length
                       ? `${fansFromQ[0].profilePic}`
-                      : `../assets/images/style_fan_orb.png`
+                      : `../assets/images/fan_placeholder.png`
                   }
                   onError={e => {
                     e.target.onerror = null;
-                    e.target.src = "../assets/images/style_fan_orb.png";
+                    e.target.src = "../assets/images/fan_placeholder.png";
                   }}
                   onClick={() =>
                     onFanProfileClick(fansFromQ[0].uid, fansFromQ[0].id)
