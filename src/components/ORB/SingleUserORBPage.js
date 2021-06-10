@@ -829,6 +829,7 @@ function SingleUserORBPage(props) {
 
   const callQFunction = async () => {
     console.log("q fn called");
+    setQvalue(!qValue);
     socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
     const dataToPass = {
       userId: props.location.state.id,
@@ -1088,12 +1089,16 @@ function SingleUserORBPage(props) {
             {props.location.state.type == "trainer" ||
             props.location.state.type == "Trainer" ? (
               <div>
-                <img
-                  src="../assets/images/Qcolor.png"
-                  className="m-0"
-                  onClick={() => callQFunction()}
-                  style={{cursor: "pointer"}}
-                />
+                {qValue ? (
+                  <img src="../assets/images/Qcolor.png" className="m-0" />
+                ) : (
+                  <img
+                    src="../assets/images/q.png"
+                    className="m-0"
+                    onClick={() => callQFunction()}
+                    style={{cursor: "pointer"}}
+                  />
+                )}
               </div>
             ) : props.location.state.type == " star" ||
               props.location.state.type == "Star" ? (
@@ -1109,11 +1114,14 @@ function SingleUserORBPage(props) {
                   style={{height: "80px", width: "80px"}}
                 />
               )
+            ) : qValue ? (
+              <img src="../assets/images/Qcolor.png" className="m-0" />
             ) : (
               <img
-                src="../assets/images/Qcolor.png"
-                style={{height: "80px", width: "80px"}}
+                src="../assets/images/q.png"
+                className="m-0"
                 onClick={() => callQFunction()}
+                style={{cursor: "pointer"}}
               />
             )}
           </div>
