@@ -985,17 +985,17 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/Background_r.png"
                   onClick={callRoarFunction}
-                  height="140"
-                  width="140"
-                  className="rimage_style"
+                  height="120"
+                  width="120"
                   style={{cursor: "pointer"}}
                 />
               ) : (
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
-                  // height="120"
-                  // width="120"
+                  height="120"
+                  width="120"
+                  style={{cursor: "pointer"}}
                 />
               )
             ) : localStorage.getItem("type") === "trainer" ||
