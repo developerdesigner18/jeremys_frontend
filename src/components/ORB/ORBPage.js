@@ -937,7 +937,7 @@ function ORBPage(props) {
 
           <div
             className={`container row ORB_videos_container mx-auto player ${
-              subscribedUsers ? "mt-0" : "mt-1"
+              subscribedUsers ? "mt-4" : "mt-1"
             }`}
           >
             {" "}
@@ -976,16 +976,16 @@ function ORBPage(props) {
                 <img
                   src="../assets/images/Background_r.png"
                   onClick={callRoarFunction}
-                  height="130"
-                  width="130"
+                  height="160"
+                  width="160"
                   className="rimage_style"
                 />
               ) : (
                 <img
                   src="../assets/images/disableR.png"
                   onClick={callRoarFunction}
-                  // height="120"
-                  // width="120"
+                  height="120"
+                  width="120"
                 />
               )
             ) : localStorage.getItem("type") === "trainer" ||
