@@ -72,6 +72,7 @@ function TrainerORBPage(props) {
   });
   const [fansFromQ, setFansFromQ] = useState([]);
   const [fanProfileClick, setFanProfileClick] = useState(false);
+  const [fanQvalue, setFanQvalue] = useState(false);
   const [availableHost, setAvailableHost] = useState([]);
   const rtc = {
     client: null,
@@ -414,29 +415,25 @@ function TrainerORBPage(props) {
       });
       // user-unpulished event
       rtc.client.on("user-unpublished", async (user, mediaType) => {
-        const fanRemote = document.getElementById("fan-remote-playerlist2");
-        const fanBigColumn = document.getElementById("FanBigColumn");
         console.log(
-          "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=fansFromQ-==-=-=",
+          "-=-=-=-=-=-=-=-=-=-=-=fan profile click-==-=-=",
           user.uid,
-          "fansFromQ",
-          fansFromQ
+          "media type",
+          mediaType,
+          fanProfileClick
         );
 
-        let generatedDiv = document.getElementById(
-          `player-wrapper-${user.uid}`
-        );
-        if (generatedDiv) {
-          generatedDiv.remove();
+        if (mediaType === "video") {
+          let generatedDiv = document.getElementById(
+            `player-wrapper-${user.uid}`
+          );
+          if (generatedDiv) {
+            generatedDiv.remove();
+          }
+          setFansFromQ([...fansFromQ]);
+          setFanProfileClick(false);
+          setFanVideoClicked(false);
         }
-        const id = user.uid;
-        // if (fansFromQ.length) {
-        // if (fansFromQ[0].uid === id) {
-        setFansFromQ([...fansFromQ]);
-        setFanProfileClick(false);
-        setFanVideoClicked(false);
-        // }
-        // }
       });
       // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
@@ -799,9 +796,10 @@ function TrainerORBPage(props) {
     const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
     setFanProfileClick(true);
     setFanVideoClickedUid(uid);
+    setFanQvalue(!fanQvalue);
     socket.emit("passQValue", {
       userId: localStorage.getItem("id"),
-      qValue: true,
+      qValue: !fanQvalue,
       fanId: fanId,
     });
 
@@ -833,11 +831,7 @@ function TrainerORBPage(props) {
             fanRemote.childNodes,
             fanBigColumn.childNodes
           );
-          console.log("available host.. ", availableHost);
-          const foundRemoteUser = availableHost.find(
-            userinfo => userinfo.uid === uid
-          );
-          ORB.client.unsubscribe(foundRemoteUser, "audio");
+
           socket.emit("removeFanFromQ", {
             userId: localStorage.getItem("id"),
             uid: uid,

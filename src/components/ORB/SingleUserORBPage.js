@@ -314,16 +314,20 @@ function SingleUserORBPage(props) {
             data.userId === props.location.state.id &&
             data.fanId === localStorage.getItem("id")
           ) {
-            setQvalue(data.qValue);
-
             if (data.qValue) {
+              setQvalue(data.qValue);
               rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
               setFanRTC(prevState => ({
                 ...prevState,
                 localAudioTrack: rtc.localAudioTrack,
               }));
               await rtc.client.publish(rtc.localAudioTrack);
+            } else {
+              console.log("rtc value... ", rtc, fanRTC);
+              await rtc.client.unpublish(rtc.localAudioTrack);
             }
+          } else {
+            setQvalue(false);
           }
         });
 
@@ -345,6 +349,7 @@ function SingleUserORBPage(props) {
               }
             }
           } else {
+            setQvalue(false);
             console.log(
               "should be closed audio track",
               rtc.localAudioTrack,
@@ -455,6 +460,7 @@ function SingleUserORBPage(props) {
               null
             );
             setFanUid(uid);
+            console.log("fan uid... ", uid);
             setFanRTC(prevState => ({
               ...prevState,
               client: rtc.client,
