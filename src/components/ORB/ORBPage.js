@@ -365,16 +365,15 @@ function ORBPage(props) {
       });
       // user-unpulished event
       rtc.client.on("user-unpublished", async (user, mediaType) => {
-        let generatedDiv = document.getElementById(
-          `player-wrapper-${user.uid}`
-        );
-        if (generatedDiv) {
-          generatedDiv.remove();
+        if (mediaType === "video") {
+          let generatedDiv = document.getElementById(
+            `player-wrapper-${user.uid}`
+          );
+          if (generatedDiv) {
+            generatedDiv.remove();
+          }
         }
-        // console.log("handleUserUnpublished-==-=-=", user.uid);
-        const id = user.uid;
       });
-      // console.log("publish success!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
     } else {
       swal("Info", "Please fill up the show time and seats!", "info");
     }

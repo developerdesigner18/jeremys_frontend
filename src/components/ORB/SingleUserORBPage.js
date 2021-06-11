@@ -69,7 +69,6 @@ function SingleUserORBPage(props) {
   const [fanUid, setFanUid] = useState();
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
   const [imageModal, setImageModal] = useState(false);
-  const [rEnable, setrEnable] = useState(false);
 
   const mount = useRef();
 
@@ -288,17 +287,22 @@ function SingleUserORBPage(props) {
           data.forEach(async value => {
             if (value.userId == props.location.state.id) {
               setRvalue(value.rValue);
-              setrEnable(value.rValue);
 
               if (value.rValue === false) {
                 console.log("fan rtc.. ", fanRTC, rtc);
-                setrEnable(value.rValue);
-                setRvalue(value.rValue);
+                // setRvalue(value.rValue);
                 if (rtc.localAudioTrack) {
-                  await rtc.localAudioTrack.setEnabled(value.rValue);
-                  // await fanRTC.client.unpublish(fanRTC.localAudioTrack);
+                  // await rtc.localAudioTrack.setEnabled(value.rValue);
+                  await rtc.client.unpublish(rtc.localAudioTrack);
+                } else if (fanRTC.localAudioTrack) {
+                  await fanRTC.client.unpublish(fanRTC.localAudioTrack);
                 }
-                // await fanRTC.client.unpublish(rtc.localAudioTrack);
+              } else {
+                if (rtc.localAudioTrack) {
+                  await rtc.client.publish(rtc.localAudioTrack);
+                } else if (fanRTC.localAudioTrack) {
+                  await fanRTC.client.publish(fanRTC.localAudioTrack);
+                }
               }
             }
           });
@@ -821,23 +825,31 @@ function SingleUserORBPage(props) {
 
     if (fanRTC.localVideoTrack) {
       await fanRTC.localVideoTrack.setEnabled(videoPause);
+    } else if (rtc.localVideoTrack) {
+      await rtc.localVideoTrack.setEnabled(videoPause);
     }
   };
 
   const callAudioPause = async () => {
     console.log("call audio pause fn... ");
     setAudioPause(!audioPause);
-    // if (rValue) {
-    //   rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    //   setFanRTC(prevState => ({
-    //     ...prevState,
-    //     localAudioTrack: rtc.localAudioTrack,
-    //   }));
-    // }
+
     if (fanRTC.localAudioTrack) {
       await fanRTC.localAudioTrack.setEnabled(audioPause);
+    } else if (rtc.localAudioTrack) {
+      await rtc.localAudioTrack.setEnabled(audioPause);
+    } else {
+      if (rValue) {
+        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setFanRTC(prevState => ({
+          ...prevState,
+          localAudioTrack: rtc.localAudioTrack,
+        }));
+        if (rtc.client) rtc.client.publish(rtc.localAudioTrack);
+        if (fanRTC.client) fanRTC.client.publish(rtc.localAudioTrack);
+      }
     }
-    console.log(audioPause);
+    console.log("audio apuse    ", audioPause);
   };
 
   const callQFunction = async () => {
@@ -885,38 +897,24 @@ function SingleUserORBPage(props) {
   };
 
   const onRclick = async () => {
-    console.log("rtc... ", rtc, fanRTC, rEnable);
+    console.log("rtc... ", rtc, fanRTC);
 
-    // if (rValue) {
-    //   // socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-    //   // socketIO.emit("passFanUIDForR", fanUid);
-
-    //   if (fanRTC.localAudioTrack) {
-    //     await fanRTC.localAudioTrack.setEnabled(false);
-    //     await fanRTC.client.unpublish(fanRTC.localAudioTrack);
-    //   } else {
-    //     rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    //     let clientPublished = await fanRTC.client.publish(rtc.localAudioTrack);
-    //     console.log("clientPublished", clientPublished);
-    //     setFanRTC(prevState => ({
-    //       ...prevState,
-    //       localAudioTrack: rtc.localAudioTrack,
-    //     }));
-    //   }
-    // } else {
-    //   if (fanRTC.localAudioTrack) {
-    //     await fanRTC.localAudioTrack.setEnabled(rValue);
-    //     await fanRTC.client.unpublish(fanRTC.localAudioTrack);
-    //   }
-    // }
     if (rValue) {
-      setrEnable(!rEnable);
-      fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-      setFanRTC(prevState => ({
-        ...prevState,
-        localAudioTrack: fanRTC.localAudioTrack,
-      }));
-      await fanRTC.client.publish(fanRTC.localAudioTrack);
+      if (rtc.client) {
+        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setFanRTC(prevState => ({
+          ...prevState,
+          localAudioTrack: rtc.localAudioTrack,
+        }));
+        await rtc.client.publish(rtc.localAudioTrack);
+      } else if (fanRTC.client) {
+        fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+        setFanRTC(prevState => ({
+          ...prevState,
+          localAudioTrack: fanRTC.localAudioTrack,
+        }));
+        await fanRTC.client.publish(fanRTC.localAudioTrack);
+      }
     }
   };
 
