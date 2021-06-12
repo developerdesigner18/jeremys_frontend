@@ -359,6 +359,7 @@ function SingleUserORBPage(props) {
               rtc.localAudioTrack,
               fanRTC.localAudioTrack
             );
+            await rtc.client.unpublish(rtc.localAudioTrack);
           }
         });
       }
@@ -1122,7 +1123,7 @@ function SingleUserORBPage(props) {
               ) : (
                 <img
                   src="../assets/images/disableR.png"
-                  style={{height: "80px", width: "80px"}}
+                  style={{height: "120px", width: "120px"}}
                 />
               )
             ) : qValue ? (
