@@ -69,6 +69,7 @@ function SingleUserORBPage(props) {
   const [fanUid, setFanUid] = useState();
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
   const [imageModal, setImageModal] = useState(false);
+  const [threeMinutesComplete, setThreeMinutesComplete] = useState(false);
 
   const mount = useRef();
 
@@ -126,9 +127,8 @@ function SingleUserORBPage(props) {
       }
     } else {
       setShow(false);
-      setIsActive(true);
     }
-    // setIsActive(true);
+    setIsActive(true);
   };
   const handleShow = () => {
     setShow(true);
@@ -248,7 +248,7 @@ function SingleUserORBPage(props) {
   useEffect(() => {
     let interval = null;
 
-    // console.log("time and isactive.....", time, isActive);
+    console.log("time and isactive.....", time, isActive);
     if (isActive && time > 0) {
       interval = setInterval(() => {
         setTime(time => time - 1);
@@ -256,8 +256,12 @@ function SingleUserORBPage(props) {
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
     } else if (isActive && time == 0) {
-      // setShowRatingModal(true);
-      leaveCallFromFan();
+      if (!paid && streamObj.price !== 0) {
+        setThreeMinutesComplete(true);
+        setShow(true);
+      } else {
+        leaveCallFromFan();
+      }
     }
     return () => clearInterval(interval);
   }, [time, isActive]);
@@ -293,15 +297,15 @@ function SingleUserORBPage(props) {
                 // setRvalue(value.rValue);
                 if (rtc.localAudioTrack) {
                   // await rtc.localAudioTrack.setEnabled(value.rValue);
-                  await rtc.client.unpublish(rtc.localAudioTrack);
+                  await fanRTC.client.unpublish(rtc.localAudioTrack);
                 } else if (fanRTC.localAudioTrack) {
                   await fanRTC.client.unpublish(fanRTC.localAudioTrack);
                 }
               } else {
-                if (rtc.localAudioTrack) {
+                if (rtc.client) {
                   await rtc.client.publish(rtc.localAudioTrack);
-                } else if (fanRTC.localAudioTrack) {
-                  await fanRTC.client.publish(fanRTC.localAudioTrack);
+                } else if (fanRTC.client) {
+                  await fanRTC.client.publish(rtc.localAudioTrack);
                 }
               }
             }
@@ -622,7 +626,11 @@ function SingleUserORBPage(props) {
               if (generatedDiv) {
                 generatedDiv.remove();
               }
-              console.log("handleUserUnpublished-==-=-=", user.uid);
+              console.log(
+                "handleUserUnpublished-==-=-=",
+                user.uid,
+                hostUidResponse
+              );
               setTimeout(() => {
                 const id = user.uid;
                 delete remoteUsers[id];
@@ -632,14 +640,18 @@ function SingleUserORBPage(props) {
                   hostUser.splice(index, 1);
                 }
               }, 180000);
+              if (parseInt(hostUidResponse) === user.uid) {
+                swal({text: "Star left the session!", timer: 2000});
+                props.history.push("/fanHomePage");
+              }
             });
 
             // Create an audio track from the audio sampled by a microphone.
-            // rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            // setFanRTC(prevState => ({
-            //   ...prevState,
-            //   localAudioTrack: rtc.localAudioTrack,
-            // }));
+            rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+            setFanRTC(prevState => ({
+              ...prevState,
+              localAudioTrack: rtc.localAudioTrack,
+            }));
             // Create a video track from the video captured by a camera.
             rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
             setFanRTC(prevState => ({
@@ -746,44 +758,51 @@ function SingleUserORBPage(props) {
       fanRTC
     );
 
-    // Destroy the local audio and video tracks.
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        // Destroy the local audio and video tracks.
 
-    if (fanRTC.client && fanRTC.localVideoTrack) {
-      fanRTC.localVideoTrack.close();
-      // fanRTC.localAudioTrack.close();
+        if (fanRTC.client && fanRTC.localVideoTrack) {
+          fanRTC.localVideoTrack.close();
+          // fanRTC.localAudioTrack.close();
 
-      // Leave the channel.
-      await fanRTC.client.leave();
-    }
-    if (fanRTC.localAudioTrack) {
-      fanRTC.localAudioTrack.close();
-    }
-    const dataToPass = {
-      fanId: localStorage.getItem("id"),
-      userId: props.location.state.id,
-    };
-    await dispatch(removedJoinFan(dataToPass));
+          // Leave the channel.
+          await fanRTC.client.leave();
+        }
+        if (fanRTC.localAudioTrack) {
+          fanRTC.localAudioTrack.close();
+        }
+        const dataToPass = {
+          fanId: localStorage.getItem("id"),
+          userId: props.location.state.id,
+        };
+        await dispatch(removedJoinFan(dataToPass));
 
-    if (paid) {
-      console.log("paid true....");
-      await dispatch(removeFan3MinuteCount(dataToPass));
-    } else {
-      console.log("paid false....");
-      if (streamObj && streamObj.price !== 0) {
-        await dispatch(storeFan3MinuteCount(dataToPass));
+        if (paid) {
+          console.log("paid true....");
+          await dispatch(removeFan3MinuteCount(dataToPass));
+        } else {
+          console.log("paid false....");
+          if (streamObj && streamObj.price !== 0) {
+            await dispatch(storeFan3MinuteCount(dataToPass));
+          }
+        }
+        setShowRatingModal(true);
+        if (
+          props.location.state.type === "trainer" ||
+          props.location.state.type === "Trainer"
+        ) {
+          socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+          socketIO.emit("removeFanFromQ", {
+            userId: props.location.state.id,
+            uid: fanUid,
+          });
+        }
       }
-    }
-    setShowRatingModal(true);
-    if (
-      props.location.state.type === "trainer" ||
-      props.location.state.type === "Trainer"
-    ) {
-      socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
-      socketIO.emit("removeFanFromQ", {
-        userId: props.location.state.id,
-        uid: fanUid,
-      });
-    }
+    });
   }
 
   const closeModal = async () => {
@@ -901,21 +920,21 @@ function SingleUserORBPage(props) {
     console.log("rtc... ", rtc, fanRTC);
 
     if (rValue) {
-      if (rtc.client) {
-        rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setFanRTC(prevState => ({
-          ...prevState,
-          localAudioTrack: rtc.localAudioTrack,
-        }));
-        await rtc.client.publish(rtc.localAudioTrack);
-      } else if (fanRTC.client) {
-        fanRTC.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setFanRTC(prevState => ({
-          ...prevState,
-          localAudioTrack: fanRTC.localAudioTrack,
-        }));
-        await fanRTC.client.publish(fanRTC.localAudioTrack);
-      }
+      // if (rtc.client) {
+      //   rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      //   setFanRTC(prevState => ({
+      //     ...prevState,
+      //     localAudioTrack: rtc.localAudioTrack,
+      //   }));
+      //   await rtc.client.publish(rtc.localAudioTrack);
+      // } else if (fanRTC.client) {
+      //   rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      //   setFanRTC(prevState => ({
+      //     ...prevState,
+      //     localAudioTrack: rtc.localAudioTrack,
+      //   }));
+      //   await fanRTC.client.publish(rtc.localAudioTrack);
+      // }
     }
   };
 
@@ -994,6 +1013,9 @@ function SingleUserORBPage(props) {
               paid={paid}
               handleClose={handleClose}
               setFreeSessionCompleted={setFreeSessionCompleted}
+              setThreeMinutesComplete={setThreeMinutesComplete}
+              threeMinutesComplete={threeMinutesComplete}
+              leaveCallFromFan={leaveCallFromFan}
             />
           )}
         </Modal.Body>

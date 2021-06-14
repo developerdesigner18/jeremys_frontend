@@ -10,6 +10,7 @@ import {
   makeTicketEmpty,
 } from "../../actions/paymentActions";
 import Modal from "react-bootstrap/Modal";
+import swal from "sweetalert";
 
 function Ticket(props) {
   const dispatch = useDispatch();
@@ -144,7 +145,21 @@ function Ticket(props) {
               if (props.freeSessionCompleted) {
                 props.setShow(true);
               } else {
-                props.setShow(false);
+                console.log("3 minutes props.. ", props.threeMinutesComplete);
+                if (props.threeMinutesComplete) {
+                  swal({
+                    text: "Are you sure you want to exit the live session?",
+                    buttons: ["Exit", "Go back to pay"],
+                  }).then(async function (isConfirm) {
+                    if (isConfirm) {
+                      props.setShow(true);
+                    } else {
+                      props.leaveCallFromFan();
+                    }
+                  });
+                } else {
+                  props.handleClose();
+                }
               }
             }}
             style={{zIndex: "1", padding: "5px"}}

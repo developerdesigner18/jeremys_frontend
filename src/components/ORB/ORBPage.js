@@ -392,21 +392,21 @@ function ORBPage(props) {
 
       socket.emit("storeRvalue", dataToPass);
       console.log("is mute value... ", isMute);
-      if (isMute) {
-        console.log("available host.. ", availableHost);
-        if (availableHost.length) {
-          for (let user of availableHost) {
-            ORB.client.unsubscribe(user, "audio");
-          }
-        }
-      } else {
-        console.log("available host for subscribe.. ", availableHost);
-        if (availableHost.length) {
-          for (let user of availableHost) {
-            ORB.client.subscribe(user, "audio");
-          }
-        }
-      }
+      // if (isMute) {
+      //   console.log("available host.. ", availableHost);
+      //   if (availableHost.length) {
+      //     for (let user of availableHost) {
+      //       ORB.client.unsubscribe(user, "audio");
+      //     }
+      //   }
+      // } else {
+      //   console.log("available host for subscribe.. ", availableHost);
+      //   if (availableHost.length) {
+      //     for (let user of availableHost) {
+      //       ORB.client.subscribe(user, "audio");
+      //     }
+      //   }
+      // }
     }
   };
 
@@ -560,18 +560,25 @@ function ORBPage(props) {
     }
   }
   async function leaveCall() {
-    // Destroy the local audio and video tracks.
-    if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
-      ORB.localAudioTrack.close();
-      ORB.localVideoTrack.close();
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        // Destroy the local audio and video tracks.
+        if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
+          ORB.localAudioTrack.close();
+          ORB.localVideoTrack.close();
 
-      // Leave the channel.
-      await ORB.client.leave();
-    }
-    // socket.disconnect();
-    props.history.push("/userHomepage");
-    await dispatch(removeOnlineUser());
-    await dispatch(deleteStream());
+          // Leave the channel.
+          await ORB.client.leave();
+        }
+        // socket.disconnect();
+        props.history.push("/userHomepage");
+        await dispatch(removeOnlineUser());
+        await dispatch(deleteStream());
+      }
+    });
   }
 
   useEffect(() => {
