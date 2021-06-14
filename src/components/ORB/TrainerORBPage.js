@@ -723,6 +723,7 @@ function TrainerORBPage(props) {
     const rightColumnDiv = document.getElementById(`SmallColumnRight`);
     const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
+    setFanQvalue(false);
 
     console.log(
       "columns........... ",

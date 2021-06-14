@@ -55,7 +55,7 @@ function SingleUserORBPage(props) {
   const ref = useRef();
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [time, setTime] = useState(180);
+  const [time, setTime] = useState(30);
   const [paid, setPaid] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [streamObj, setStreamObj] = useState({});
@@ -700,7 +700,7 @@ function SingleUserORBPage(props) {
           handleClose();
           setPaid(false);
         } else if (orbState.getLiveStreamData.price !== 0) {
-          setTime(180);
+          setTime(30);
         }
         setStreamObj(orbState.getLiveStreamData);
       }
@@ -743,6 +743,7 @@ function SingleUserORBPage(props) {
           }
           setPaid(true);
           setFreeSessionCompleted(false);
+          setThreeMinutesComplete(false);
         } else {
           setPaid(false);
         }
@@ -755,7 +756,8 @@ function SingleUserORBPage(props) {
     console.log(
       "leave call fn called in fan orb page of star/trainer",
       paid,
-      fanRTC
+      fanRTC,
+      threeMinutesComplete
     );
 
     swal({
@@ -790,7 +792,12 @@ function SingleUserORBPage(props) {
             await dispatch(storeFan3MinuteCount(dataToPass));
           }
         }
-        setShowRatingModal(true);
+        if (threeMinutesComplete) {
+          setShowRatingModal(false);
+          props.history.push("/fanHomePage");
+        } else {
+          setShowRatingModal(true);
+        }
         if (
           props.location.state.type === "trainer" ||
           props.location.state.type === "Trainer"
@@ -1016,6 +1023,7 @@ function SingleUserORBPage(props) {
               setThreeMinutesComplete={setThreeMinutesComplete}
               threeMinutesComplete={threeMinutesComplete}
               leaveCallFromFan={leaveCallFromFan}
+              setShowRatingModal={setShowRatingModal}
             />
           )}
         </Modal.Body>
