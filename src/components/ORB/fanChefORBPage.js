@@ -448,41 +448,54 @@ function FanChefORB(props) {
   }, [paymentState]);
 
   async function leaveCall() {
-    setExitCalled(true);
-    console.log(
-      "leave call fn called in fan orb page of chef",
-      paid,
-      paymentState && paymentState.paymentDetail
-    );
-    // Destroy the local audio and video tracks.
-    console.log("rtc.. ", chefRTC);
-    if (chefRTC.client && chefRTC.localVideoTrack && chefRTC.localAudioTrack) {
-      chefRTC.localAudioTrack.close();
-      chefRTC.localVideoTrack.close();
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        setExitCalled(true);
+        console.log(
+          "leave call fn called in fan orb page of chef",
+          paid,
+          paymentState && paymentState.paymentDetail
+        );
+        // Destroy the local audio and video tracks.
+        console.log("rtc.. ", chefRTC);
+        if (
+          chefRTC.client &&
+          chefRTC.localVideoTrack &&
+          chefRTC.localAudioTrack
+        ) {
+          chefRTC.localAudioTrack.close();
+          chefRTC.localVideoTrack.close();
 
-      // Leave the channel.
-      await chefRTC.client.leave();
-    }
-    // props.history.push("/fanHomePage");
-    const dataToPass = {
-      fanId: localStorage.getItem("id"),
-      userId: props.location.state.id,
-    };
-    await dispatch(removedJoinFan(dataToPass));
+          // Leave the channel.
+          await chefRTC.client.leave();
+        }
+        // props.history.push("/fanHomePage");
+        const dataToPass = {
+          fanId: localStorage.getItem("id"),
+          userId: props.location.state.id,
+        };
+        await dispatch(removedJoinFan(dataToPass));
 
-    if (paymentState && paymentState.paymentDetail) {
-      await dispatch(removeFan3MinuteCount(dataToPass));
-    } else {
-      await dispatch(storeFan3MinuteCount(dataToPass));
-    }
+        if (paymentState && paymentState.paymentDetail) {
+          await dispatch(removeFan3MinuteCount(dataToPass));
+        } else {
+          await dispatch(storeFan3MinuteCount(dataToPass));
+        }
 
-    // setShowRating(true);
-    if (threeMinutesComplete) {
-      setShowRating(false);
-      props.history.push("/fanHomePage");
-    } else {
-      setShowRating(true);
-    }
+        // setShowRating(true);
+        if (threeMinutesComplete) {
+          setShowRating(false);
+          props.history.push("/fanHomePage");
+        } else {
+          setShowRating(true);
+        }
+      } else {
+        setShow(true);
+      }
+    });
   }
 
   const closeModal = async () => {

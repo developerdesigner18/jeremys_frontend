@@ -97,7 +97,8 @@ function Ticket(props) {
             class="fas fa-times "
             role="button"
             onClick={() => {
-              props.setShow(false);
+              // props.setShow(false);
+              props.handleClose();
             }}
             style={{ zIndex: "1", padding: "5px" }}
           />

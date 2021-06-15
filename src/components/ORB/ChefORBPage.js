@@ -220,18 +220,25 @@ function ChefORBPage(props) {
   };
 
   async function leaveCall() {
-    console.log("leave call fn called in chef page");
-    // Destroy the local audio and video tracks.
-    if (RTC.client && RTC.localVideoTrack && RTC.localAudioTrack) {
-      RTC.localAudioTrack.close();
-      RTC.localVideoTrack.close();
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        console.log("leave call fn called in chef page");
+        // Destroy the local audio and video tracks.
+        if (RTC.client && RTC.localVideoTrack && RTC.localAudioTrack) {
+          RTC.localAudioTrack.close();
+          RTC.localVideoTrack.close();
 
-      // Leave the channel.
-      await RTC.client.leave();
-    }
-    socket.disconnect();
-    await dispatch(removeOnlineUser());
-    await dispatch(deleteGeneratedStream());
+          // Leave the channel.
+          await RTC.client.leave();
+        }
+        socket.disconnect();
+        await dispatch(removeOnlineUser());
+        await dispatch(deleteGeneratedStream());
+      }
+    });
   }
 
   const Banner1Change = (event) => {

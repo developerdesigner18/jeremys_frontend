@@ -1,10 +1,10 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../../assets/css/ORB.css";
 import html2canvas from "html2canvas";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import {useDispatch, useSelector} from "react-redux";
-import {socket} from "../../socketIO";
+import { useDispatch, useSelector } from "react-redux";
+import { socket } from "../../socketIO";
 import swal from "sweetalert";
 import Modal from "react-bootstrap/Modal";
 
@@ -17,7 +17,7 @@ import {
   deleteStream,
   storeHostUId,
 } from "../../actions/orbActions";
-import {getUserWithId} from "../../actions/userActions";
+import { getUserWithId } from "../../actions/userActions";
 import Timer from "../ORBTicketComponents/Timer";
 import Seat from "../ORBTicketComponents/Seat";
 import GenerateTicket from "../ORBTicketComponents/GenerateTicket";
@@ -26,7 +26,7 @@ import socketIOClient from "socket.io-client";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -81,7 +81,7 @@ function TrainerORBPage(props) {
   };
 
   let socket;
-
+  console.log("fanQvalue.....", fanQvalue);
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   useOutsideClick(ref, () => {
     setIsOpen(false);
@@ -100,26 +100,26 @@ function TrainerORBPage(props) {
       localStorage.getItem("type") === "Trainer"
     ) {
       console.log("inside if...........");
-      socket.on("getQvalue", data => {
+      socket.on("getQvalue", (data) => {
         console.log("data from q event", data);
         if (data[localStorage.getItem("id")]) {
           setFansFromQ(data[localStorage.getItem("id")]);
         }
       });
 
-      socket.on("remainingFans", async data => {
+      socket.on("remainingFans", async (data) => {
         console.log("remainging fans...", data);
         setFansFromQ(data[localStorage.getItem("id")]);
       });
     }
 
-    socket.on("tipTicketValue", data => {
+    socket.on("tipTicketValue", (data) => {
       console.log("data from tip ticket event", data);
       setTipRatio(data.tip);
       setTicketSold(data.soldTicket);
     });
 
-    window.addEventListener("beforeunload", async ev => {
+    window.addEventListener("beforeunload", async (ev) => {
       console.log("before unload evenet called ", ev);
 
       await dispatch(removeOnlineUser());
@@ -157,13 +157,13 @@ function TrainerORBPage(props) {
     setShow(true);
   };
 
-  const stateData = useSelector(state => state.ORB);
-  const stateUser = useSelector(state => state.user);
+  const stateData = useSelector((state) => state.ORB);
+  const stateUser = useSelector((state) => state.user);
 
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
-  const onClickVideo = uid => {
+  const onClickVideo = (uid) => {
     setFanVideoClicked(true);
     setFanProfileClick(false);
     setFanVideoClickedUid(uid);
@@ -289,15 +289,15 @@ function TrainerORBPage(props) {
             "id"
           )}`
         )
-        .then(result => {
+        .then((result) => {
           // console.log("result-==-=--=", result.data.key);
-          setOptions(prevState => ({...prevState, token: result.data.key}));
+          setOptions((prevState) => ({ ...prevState, token: result.data.key }));
           token = result.data.key;
         })
-        .catch(err => console.log("error ", err));
+        .catch((err) => console.log("error ", err));
 
-      rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
-      setORB(prevState => ({...prevState, client: rtc.client}));
+      rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+      setORB((prevState) => ({ ...prevState, client: rtc.client }));
       await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
         options.appId,
@@ -320,7 +320,7 @@ function TrainerORBPage(props) {
         AGC: true,
         ANS: true,
       });
-      setORB(prevState => ({
+      setORB((prevState) => ({
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
       }));
@@ -328,7 +328,7 @@ function TrainerORBPage(props) {
 
       // Create a video track from the video captured by a camera.
       rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setORB(prevState => ({
+      setORB((prevState) => ({
         ...prevState,
         localVideoTrack: rtc.localVideoTrack,
       }));
@@ -388,7 +388,7 @@ function TrainerORBPage(props) {
               user.videoTrack.play(`player-wrapper-${user.uid}`);
             }
           } else {
-            rtc.client.on("media-reconnect-start", uid => {
+            rtc.client.on("media-reconnect-start", (uid) => {
               // console.log("media-reconnect-start event called.............", uid);
             });
           }
@@ -407,7 +407,7 @@ function TrainerORBPage(props) {
             //   }
             // }
           } else {
-            rtc.client.on("media-reconnect-start", uid => {
+            rtc.client.on("media-reconnect-start", (uid) => {
               // console.log("media-reconnect-start event called.............", uid);
             });
           }
@@ -448,7 +448,8 @@ function TrainerORBPage(props) {
         hosts.push(
           <div
             className={`ORB_main_cat ${subscribedUsers ? "col-md-2" : null}`}
-            id={`fan-ORB${i}`}>
+            id={`fan-ORB${i}`}
+          >
             {subscribedUsers ? (
               <></>
             ) : (
@@ -493,10 +494,11 @@ function TrainerORBPage(props) {
         <div
           className="ORB_main_cat col-md-2 my-1 mx-0"
           id={`fan-ORB${i}`}
-          style={{width: "100%", height: "165px"}}>
+          style={{ width: "100%", height: "165px" }}
+        >
           <img
             src="../assets/images/button_bg.png"
-            style={{width: "100%", height: "100%"}}
+            style={{ width: "100%", height: "100%" }}
           />
         </div>
       );
@@ -598,19 +600,26 @@ function TrainerORBPage(props) {
   }
   async function leaveCall() {
     // Destroy the local audio and video tracks.
-    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
 
-    if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
-      ORB.localAudioTrack.close();
-      ORB.localVideoTrack.close();
+        if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
+          ORB.localAudioTrack.close();
+          ORB.localVideoTrack.close();
 
-      // Leave the channel.
-      await ORB.client.leave();
-    }
-    socket.disconnect();
-    await dispatch(removeOnlineUser());
-    await dispatch(deleteStream());
-    props.history.push("/userHomepage");
+          // Leave the channel.
+          await ORB.client.leave();
+        }
+        socket.disconnect();
+        await dispatch(removeOnlineUser());
+        await dispatch(deleteStream());
+        props.history.push("/userHomepage");
+      }
+    });
   }
 
   useEffect(() => {
@@ -621,10 +630,10 @@ function TrainerORBPage(props) {
           // if (stateData.joinedFanList.length >= 15) {
           //   swal("Info", "You cannot communicate with this user", "info");
           // } else {
-          setFanList(prevState => [...prevState, stateData.joinedFanList]);
+          setFanList((prevState) => [...prevState, stateData.joinedFanList]);
           // }
         } else {
-          setFanList(prevState => [...prevState, stateData.joinedFanList]);
+          setFanList((prevState) => [...prevState, stateData.joinedFanList]);
         }
       }, 5000);
     }
@@ -712,7 +721,7 @@ function TrainerORBPage(props) {
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
   };
 
-  const closedBigORB = uid => {
+  const closedBigORB = (uid) => {
     console.log("closed fn clicked on big column...");
 
     const fanRemote = document.getElementById("fan-remote-playerlist2");
@@ -723,7 +732,6 @@ function TrainerORBPage(props) {
     const rightColumnDiv = document.getElementById(`SmallColumnRight`);
     const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
-
     console.log(
       "columns........... ",
       fanRemote.childNodes,
@@ -823,6 +831,8 @@ function TrainerORBPage(props) {
         fanBigColumn.addEventListener("click", () => {
           setFanProfileClick(false);
           setFanVideoClicked(false);
+          setFanQvalue(false);
+
           let removeFan = fansFromQ.splice(0, 1);
           setFansFromQ([...fansFromQ]);
 
@@ -898,14 +908,16 @@ function TrainerORBPage(props) {
         backgroundSize: "100vw auto",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <Modal
         show={show}
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{padding: "0"}}>
+        aria-labelledby="example-custom-modal-styling-title"
+      >
+        <Modal.Body style={{ padding: "0" }}>
           {showTimer ? (
             <Timer setShow={setShow} setTime={setTime} />
           ) : showSeat ? (
@@ -934,8 +946,9 @@ function TrainerORBPage(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
-        <Modal.Body style={{padding: "0"}}>
+        aria-labelledby="example-custom-modal-styling-title"
+      >
+        <Modal.Body style={{ padding: "0" }}>
           {imageModal ? (
             <ScreenShotUpload
               closeImageModal={closeImageModal}
@@ -956,7 +969,8 @@ function TrainerORBPage(props) {
               ? "inset 3px 5px 5px #3a3a3a"
               : "rgb(89 89 89) 3px 5px 5px 8px inset",
             backgroundColor: "#424242",
-          }}>
+          }}
+        >
           {/* <div className="ORB_video_live d-flex position-relative">
             <div></div>
           </div> */}
@@ -981,7 +995,7 @@ function TrainerORBPage(props) {
           <div className="values">
             <div className="value_container">
               <span className="value_name">Timer</span>
-              <p style={{fontWeight: "600"}}>
+              <p style={{ fontWeight: "600" }}>
                 {Math.floor(time / 60) < 10
                   ? "0" + Math.floor(time / 60)
                   : Math.floor(time / 60)}
@@ -1054,7 +1068,8 @@ function TrainerORBPage(props) {
           {isLive ? (
             <div
               className="container d-flex justify-content-center mt-1"
-              style={{textAlign: "center", height: "100px"}}>
+              style={{ textAlign: "center", height: "100px" }}
+            >
               {/* <div className="ORB_main_cat m-0"> */}
               <img src="../assets/images/live-btn.png" />
               {/* </div> */}
@@ -1064,7 +1079,8 @@ function TrainerORBPage(props) {
           <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
-            }`}>
+            }`}
+          >
             {" "}
             {fanVideoClicked ? (
               <>
@@ -1073,7 +1089,8 @@ function TrainerORBPage(props) {
                 </div>
                 <div
                   className="col-md-6 d-flex justify-content-center"
-                  id="BigColumn"></div>
+                  id="BigColumn"
+                ></div>
                 <div className="col-md-3">
                   <div className="row" id="SmallColumnRight"></div>
                 </div>
@@ -1089,7 +1106,8 @@ function TrainerORBPage(props) {
                 </div>
                 <div
                   className="col-md-6 d-flex justify-content-center mb-2"
-                  id="FanBigColumn"></div>
+                  id="FanBigColumn"
+                ></div>
                 <div className="col-md-3">
                   <div className="row">
                     <div className="col-md-6 ORB_main_cat"></div>
@@ -1102,14 +1120,16 @@ function TrainerORBPage(props) {
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}
-            id="fan-remote-playerlist2">
+            id="fan-remote-playerlist2"
+          >
             {fanProfileClick === false && fanVideoClicked === false
               ? showEmptyCircles()
               : null}
           </div>
           <div
             className="container d-flex justify-content-center"
-            style={{textAlign: "center"}}>
+            style={{ textAlign: "center" }}
+          >
             {/* <div className="ORB_main_cat m-0"> */}
             {/*  fansFromQ.map(fan => { */}
             {/*   return ( */}
@@ -1134,14 +1154,14 @@ function TrainerORBPage(props) {
                       ? `${fansFromQ[0].profilePic}`
                       : `../assets/images/fan_placeholder.png`
                   }
-                  onError={e => {
+                  onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "../assets/images/fan_placeholder.png";
                   }}
                   onClick={() =>
                     onFanProfileClick(fansFromQ[0].uid, fansFromQ[0].id)
                   }
-                  style={{cursor: fansFromQ.length ? "pointer" : "default"}}
+                  style={{ cursor: fansFromQ.length ? "pointer" : "default" }}
                 />
               </div>
             </div>
@@ -1178,8 +1198,9 @@ function TrainerORBPage(props) {
             ) : (
               <div
                 className="ORB_main_cat"
-                style={{cursor: "pointer"}}
-                onClick={callGoToLive}>
+                style={{ cursor: "pointer" }}
+                onClick={callGoToLive}
+              >
                 {isLive ? (
                   <img src="../assets/images/live-btn.png" />
                 ) : (
@@ -1250,14 +1271,14 @@ function TrainerORBPage(props) {
 
       <div className="container justify-content-center d-flex ORB_links">
         {isLive ? (
-          <a style={{cursor: "no-drop"}}>
+          <a style={{ cursor: "no-drop" }}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/ticket.png" />
               <p>Ticket</p>
             </div>
           </a>
         ) : (
-          <a style={{cursor: "pointer"}} onClick={showTicketModal}>
+          <a style={{ cursor: "pointer" }} onClick={showTicketModal}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/ticket.png" />
               <p>Ticket</p>
@@ -1265,14 +1286,14 @@ function TrainerORBPage(props) {
           </a>
         )}
         {isLive ? (
-          <a style={{cursor: "no-drop"}}>
+          <a style={{ cursor: "no-drop" }}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/seat.png" />
               <p>Occupants</p>
             </div>
           </a>
         ) : (
-          <a style={{cursor: "pointer"}} onClick={showSeatModal}>
+          <a style={{ cursor: "pointer" }} onClick={showSeatModal}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/seat.png" />
               <p>Occupants</p>
@@ -1288,7 +1309,7 @@ function TrainerORBPage(props) {
             </div>
           </a>
         ) : (
-          <a style={{cursor: "no-drop"}}>
+          <a style={{ cursor: "no-drop" }}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/take_picture.png" />
               <p>Take Picture</p>
@@ -1297,8 +1318,9 @@ function TrainerORBPage(props) {
         )}
 
         <a
-          style={{cursor: isLive ? "no-drop" : "pointer"}}
-          onClick={showTimerModal}>
+          style={{ cursor: isLive ? "no-drop" : "pointer" }}
+          onClick={showTimerModal}
+        >
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>
@@ -1308,14 +1330,14 @@ function TrainerORBPage(props) {
           </div>
         </a>
         {isLive ? (
-          <a style={{cursor: "pointer"}} onClick={callShortBreak}>
+          <a style={{ cursor: "pointer" }} onClick={callShortBreak}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/short_break.png" />
               <p>Short Break</p>
             </div>
           </a>
         ) : (
-          <a style={{cursor: "no-drop"}}>
+          <a style={{ cursor: "no-drop" }}>
             <div className="ORB_link d-flex flex-column">
               <img src="../assets/images/short_break.png" />
               <p>Short Break</p>
@@ -1329,7 +1351,8 @@ function TrainerORBPage(props) {
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            onClick={() => setMoreIcon()}>
+            onClick={() => setMoreIcon()}
+          >
             <img
               src="../assets/images/share.png"
               style={
@@ -1339,7 +1362,7 @@ function TrainerORBPage(props) {
                       cursor: "pointer",
                       borderRadius: "100%",
                     }
-                  : {cursor: "pointer"}
+                  : { cursor: "pointer" }
               }
             />
             <p>Share</p>
@@ -1349,31 +1372,34 @@ function TrainerORBPage(props) {
                 background: "#333333",
                 borderRadius: "10px",
                 verticalAlign: "middle",
-              }}>
+              }}
+            >
               <ul className="menu_item d-flex m-0 justify-content-between px-3 align-items-center">
                 {" "}
                 <li
                   className="menu more_list "
-                  style={{listStyleType: "none"}}
+                  style={{ listStyleType: "none" }}
                   // onClick={() => props.history.push("/profile")}
                 >
-                  <a style={{cursor: "pointer"}} onClick={shareOnFB}>
+                  <a style={{ cursor: "pointer" }} onClick={shareOnFB}>
                     {" "}
                     <span
                       className="fab fa-facebook-square"
-                      style={{fontSize: "25px"}}></span>
+                      style={{ fontSize: "25px" }}
+                    ></span>
                   </a>
                 </li>
                 <li
                   className="menu more_list"
-                  style={{listStyleType: "none"}}
+                  style={{ listStyleType: "none" }}
                   // onClick={() => props.history.push("/myStory")}
                 >
                   {" "}
-                  <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
+                  <a style={{ cursor: "pointer" }} onClick={shareOnTwitter}>
                     <span
                       className="fab fa-twitter-square"
-                      style={{fontSize: "25px"}}></span>{" "}
+                      style={{ fontSize: "25px" }}
+                    ></span>{" "}
                   </a>
                 </li>
               </ul>
