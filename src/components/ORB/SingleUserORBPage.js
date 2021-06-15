@@ -641,8 +641,23 @@ function SingleUserORBPage(props) {
                 }
               }, 180000);
               if (parseInt(hostUidResponse) === user.uid) {
-                swal({text: "Star left the session!", timer: 2000});
-                await leaveCallFromFan();
+                if (
+                  props.location.state.type === "star" ||
+                  props.location.state.type === "Star"
+                ) {
+                  swal({text: "Star left the session!"}).then(isConfirm => {
+                    // if (isConfirm) {
+                    leaveCallFromFan();
+                    // }
+                  });
+                } else {
+                  swal({text: "Trainer left the session!"}).then(isConfirm => {
+                    // if (isConfirm) {
+                    leaveCallFromFan();
+                    // }
+                  });
+                }
+                // props.history.push("/fanHomePage");
               }
             });
 
@@ -681,7 +696,9 @@ function SingleUserORBPage(props) {
         const sessionTime = moment(orbState.getLiveStreamData.createdAt);
         const currentTime = moment();
         const diffTime = currentTime.diff(sessionTime, "seconds");
-        const timeToDisplay = orbState.getLiveStreamData.timer - diffTime;
+        const timeToDisplay =
+          orbState.getLiveStreamData.timer -
+          moment().diff(sessionTime, "seconds");
         console.log(
           "time and hours.......",
           diffTime,
@@ -689,14 +706,20 @@ function SingleUserORBPage(props) {
           timeToDisplay
         );
         if (paid) {
-          setTime(timeToDisplay);
+          setTime(
+            orbState.getLiveStreamData.timer -
+              moment().diff(sessionTime, "seconds")
+          );
           const dataToPass = {
             fanId: localStorage.getItem("id"),
             userId: props.location.state.id,
           };
           await dispatch(removeFan3MinuteCount(dataToPass));
         } else if (orbState.getLiveStreamData.price == 0) {
-          setTime(timeToDisplay);
+          setTime(
+            orbState.getLiveStreamData.timer -
+              moment().diff(sessionTime, "seconds")
+          );
           handleClose();
           setPaid(false);
         } else if (orbState.getLiveStreamData.price !== 0) {
@@ -739,7 +762,10 @@ function SingleUserORBPage(props) {
             const currentTime = moment();
             const diffTime = currentTime.diff(sessionTime, "seconds");
             const timeToDisplay = streamObj.timer - diffTime;
-            setTime(timeToDisplay);
+            setTime(
+              orbState.getLiveStreamData.timer -
+                moment().diff(sessionTime, "seconds")
+            );
           }
           setPaid(true);
           setFreeSessionCompleted(false);
@@ -1007,6 +1033,7 @@ function SingleUserORBPage(props) {
               userId={props.location.state.id}
               setTime={setTime}
               streamObj={streamObj}
+              handleClose={handleClose}
               setFreeSessionCompleted={setFreeSessionCompleted}
               freeSessionCompleted={freeSessionCompleted}
             />

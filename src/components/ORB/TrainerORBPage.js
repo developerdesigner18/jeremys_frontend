@@ -81,7 +81,7 @@ function TrainerORBPage(props) {
   };
 
   let socket;
-
+  console.log("fanQvalue.....", fanQvalue);
   const menuClass = `dropdown-menu${isOpen ? " show" : ""}`;
   useOutsideClick(ref, () => {
     setIsOpen(false);
@@ -598,19 +598,26 @@ function TrainerORBPage(props) {
   }
   async function leaveCall() {
     // Destroy the local audio and video tracks.
-    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
+    swal({
+      text: "Are you sure you want to exit the live session?",
+      buttons: ["Cancel", "Yes"],
+    }).then(async function (isConfirm) {
+      if (isConfirm) {
+        const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
 
-    if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
-      ORB.localAudioTrack.close();
-      ORB.localVideoTrack.close();
+        if (ORB.client && ORB.localAudioTrack && ORB.localVideoTrack) {
+          ORB.localAudioTrack.close();
+          ORB.localVideoTrack.close();
 
-      // Leave the channel.
-      await ORB.client.leave();
-    }
-    socket.disconnect();
-    await dispatch(removeOnlineUser());
-    await dispatch(deleteStream());
-    props.history.push("/userHomepage");
+          // Leave the channel.
+          await ORB.client.leave();
+        }
+        socket.disconnect();
+        await dispatch(removeOnlineUser());
+        await dispatch(deleteStream());
+        props.history.push("/userHomepage");
+      }
+    });
   }
 
   useEffect(() => {
@@ -723,7 +730,6 @@ function TrainerORBPage(props) {
     const rightColumnDiv = document.getElementById(`SmallColumnRight`);
     const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
-
     console.log(
       "columns........... ",
       fanRemote.childNodes,
