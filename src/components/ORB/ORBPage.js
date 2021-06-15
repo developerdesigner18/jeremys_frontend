@@ -130,14 +130,29 @@ function ORBPage(props) {
   }, []);
   let host = [];
 
-  React.useEffect(async () => {
+  // React.useEffect(async () => {
+  //   if (time > 0) {
+  //     if (isLive) setTimeout(() => setTime(time - 1), 1000);
+  //   } else {
+  //     setTime(0);
+  //     if (isLive) await leaveCall();
+  //   }
+  // });
+
+  useEffect(async () => {
+    let interval = null;
+
     if (time > 0) {
-      if (isLive) setTimeout(() => setTime(time - 1), 1000);
+      interval = setInterval(() => {
+        setTime(time => time - 1);
+      }, 1000);
     } else {
       setTime(0);
       if (isLive) await leaveCall();
     }
-  });
+
+    return () => clearInterval(interval);
+  }, [time]);
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
