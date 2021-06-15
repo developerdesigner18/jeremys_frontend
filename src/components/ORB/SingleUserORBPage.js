@@ -55,7 +55,7 @@ function SingleUserORBPage(props) {
   const ref = useRef();
   const [closeModalBool, setCloseModalBool] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [time, setTime] = useState(30);
+  const [time, setTime] = useState(180);
   const [paid, setPaid] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [streamObj, setStreamObj] = useState({});
@@ -291,13 +291,13 @@ function SingleUserORBPage(props) {
           data.forEach(async value => {
             if (value.userId == props.location.state.id) {
               setRvalue(value.rValue);
+              console.log("fan rtc.. ", fanRTC, rtc);
 
               if (value.rValue === false) {
-                console.log("fan rtc.. ", fanRTC, rtc);
                 // setRvalue(value.rValue);
                 if (rtc.localAudioTrack) {
                   // await rtc.localAudioTrack.setEnabled(value.rValue);
-                  await fanRTC.client.unpublish(rtc.localAudioTrack);
+                  await rtc.client.unpublish(rtc.localAudioTrack);
                 } else if (fanRTC.localAudioTrack) {
                   await fanRTC.client.unpublish(fanRTC.localAudioTrack);
                 }
@@ -642,7 +642,7 @@ function SingleUserORBPage(props) {
               }, 180000);
               if (parseInt(hostUidResponse) === user.uid) {
                 swal({text: "Star left the session!", timer: 2000});
-                props.history.push("/fanHomePage");
+                await leaveCallFromFan();
               }
             });
 
@@ -700,7 +700,7 @@ function SingleUserORBPage(props) {
           handleClose();
           setPaid(false);
         } else if (orbState.getLiveStreamData.price !== 0) {
-          setTime(30);
+          setTime(180);
         }
         setStreamObj(orbState.getLiveStreamData);
       }
@@ -1147,8 +1147,7 @@ function SingleUserORBPage(props) {
               rValue ? (
                 <img
                   src="../assets/images/Applause_bold with_roar.png"
-                  style={{cursor: "pointer", height: "120px", width: "120px"}}
-                  onClick={onRclick}
+                  style={{height: "120px", width: "120px"}}
                 />
               ) : (
                 <img

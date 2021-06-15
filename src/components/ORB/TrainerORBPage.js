@@ -723,7 +723,6 @@ function TrainerORBPage(props) {
     const rightColumnDiv = document.getElementById(`SmallColumnRight`);
     const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
-    setFanQvalue(false);
 
     console.log(
       "columns........... ",
@@ -824,6 +823,7 @@ function TrainerORBPage(props) {
         fanBigColumn.addEventListener("click", () => {
           setFanProfileClick(false);
           setFanVideoClicked(false);
+          setFanQvalue(false);
           let removeFan = fansFromQ.splice(0, 1);
           setFansFromQ([...fansFromQ]);
 
