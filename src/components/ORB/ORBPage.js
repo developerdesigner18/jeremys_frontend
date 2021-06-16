@@ -119,7 +119,7 @@ function ORBPage(props) {
     });
 
     window.addEventListener("beforeunload", async ev => {
-      console.log("before unload evenet called ", ev);
+      console.log("before unload evenet called at star side..", ev);
 
       await dispatch(removeOnlineUser());
       await dispatch(deleteStream());
