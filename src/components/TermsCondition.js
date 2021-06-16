@@ -534,7 +534,7 @@ function TermsCondition() {
                   The fees which you pay Jeremy’s Live for the Service are due
                   immediately and are non-refundable (“Service Fee“). Subject to
                   any limit stipulated by the applicable law, the Service Fee
-                  shall be a 18% of the User Charges, as determined by Jeremy’s
+                  shall be a 30% of the User Charges, as determined by Jeremy’s
                   Live from time to time. This no-refund policy shall apply at
                   all times regardless of your decision to terminate your access
                   to the Application / Platform, our decision to terminate or
