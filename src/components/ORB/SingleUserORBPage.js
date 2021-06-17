@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import html2canvas from "html2canvas";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import "../../assets/css/ORB.css";
 import AgoraRTC from "agora-rtc-sdk-ng";
 // import {socket} from "../../socketIO";
 import socketIOClient from "socket.io-client";
 import axios from "axios";
 import swal from "sweetalert";
-import { useHistory, Prompt } from "react-router-dom";
+import {useHistory, Prompt} from "react-router-dom";
 import AddRating from "../Rating/AddRating";
 import {
   storeScreenShot,
@@ -24,14 +24,14 @@ import Receipt from "../ORBTicketComponents/Receipt";
 import Tip from "../ORBTicketComponents/Tip";
 
 import Modal from "react-bootstrap/Modal";
-import { socket } from "../../socketIO";
-import { getUserWithId } from "../../actions/userActions";
+import {socket} from "../../socketIO";
+import {getUserWithId} from "../../actions/userActions";
 import moment from "moment";
-import { getTicketDetail } from "../../actions/paymentActions";
+import {getTicketDetail} from "../../actions/paymentActions";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -99,9 +99,9 @@ function SingleUserORBPage(props) {
         : "audience"
       : "audience",
   });
-  const orbState = useSelector((state) => state.ORB);
-  const stateUser = useSelector((state) => state.user);
-  const paymentState = useSelector((state) => state.payment);
+  const orbState = useSelector(state => state.ORB);
+  const stateUser = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -251,7 +251,7 @@ function SingleUserORBPage(props) {
     // console.log("time and isactive.....", time, isActive);
     if (isActive && time > 0) {
       interval = setInterval(() => {
-        setTime((time) => time - 1);
+        setTime(time => time - 1);
       }, 1000);
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
@@ -285,10 +285,10 @@ function SingleUserORBPage(props) {
         "star" == props.location.state.type ||
         "Star" == props.location.state.type
       ) {
-        socketIO.on("getRvalue", (data) => {
+        socketIO.on("getRvalue", data => {
           console.log("r value data.. ", data);
 
-          data.forEach(async (value) => {
+          data.forEach(async value => {
             if (value.userId == props.location.state.id) {
               setRvalue(value.rValue);
               console.log("fan rtc.. ", fanRTC, rtc);
@@ -315,7 +315,7 @@ function SingleUserORBPage(props) {
         "trainer" == props.location.state.type ||
         "Trainer" == props.location.state.type
       ) {
-        socketIO.on("getPassedQValue", async (data) => {
+        socketIO.on("getPassedQValue", async data => {
           console.log("data from q... ", data);
 
           if (
@@ -324,11 +324,6 @@ function SingleUserORBPage(props) {
           ) {
             if (data.qValue) {
               setQvalue(data.qValue);
-              rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-              setFanRTC((prevState) => ({
-                ...prevState,
-                localAudioTrack: rtc.localAudioTrack,
-              }));
               await rtc.client.publish(rtc.localAudioTrack);
             } else {
               console.log("rtc value... ", rtc, fanRTC);
@@ -339,7 +334,7 @@ function SingleUserORBPage(props) {
           }
         });
 
-        socketIO.on("remainingFans", async (data) => {
+        socketIO.on("remainingFans", async data => {
           console.log("remaining fans.........", data, fanRTC, rtc);
 
           if (
@@ -366,13 +361,29 @@ function SingleUserORBPage(props) {
             await rtc.client.unpublish(rtc.localAudioTrack);
           }
         });
+
+        socketIO.on("getFanUIDTrainer", async data => {
+          console.log("get fan uid trainer.. ", data, fanUid);
+
+          if (data.length) {
+            const foundUser = data.find(
+              ({userId}) => userId === props.location.state.id
+            );
+
+            if (foundUser.fanClicked) {
+              await rtc.client.publish(rtc.localAudioTrack);
+            } else {
+              await rtc.client.unpublish(rtc.localAudioTrack);
+            }
+          }
+        });
       }
 
-      socketIO.on("getShortBreakValue", (data) => {
+      socketIO.on("getShortBreakValue", data => {
         console.log("short break data...", data);
 
         const foundUser = data.find(
-          ({ userId }) => userId === props.location.state.id
+          ({userId}) => userId === props.location.state.id
         );
         if (foundUser) {
           setHostBreak(foundUser.breakValue);
@@ -450,10 +461,10 @@ function SingleUserORBPage(props) {
 
       axios
         .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
-        .then(async (result) => {
+        .then(async result => {
           console.log("result.......... ", result);
           let hostUidResponse = result.data.data.uid;
-          setHostId((prevId) => (prevId = hostUidResponse));
+          setHostId(prevId => (prevId = hostUidResponse));
 
           if (result.data.data.agoraToken) {
             const token = result.data.data.agoraToken;
@@ -470,7 +481,7 @@ function SingleUserORBPage(props) {
             );
             setFanUid(uid);
             console.log("fan uid... ", uid);
-            setFanRTC((prevState) => ({
+            setFanRTC(prevState => ({
               ...prevState,
               client: rtc.client,
             }));
@@ -635,19 +646,17 @@ function SingleUserORBPage(props) {
                   props.location.state.type === "star" ||
                   props.location.state.type === "Star"
                 ) {
-                  swal({ text: "Star left the session!" }).then((isConfirm) => {
+                  swal({text: "Star left the session!"}).then(isConfirm => {
                     // if (isConfirm) {
                     leaveCallFromFan();
                     // }
                   });
                 } else {
-                  swal({ text: "Trainer left the session!" }).then(
-                    (isConfirm) => {
-                      // if (isConfirm) {
-                      leaveCallFromFan();
-                      // }
-                    }
-                  );
+                  swal({text: "Trainer left the session!"}).then(isConfirm => {
+                    // if (isConfirm) {
+                    leaveCallFromFan();
+                    // }
+                  });
                 }
                 // props.history.push("/fanHomePage");
               }
@@ -655,13 +664,13 @@ function SingleUserORBPage(props) {
 
             // Create an audio track from the audio sampled by a microphone.
             rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            setFanRTC((prevState) => ({
+            setFanRTC(prevState => ({
               ...prevState,
               localAudioTrack: rtc.localAudioTrack,
             }));
             // Create a video track from the video captured by a camera.
             rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-            setFanRTC((prevState) => ({
+            setFanRTC(prevState => ({
               ...prevState,
               localVideoTrack: rtc.localVideoTrack,
             }));
@@ -673,7 +682,7 @@ function SingleUserORBPage(props) {
             await rtc.client.publish(rtc.localVideoTrack);
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log("error........", error);
         });
     }
@@ -877,7 +886,7 @@ function SingleUserORBPage(props) {
     } else {
       if (rValue) {
         rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setFanRTC((prevState) => ({
+        setFanRTC(prevState => ({
           ...prevState,
           localAudioTrack: rtc.localAudioTrack,
         }));
@@ -976,8 +985,7 @@ function SingleUserORBPage(props) {
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture"
-    >
+      id="capture">
       <Prompt
         message={(location, action) => {
           if (action === "POP") {
@@ -1007,9 +1015,8 @@ function SingleUserORBPage(props) {
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
-        <Modal.Body style={{ padding: "0" }}>
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
           {paid ? (
             <Receipt
               setShow={setShow}
@@ -1045,8 +1052,7 @@ function SingleUserORBPage(props) {
         onHide={closeTip}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
+        aria-labelledby="example-custom-modal-styling-title">
         {showTip ? (
           <Tip
             setShow={setShow}
@@ -1066,9 +1072,8 @@ function SingleUserORBPage(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
-        <Modal.Body style={{ padding: "0" }}>
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
               closeImageModal={closeImageModal}
@@ -1087,8 +1092,7 @@ function SingleUserORBPage(props) {
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}
-          ></div>
+            }}></div>
         </div>
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
@@ -1109,7 +1113,7 @@ function SingleUserORBPage(props) {
           <div className="values">
             <div className="value_container">
               <span className="value_name">Timer</span>
-              <p style={{ fontWeight: "600" }}>
+              <p style={{fontWeight: "600"}}>
                 {Math.floor(time / 60) < 10
                   ? "0" + Math.floor(time / 60)
                   : Math.floor(time / 60)}
@@ -1132,12 +1136,11 @@ function SingleUserORBPage(props) {
                 height: "500px",
                 width: "500px",
                 borderRadius: "100%",
-              }}
-            ></div>
+              }}></div>
             <div className="break_display_text">
               <img src="../assets/images/black_logo.png" alt="logo" />
 
-              <p style={{ justifyContent: "center" }}>
+              <p style={{justifyContent: "center"}}>
                 {hostBreak ? "will be back in…" : ""}
               </p>
             </div>
@@ -1154,7 +1157,7 @@ function SingleUserORBPage(props) {
                     src="../assets/images/q.png"
                     className="m-0"
                     onClick={() => callQFunction()}
-                    style={{ cursor: "pointer" }}
+                    style={{cursor: "pointer"}}
                   />
                 )}
               </div>
@@ -1163,12 +1166,12 @@ function SingleUserORBPage(props) {
               rValue ? (
                 <img
                   src="../assets/images/Applause_bold with_roar.png"
-                  style={{ height: "120px", width: "120px" }}
+                  style={{height: "120px", width: "120px"}}
                 />
               ) : (
                 <img
                   src="../assets/images/disableR.png"
-                  style={{ height: "120px", width: "120px" }}
+                  style={{height: "120px", width: "120px"}}
                 />
               )
             ) : qValue ? (
@@ -1178,20 +1181,20 @@ function SingleUserORBPage(props) {
                 src="../assets/images/q.png"
                 className="m-0"
                 onClick={() => callQFunction()}
-                style={{ cursor: "pointer" }}
+                style={{cursor: "pointer"}}
               />
             )}
           </div>
           <div className="container justify-content-center d-flex ORB_links mt-5 position-relative">
             {streamObj.price == 0 ? (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/ticket.png" />
                   <p>Ticket</p>
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "pointer" }} onClick={handleShow}>
+              <a style={{cursor: "pointer"}} onClick={handleShow}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/ticket.png" />
                   <p>Ticket</p>
@@ -1205,7 +1208,7 @@ function SingleUserORBPage(props) {
                 <p>Seat</p>
               </div>
             </a> */}
-            <a onClick={showImageModal} style={{ cursor: "pointer" }}>
+            <a onClick={showImageModal} style={{cursor: "pointer"}}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/take_picture.png" />
                 <p>Take Picture</p>
@@ -1214,14 +1217,14 @@ function SingleUserORBPage(props) {
             {props.location.state.type === "star" ||
             props.location.state.type === "Star" ? (
               rValue ? (
-                <a style={{ cursor: "pointer" }} onClick={callAudioPause}>
+                <a style={{cursor: "pointer"}} onClick={callAudioPause}>
                   <div className="ORB_link d-flex flex-column">
                     <img src="../assets/images/audio.png" />
                     <p>Audio</p>
                   </div>
                 </a>
               ) : (
-                <a style={{ cursor: "no-drop" }}>
+                <a style={{cursor: "no-drop"}}>
                   <div className="ORB_link d-flex flex-column">
                     <img src="../assets/images/audio.png" />
                     <p>Audio</p>
@@ -1229,21 +1232,21 @@ function SingleUserORBPage(props) {
                 </a>
               )
             ) : qValue ? (
-              <a style={{ cursor: "pointer" }} onClick={callAudioPause}>
+              <a style={{cursor: "pointer"}} onClick={callAudioPause}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/audio.png" />
                   <p>Audio</p>
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/audio.png" />
                   <p>Audio</p>
                 </div>
               </a>
             )}
-            <a style={{ cursor: "pointer" }} onClick={callVideoPause}>
+            <a style={{cursor: "pointer"}} onClick={callVideoPause}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/camera.png" />
                 <p>Camera</p>
@@ -1255,8 +1258,7 @@ function SingleUserORBPage(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}
-              >
+                onClick={() => setMoreIcon()}>
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -1266,7 +1268,7 @@ function SingleUserORBPage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
                 <p>Share</p>
@@ -1276,34 +1278,31 @@ function SingleUserORBPage(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}
-                >
+                  }}>
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
-                      <a style={{ cursor: "pointer" }} onClick={shareOnFB}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnFB}>
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}
-                        ></span>
+                          style={{fontSize: "25px"}}></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
                       {" "}
-                      <a style={{ cursor: "pointer" }} onClick={shareOnTwitter}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}
-                        ></span>{" "}
+                          style={{fontSize: "25px"}}></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -1311,18 +1310,17 @@ function SingleUserORBPage(props) {
               </div>
             </a>
 
-            <a style={{ cursor: "pointer" }} onClick={handleTipModal}>
+            <a style={{cursor: "pointer"}} onClick={handleTipModal}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/tip.png" />
                 <p>Tip</p>
               </div>
             </a>
             <a
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
               onClick={() => {
                 leaveCallFromFan();
-              }}
-            >
+              }}>
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
