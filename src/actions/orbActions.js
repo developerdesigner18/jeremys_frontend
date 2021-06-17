@@ -459,11 +459,11 @@ export const getChangedRValue = data => {
   };
 };
 
-export const getFanJoined3MinuteCount = (userId, fanId) => {
+export const getFanJoined3MinuteCount = (userId, fanId, streamId) => {
   return dispatch => {
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}api/attemptCheck/getJoinedFanData?userId=${userId}&fanId=${fanId}`
+        `${process.env.REACT_APP_API_URL}api/attemptCheck/getJoinedFanDetail?userId=${userId}&fanId=${fanId}&streamId=${streamId}`
       )
       .then(result => {
         if (result.data.code === 200) {
@@ -495,13 +495,13 @@ export const storeFan3MinuteCount = data => {
   };
 };
 
-export const removeFan3MinuteCount = userId => {
+export const removeFan3MinuteCount = dataObj => {
   return dispatch => {
     axios
       .delete(
-        `${process.env.REACT_APP_API_URL}api/attemptCheck/removedFanFromDB`,
+        `${process.env.REACT_APP_API_URL}api/attemptCheck/removedFanWithStream`,
         {
-          data: userId,
+          data: dataObj,
         }
       )
       .then(result => {

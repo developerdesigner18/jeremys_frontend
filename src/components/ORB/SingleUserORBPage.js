@@ -390,14 +390,15 @@ function SingleUserORBPage(props) {
         }
       });
 
-      await dispatch(
-        getFanJoined3MinuteCount(
-          props.location.state.id,
-          localStorage.getItem("id")
-        )
-      );
       if (streamObj) {
         await dispatch(getTicketDetail(streamObj._id));
+        await dispatch(
+          getFanJoined3MinuteCount(
+            props.location.state.id,
+            localStorage.getItem("id"),
+            streamObj._id
+          )
+        );
       }
     } else {
       if (streamObj) {
@@ -436,7 +437,14 @@ function SingleUserORBPage(props) {
 
       if (paid) {
         console.log("paid true....");
-        await dispatch(removeFan3MinuteCount(dataToPass));
+        if (streamObj) {
+          const dataToPass1 = {
+            fanId: localStorage.getItem("id"),
+            userId: props.location.state.id,
+            streamId: streamObj._id,
+          };
+          await dispatch(removeFan3MinuteCount(dataToPass1));
+        }
       } else {
         console.log("paid false....");
         if (streamObj && streamObj.price !== 0) {
@@ -711,6 +719,7 @@ function SingleUserORBPage(props) {
           const dataToPass = {
             fanId: localStorage.getItem("id"),
             userId: props.location.state.id,
+            streamId: orbState.getLiveStreamData._id,
           };
           await dispatch(removeFan3MinuteCount(dataToPass));
         } else if (orbState.getLiveStreamData.price == 0) {
@@ -803,7 +812,15 @@ function SingleUserORBPage(props) {
 
         if (paid) {
           console.log("paid true....");
-          await dispatch(removeFan3MinuteCount(dataToPass));
+          if (streamObj) {
+            const dataToPass1 = {
+              fanId: localStorage.getItem("id"),
+              userId: props.location.state.id,
+              streamId: streamObj._id,
+            };
+
+            await dispatch(removeFan3MinuteCount(dataToPass1));
+          }
         } else {
           console.log("paid false....");
           if (streamObj && streamObj.price !== 0) {
