@@ -172,10 +172,16 @@ function TrainerORBPage(props) {
     setIsOpen(!isOpen);
   };
   const onClickVideo = uid => {
+    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
     setFanVideoClicked(true);
     setFanProfileClick(false);
     setFanVideoClickedUid(uid);
     console.log("uid=-=-=-=-=-", uid);
+    socket.emit("passFanUIDForTrainer", {
+      userId: localStorage.getItem("id"),
+      fanClicked: true,
+      fanUID: uid,
+    });
 
     let agoraClass = document.getElementById("fan-remote-playerlist2");
     let agoraArray = agoraClass.childNodes;
@@ -730,6 +736,8 @@ function TrainerORBPage(props) {
   const closedBigORB = uid => {
     console.log("closed fn clicked on big column...");
 
+    const socket = socketIOClient(`${process.env.REACT_APP_SOCKET_URL}`);
+
     const fanRemote = document.getElementById("fan-remote-playerlist2");
     const bigColumnDiv = document.getElementById(`BigColumn`);
     const bigColumnChildNodes = bigColumnDiv.childNodes;
@@ -738,6 +746,11 @@ function TrainerORBPage(props) {
     const rightColumnDiv = document.getElementById(`SmallColumnRight`);
     const rightColumnChildNodes = rightColumnDiv.childNodes;
     setFanVideoClicked(false);
+    socket.emit("passFanUIDForTrainer", {
+      userId: localStorage.getItem("id"),
+      fanClicked: false,
+      fanUID: uid,
+    });
     console.log(
       "columns........... ",
       fanRemote.childNodes,
