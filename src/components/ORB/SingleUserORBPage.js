@@ -31,7 +31,7 @@ import {getTicketDetail} from "../../actions/paymentActions";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -99,9 +99,9 @@ function SingleUserORBPage(props) {
         : "audience"
       : "audience",
   });
-  const orbState = useSelector(state => state.ORB);
-  const stateUser = useSelector(state => state.user);
-  const paymentState = useSelector(state => state.payment);
+  const orbState = useSelector((state) => state.ORB);
+  const stateUser = useSelector((state) => state.user);
+  const paymentState = useSelector((state) => state.payment);
   const remoteUsers = {};
   const rtc = {
     client: null,
@@ -251,7 +251,7 @@ function SingleUserORBPage(props) {
     // console.log("time and isactive.....", time, isActive);
     if (isActive && time > 0) {
       interval = setInterval(() => {
-        setTime(time => time - 1);
+        setTime((time) => time - 1);
       }, 1000);
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
@@ -270,6 +270,61 @@ function SingleUserORBPage(props) {
     setIsOpen(false);
   });
 
+  // useEffect(async () => {
+  //   window.addEventListener("beforeunload", async (ev) => {
+  //     console.log("component will unmount called ", paid);
+  //     if (
+  //       props.location.state.type === "trainer" ||
+  //       props.location.state.type === "Trainer"
+  //     ) {
+  //       socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
+  //       socketIO.emit("removeFanFromQ", {
+  //         userId: props.location.state.id,
+  //         uid: fanUid,
+  //       });
+  //     }
+  //     // Destroy the local audio and video tracks.
+
+  //     if (fanRTC.client && fanRTC.localVideoTrack) {
+  //       fanRTC.localVideoTrack.close();
+
+  //       // Leave the channel.
+  //       await fanRTC.client.leave();
+  //     }
+  //     if (fanRTC.localAudioTrack) {
+  //       fanRTC.localAudioTrack.close();
+  //     }
+  //     const dataToPass = {
+  //       fanId: localStorage.getItem("id"),
+  //       userId: props.location.state.id,
+  //     };
+  //     await dispatch(removedJoinFan(dataToPass));
+
+  //     if (paymentState.ticketInfo) {
+  //       console.log("paid true....");
+  //       // if (streamObj) {
+  //       const dataToPass1 = {
+  //         fanId: localStorage.getItem("id"),
+  //         userId: props.location.state.id,
+  //         streamId: orbState.getLiveStreamData._id,
+  //       };
+  //       await dispatch(removeFan3MinuteCount(dataToPass1));
+  //       // }
+  //     } else {
+  //       console.log("paid false....");
+  //       if (streamObj && streamObj.price !== 0) {
+  //         await dispatch(
+  //           storeFan3MinuteCount({
+  //             fanId: localStorage.getItem("id"),
+  //             userId: props.location.state.id,
+  //             streamId: orbState.getLiveStreamData._id,
+  //           })
+  //         );
+  //       }
+  //     }
+  //   });
+  // }, []);
+
   useEffect(async () => {
     if (!mount.current) {
       socketIO = socketIOClient.connect(process.env.REACT_APP_SOCKET_URL);
@@ -285,10 +340,10 @@ function SingleUserORBPage(props) {
         "star" == props.location.state.type ||
         "Star" == props.location.state.type
       ) {
-        socketIO.on("getRvalue", data => {
+        socketIO.on("getRvalue", (data) => {
           console.log("r value data.. ", data);
 
-          data.forEach(async value => {
+          data.forEach(async (value) => {
             if (value.userId == props.location.state.id) {
               setRvalue(value.rValue);
               console.log("fan rtc.. ", fanRTC, rtc);
@@ -315,7 +370,7 @@ function SingleUserORBPage(props) {
         "trainer" == props.location.state.type ||
         "Trainer" == props.location.state.type
       ) {
-        socketIO.on("getPassedQValue", async data => {
+        socketIO.on("getPassedQValue", async (data) => {
           console.log("data from q... ", data);
 
           if (
@@ -334,7 +389,7 @@ function SingleUserORBPage(props) {
           }
         });
 
-        socketIO.on("remainingFans", async data => {
+        socketIO.on("remainingFans", async (data) => {
           console.log("remaining fans.........", data, fanRTC, rtc);
 
           if (
@@ -362,7 +417,7 @@ function SingleUserORBPage(props) {
           }
         });
 
-        socketIO.on("getFanUIDTrainer", async data => {
+        socketIO.on("getFanUIDTrainer", async (data) => {
           console.log("get fan uid trainer.. ", data, fanUid);
 
           if (data.length) {
@@ -379,7 +434,7 @@ function SingleUserORBPage(props) {
         });
       }
 
-      socketIO.on("getShortBreakValue", data => {
+      socketIO.on("getShortBreakValue", (data) => {
         console.log("short break data...", data);
 
         const foundUser = data.find(
@@ -391,12 +446,17 @@ function SingleUserORBPage(props) {
       });
 
       if (streamObj) {
+        console.log(
+          "streamId-=-=--=FUNC",
+          streamObj,
+          orbState.getLiveStreamData
+        );
         await dispatch(getTicketDetail(streamObj._id));
         await dispatch(
           getFanJoined3MinuteCount(
             props.location.state.id,
             localStorage.getItem("id"),
-            streamObj._id
+            orbState.getLiveStreamData._id
           )
         );
       }
@@ -448,7 +508,13 @@ function SingleUserORBPage(props) {
       } else {
         console.log("paid false....");
         if (streamObj && streamObj.price !== 0) {
-          await dispatch(storeFan3MinuteCount(dataToPass));
+          await dispatch(
+            storeFan3MinuteCount({
+              fanId: localStorage.getItem("id"),
+              userId: props.location.state.id,
+              streamId: streamObj._id,
+            })
+          );
         }
       }
     };
@@ -469,10 +535,10 @@ function SingleUserORBPage(props) {
 
       axios
         .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
-        .then(async result => {
+        .then(async (result) => {
           console.log("result.......... ", result);
           let hostUidResponse = result.data.data.uid;
-          setHostId(prevId => (prevId = hostUidResponse));
+          setHostId((prevId) => (prevId = hostUidResponse));
 
           if (result.data.data.agoraToken) {
             const token = result.data.data.agoraToken;
@@ -489,7 +555,7 @@ function SingleUserORBPage(props) {
             );
             setFanUid(uid);
             console.log("fan uid... ", uid);
-            setFanRTC(prevState => ({
+            setFanRTC((prevState) => ({
               ...prevState,
               client: rtc.client,
             }));
@@ -654,17 +720,21 @@ function SingleUserORBPage(props) {
                   props.location.state.type === "star" ||
                   props.location.state.type === "Star"
                 ) {
-                  swal({text: "Star left the session!"}).then(isConfirm => {
+                  swal({text: "Star left the session!"}).then((isConfirm) => {
                     // if (isConfirm) {
-                    leaveCallFromFan();
+                    // setPaid(true);
+                    leaveCallFromFan("left");
                     // }
                   });
                 } else {
-                  swal({text: "Trainer left the session!"}).then(isConfirm => {
-                    // if (isConfirm) {
-                    leaveCallFromFan();
-                    // }
-                  });
+                  swal({text: "Trainer left the session!"}).then(
+                    (isConfirm) => {
+                      setPaid(true);
+                      // if (isConfirm) {
+                      leaveCallFromFan("left");
+                      // }
+                    }
+                  );
                 }
                 // props.history.push("/fanHomePage");
               }
@@ -672,13 +742,13 @@ function SingleUserORBPage(props) {
 
             // Create an audio track from the audio sampled by a microphone.
             rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-            setFanRTC(prevState => ({
+            setFanRTC((prevState) => ({
               ...prevState,
               localAudioTrack: rtc.localAudioTrack,
             }));
             // Create a video track from the video captured by a camera.
             rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-            setFanRTC(prevState => ({
+            setFanRTC((prevState) => ({
               ...prevState,
               localVideoTrack: rtc.localVideoTrack,
             }));
@@ -690,7 +760,7 @@ function SingleUserORBPage(props) {
             await rtc.client.publish(rtc.localVideoTrack);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error........", error);
         });
     }
@@ -778,7 +848,7 @@ function SingleUserORBPage(props) {
     }
   }, [paymentState]);
 
-  async function leaveCallFromFan() {
+  async function leaveCallFromFan(HostStatus = null) {
     window.onbeforeunload = null;
     console.log(
       "leave call fn called in fan orb page of star/trainer",
@@ -824,7 +894,16 @@ function SingleUserORBPage(props) {
         } else {
           console.log("paid false....");
           if (streamObj && streamObj.price !== 0) {
-            await dispatch(storeFan3MinuteCount(dataToPass));
+            console.log("HOSTSTATUS-=-=-=-=", HostStatus);
+            if (HostStatus !== "left") {
+              await dispatch(
+                storeFan3MinuteCount({
+                  fanId: localStorage.getItem("id"),
+                  userId: props.location.state.id,
+                  streamId: streamObj._id,
+                })
+              );
+            }
           }
         }
         if (threeMinutesComplete) {
@@ -903,7 +982,7 @@ function SingleUserORBPage(props) {
     } else {
       if (rValue) {
         rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-        setFanRTC(prevState => ({
+        setFanRTC((prevState) => ({
           ...prevState,
           localAudioTrack: rtc.localAudioTrack,
         }));
@@ -1002,7 +1081,8 @@ function SingleUserORBPage(props) {
         backgroundRepeat: "no-repeat",
         marginTop: "-48px",
       }}
-      id="capture">
+      id="capture"
+    >
       <Prompt
         message={(location, action) => {
           if (action === "POP") {
@@ -1032,7 +1112,8 @@ function SingleUserORBPage(props) {
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           {paid ? (
             <Receipt
@@ -1069,7 +1150,8 @@ function SingleUserORBPage(props) {
         onHide={closeTip}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         {showTip ? (
           <Tip
             setShow={setShow}
@@ -1089,7 +1171,8 @@ function SingleUserORBPage(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
@@ -1109,7 +1192,8 @@ function SingleUserORBPage(props) {
             className="FAN_ORB_video_live d-flex position-relative"
             style={{
               boxShadow: "inset 3px 5px 5px #595959",
-            }}></div>
+            }}
+          ></div>
         </div>
         <div className="ORB_tips_info d-flex">
           <div className="tips text-center">
@@ -1153,7 +1237,8 @@ function SingleUserORBPage(props) {
                 height: "500px",
                 width: "500px",
                 borderRadius: "100%",
-              }}></div>
+              }}
+            ></div>
             <div className="break_display_text">
               <img src="../assets/images/black_logo.png" alt="logo" />
 
@@ -1275,7 +1360,8 @@ function SingleUserORBPage(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}>
+                onClick={() => setMoreIcon()}
+              >
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -1295,7 +1381,8 @@ function SingleUserORBPage(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}>
+                  }}
+                >
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
@@ -1307,7 +1394,8 @@ function SingleUserORBPage(props) {
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{fontSize: "25px"}}></span>
+                          style={{fontSize: "25px"}}
+                        ></span>
                       </a>
                     </li>
                     <li
@@ -1319,7 +1407,8 @@ function SingleUserORBPage(props) {
                       <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{fontSize: "25px"}}></span>{" "}
+                          style={{fontSize: "25px"}}
+                        ></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -1337,7 +1426,8 @@ function SingleUserORBPage(props) {
               style={{cursor: "pointer"}}
               onClick={() => {
                 leaveCallFromFan();
-              }}>
+              }}
+            >
               <div className="ORB_link d-flex flex-column">
                 <img src="../assets/images/exit.png" />
                 <p>Exit</p>
