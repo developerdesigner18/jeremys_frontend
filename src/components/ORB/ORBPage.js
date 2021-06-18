@@ -849,6 +849,7 @@ function ORBPage(props) {
 
       <Modal
         show={imageModal}
+        size="sm"
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"

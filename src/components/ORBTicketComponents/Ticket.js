@@ -14,8 +14,8 @@ import swal from "sweetalert";
 
 function Ticket(props) {
   const dispatch = useDispatch();
-  const stateUser = useSelector(state => state.user);
-  const paymentState = useSelector(state => state.payment);
+  const stateUser = useSelector((state) => state.user);
+  const paymentState = useSelector((state) => state.payment);
 
   const [userInfo, setUserInfo] = useState({});
   const [paid, setPaid] = useState(false);
@@ -27,7 +27,7 @@ function Ticket(props) {
   useEffect(async () => {
     await dispatch(getUserWithId(props.userId));
 
-    document.addEventListener("visibilitychange", async event => {
+    document.addEventListener("visibilitychange", async (event) => {
       if (document.visibilityState == "visible") {
         await dispatch(getTicketDetail(props.streamObj._id));
         await dispatch(makeTicketEmpty());
@@ -90,7 +90,7 @@ function Ticket(props) {
                 props.setPaid(true);
               }
             },
-            onError: err => {
+            onError: (err) => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -137,7 +137,10 @@ function Ticket(props) {
         <div className="background_image">
           <img src="../assets/images/JL_RECEIPT_PAID.jpg" />
         </div>
-        <div className="d-flex justify-content-end text-muted">
+        {/* <div
+          className="position-absolute text-muted cursor-pointer"
+          style={{top: "10px", right: "20px"}}
+        >
           <i
             className="fas fa-times "
             role="button"
@@ -165,6 +168,7 @@ function Ticket(props) {
             style={{zIndex: "1", padding: "5px"}}
           />
         </div>
+         */}
         <Modal
           show={paypalModal}
           onHide={() => {
@@ -172,7 +176,8 @@ function Ticket(props) {
           }}
           centered
           // dialogClassName="modal-ticket"
-          aria-labelledby="example-custom-modal-styling-title">
+          aria-labelledby="example-custom-modal-styling-title"
+        >
           <Modal.Body style={{padding: "0", background: "black"}}>
             <div class="d-flex justify-content-end text-muted">
               <i
@@ -188,8 +193,43 @@ function Ticket(props) {
         </Modal>
 
         <div className="main_container d-flex flex-column align-items-center">
+          <div
+            className="position-absolute text-muted cursor-pointer"
+            style={{top: "0px", right: "10px"}}
+          >
+            <i
+              className="fas fa-times "
+              role="button"
+              onClick={() => {
+                if (props.freeSessionCompleted) {
+                  props.setShow(true);
+                } else {
+                  console.log("3 minutes props.. ", props.threeMinutesComplete);
+                  if (props.threeMinutesComplete) {
+                    swal({
+                      text: "Are you sure you want to exit the live session?",
+                      buttons: ["Exit", "Go back to pay"],
+                    }).then(async function (isConfirm) {
+                      if (isConfirm) {
+                        props.setShow(true);
+                      } else {
+                        props.leaveCallFromFan();
+                      }
+                    });
+                  } else {
+                    props.handleClose();
+                  }
+                }
+              }}
+              style={{zIndex: "1", padding: "5px"}}
+            />
+          </div>
+
           <div className="text-center">
-            <img src="../assets/images/silver_logo.png" />
+            <img
+              src="../assets/images/silver_logo.png"
+              style={{height: "65px"}}
+            />
           </div>
           <div className="contact_mail d-flex align-items-center mb-4 mt-3">
             {/* <div className="contact mr-2">Contact: +1547889</div>
@@ -199,7 +239,7 @@ function Ticket(props) {
               <div>
                 <img
                   src={userInfo.profileImgURl}
-                  onError={e => {
+                  onError={(e) => {
                     e.target.onerror = null;
                     e.target.src =
                       "https://jeremysLive.com:8000/default/profile.jpg";
@@ -208,20 +248,24 @@ function Ticket(props) {
               </div>
             </div>
           </div>
-          <button className="reciept_button mb-3">
+          <button className="reciept_button ">
             {userInfo.firstName + " " + userInfo.lastName}
           </button>
           <h4
-            className="my-3 text-uppercase text-light"
+            className="my-4 text-uppercase text-light"
             style={{
               fontWeight: "500",
-              fontSize: "20px",
+              fontSize: "16px",
               letterSpacing: "4px",
-            }}>
+            }}
+          >
             Live Performance
           </h4>
           <div className="text-center">
-            <div className="table_down d-flex align-items-center my-2">
+            <div
+              className="table_down d-flex align-items-center "
+              style={{letterSpacing: "2px"}}
+            >
               {/* <div className="col-md-4 p-0" style={{letterSpacing: "4px"}}>
                 <h1 className="text-white m-0">28</h1>
               </div>
@@ -238,35 +282,48 @@ function Ticket(props) {
               {moment().format("DD MMM, YYYY")}
             </div>
           </div>
-          <p
-            className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
-            Duration :
-          </p>
-          <p style={{letterSpacing: "2px"}}>
-            {props.streamObj.timer / 60} Minutes
-          </p>
+          <div
+            className="d-flex justify-content-between mt-4 mb-0"
+            style={{width: "68%"}}
+          >
+            <div className="mb-0">
+              <span style={{fontWeight: "500", letterSpacing: "2px"}}>
+                {" "}
+                Duration :
+              </span>
+              <span style={{letterSpacing: "2px"}}>
+                {props.streamObj.timer / 60} Minutes
+              </span>
+            </div>
 
+            <div className=" mb-0">
+              <span style={{fontWeight: "500", letterSpacing: "2px"}}>
+                Seats :{/* </p> */}
+              </span>
+
+              <span style={{letterSpacing: "2px"}}>
+                {props.streamObj.seats}
+              </span>
+            </div>
+          </div>
           <p
-            className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
-            Seats :
+            className="mt-2 mb-0"
+            style={{fontWeight: "500", letterSpacing: "3px"}}
+          >
+            Ticket price :
+            <span style={{letterSpacing: "2px"}}>
+              $ {props.streamObj.price}
+            </span>
           </p>
-          <p style={{letterSpacing: "2px"}}>{props.streamObj.seats}</p>
-          <p
-            className=" text-uppercase mt-2 mb-2"
-            style={{fontWeight: "600", letterSpacing: "3px"}}>
-            ticket price :
-          </p>
-          <p style={{letterSpacing: "2px"}}>$ {props.streamObj.price}</p>
 
           {/* <div ref={paypalRef} /> */}
           <div
-            className="paid_image my-3 pointer "
+            className="paid_image mt-2 pointer "
             role="button"
             onClick={() => {
               callMakePayment();
-            }}>
+            }}
+          >
             <img src="../assets/images/pay.png" />
           </div>
           {/* <p className="thanks">Thank you from Jeremy’s Live!</p> */}

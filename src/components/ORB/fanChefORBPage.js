@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {useEffect, useState, useRef} from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import swal from "sweetalert";
-import { useHistory, Prompt } from "react-router-dom";
+import {useHistory, Prompt} from "react-router-dom";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
 import AddRating from "../Rating/AddRating";
-import { socket } from "../../socketIO";
+import {socket} from "../../socketIO";
 import Receipt from "../ORBTicketComponents/Receipt";
 
 import Modal from "react-bootstrap/Modal";
@@ -22,10 +22,10 @@ import {
   storeFan3MinuteCount,
   getFanJoined3MinuteCount,
 } from "../../actions/orbActions";
-import { getUserWithId } from "../../actions/userActions";
+import {getUserWithId} from "../../actions/userActions";
 import Tip from "../ORBTicketComponents/Tip";
 import PayOrder from "../ORBTicketComponents/PayOrder";
-import { getPaymentDetails } from "../../actions/paymentActions";
+import {getPaymentDetails} from "../../actions/paymentActions";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
@@ -197,7 +197,7 @@ function FanChefORB(props) {
     if (props.location.state.name && props.location.state.id) {
       id = props.location.state.id;
       name = props.location.state.name;
-      await dispatch(getStreamDetails({ userId: id }));
+      await dispatch(getStreamDetails({userId: id}));
     }
 
     socket.emit("storeLiveFans", localStorage.getItem("id"));
@@ -205,10 +205,10 @@ function FanChefORB(props) {
     await axios
       .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
       .then(async (result) => {
-        setOptions({ ...options, token: result.data.data.agoraToken });
+        setOptions({...options, token: result.data.data.agoraToken});
         if (result.data.data.agoraToken) {
           const token = result.data.data.agoraToken;
-          rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+          rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
           await rtc.client.setClientRole(options.role);
           console.log("agora token ", token);
           await rtc.client.join(
@@ -605,7 +605,7 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Body style={{ padding: "0" }}>
+        <Modal.Body style={{padding: "0"}}>
           {paid ? (
             <Receipt
               setPaid={setPaid}
@@ -614,6 +614,7 @@ function FanChefORB(props) {
               text="chef/stylist"
               userId={props.location.state.id}
               streamObj={streamDetails}
+              handleClose={handleClose}
               setFreeSessionCompleted={setFreeSessionCompleted}
               freeSessionCompleted={freeSessionCompleted}
             />
@@ -657,10 +658,10 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Body style={{ padding: "0" }}>
-          <div style={{ background: "black" }} className="container">
+        <Modal.Body style={{padding: "0"}}>
+          <div style={{background: "black"}} className="container">
             <div className="text-center">
-              <p style={{ color: "white" }}>
+              <p style={{color: "white"}}>
                 Are you sure you want to exit the live session?
               </p>
             </div>
@@ -692,7 +693,7 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Body style={{ padding: "0" }}>
+        <Modal.Body style={{padding: "0"}}>
           {showTip ? (
             <Tip
               setShow={setShow}
@@ -716,7 +717,7 @@ function FanChefORB(props) {
         dialogClassName="modal-ticket"
         aria-labelledby="example-custom-modal-styling-title"
       >
-        <Modal.Body style={{ padding: "0" }}>
+        <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
               closeImageModal={closeImageModal}
@@ -725,20 +726,20 @@ function FanChefORB(props) {
           ) : null}
         </Modal.Body>
       </Modal>
-      <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
+      <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
             <img src="../assets/images/grey_logo.png" alt="logo" />
           </div>
           <div className="live_container d-flex" id="local-player"></div>
           <div className="tips_info d-flex">
-            <div className="timer" style={{ color: "#626262" }}>
+            <div className="timer" style={{color: "#626262"}}>
               {paid ? null : (
                 <>
                   <div className="values">
                     <div className="value_container">
                       <span className="value_name">Timer</span>
-                      <p style={{ fontWeight: "600" }}>
+                      <p style={{fontWeight: "600"}}>
                         {Math.floor(time / 60) < 10
                           ? "0" + Math.floor(time / 60)
                           : Math.floor(time / 60)}
@@ -787,10 +788,10 @@ function FanChefORB(props) {
             }}
           ></div>
           <div className="justify-content-center go_live_logo"></div>
-          <div className="round_video" style={{ top: "25px" }}>
+          <div className="round_video" style={{top: "25px"}}>
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}
+              style={{zIndex: "2"}}
             >
               {subscribed ? (
                 joinedFanList.length === 0 ? (
@@ -853,7 +854,7 @@ function FanChefORB(props) {
               </p>
             </div>
             <div className="price">
-              <p style={{ marginTop: "15px" }}>
+              <p style={{marginTop: "15px"}}>
                 $
                 {streamDetails.chefItems !== undefined
                   ? streamDetails.chefItems[0].price
@@ -878,13 +879,13 @@ function FanChefORB(props) {
             }}
           ></div>
           <div className="links">
-            <a style={{ cursor: "cursor" }} onClick={(e) => handleShow()}>
+            <a style={{cursor: "cursor"}} onClick={(e) => handleShow()}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>
               </div>
             </a>
-            <a style={{ cursor: "pointer" }} onClick={() => showTipModal()}>
+            <a style={{cursor: "pointer"}} onClick={() => showTipModal()}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/tip.png" alt="logo" />
                 <p>Tip</p>
@@ -913,7 +914,7 @@ function FanChefORB(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
                 <p>Share</p>
@@ -929,27 +930,27 @@ function FanChefORB(props) {
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
-                      <a style={{ cursor: "pointer" }} onClick={shareOnFB}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnFB}>
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}
+                          style={{fontSize: "25px"}}
                         ></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
                       {" "}
-                      <a style={{ cursor: "pointer" }} onClick={shareOnTwitter}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}
+                          style={{fontSize: "25px"}}
                         ></span>{" "}
                       </a>
                     </li>
@@ -958,7 +959,7 @@ function FanChefORB(props) {
               </div>
             </a>
             <a
-              style={{ cursor: "pointer" }}
+              style={{cursor: "pointer"}}
               onClick={() => {
                 leaveCall();
               }}
@@ -1006,7 +1007,7 @@ function FanChefORB(props) {
               </div>{" "}
             </div>
             <div className="price">
-              <p style={{ marginTop: "15px" }}>
+              <p style={{marginTop: "15px"}}>
                 $
                 {streamDetails.chefItems !== undefined
                   ? streamDetails.chefItems[1].price
