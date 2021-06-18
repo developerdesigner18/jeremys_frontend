@@ -1232,7 +1232,10 @@ function SingleUserORBPage(props) {
                 borderRadius: "100%",
               }}></div>
             <div className="break_display_text">
-              <img src="../assets/images/black_logo.png" alt="logo" />
+              <img
+                src="../assets/images/black_logo-without-text.png"
+                alt="logo"
+              />
 
               <p style={{justifyContent: "center"}}>
                 {hostBreak ? "will be back in…" : ""}
@@ -1313,14 +1316,20 @@ function SingleUserORBPage(props) {
               rValue ? (
                 <a style={{cursor: "pointer"}} onClick={callAudioPause}>
                   <div className="ORB_link d-flex flex-column">
-                    <img src="../assets/images/audio.png" />
+                    <img
+                      src="../assets/images/audio.png"
+                      style={{objectFit: "cover", padding: "0px"}}
+                    />
                     <p>Audio</p>
                   </div>
                 </a>
               ) : (
                 <a style={{cursor: "no-drop"}}>
                   <div className="ORB_link d-flex flex-column">
-                    <img src="../assets/images/audio.png" />
+                    <img
+                      src="../assets/images/audio.png"
+                      style={{objectFit: "cover", padding: "0px"}}
+                    />
                     <p>Audio</p>
                   </div>
                 </a>
@@ -1328,21 +1337,30 @@ function SingleUserORBPage(props) {
             ) : qValue ? (
               <a style={{cursor: "pointer"}} onClick={callAudioPause}>
                 <div className="ORB_link d-flex flex-column">
-                  <img src="../assets/images/audio.png" />
+                  <img
+                    src="../assets/images/audio.png"
+                    style={{objectFit: "cover", padding: "0px"}}
+                  />
                   <p>Audio</p>
                 </div>
               </a>
             ) : (
               <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
-                  <img src="../assets/images/audio.png" />
+                  <img
+                    src="../assets/images/audio.png"
+                    style={{objectFit: "cover", padding: "0px"}}
+                  />
                   <p>Audio</p>
                 </div>
               </a>
             )}
             <a style={{cursor: "pointer"}} onClick={callVideoPause}>
               <div className="ORB_link d-flex flex-column">
-                <img src="../assets/images/camera.png" />
+                <img
+                  src="../assets/images/camera.png"
+                  style={{objectFit: "cover"}}
+                />
                 <p>Camera</p>
               </div>
             </a>

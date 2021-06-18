@@ -157,7 +157,7 @@ img.black_logo_img {
   align-items: flex-end;
 }
 .items_links .item {
-  flex: 1.5;
+  /* flex: 1.5; */
   height: 100%;
 }
 .items_links .links {
@@ -187,9 +187,9 @@ img.black_logo_img {
   margin-top: 5px;
   margin-bottom: 0;
 }
-.links a div {
-  margin: 0 10px;
-}
+/* .links a div { */
+/* margin: 0 10px; */
+/* } */
 .price_item {
   position: absolute;
   bottom: 0;

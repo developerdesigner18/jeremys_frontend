@@ -63,7 +63,7 @@
   min-height: 500px;
   max-width: 768px;
   margin: auto;
-  padding: 15px;
+  padding: 8px;
 }
 .background_image img {
   width: 100%;
@@ -76,12 +76,12 @@
   left: 0;
 }
 .main_container {
-  padding: 25px 30px;
+  padding: 10px 30px 5px;
   position: relative;
   z-index: 1000;
 }
 button.reciept_button {
-  padding: 8px 100px;
+  padding: 3px 115px;
   border: 0;
   background: #464b4d;
   color: white;
@@ -93,7 +93,7 @@ button.reciept_button {
 .table_down {
   width: 100%;
   justify-content: space-between;
-  padding: 5px 25px;
+  padding: 1px 54px;
   background: #464b4d;
   border-radius: 25px;
 }
@@ -108,9 +108,12 @@ button.reciept_button {
   font-size: 24px;
 }
 .fan_image img {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 }
 button.tablinks.active {
   border: 2px solid #363636;
+}
+.paid_image > img {
+  width: 120px;
 }

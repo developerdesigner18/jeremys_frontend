@@ -557,7 +557,7 @@ function ChefORBPage(props) {
                   <div id="chef-remote-playerlist"></div>
                   <img
                     className="black_logo_img"
-                    src="../assets/images/black_logo.png"
+                    src="../assets/images/black_logo-without-text.png"
                     alt="logo"
                   />
                 </>

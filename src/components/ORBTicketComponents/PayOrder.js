@@ -368,16 +368,42 @@ function PayOrder(props) {
         </Modal>
 
         <div class="main_container d-flex flex-column align-items-center">
+          <div
+            class="position-absolute text-muted"
+            style={{cursor: "pointer", zIndex: "1", top: "0", right: "10px"}}>
+            <i
+              class="fas fa-times "
+              role="button"
+              onClick={() => {
+                // props.setIsActive(true);
+                if (props.freeSessionCompleted) {
+                  props.setShow(true);
+                } else {
+                  props.setShow(false);
+                }
+                props.handleClose();
+              }}
+              style={{zIndex: "1", padding: "5px"}}
+            />
+          </div>
+
           <div class="text-center">
-            <img src="../assets/images/silver_logo.png" />
+            <img
+              src="../assets/images/silver_logo.png"
+              style={{height: "65px"}}
+            />
           </div>
           <div class="contact_mail d-flex align-items-center mb-4 mt-3">
             <div class="contact mr-2">Contact: {user.contactNumber}</div>
             <div class="mail ml-2">Email: {user.emailId}</div>
           </div>
           <button class="reciept_button mb-3">ORDER TOTAL</button>
-          <p class="mb-1">BILLED TO:</p>
-          <p>{fanDetail.firstName + " " + fanDetail.lastName}</p>
+          <p class="mb-2" style={{letterSpacing: "2px"}}>
+            BILLED TO:
+          </p>
+          <p style={{letterSpacing: "2px"}}>
+            {fanDetail.firstName + " " + fanDetail.lastName}
+          </p>
           <div>
             <input
               type="text"
@@ -387,8 +413,10 @@ function PayOrder(props) {
               onChange={e => setAddress(e.target.value)}
             />
           </div>
-          <p class="date">Date: {moment().format("DD MMM, YYYY")}</p>
-          <div class="table_down mt-4 d-flex align-items-center">
+          <p class="date mb-0" style={{letterSpacing: "2px"}}>
+            Date: {moment().format("DD MMM, YYYY")}
+          </p>
+          <div class="table_down mt-4 d-flex align-items-center p-0">
             <div></div>
             <div>NO.</div>
             <div>DESCRIPTION</div>
@@ -396,7 +424,7 @@ function PayOrder(props) {
             <div>QUANTITY</div>
             <div>TOTAL</div>
           </div>
-          <div class="table_down table_middle mt-3 d-flex align-items-center">
+          <div class="table_down table_middle mt-2 d-flex align-items-center p-0">
             <div>
               <input
                 type="checkbox"
@@ -419,7 +447,7 @@ function PayOrder(props) {
             </div>
             <div>${props.price1}</div>
           </div>
-          <div class="table_down table_middle mt-1 d-flex align-items-center">
+          <div class="table_down table_middle mt-1 d-flex align-items-center p-0">
             <div>
               <input
                 type="checkbox"
@@ -446,11 +474,11 @@ function PayOrder(props) {
             <div class="tax mr-3">Tax:</div>
             <div class="">$13</div>
           </div> */}
-          <div class="tax_container d-flex align-items-center mt-4">
+          <div class="tax_container d-flex align-items-center mt-3">
             <div class="tax mr-3">TOTAL</div>
             <div class="">${total}</div>
           </div>
-          <div class="paid_image my-3">
+          <div class="paid_image mt-2">
             {/* {paid ? (
               <img src="../assets/images/paid_button.png" />
             ) : props.type == "chef" ||

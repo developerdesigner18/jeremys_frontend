@@ -647,6 +647,7 @@ function FanChefORB(props) {
               text="chef/stylist"
               userId={props.location.state.id}
               streamObj={streamDetails}
+              handleClose={handleClose}
               setFreeSessionCompleted={setFreeSessionCompleted}
               freeSessionCompleted={freeSessionCompleted}
             />
