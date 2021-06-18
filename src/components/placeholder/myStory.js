@@ -420,7 +420,10 @@ function MyStory(props) {
                         onClick={() => {
                           goToORB();
                         }}
-                        style={{border: "solid 2px greem"}}></img>
+                        style={{
+                          border: "solid 2px greem",
+                          cursor: "pointer",
+                        }}></img>
                     )}
                   </div>
                 ) : null
@@ -434,7 +437,10 @@ function MyStory(props) {
                       onClick={() => {
                         goToORB();
                       }}
-                      style={{border: "solid 2px greem"}}></img>
+                      style={{
+                        border: "solid 2px greem",
+                        cursor: "pointer",
+                      }}></img>
                   )}
                 </div>
               ) : (

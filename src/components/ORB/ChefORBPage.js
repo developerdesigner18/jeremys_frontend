@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {useEffect, useRef, useState, useCallback} from "react";
 import "../../assets/css/chefORB.css";
 import html2canvas from "html2canvas";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
-import { socket } from "../../socketIO";
+import {socket} from "../../socketIO";
 
 import {
   storeChefOrbDetails,
@@ -15,15 +15,15 @@ import {
   changeUserStatus,
 } from "../../actions/orbActions";
 import Modal from "react-bootstrap/Modal";
-import { getUserWithId } from "../../actions/userActions";
+import {getUserWithId} from "../../actions/userActions";
 import Receipt from "../ORBTicketComponents/Receipt";
 import swal from "sweetalert";
-import { getTipDetails } from "../../actions/paymentActions";
+import {getTipDetails} from "../../actions/paymentActions";
 import TipList from "../ORBTicketComponents/TipList";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -78,16 +78,16 @@ function ChefORBPage(props) {
     `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
   const dispatch = useDispatch();
-  const stateData = useSelector((state) => {
+  const stateData = useSelector(state => {
     // console.log("state.... ", state.user);
     return state.user;
   });
-  const ORBData = useSelector((state) => {
+  const ORBData = useSelector(state => {
     // console.log("state.... ", state.user);
     return state.ORB;
   });
 
-  const statePayment = useSelector((state) => state.payment);
+  const statePayment = useSelector(state => state.payment);
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -142,15 +142,15 @@ function ChefORBPage(props) {
             "id"
           )}`
         )
-        .then((result) => {
+        .then(result => {
           console.log("result-==-=--=", result.data.key);
-          setOptions({ ...options, token: result.data.key });
+          setOptions({...options, token: result.data.key});
           token = result.data.key;
         })
-        .catch((err) => console.log("error ", err));
+        .catch(err => console.log("error ", err));
 
-      rtc.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
-      setRTC((prevState) => ({ ...prevState, client: rtc.client }));
+      rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+      setRTC(prevState => ({...prevState, client: rtc.client}));
       await rtc.client.setClientRole(options.role);
       const uid = await rtc.client.join(
         options.appId,
@@ -165,13 +165,13 @@ function ChefORBPage(props) {
         AGC: true,
         ANS: true,
       });
-      setRTC((prevState) => ({
+      setRTC(prevState => ({
         ...prevState,
         localAudioTrack: rtc.localAudioTrack,
       }));
       // Create a video track from the video captured by a camera.
       rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setRTC((prevState) => ({
+      setRTC(prevState => ({
         ...prevState,
         localVideoTrack: rtc.localVideoTrack,
       }));
@@ -200,9 +200,10 @@ function ChefORBPage(props) {
       });
       rtc.client.on("user-unpublished", async (user, mediaType) => {
         console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+        setSubscribed(false);
       });
 
-      rtc.client.on("stream-added", (evt) => {
+      rtc.client.on("stream-added", evt => {
         console.log("Stream added", evt);
         // evt.stream.play("fan-playerlist");
       });
@@ -241,11 +242,11 @@ function ChefORBPage(props) {
     });
   }
 
-  const Banner1Change = (event) => {
+  const Banner1Change = event => {
     let reader = new FileReader();
     if (event.target.files.length) {
-      reader.onload = (e) => {
-        setBanner1Img((prevState) => ({
+      reader.onload = e => {
+        setBanner1Img(prevState => ({
           ...prevState,
           bannerImg: event.target.files[0],
           bannerImgURl: e.target.result,
@@ -254,11 +255,11 @@ function ChefORBPage(props) {
       reader.readAsDataURL(event.target.files[0]);
     }
   };
-  const Banner2Change = (event) => {
+  const Banner2Change = event => {
     let reader = new FileReader();
     if (event.target.files.length) {
-      reader.onload = (e) => {
-        setBanner2Img((prevState) => ({
+      reader.onload = e => {
+        setBanner2Img(prevState => ({
           ...prevState,
           bannerImg: event.target.files[0],
           bannerImgURl: e.target.result,
@@ -272,17 +273,17 @@ function ChefORBPage(props) {
     let reader = new FileReader();
 
     if (event.target.files.length) {
-      reader.onload = (e) => {
+      reader.onload = e => {
         if (item == "1") {
           // setItem1Image(e.target.result);
-          setItem1Image((prevState) => ({
+          setItem1Image(prevState => ({
             ...prevState,
             itemImg: event.target.files[0],
             itemImgURl: e.target.result,
           }));
         } else {
           // setItem2Image(e.target.result);
-          setItem2Image((prevState) => ({
+          setItem2Image(prevState => ({
             ...prevState,
             itemImg: event.target.files[0],
             itemImgURl: e.target.result,
@@ -292,7 +293,7 @@ function ChefORBPage(props) {
       reader.readAsDataURL(event.target.files[0]);
     }
   };
-  const handleChange = (e) => {
+  const handleChange = e => {
     setPrice(e.target.value);
   };
 
@@ -312,7 +313,7 @@ function ChefORBPage(props) {
     if (localStorage.getItem("token"))
       await dispatch(getUserWithId(localStorage.getItem("id")));
 
-    window.addEventListener("beforeunload", async (ev) => {
+    window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called ", ev);
 
       await dispatch(removeOnlineUser());
@@ -388,16 +389,14 @@ function ChefORBPage(props) {
         marginTop: "-48px",
         marginBottom: "-16px",
       }}
-      id="capture"
-    >
+      id="capture">
       <Modal
         show={show}
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
-        <Modal.Body style={{ padding: "0" }}>
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
           {streamResponse ? (
             <Receipt
               setShow={setShow}
@@ -416,9 +415,8 @@ function ChefORBPage(props) {
         onHide={handleCloseTip}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
-        <Modal.Body style={{ padding: "0" }}>
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
           {tip ? (
             <TipList setTip={setTip} streamId={streamResponse._id} />
           ) : null}
@@ -430,9 +428,8 @@ function ChefORBPage(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
-        <Modal.Body style={{ padding: "0" }}>
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
               closeImageModal={closeImageModal}
@@ -442,7 +439,7 @@ function ChefORBPage(props) {
         </Modal.Body>
       </Modal>
 
-      <div className="ORB_logo1" style={{ paddingBottom: "1px" }}>
+      <div className="ORB_logo1" style={{paddingBottom: "1px"}}>
         <div className="main_section container mt-5 pt-5 d-flex">
           <div className="logo">
             <img src="../assets/images/grey_logo.png" alt="logo" />
@@ -456,12 +453,10 @@ function ChefORBPage(props) {
                 : "rgb(89 89 89) 3px 5px 5px 8px inset",
               backgroundColor: "#424242",
               content: isLive ? "" : "LIVE",
-            }}
-          ></div>
+            }}></div>
           <div
             className="tips_info d-flex text-center"
-            style={{ justifyContent: "center" }}
-          >
+            style={{justifyContent: "center"}}>
             <p>All Orders include Taxes and Delivery</p>
           </div>
         </div>
@@ -481,12 +476,11 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "500px",
-            }}
-          >
+            }}>
             {isLive ? null : (
               <input
                 type="file"
-                onChange={(e) => Banner1Change(e)}
+                onChange={e => Banner1Change(e)}
                 style={{
                   cursor: isLive ? "none" : "pointer",
                   position: "absolute",
@@ -514,12 +508,11 @@ function ChefORBPage(props) {
               borderRadius: "20%",
               zIndex: "1",
               height: "500px",
-            }}
-          >
+            }}>
             {isLive ? null : (
               <input
                 type="file"
-                onChange={(e) => Banner2Change(e)}
+                onChange={e => Banner2Change(e)}
                 style={{
                   position: "absolute",
                   margin: "0",
@@ -544,7 +537,7 @@ function ChefORBPage(props) {
               <img
                 src="../assets/images/go_live_chef_stylist.png"
                 alt="go_live"
-                style={{ cursor: "pointer" }}
+                style={{cursor: "pointer"}}
                 onClick={() => goToLivePage()}
               />
             )}
@@ -554,12 +547,10 @@ function ChefORBPage(props) {
             className="round_video"
             style={{
               top: isLive ? "25" : "25px",
-            }}
-          >
+            }}>
             <div
               className="video_contents position-relative"
-              style={{ zIndex: "2" }}
-            >
+              style={{zIndex: "2"}}>
               {subscribed ? (
                 // joinedFanList.length === 0 ? (
                 <>
@@ -592,8 +583,7 @@ function ChefORBPage(props) {
                 background: item1
                   ? "none"
                   : `url("../assets/images/left-bg4-full.png")`,
-              }}
-            >
+              }}>
               <div className="item">
                 {isLive ? (
                   <p
@@ -608,14 +598,13 @@ function ChefORBPage(props) {
                       border: "3px solid #9297a8",
                       outline: "none",
                       paddingTop: "70px",
-                    }}
-                  >
+                    }}>
                     {item1}
                   </p>
                 ) : (
                   <input
                     type="text"
-                    onChange={(e) => {
+                    onChange={e => {
                       setItem1(e.target.value);
                     }}
                     value={item1}
@@ -647,13 +636,12 @@ function ChefORBPage(props) {
                     height: "100%",
                     borderRadius: "100%",
                     marginTop: "70px",
-                  }}
-                >
+                  }}>
                   ${`${price}`}
                 </p>
               ) : (
                 <>
-                  <p style={{ marginTop: "15px" }}>$</p>
+                  <p style={{marginTop: "15px"}}>$</p>
                   <input
                     type="number"
                     value={`${price}`}
@@ -667,8 +655,7 @@ function ChefORBPage(props) {
                       verticalAlign: "middle",
                       height: "100%",
                       borderRadius: "100%",
-                    }}
-                  ></input>
+                    }}></input>
                 </>
               )}
             </div>
@@ -687,12 +674,11 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-          >
+            }}>
             {isLive ? null : (
               <input
                 type="file"
-                onChange={(e) => FoodImageChange(e, "1")}
+                onChange={e => FoodImageChange(e, "1")}
                 style={{
                   cursor: isLive ? "none" : "pointer",
                   position: "absolute",
@@ -747,14 +733,14 @@ function ChefORBPage(props) {
           </div>
           <div className="links">
             {isLive ? (
-              <a style={{ cursor: "pointer" }} onClick={handleShow}>
+              <a style={{cursor: "pointer"}} onClick={handleShow}>
                 <div className="link d-flex flex-column">
                   <img src="../assets/images/ticket.png" alt="logo" />
                   <p>Reciept</p>
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="link d-flex flex-column">
                   <img src="../assets/images/ticket.png" alt="logo" />
                   <p>Reciept</p>
@@ -763,14 +749,14 @@ function ChefORBPage(props) {
             )}
 
             {isLive ? (
-              <a style={{ cursor: "pointer" }} onClick={callTipList}>
+              <a style={{cursor: "pointer"}} onClick={callTipList}>
                 <div className="link d-flex flex-column">
                   <img src="../assets/images/tip.png" alt="logo" />
                   <p>Tips</p>
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="link d-flex flex-column">
                   <img src="../assets/images/tip.png" alt="logo" />
                   <p>Tips</p>
@@ -786,7 +772,7 @@ function ChefORBPage(props) {
                 </div>
               </a>
             ) : (
-              <a style={{ cursor: "no-drop" }}>
+              <a style={{cursor: "no-drop"}}>
                 <div className="ORB_link d-flex flex-column">
                   <img src="../assets/images/take_picture.png" />
                   <p>Take Picture</p>
@@ -799,8 +785,7 @@ function ChefORBPage(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}
-              >
+                onClick={() => setMoreIcon()}>
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -810,7 +795,7 @@ function ChefORBPage(props) {
                           cursor: "pointer",
                           borderRadius: "100%",
                         }
-                      : { cursor: "pointer" }
+                      : {cursor: "pointer"}
                   }
                 />
                 <p>Share</p>
@@ -820,33 +805,30 @@ function ChefORBPage(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}
-                >
+                  }}>
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
                       className="menu more_list "
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/profile")}
                     >
-                      <a style={{ cursor: "pointer" }} onClick={shareOnFB}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnFB}>
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{ fontSize: "25px" }}
-                        ></span>
+                          style={{fontSize: "25px"}}></span>
                       </a>
                     </li>
                     <li
                       className="menu more_list"
-                      style={{ listStyleType: "none" }}
+                      style={{listStyleType: "none"}}
                       // onClick={() => props.history.push("/myStory")}
                     >
-                      <a style={{ cursor: "pointer" }} onClick={shareOnTwitter}>
+                      <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{ fontSize: "25px" }}
-                        ></span>{" "}
+                          style={{fontSize: "25px"}}></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -854,7 +836,7 @@ function ChefORBPage(props) {
               </div>
             </a>
 
-            <a style={{ cursor: "pointer" }} onClick={() => leaveCall()}>
+            <a style={{cursor: "pointer"}} onClick={() => leaveCall()}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
@@ -875,12 +857,11 @@ function ChefORBPage(props) {
               zIndex: "1",
               cursor: "pointer",
               height: "250px",
-            }}
-          >
+            }}>
             {isLive ? null : (
               <input
                 type="file"
-                onChange={(e) => FoodImageChange(e, "2")}
+                onChange={e => FoodImageChange(e, "2")}
                 style={{
                   cursor: isLive ? "none" : "pointer",
                   position: "absolute",
@@ -946,8 +927,7 @@ function ChefORBPage(props) {
                 background: item2
                   ? "none"
                   : `url("../assets/images/left-bg4-full.png")`,
-              }}
-            >
+              }}>
               <div className="item">
                 {isLive ? (
                   <p
@@ -962,14 +942,13 @@ function ChefORBPage(props) {
                       border: "3px solid #9297a8",
                       outline: "none",
                       paddingTop: "70px",
-                    }}
-                  >
+                    }}>
                     {item2}
                   </p>
                 ) : (
                   <input
                     type="text"
-                    onChange={(e) => {
+                    onChange={e => {
                       setItem2(e.target.value);
                     }}
                     value={item2}
@@ -1001,16 +980,15 @@ function ChefORBPage(props) {
                     height: "100%",
                     borderRadius: "100%",
                     marginTop: "70px",
-                  }}
-                >
+                  }}>
                   ${`${price2}`}
                 </p>
               ) : (
                 <>
-                  <p style={{ marginTop: "15px" }}>$</p>{" "}
+                  <p style={{marginTop: "15px"}}>$</p>{" "}
                   <input
                     type="number"
-                    onChange={(e) => {
+                    onChange={e => {
                       setPrice2(e.target.value);
                     }}
                     value={`${price2}`}

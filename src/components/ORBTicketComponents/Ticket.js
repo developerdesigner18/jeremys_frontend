@@ -148,7 +148,7 @@ function Ticket(props) {
                 console.log("3 minutes props.. ", props.threeMinutesComplete);
                 if (props.threeMinutesComplete) {
                   swal({
-                    text: "Are you sure you want to exit the live session?",
+                    text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
                     buttons: ["Exit", "Go back to pay"],
                   }).then(async function (isConfirm) {
                     if (isConfirm) {
