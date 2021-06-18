@@ -14,8 +14,8 @@ import swal from "sweetalert";
 
 function Ticket(props) {
   const dispatch = useDispatch();
-  const stateUser = useSelector((state) => state.user);
-  const paymentState = useSelector((state) => state.payment);
+  const stateUser = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
 
   const [userInfo, setUserInfo] = useState({});
   const [paid, setPaid] = useState(false);
@@ -27,7 +27,7 @@ function Ticket(props) {
   useEffect(async () => {
     await dispatch(getUserWithId(props.userId));
 
-    document.addEventListener("visibilitychange", async (event) => {
+    document.addEventListener("visibilitychange", async event => {
       if (document.visibilityState == "visible") {
         await dispatch(getTicketDetail(props.streamObj._id));
         await dispatch(makeTicketEmpty());
@@ -90,7 +90,7 @@ function Ticket(props) {
                 props.setPaid(true);
               }
             },
-            onError: (err) => {
+            onError: err => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -176,8 +176,7 @@ function Ticket(props) {
           }}
           centered
           // dialogClassName="modal-ticket"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
+          aria-labelledby="example-custom-modal-styling-title">
           <Modal.Body style={{padding: "0", background: "black"}}>
             <div class="d-flex justify-content-end text-muted">
               <i
@@ -195,8 +194,7 @@ function Ticket(props) {
         <div className="main_container d-flex flex-column align-items-center">
           <div
             className="position-absolute text-muted cursor-pointer"
-            style={{top: "0px", right: "10px"}}
-          >
+            style={{top: "0px", right: "10px"}}>
             <i
               className="fas fa-times "
               role="button"
@@ -207,7 +205,7 @@ function Ticket(props) {
                   console.log("3 minutes props.. ", props.threeMinutesComplete);
                   if (props.threeMinutesComplete) {
                     swal({
-                      text: "Are you sure you want to exit the live session?",
+                      text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
                       buttons: ["Exit", "Go back to pay"],
                     }).then(async function (isConfirm) {
                       if (isConfirm) {
@@ -239,7 +237,7 @@ function Ticket(props) {
               <div>
                 <img
                   src={userInfo.profileImgURl}
-                  onError={(e) => {
+                  onError={e => {
                     e.target.onerror = null;
                     e.target.src =
                       "https://jeremysLive.com:8000/default/profile.jpg";
@@ -257,15 +255,13 @@ function Ticket(props) {
               fontWeight: "500",
               fontSize: "16px",
               letterSpacing: "4px",
-            }}
-          >
+            }}>
             Live Performance
           </h4>
           <div className="text-center">
             <div
               className="table_down d-flex align-items-center "
-              style={{letterSpacing: "2px"}}
-            >
+              style={{letterSpacing: "2px"}}>
               {/* <div className="col-md-4 p-0" style={{letterSpacing: "4px"}}>
                 <h1 className="text-white m-0">28</h1>
               </div>
@@ -284,8 +280,7 @@ function Ticket(props) {
           </div>
           <div
             className="d-flex justify-content-between mt-4 mb-0"
-            style={{width: "68%"}}
-          >
+            style={{width: "68%"}}>
             <div className="mb-0">
               <span style={{fontWeight: "500", letterSpacing: "2px"}}>
                 {" "}
@@ -308,8 +303,7 @@ function Ticket(props) {
           </div>
           <p
             className="mt-2 mb-0"
-            style={{fontWeight: "500", letterSpacing: "3px"}}
-          >
+            style={{fontWeight: "500", letterSpacing: "3px"}}>
             Ticket price :
             <span style={{letterSpacing: "2px"}}>
               $ {props.streamObj.price}
@@ -322,8 +316,7 @@ function Ticket(props) {
             role="button"
             onClick={() => {
               callMakePayment();
-            }}
-          >
+            }}>
             <img src="../assets/images/pay.png" />
           </div>
           {/* <p className="thanks">Thank you from Jeremy’s Live!</p> */}
