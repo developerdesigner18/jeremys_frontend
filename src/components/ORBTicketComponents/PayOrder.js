@@ -282,8 +282,8 @@ function PayOrder(props) {
         <div class="background_image">
           <img src="../assets/images/JL_RECEIPT_PAID.jpg" />
         </div>
-        <div class="d-flex justify-content-end text-muted">
-          <i
+        {/* <div class="d-flex justify-content-end text-muted"> */}
+        {/* <i
             class="fas fa-times "
             role="button"
             onClick={() => {
@@ -308,8 +308,8 @@ function PayOrder(props) {
               }
             }}
             style={{zIndex: "1", padding: "5px"}}
-          />
-        </div>
+          /> */}
+        {/* </div> */}
         <Modal
           show={paypalModal}
           onHide={() => {
@@ -375,13 +375,25 @@ function PayOrder(props) {
               class="fas fa-times "
               role="button"
               onClick={() => {
-                // props.setIsActive(true);
                 if (props.freeSessionCompleted) {
                   props.setShow(true);
                 } else {
-                  props.setShow(false);
+                  console.log("3 minutes props.. ", props.threeMinutesComplete);
+                  if (props.threeMinutesComplete) {
+                    swal({
+                      text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
+                      buttons: ["Exit", "Go back to pay"],
+                    }).then(async function (isConfirm) {
+                      if (isConfirm) {
+                        props.setShow(true);
+                      } else {
+                        props.leaveCallFromFan();
+                      }
+                    });
+                  } else {
+                    props.handleClose();
+                  }
                 }
-                props.handleClose();
               }}
               style={{zIndex: "1", padding: "5px"}}
             />
