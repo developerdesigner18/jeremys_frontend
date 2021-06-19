@@ -901,7 +901,8 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}
             onClick={() =>
               openOrderTotal(
@@ -1009,7 +1010,8 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}
             onClick={() =>
               openOrderTotal(
