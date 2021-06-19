@@ -670,7 +670,8 @@ function ChefORBPage(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}>
             {isLive ? null : (
               <input
@@ -853,7 +854,8 @@ function ChefORBPage(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}>
             {isLive ? null : (
               <input
