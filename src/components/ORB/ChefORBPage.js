@@ -78,11 +78,9 @@ function ChefORBPage(props) {
   );
   const dispatch = useDispatch();
   const stateData = useSelector(state => {
-    // console.log("state.... ", state.user);
     return state.user;
   });
   const ORBData = useSelector(state => {
-    // console.log("state.... ", state.user);
     return state.ORB;
   });
 
