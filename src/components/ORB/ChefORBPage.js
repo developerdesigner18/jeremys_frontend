@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState, useCallback} from "react";
 import "../../assets/css/chefORB.css";
-import html2canvas from "html2canvas";
 import {useDispatch, useSelector} from "react-redux";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import axios from "axios";
