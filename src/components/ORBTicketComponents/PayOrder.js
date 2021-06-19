@@ -12,6 +12,7 @@ import {
   makeOrderEmpty,
 } from "../../actions/paymentActions";
 import moment from "moment";
+import swal from "sweetalert";
 
 // const PayPalButton = paypal.Buttons.driver("react", {
 //   React: window.React,
@@ -20,8 +21,8 @@ import moment from "moment";
 
 function PayOrder(props) {
   const dispatch = useDispatch();
-  const stateData = useSelector((state) => state.user);
-  const paymentState = useSelector((state) => state.payment);
+  const stateData = useSelector(state => state.user);
+  const paymentState = useSelector(state => state.payment);
 
   const [paypalModal, setPaypalModal] = useState(false);
   const [paypalModalSrc, setPaypalModalSRC] = useState(null);
@@ -30,22 +31,33 @@ function PayOrder(props) {
   const [error, setError] = useState(null);
   const [quantity1, setQuantity1] = useState(1);
   const [quantity2, setQuantity2] = useState(1);
-  const [total, setTotal] = useState(
-    Number(props.price1 * quantity1) + Number(props.price2 * quantity2)
-  );
-  const [check1, setCheck1] = useState(true);
-  const [check2, setCheck2] = useState(true);
+  // const [total, setTotal] = useState(
+  //   Number(props.price1 * quantity1) + Number(props.price2 * quantity2)
+  // );
+  const [total, setTotal] = useState(Number(props.selectedFoodPrice));
+  // const [check1, setCheck1] = useState(true);
+  // const [check2, setCheck2] = useState(true);
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
   const [paid, setPaid] = useState(false);
   const [address, setAddress] = useState("");
   const [fanDetail, setFanDetail] = useState(props.userInfo);
 
   const paypalRef = useRef();
 
+  useEffect(() => {
+    if (props.selectedFoodItem === 1) {
+      setCheck1(true);
+    } else if (props.selectedFoodItem === 2) {
+      setCheck2(true);
+    }
+  }, [props.selectedFoodItem]);
+
   useEffect(async () => {
     console.log("props... ", props);
     await dispatch(getUserWithId(props.userId));
 
-    document.addEventListener("visibilitychange", (event) => {
+    document.addEventListener("visibilitychange", event => {
       if (document.visibilityState == "visible") {
         dispatch(getPaymentDetails(props.streamId));
         dispatch(makeOrderEmpty());
@@ -193,7 +205,7 @@ function PayOrder(props) {
                 props.setPaid(true);
               }
             },
-            onError: (err) => {
+            onError: err => {
               setError(err);
               console.error("erorr in payapl......... ", err);
             },
@@ -226,7 +238,7 @@ function PayOrder(props) {
     setLoaded(false);
   };
 
-  const calculateQuantity1 = (value) => {
+  const calculateQuantity1 = value => {
     setQuantity1(value);
     let item2Price = parseFloat(props.price2) * quantity2;
     let item1Price = parseFloat(props.price1) * value;
@@ -243,7 +255,7 @@ function PayOrder(props) {
     }
   };
 
-  const calculateQuantity2 = (value) => {
+  const calculateQuantity2 = value => {
     setQuantity2(value);
     let item2Price = parseFloat(props.price2) * value;
     let item1Price = parseFloat(props.price1) * quantity1;
@@ -270,6 +282,34 @@ function PayOrder(props) {
         <div class="background_image">
           <img src="../assets/images/JL_RECEIPT_PAID.jpg" />
         </div>
+        <div class="d-flex justify-content-end text-muted">
+          <i
+            class="fas fa-times "
+            role="button"
+            onClick={() => {
+              if (props.freeSessionCompleted) {
+                props.setShow(true);
+              } else {
+                console.log("3 minutes props.. ", props.threeMinutesComplete);
+                if (props.threeMinutesComplete) {
+                  swal({
+                    text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
+                    buttons: ["Exit", "Go back to pay"],
+                  }).then(async function (isConfirm) {
+                    if (isConfirm) {
+                      props.setShow(true);
+                    } else {
+                      props.leaveCallFromFan();
+                    }
+                  });
+                } else {
+                  props.handleClose();
+                }
+              }
+            }}
+            style={{zIndex: "1", padding: "5px"}}
+          />
+        </div>
         <Modal
           show={paypalModal}
           onHide={() => {
@@ -277,8 +317,7 @@ function PayOrder(props) {
           }}
           centered
           // dialogClassName="modal-ticket"
-          aria-labelledby="example-custom-modal-styling-title"
-        >
+          aria-labelledby="example-custom-modal-styling-title">
           <Modal.Body style={{padding: "0", background: "black"}}>
             <div class="d-flex justify-content-end text-muted">
               <i
@@ -331,8 +370,7 @@ function PayOrder(props) {
         <div class="main_container d-flex flex-column align-items-center">
           <div
             class="position-absolute text-muted"
-            style={{cursor: "pointer", zIndex: "1", top: "0", right: "10px"}}
-          >
+            style={{cursor: "pointer", zIndex: "1", top: "0", right: "10px"}}>
             <i
               class="fas fa-times "
               role="button"
@@ -372,7 +410,7 @@ function PayOrder(props) {
               style={{width: "300px"}}
               placeholder="Enter the address"
               defaultValue={fanDetail.startAddress}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={e => setAddress(e.target.value)}
             />
           </div>
           <p class="date mb-0" style={{letterSpacing: "2px"}}>
@@ -393,7 +431,7 @@ function PayOrder(props) {
                 name="item1"
                 value={props.price1}
                 checked={check1}
-                onChange={(e) => getSelectedItem(e, 1)}
+                onChange={e => getSelectedItem(e, 1)}
               />
             </div>
             <div>1</div>
@@ -403,7 +441,7 @@ function PayOrder(props) {
               <input
                 type="number"
                 style={{width: "50px"}}
-                onChange={(e) => calculateQuantity1(e.target.value)}
+                onChange={e => calculateQuantity1(e.target.value)}
                 defaultValue={quantity1}
               />
             </div>
@@ -416,7 +454,7 @@ function PayOrder(props) {
                 name="item1"
                 value={props.price2}
                 checked={check2}
-                onChange={(e) => getSelectedItem(e, 2)}
+                onChange={e => getSelectedItem(e, 2)}
               />
             </div>
             <div>2</div>
@@ -426,7 +464,7 @@ function PayOrder(props) {
               <input
                 type="number"
                 style={{width: "50px"}}
-                onChange={(e) => calculateQuantity2(e.target.value)}
+                onChange={e => calculateQuantity2(e.target.value)}
                 defaultValue={quantity2}
               />
             </div>

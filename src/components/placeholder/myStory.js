@@ -34,10 +34,10 @@ function MyStory(props) {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const stateData = useSelector((state) => state.user);
-  const followData = useSelector((state) => state.follow);
-  const stateORB = useSelector((state) => state.ORB);
-  const paymentState = useSelector((state) => state.payment);
+  const stateData = useSelector(state => state.user);
+  const followData = useSelector(state => state.follow);
+  const stateORB = useSelector(state => state.ORB);
+  const paymentState = useSelector(state => state.payment);
 
   const [userInfo, setUserInfo] = useState();
   const [following, setFollowing] = useState();
@@ -106,7 +106,7 @@ function MyStory(props) {
       if (stateData.userInfo) {
         setUserInfo(stateData.userInfo);
         var publicStory = stateData.userInfo.data.screenShots.filter(
-          (element) => element.private == "0"
+          element => element.private == "0"
         );
         if (props.location.state.isMystory) {
           setScreenShot(stateData.userInfo.data.screenShots);
@@ -120,7 +120,7 @@ function MyStory(props) {
               setReviewData(stateData.reviewOfFan);
             } else {
               var publicFanReview = stateData.reviewOfFan.filter(
-                (element) => element.hideByFan === false
+                element => element.hideByFan === false
               );
               setReviewData(publicFanReview);
             }
@@ -132,7 +132,7 @@ function MyStory(props) {
               setReviewData(stateData.reviewOfArtist);
             } else {
               var publicArtistReview = stateData.reviewOfArtist.filter(
-                (element) => element.hideByArtist === false
+                element => element.hideByArtist === false
               );
               setReviewData(publicArtistReview);
             }
@@ -230,7 +230,7 @@ function MyStory(props) {
   let indexOfLastUser = Offset + perPage;
   let current = journalDataTemp.slice(indexOfFirstUser, indexOfLastUser);
 
-  const handleJournalChange = (pageNumberpaginate) => {
+  const handleJournalChange = pageNumberpaginate => {
     const selectedPage = pageNumberpaginate - 1;
     const offset = selectedPage * perPage;
     setactivePage(selectedPage);
@@ -241,7 +241,7 @@ function MyStory(props) {
   let indexOfLast = OffsetReview + perPageReview;
   let currentreview = reviewData.slice(indexOfFirst, indexOfLast);
 
-  const handleReviewChange = (pageNumberpaginate) => {
+  const handleReviewChange = pageNumberpaginate => {
     const selectedPage = pageNumberpaginate - 1;
     const OffsetReview = selectedPage * perPageReview;
     setactiveReviewPage(selectedPage);
@@ -362,8 +362,7 @@ function MyStory(props) {
             justifyContent: "space-between",
             fontSize: "20px",
             color: "#6c6b6b",
-          }}
-        >
+          }}>
           <p onClick={() => history.push("/")} style={{cursor: "pointer"}}>
             &#60; back
           </p>
@@ -385,7 +384,7 @@ function MyStory(props) {
                       : "https://jeremysLive.com:8000/default/profile.jpg"
                     : "https://jeremysLive.com:8000/default/profile.jpg"
                 }
-                onError={(e) => {
+                onError={e => {
                   e.target.onerror = null;
                   e.target.src =
                     "https://jeremysLive.com:8000/default/profile.jpg";
@@ -421,8 +420,10 @@ function MyStory(props) {
                         onClick={() => {
                           goToORB();
                         }}
-                        style={{border: "solid 2px greem", cursor: "pointer"}}
-                      ></img>
+                        style={{
+                          border: "solid 2px greem",
+                          cursor: "pointer",
+                        }}></img>
                     )}
                   </div>
                 ) : null
@@ -436,8 +437,10 @@ function MyStory(props) {
                       onClick={() => {
                         goToORB();
                       }}
-                      style={{border: "solid 2px greem", cursor: "pointer"}}
-                    ></img>
+                      style={{
+                        border: "solid 2px greem",
+                        cursor: "pointer",
+                      }}></img>
                   )}
                 </div>
               ) : (
@@ -450,8 +453,7 @@ function MyStory(props) {
                       <img
                         src="../assets/images/button_bg_small.png"
                         onClick={callAddToCommunity}
-                        style={{cursor: "pointer"}}
-                      ></img>
+                        style={{cursor: "pointer"}}></img>
                       <p>JOIN</p>
                     </>
                   ) : null}
@@ -461,23 +463,20 @@ function MyStory(props) {
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(1)}
-                  style={{fontWeight: rightPart === 1 ? "600" : ""}}
-                >
+                  style={{fontWeight: rightPart === 1 ? "600" : ""}}>
                   Pages and Places
                 </div>
                 <div
                   className="mystory_option"
                   onClick={() => setRightPart(2)}
-                  style={{fontWeight: rightPart === 2 ? "600" : ""}}
-                >
+                  style={{fontWeight: rightPart === 2 ? "600" : ""}}>
                   Reviews and Comments
                 </div>
                 {isMyStory ? (
                   <div
                     className="mystory_option"
                     onClick={() => setRightPart(3)}
-                    style={{fontWeight: rightPart === 3 ? "600" : ""}}
-                  >
+                    style={{fontWeight: rightPart === 3 ? "600" : ""}}>
                     Journals
                   </div>
                 ) : (
@@ -525,8 +524,7 @@ function MyStory(props) {
               <>
                 <div
                   className="journal_sec position-relative"
-                  style={{alignItems: "center"}}
-                >
+                  style={{alignItems: "center"}}>
                   {screenShot ? (
                     screenShot.length > 0 ? (
                       <div>
@@ -615,8 +613,7 @@ function MyStory(props) {
                           width: "100%",
                           height: "100%",
                           alignItems: "center",
-                        }}
-                      >
+                        }}>
                         No review Found
                       </p>
                     ) : (
@@ -631,8 +628,7 @@ function MyStory(props) {
                                     <td>
                                       <img
                                         src={element.artistId.profileImgURl}
-                                        className="fanReviewTable_image"
-                                      ></img>
+                                        className="fanReviewTable_image"></img>
                                     </td>
                                     <td>
                                       <p className="fanReviewTable_time">
@@ -644,8 +640,7 @@ function MyStory(props) {
                                           style={{
                                             textTransform: "uppercase",
                                             fontWeight: "600",
-                                          }}
-                                        >
+                                          }}>
                                           {element.artistId.type}
                                         </p>
                                       </div>
@@ -664,8 +659,7 @@ function MyStory(props) {
                                                 element.hideByFan,
                                                 index
                                               );
-                                            }}
-                                          ></input>
+                                            }}></input>
                                           <label>Hide this page</label>
                                         </div>
                                       ) : (
@@ -678,8 +672,7 @@ function MyStory(props) {
                                     <td>
                                       <img
                                         src={element.fanId.profileImgURl}
-                                        className="fanReviewTable_image"
-                                      ></img>
+                                        className="fanReviewTable_image"></img>
                                     </td>
                                     <td>
                                       <p className="fanReviewTable_time">
@@ -691,8 +684,7 @@ function MyStory(props) {
                                           style={{
                                             textTransform: "uppercase",
                                             fontWeight: "600",
-                                          }}
-                                        >
+                                          }}>
                                           {element.fanId.type}
                                         </p>
                                       </div>
@@ -711,8 +703,7 @@ function MyStory(props) {
                                                 element.hideByArtist,
                                                 index
                                               );
-                                            }}
-                                          ></input>
+                                            }}></input>
                                           <label>Hide this page</label>
                                         </div>
                                       ) : (
@@ -728,8 +719,7 @@ function MyStory(props) {
                                 style={{
                                   textTransform: "uppercase",
                                   fontWeight: "600",
-                                }}
-                              >
+                                }}>
                                 {element.item}
                               </td>
                               <td>
@@ -781,8 +771,7 @@ function MyStory(props) {
                                   width: "100%",
                                   height: "100%",
                                   alignItems: "center",
-                                }}
-                              >
+                                }}>
                                 No Earnings Found
                               </p>
                             ) : (
@@ -802,7 +791,7 @@ function MyStory(props) {
                                     TOTAL <br></br> EARNINGS
                                   </th>
                                 </tr>
-                                {current.map((element) => {
+                                {current.map(element => {
                                   let orderTotal =
                                     element.soldTicket * element.totalPrice;
                                   let totalEarning = orderTotal + element.tips;
@@ -860,8 +849,7 @@ function MyStory(props) {
                                   width: "100%",
                                   height: "100%",
                                   alignItems: "center",
-                                }}
-                              >
+                                }}>
                                 No Earnings Found
                               </p>
                             ) : (
@@ -874,7 +862,7 @@ function MyStory(props) {
                                   <th>TIPS</th>
                                   <th>TOTAL EARNINGS</th>
                                 </tr>
-                                {current.map((element) => {
+                                {current.map(element => {
                                   let orderTotal = 0;
 
                                   console.log("element-=-=-=", element);
@@ -901,7 +889,7 @@ function MyStory(props) {
                                       </td>
                                       <td>
                                         {element.item
-                                          ? element.item.map((item) => (
+                                          ? element.item.map(item => (
                                               <p className="mb-0">{item}</p>
                                             ))
                                           : "item"}
@@ -921,13 +909,12 @@ function MyStory(props) {
                           </>
                         ) : (
                           <>
-                            {current.map((element) => {
+                            {current.map(element => {
                               return (
                                 <tr className="fanJurnalTable">
                                   <td>
                                     <img
-                                      src={element.userId.profileImgURl}
-                                    ></img>
+                                      src={element.userId.profileImgURl}></img>
                                   </td>
                                   <td>
                                     <p className="mb-0">
@@ -949,8 +936,7 @@ function MyStory(props) {
                                         style={{
                                           textTransform: "uppercase",
                                           fontWeight: "600",
-                                        }}
-                                      >
+                                        }}>
                                         {element.userId.type}
                                       </p>
                                     </div>
@@ -959,8 +945,7 @@ function MyStory(props) {
                                     style={{
                                       textTransform: "uppercase",
                                       fontWeight: "600",
-                                    }}
-                                  >
+                                    }}>
                                     {element.item.join()}
 
                                     <p>${element.total}</p>

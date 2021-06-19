@@ -109,7 +109,13 @@ function TrainerORBPage(props) {
 
       socket.on("remainingFans", async data => {
         console.log("remainging fans...", data);
-        setFansFromQ(data[localStorage.getItem("id")]);
+        if (data[localStorage.getItem("id")]) {
+          if (Object.keys(data[localStorage.getItem("id")]).length) {
+            setFansFromQ(data[localStorage.getItem("id")]);
+          } else {
+            setFansFromQ([]);
+          }
+        }
       });
     }
 
@@ -147,6 +153,15 @@ function TrainerORBPage(props) {
 
     return () => clearInterval(interval);
   }, [isLive]);
+
+  useEffect(async () => {
+    if (time <= 0) {
+      if (isLive) {
+        await leaveCall();
+        // setIsLive(false);
+      }
+    }
+  }, [time]);
 
   const [options, setOptions] = useState({
     appId: `${process.env.REACT_APP_AGORA_APP_ID}`,
@@ -1093,7 +1108,12 @@ function TrainerORBPage(props) {
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}>
-            {" "}
+            {console.log(
+              "states... ",
+              fanVideoClicked,
+              fanProfileClick,
+              fansFromQ.length
+            )}
             {fanVideoClicked ? (
               <>
                 <div className="col-md-3">
@@ -1126,6 +1146,7 @@ function TrainerORBPage(props) {
               </>
             ) : null}
           </div>
+
           <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"

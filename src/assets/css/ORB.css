@@ -269,6 +269,8 @@ body {
 
 #other-fan-remote .agora_video_player {
   border-radius: 50% !important;
+  width: 128px !important;
+  height: 128px !important;
 }
 
 #other-fan-remote1 .agora_video_player {
