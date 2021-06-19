@@ -334,8 +334,9 @@ p.titleReview {
   margin-left: 15px;
 }
 table.tableJournal img {
-  height: 70px;
+  height: 80px;
   width: 80px;
+  padding: 0;
   border-radius: 25px;
 }
 .fanJurnalMain {

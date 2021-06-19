@@ -8,7 +8,7 @@ import swal from "sweetalert";
 
 function Register(props) {
   const history = useHistory();
-  const stateData = useSelector(state => state.user);
+  const stateData = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const [type, setType] = useState("Fan");
@@ -21,7 +21,7 @@ function Register(props) {
   const [showImage, setShowImage] = useState("");
   const [loaded, setLoaded] = useState(false);
 
-  const onImageChange = e => {
+  const onImageChange = (e) => {
     console.log("image... ", e.target.files[0]);
     setImage(e.target.files[0]);
     setShowImage(URL.createObjectURL(e.target.files[0]));
@@ -31,7 +31,7 @@ function Register(props) {
     history.push("/termsCondition");
   };
 
-  const callRegister = async e => {
+  const callRegister = async (e) => {
     e.preventDefault();
 
     if (
@@ -67,9 +67,9 @@ function Register(props) {
     setType(type);
   };
 
-  const imageChange = event => {
+  const imageChange = (event) => {
     let reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       setImage(event.target.files[0]);
       setShowImage(e.target.result);
     };
@@ -87,28 +87,31 @@ function Register(props) {
   return (
     <div style={{background: "black"}}>
       <Header />
-      <div className="container p-2 p-md-5 p- main mt-5">
-        <form method="post" onSubmit={e => callRegister(e)}>
+      <div className="container p-2 p-md-5 p-  mt-5">
+        <form method="post" onSubmit={(e) => callRegister(e)}>
           <div className="tab tab_in_mobile">
             <button
               className="tablinks"
               type="button"
               style={{border: type == "Fan" ? "2px solid #363636" : "none"}}
-              onClick={e => changeType(e, "Fan")}>
+              onClick={(e) => changeType(e, "Fan")}
+            >
               FAN
             </button>
             <button
               className="tablinks"
               type="button"
               style={{border: type == "Star" ? "2px solid #363636" : "none"}}
-              onClick={e => changeType(e, "Star")}>
+              onClick={(e) => changeType(e, "Star")}
+            >
               STAR
             </button>
             <button
               className="tablinks"
               type="button"
               style={{border: type == "Chef" ? "2px solid #363636" : "none"}}
-              onClick={e => changeType(e, "Chef")}>
+              onClick={(e) => changeType(e, "Chef")}
+            >
               CHEF
             </button>
             <button
@@ -117,7 +120,8 @@ function Register(props) {
               style={{
                 border: type == "Stylist" ? "2px solid #363636" : "none",
               }}
-              onClick={e => changeType(e, "Stylist")}>
+              onClick={(e) => changeType(e, "Stylist")}
+            >
               STYLIST
             </button>
             <button
@@ -126,7 +130,8 @@ function Register(props) {
               style={{
                 border: type == "Trainer" ? "2px solid #363636" : "none",
               }}
-              onClick={e => changeType(e, "Trainer")}>
+              onClick={(e) => changeType(e, "Trainer")}
+            >
               TRAINER
             </button>
             <button
@@ -135,7 +140,8 @@ function Register(props) {
               style={{
                 border: type == "Advertiser" ? "2px solid #363636" : "none",
               }}
-              onClick={e => changeType(e, "Advertiser")}>
+              onClick={(e) => changeType(e, "Advertiser")}
+            >
               ADVERTISER
             </button>
           </div>
@@ -148,7 +154,7 @@ function Register(props) {
                   <input
                     type="text"
                     name="firstName"
-                    onChange={e => setFirstName(e.target.value)}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
                 <div className="form_detail">
@@ -156,7 +162,7 @@ function Register(props) {
                   <input
                     type="text"
                     name="lastName"
-                    onChange={e => setLastName(e.target.value)}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
                 <div className="form_detail">
@@ -164,7 +170,7 @@ function Register(props) {
                   <input
                     type="email"
                     name="email"
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="form_detail">
@@ -172,7 +178,7 @@ function Register(props) {
                   <input
                     type="password"
                     name="password"
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
               </div>
@@ -189,8 +195,9 @@ function Register(props) {
                       : {background: "#ffff", width: "100%"}
                   }
                   className="upload"
-                  method="POST">
-                  <input type="file" onChange={e => imageChange(e)} />
+                  method="POST"
+                >
+                  <input type="file" onChange={(e) => imageChange(e)} />
                   {showImage ? null : <p>ADD PROFILE PHOTO</p>}
                 </div>
                 <div className="form_detail">
@@ -198,7 +205,7 @@ function Register(props) {
                   <input
                     type="password"
                     name="confpass"
-                    onChange={e => setConfpass(e.target.value)}
+                    onChange={(e) => setConfpass(e.target.value)}
                   />
                 </div>
               </div>
@@ -217,7 +224,7 @@ function Register(props) {
             </div>
           </div>
         </form>
-
+        {/* 
         <div id="star" className="tabcontent">
           <h3>Paris</h3>
           <p>Paris is the capital of France.</p>
@@ -239,7 +246,7 @@ function Register(props) {
         <div id="advertiser" className="tabcontent">
           <h3>Tokyo</h3>
           <p>Tokyo is the capital of Japan.</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

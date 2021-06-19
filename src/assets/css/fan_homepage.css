@@ -54,6 +54,7 @@
   box-sizing: border-box;
   font-family: proxima-nova;
   color: #ffffff;
+  min-height: 100vh;
   background: url("../images/background_black.jpg") !important;
   /* background-size: cover ; */
   background-size: 100vw auto !important;
