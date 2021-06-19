@@ -284,17 +284,26 @@ function MyStory(props) {
 
   const goToORB = async () => {
     console.log("fn called");
-    if (
-      userInfo.data.type === "chef" ||
-      userInfo.data.type === "Chef" ||
-      userInfo.data.type === "stylist" ||
-      userInfo.data.type === "Stylist"
-    ) {
+    if (userInfo.data.type === "chef" || userInfo.data.type === "Chef") {
       console.log("connectedFan.length ", fanJoined);
       if (fanJoined) {
         swal("Info", "You can’t join live streaming", "info");
       } else {
         history.push("/fanChefORB", {
+          name: userInfo
+            ? userInfo.data.firstName
+              ? userInfo.data.firstName
+              : ""
+            : "",
+          id: userInfo ? userInfo.data._id : "",
+        });
+      }
+    }
+    if (userInfo.data.type === "stylist" || userInfo.data.type === "Stylist") {
+      if (fanJoined) {
+        swal("Info", "You can’t join live streaming", "info");
+      } else {
+        history.push("/fanStylistORB", {
           name: userInfo
             ? userInfo.data.firstName
               ? userInfo.data.firstName

@@ -136,7 +136,7 @@ function Ticket(props) {
               Date: {moment(paidDetail.dateTime).format("DD MMM, YYYY")}
             </p>
             <p style={{letterSpacing: "2px"}} className="">
-              Payment Method: Paypal
+              Payment Method: {paidDetail.paymentType}
             </p>
             {/* <p class="mb-0">Account No: XXXXX2456</p> */}
             <p className="mb-0" style={{letterSpacing: "2px"}}>

@@ -29,7 +29,7 @@ import {getPaymentDetails} from "../../actions/paymentActions";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -143,14 +143,14 @@ function FanChefORB(props) {
     `https://jeremysLive.com/${window.location.pathname.slice(1)}`
   );
   const dispatch = useDispatch();
-  const stateData = useSelector(state => {
+  const stateData = useSelector((state) => {
     return state.user;
   });
-  const StreamData = useSelector(state => state.ORB);
+  const StreamData = useSelector((state) => state.ORB);
   useOutsideClick(ref, () => {
     setIsOpen(false);
   });
-  const paymentState = useSelector(state => state.payment);
+  const paymentState = useSelector((state) => state.payment);
   const history = useHistory();
 
   const [stream, setStream] = useState(false);
@@ -178,7 +178,7 @@ function FanChefORB(props) {
 
     if (isActive && time > 0) {
       interval = setInterval(() => {
-        setTime(time => time - 1);
+        setTime((time) => time - 1);
       }, 1000);
     } else if (!isActive && time !== 0) {
       clearInterval(interval);
@@ -207,7 +207,7 @@ function FanChefORB(props) {
     // if (props.location.state.name) {
     await axios
       .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${id}`)
-      .then(async result => {
+      .then(async (result) => {
         setOptions({...options, token: result.data.data.agoraToken});
         if (result.data.data.agoraToken) {
           const token = result.data.data.agoraToken;
@@ -220,7 +220,7 @@ function FanChefORB(props) {
             token,
             null
           );
-          setChefRTC(prevState => ({
+          setChefRTC((prevState) => ({
             ...prevState,
             client: rtc.client,
           }));
@@ -256,14 +256,14 @@ function FanChefORB(props) {
             AGC: true,
             ANS: true,
           });
-          setChefRTC(prevState => ({
+          setChefRTC((prevState) => ({
             ...prevState,
             localAudioTrack: rtc.localAudioTrack,
           }));
 
           // Create a video track from the video captured by a camera.
           rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-          setChefRTC(prevState => ({
+          setChefRTC((prevState) => ({
             ...prevState,
             localVideoTrack: rtc.localVideoTrack,
           }));
@@ -275,7 +275,7 @@ function FanChefORB(props) {
           await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
         }
       })
-      .catch(err => console.log("error ", err));
+      .catch((err) => console.log("error ", err));
     // }
     const dataToPass = {
       userId: id,
@@ -443,13 +443,23 @@ function FanChefORB(props) {
     //   return ev.returnValue;
     // });
   }, []);
-
   useEffect(() => {
     if (paymentState) {
+      console.log("payment state.. ", paymentState);
       if (paymentState.paymentDetail && paymentState.paymentDetail["total"]) {
-        setTime(0);
-        setThreeMinutesComplete(false);
-        if (exitCalled === false) setShowRating(false);
+        if (StreamData.streamData && StreamData.streamData.message) {
+          if (
+            StreamData.streamData.message._id ===
+            paymentState.paymentDetail.streamId
+          ) {
+            setTime(0);
+            setThreeMinutesComplete(false);
+            if (exitCalled === false) setShowRating(false);
+          } else {
+            setPaid(false);
+            setTime(180);
+          }
+        }
         // setShowRating(false);
       }
     }
@@ -605,7 +615,8 @@ function FanChefORB(props) {
         marginTop: "-48px",
         marginBottom: "-16px",
       }}
-      id="capture1">
+      id="capture1"
+    >
       <Prompt
         message={(location, action) => {
           if (action === "POP") {
@@ -637,7 +648,8 @@ function FanChefORB(props) {
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           {paid ? (
             <Receipt
@@ -647,6 +659,7 @@ function FanChefORB(props) {
               text="chef/stylist"
               userId={props.location.state.id}
               streamObj={streamDetails}
+              setTime={setTime}
               handleClose={handleClose}
               setFreeSessionCompleted={setFreeSessionCompleted}
               freeSessionCompleted={freeSessionCompleted}
@@ -693,7 +706,8 @@ function FanChefORB(props) {
         }}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           <div style={{background: "black"}} className="container">
             <div className="text-center">
@@ -706,7 +720,8 @@ function FanChefORB(props) {
               onClick={() => {
                 leaveCall();
                 setShowLeaveModal(false);
-              }}>
+              }}
+            >
               Exit
             </button>
             <button
@@ -714,7 +729,8 @@ function FanChefORB(props) {
               onClick={() => {
                 setShow(true);
                 setShowLeaveModal(false);
-              }}>
+              }}
+            >
               Go back to pay
             </button>
           </div>
@@ -725,7 +741,8 @@ function FanChefORB(props) {
         onHide={closeTip}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           {showTip ? (
             <Tip
@@ -748,7 +765,8 @@ function FanChefORB(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title">
+        aria-labelledby="example-custom-modal-styling-title"
+      >
         <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
@@ -800,7 +818,8 @@ function FanChefORB(props) {
               zIndex: "1",
               // cursor: "pointer",
               height: "500px",
-            }}></div>
+            }}
+          ></div>
 
           <div
             className="rectangle_video"
@@ -816,12 +835,14 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               height: "500px",
-            }}></div>
+            }}
+          ></div>
           <div className="justify-content-center go_live_logo"></div>
           <div className="round_video" style={{top: "25px"}}>
             <div
               className="video_contents position-relative"
-              style={{zIndex: "2"}}>
+              style={{zIndex: "2"}}
+            >
               {subscribed ? (
                 joinedFanList.length === 0 ? (
                   <>
@@ -835,7 +856,8 @@ function FanChefORB(props) {
                           ? "red"
                           : "yellow",
                         border: paid ? "green" : showRating ? "red" : "yellow",
-                      }}></div>
+                      }}
+                    ></div>
                     <img
                       className="black_logo_img"
                       src="../assets/images/black_logo-without-text.png"
@@ -855,7 +877,8 @@ function FanChefORB(props) {
                         ? "red"
                         : "yellow",
                       border: paid ? "green" : showRating ? "red" : "yellow",
-                    }}></div>
+                    }}
+                  ></div>
                 </>
               )}
             </div>
@@ -873,7 +896,8 @@ function FanChefORB(props) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                }}>
+                }}
+              >
                 {streamDetails.chefItems !== undefined
                   ? streamDetails.chefItems[0].name
                   : "Item"}
@@ -901,16 +925,18 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}
             onClick={() =>
               openOrderTotal(
                 streamDetails.chefItems ? streamDetails.chefItems[0].price : 0,
                 1
               )
-            }></div>
+            }
+          ></div>
           <div className="links">
-            <a style={{cursor: "cursor"}} onClick={e => handleShow()}>
+            <a style={{cursor: "cursor"}} onClick={(e) => handleShow()}>
               <div className="link d-flex flex-column">
                 <img src="../assets/images/ticket.png" alt="logo" />
                 <p>Total order</p>
@@ -934,7 +960,8 @@ function FanChefORB(props) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
-                onClick={() => setMoreIcon()}>
+                onClick={() => setMoreIcon()}
+              >
                 <img
                   src="../assets/images/share.png"
                   style={
@@ -954,7 +981,8 @@ function FanChefORB(props) {
                     background: "#333333",
                     borderRadius: "10px",
                     verticalAlign: "middle",
-                  }}>
+                  }}
+                >
                   <ul className="menu_item d-flex flex-row m-0 justify-content-between px-3 align-items-center">
                     {" "}
                     <li
@@ -966,7 +994,8 @@ function FanChefORB(props) {
                         {" "}
                         <span
                           className="fab fa-facebook-square"
-                          style={{fontSize: "25px"}}></span>
+                          style={{fontSize: "25px"}}
+                        ></span>
                       </a>
                     </li>
                     <li
@@ -978,7 +1007,8 @@ function FanChefORB(props) {
                       <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                         <span
                           className="fab fa-twitter-square"
-                          style={{fontSize: "25px"}}></span>{" "}
+                          style={{fontSize: "25px"}}
+                        ></span>{" "}
                       </a>
                     </li>
                   </ul>
@@ -989,7 +1019,8 @@ function FanChefORB(props) {
               style={{cursor: "pointer"}}
               onClick={() => {
                 leaveCall();
-              }}>
+              }}
+            >
               <div className="link d-flex flex-column">
                 <img src="../assets/images/exit.png" alt="logo" />
                 <p>Exit</p>
@@ -1009,14 +1040,16 @@ function FanChefORB(props) {
               borderRadius: "20%",
               zIndex: "1",
               cursor: "pointer",
-              height: "250px",
+              height: "200px",
+              width: "200px",
             }}
             onClick={() =>
               openOrderTotal(
                 streamDetails.chefItems ? streamDetails.chefItems[1].price : 0,
                 2
               )
-            }></div>
+            }
+          ></div>
           <div>
             <div className="item-des mx-2">
               <div className="item">
@@ -1029,7 +1062,8 @@ function FanChefORB(props) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                  }}>
+                  }}
+                >
                   {streamDetails.chefItems !== undefined
                     ? streamDetails.chefItems[1].name
                     : "Item"}
