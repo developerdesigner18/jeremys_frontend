@@ -249,6 +249,8 @@ function FanChefORB(props) {
             console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
 
             // if (parseInt(hostUidResponse) === user.uid) {
+            console.log(props.location.state, "props.location.state.type");
+
             if (
               props.location.state.type === "chef" ||
               props.location.state.type === "Chef"
