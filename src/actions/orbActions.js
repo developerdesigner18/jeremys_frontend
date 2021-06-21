@@ -1,11 +1,11 @@
 import swal from "sweetalert";
 import axios from "axios";
 
-export const storeScreenShot = (data) => {
-  return (dispatch) => {
+export const storeScreenShot = data => {
+  return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/user/saveScreenShot`, data)
-      .then((result) => {
+      .then(result => {
         if (result.status === 200) {
           dispatch({
             type: "STORE_SCREENSHOT",
@@ -16,18 +16,18 @@ export const storeScreenShot = (data) => {
           );
         }
       })
-      .catch((error) => console.log("error while storing ss", error));
+      .catch(error => console.log("error while storing ss", error));
   };
 };
 
-export const storeChefOrbDetails = (data) => {
-  return (dispatch) => {
+export const storeChefOrbDetails = data => {
+  return dispatch => {
     axios
       .post(
         `${process.env.REACT_APP_API_URL}api/stream/addDetailsChefStream`,
         data
       )
-      .then((result) => {
+      .then(result => {
         console.log("result ", result.data);
         if (result.status === 201) {
           dispatch({
@@ -36,12 +36,12 @@ export const storeChefOrbDetails = (data) => {
           });
         }
       })
-      .catch((error) => console.log("error while storing ss", error));
+      .catch(error => console.log("error while storing ss", error));
   };
 };
 
-export const storeFanStatus = (data) => {
-  return (dispatch) => {
+export const storeFanStatus = data => {
+  return dispatch => {
     dispatch({
       type: "FAN_GO_LIVE",
       payload: data,
@@ -49,11 +49,11 @@ export const storeFanStatus = (data) => {
   };
 };
 
-export const getUserToken = (data) => {
-  return (dispatch) => {
+export const getUserToken = data => {
+  return dispatch => {
     axios
       .get(`${process.env.REACT_APP_API_URL}api/agora/getUserToken?id=${data}`)
-      .then((result) => {
+      .then(result => {
         console.log("api response ", result);
         if (result.data.code == 201) {
           dispatch({
@@ -62,15 +62,15 @@ export const getUserToken = (data) => {
           });
         }
       })
-      .catch((error) => console.log("error while fetching data", error));
+      .catch(error => console.log("error while fetching data", error));
   };
 };
 
-export const getStreamDetails = (data) => {
-  return (dispatch) => {
+export const getStreamDetails = data => {
+  return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/stream/getStreamdata`, data)
-      .then((result) => {
+      .then(result => {
         console.log("result ", result.data);
         if (result.status === 201) {
           dispatch({
@@ -79,15 +79,15 @@ export const getStreamDetails = (data) => {
           });
         }
       })
-      .catch((error) => console.log("error while storing ss", error));
+      .catch(error => console.log("error while storing ss", error));
   };
 };
 
-export const storeRateReview = (data) => {
-  return (dispatch) => {
+export const storeRateReview = data => {
+  return dispatch => {
     axios
       .post(`${process.env.REACT_APP_API_URL}api/reviews/addRatings`, data)
-      .then((result) => {
+      .then(result => {
         if (result.data.success) {
           dispatch({
             type: "STORE_RATE_REVIEW",
@@ -96,14 +96,14 @@ export const storeRateReview = (data) => {
           window.location.replace("/fanHomePage");
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error ", error);
       });
   };
 };
 
 export const storeOnlineUser = () => {
-  return (dispatch) => {
+  return dispatch => {
     const data = {
       userId: localStorage.getItem("id"),
     };
@@ -112,14 +112,14 @@ export const storeOnlineUser = () => {
         `${process.env.REACT_APP_API_URL}api/online/storeOnlineUserId`,
         data
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.success) {
           dispatch({
             type: "STORE_ONLINE_USER",
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error ", error);
       });
   };
@@ -137,12 +137,12 @@ export const getOnlineUserList = (category, subCategory) => {
   } else if (category == "body") {
     type = "trainer";
   }
-  return (dispatch) => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/online/getOnlineUsers?type=${type}&subCategory=${subCategory}`
       )
-      .then(async (result) => {
+      .then(async result => {
         if (result.data.success) {
           await dispatch({
             type: "GET_ONLINE_USERS",
@@ -150,19 +150,19 @@ export const getOnlineUserList = (category, subCategory) => {
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error........", error);
       });
   };
 };
 
 export const removeOnlineUser = () => {
-  return (dispatch) => {
+  return dispatch => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}api/online/removeUser`, {
         data: {userId: localStorage.getItem("id")},
       })
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 201) {
           dispatch({
             type: "REMOVE_USER",
@@ -171,19 +171,19 @@ export const removeOnlineUser = () => {
           window.location.replace("/userHomepage");
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error.......", error);
       });
   };
 };
 
-export const checkUserOnline = (data) => {
-  return (dispatch) => {
+export const checkUserOnline = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/online/checkOnlineUser?id=${data}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "CHECK_ONLNIE_USER",
@@ -196,17 +196,17 @@ export const checkUserOnline = (data) => {
           });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log("error in check user online ", err);
       });
   };
 };
 
-export const joinedFan = (data) => {
-  return (dispatch) => {
+export const joinedFan = data => {
+  return dispatch => {
     axios
       .put(`${process.env.REACT_APP_API_URL}api/online/storeJoinedFan`, data)
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 201) {
           dispatch({
             type: "STORE_JOINED_FAN",
@@ -218,36 +218,36 @@ export const joinedFan = (data) => {
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error.........", error);
       });
   };
 };
 
-export const removedJoinFan = (data) => {
-  return (dispatch) => {
+export const removedJoinFan = data => {
+  return dispatch => {
     axios
       .put(`${process.env.REACT_APP_API_URL}api/online/removeFan`, data)
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 201) {
           dispatch({
             type: "REMOVE_FAN",
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error........", error);
       });
   };
 };
 
-export const getJoinedFanList = (data) => {
-  return (dispatch) => {
+export const getJoinedFanList = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/online/getJoinedFans?id=${data}`
       )
-      .then((result) => {
+      .then(result => {
         console.log("result.data", result.data, data);
         if (result.data.code === 201) {
           dispatch({
@@ -256,59 +256,59 @@ export const getJoinedFanList = (data) => {
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error in get fans list", error);
       });
   };
 };
 
 export const deleteGeneratedStream = () => {
-  return (dispatch) => {
+  return dispatch => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}api/stream/deleteStreamData`, {
         data: {userId: localStorage.getItem("id")},
       })
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200 || result.data.success) {
           dispatch({
             type: "DELETE_STREAM",
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(" error........", error);
       });
   };
 };
 
 export const changeUserStatus = () => {
-  return (dispatch) => {
+  return dispatch => {
     axios
       .get(
         `${
           process.env.REACT_APP_API_URL
         }api/online/updateUserStatus?userId=${localStorage.getItem("id")}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "CHANGE_STATUS",
           });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log("error in api callinkg ", err);
       });
   };
 };
 
-export const getUserStatus = (data) => {
-  return (dispatch) => {
+export const getUserStatus = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/online/getUserStatus?userId=${data}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "GET_USER_STATUS",
@@ -316,17 +316,17 @@ export const getUserStatus = (data) => {
           });
         }
       })
-      .catch((err) => console.log("error........ ", err));
+      .catch(err => console.log("error........ ", err));
   };
 };
 
-export const onlineUserCheck = (data) => {
-  return (dispatch) => {
+export const onlineUserCheck = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/online/checkOnlineUser?id=${data}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.success) {
           dispatch({
             type: "CHECK_ONLNIE_USER",
@@ -339,18 +339,18 @@ export const onlineUserCheck = (data) => {
           });
         }
       })
-      .catch((err) => console.log("error..........", err));
+      .catch(err => console.log("error..........", err));
   };
 };
 
-export const storeLiveStream = (data) => {
-  return (dispatch) => {
+export const storeLiveStream = data => {
+  return dispatch => {
     axios
       .post(
         `${process.env.REACT_APP_API_URL}api/liveStream/storeLiveStreamData`,
         data
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code == 200) {
           dispatch({
             type: "STORE_LIVE_STREAM",
@@ -358,19 +358,17 @@ export const storeLiveStream = (data) => {
           });
         }
       })
-      .catch((error) =>
-        console.log("error in storelivestram api...... ", error)
-      );
+      .catch(error => console.log("error in storelivestram api...... ", error));
   };
 };
 
-export const getLiveStream = (data) => {
-  return (dispatch) => {
+export const getLiveStream = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/liveStream/getLiveStreamData?userId=${data}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code == 200) {
           dispatch({
             type: "GET_LIVE_STREAM_DATA",
@@ -378,12 +376,12 @@ export const getLiveStream = (data) => {
           });
         }
       })
-      .catch((err) => console.log("err in get live stream ", err));
+      .catch(err => console.log("err in get live stream ", err));
   };
 };
 
 export const deleteStream = () => {
-  return (dispatch) => {
+  return dispatch => {
     axios
       .delete(
         `${process.env.REACT_APP_API_URL}api/liveStream/deleteLiveStreamData`,
@@ -391,65 +389,65 @@ export const deleteStream = () => {
           data: {userId: localStorage.getItem("id")},
         }
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code == 200) {
           dispatch({
             type: "DELETE_LIVE_STREAM",
           });
         }
       })
-      .catch((error) => console.log("eror.. ", error));
+      .catch(error => console.log("eror.. ", error));
   };
 };
 
-export const storeHostUId = (uid) => {
-  return (dispatch) => {
+export const storeHostUId = uid => {
+  return dispatch => {
     const data = {
       userId: localStorage.getItem("id"),
       hostUid: uid,
     };
     axios
       .post(`${process.env.REACT_APP_API_URL}api/online/storeHostUId`, data)
-      .then((result) => {
+      .then(result => {
         if (result.data.success) {
           dispatch({
             type: "STORE_HOST_UID",
           });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log("error ", error);
       });
   };
 };
 
-export const changeRValue = (data) => {
-  return (dispatch) => {
+export const changeRValue = data => {
+  return dispatch => {
     axios
       .put(
         `${process.env.REACT_APP_API_URL}api/liveStream/changeMuteValue`,
         data
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code == 200) {
           dispatch({
             type: "SET_R_VALUE",
           });
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log("err..", err);
       });
   };
 };
 
-export const getChangedRValue = (data) => {
-  return (dispatch) => {
+export const getChangedRValue = data => {
+  return dispatch => {
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/liveStream/getMuteValue?streamId=${data}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code == 200) {
           dispatch({
             type: "GET_R_VALUE",
@@ -457,19 +455,19 @@ export const getChangedRValue = (data) => {
           });
         }
       })
-      .catch((err) => console.log("error... ", err));
+      .catch(err => console.log("error... ", err));
   };
 };
 
 export const getFanJoined3MinuteCount = (userId, fanId, streamId) => {
-  return (dispatch) => {
+  return dispatch => {
     console.log("streamId-=-=--=", streamId);
 
     axios
       .get(
         `${process.env.REACT_APP_API_URL}api/attemptCheck/getJoinedFanDetail?userId=${userId}&fanId=${fanId}&streamId=${streamId}`
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "GET_FAN_3MIN_COUNT",
@@ -477,30 +475,30 @@ export const getFanJoined3MinuteCount = (userId, fanId, streamId) => {
           });
         }
       })
-      .catch((err) => console.log("errr... ", err));
+      .catch(err => console.log("errr... ", err));
   };
 };
 
-export const storeFan3MinuteCount = (data) => {
-  return (dispatch) => {
+export const storeFan3MinuteCount = data => {
+  return dispatch => {
     axios
       .post(
         `${process.env.REACT_APP_API_URL}api/attemptCheck/storeFanJoinData`,
         data
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "STORE_FAN_FOR_3MIN",
           });
         }
       })
-      .catch((err) => console.log("err........ ", err));
+      .catch(err => console.log("err........ ", err));
   };
 };
 
-export const removeFan3MinuteCount = (dataObj) => {
-  return (dispatch) => {
+export const removeFan3MinuteCount = dataObj => {
+  return dispatch => {
     axios
       .delete(
         `${process.env.REACT_APP_API_URL}api/attemptCheck/removedFanWithStream`,
@@ -508,13 +506,22 @@ export const removeFan3MinuteCount = (dataObj) => {
           data: dataObj,
         }
       )
-      .then((result) => {
+      .then(result => {
         if (result.data.code === 200) {
           dispatch({
             type: "REMOVE_FAN_FOR_3MIN",
           });
         }
       })
-      .catch((err) => console.log("errrrr...", err));
+      .catch(err => console.log("errrrr...", err));
+  };
+};
+
+export const empty3MinuteCount = () => {
+  return dispatch => {
+    dispatch({
+      type: "GET_FAN_3MIN_COUNT",
+      payload: false,
+    });
   };
 };

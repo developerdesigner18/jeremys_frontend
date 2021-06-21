@@ -18,6 +18,7 @@ import {
   removeFan3MinuteCount,
   storeFan3MinuteCount,
   getFanJoined3MinuteCount,
+  empty3MinuteCount,
 } from "../../actions/orbActions";
 import Ticket from "../ORBTicketComponents/Ticket";
 import Receipt from "../ORBTicketComponents/Receipt";
@@ -70,6 +71,7 @@ function SingleUserORBPage(props) {
   const [freeSessionCompleted, setFreeSessionCompleted] = useState(false);
   const [imageModal, setImageModal] = useState(false);
   const [threeMinutesComplete, setThreeMinutesComplete] = useState(false);
+  const [exitCalled, setExitCalled] = useState(false);
 
   const mount = useRef();
 
@@ -117,13 +119,15 @@ function SingleUserORBPage(props) {
       "session completed value.. ",
       freeSessionCompleted,
       paid,
-      isActive
+      isActive,
+      threeMinutesComplete
     );
     if (freeSessionCompleted) {
       if (paid) {
         setShow(false);
       } else {
         if (streamObj && props.location.state.id) setShow(true);
+        else setShow(false);
       }
     } else {
       setShow(false);
@@ -807,7 +811,7 @@ function SingleUserORBPage(props) {
           orbState.fan3minCount === true &&
           !paid
         ) {
-          handleShow();
+          if (exitCalled === false) handleShow();
         } else {
           handleClose();
         }
@@ -825,7 +829,7 @@ function SingleUserORBPage(props) {
 
   useEffect(() => {
     if (paymentState) {
-      console.log("totak field", paymentState.ticketReceipt);
+      console.log("total field", paymentState.ticketReceipt);
       if (paymentState.ticketInfo) {
         if (paymentState.ticketInfo["total"]) {
           console.log("inside if of get receipt for star and trainer");
@@ -860,6 +864,7 @@ function SingleUserORBPage(props) {
       buttons: ["Cancel", "Yes"],
     }).then(async function (isConfirm) {
       if (isConfirm) {
+        setExitCalled(true);
         // Destroy the local audio and video tracks.
 
         if (fanRTC.client && fanRTC.localVideoTrack) {
@@ -910,6 +915,7 @@ function SingleUserORBPage(props) {
         } else {
           setShowRatingModal(true);
         }
+        await dispatch(empty3MinuteCount());
         if (
           props.location.state.type === "trainer" ||
           props.location.state.type === "Trainer"
