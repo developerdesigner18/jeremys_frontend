@@ -244,7 +244,7 @@ function FanChefORB(props) {
               props.location.state.type === "chef" ||
               props.location.state.type === "Chef"
             ) {
-              swal({text: "Chef left the session!"}).then((isConfirm) => {
+              swal({text: "Chef left the session!"}).then(isConfirm => {
                 if (isConfirm) {
                   // setPaid(true);
                   leaveCall("left");
@@ -253,7 +253,7 @@ function FanChefORB(props) {
                 }
               });
             } else {
-              swal({text: "Stylist left the session!"}).then((isConfirm) => {
+              swal({text: "Stylist left the session!"}).then(isConfirm => {
                 if (isConfirm) {
                   leaveCall("left");
                 } else {
@@ -418,47 +418,6 @@ function FanChefORB(props) {
     };
   }, []);
 
-  useEffect(async () => {
-    // await dispatch(getJoinedFanList(props.location.state.id));
-    // // await leaveCall();
-    // await dispatch(
-    //   getFanJoined3MinuteCount(
-    //     props.location.state.id,
-    //     localStorage.getItem("id")
-    //   )
-    // );
-    // window.addEventListener("beforeunload", async ev => {
-    //   console.log("before unload evenet called ", ev);
-    //   console.log(
-    //     "paid or not... ",
-    //     paid,
-    //     paymentState && paymentState.paymentDetail
-    //   );
-    //   // await leaveCall();
-    //   if (
-    //     chefRTC.client &&
-    //     chefRTC.localVideoTrack &&
-    //     chefRTC.localAudioTrack
-    //   ) {
-    //     chefRTC.localAudioTrack.close();
-    //     chefRTC.localVideoTrack.close();
-    //     // Leave the channel.
-    //     await chefRTC.client.leave();
-    //   }
-    //   const dataToPass = {
-    //     fanId: localStorage.getItem("id"),
-    //     userId: props.location.state.id,
-    //   };
-    //   await dispatch(removedJoinFan(dataToPass));
-    //   if (paymentState && paymentState.paymentDetail) {
-    //     await dispatch(removeFan3MinuteCount(dataToPass));
-    //   } else {
-    //     await dispatch(storeFan3MinuteCount(dataToPass));
-    //   }
-    //   ev.returnValue = "Live streaming will be closed. Sure you want to leave?";
-    //   return ev.returnValue;
-    // });
-  }, []);
   useEffect(() => {
     if (paymentState) {
       console.log(
