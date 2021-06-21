@@ -236,6 +236,33 @@ function FanChefORB(props) {
 
           rtc.client.on("user-unpublished", async (user, mediaType) => {
             console.log("handleUserUnpublished chef/stylist-==-=-=", user.uid);
+
+            // if (parseInt(hostUidResponse) === user.uid) {
+            console.log(props.location.state, "props.location.state.type");
+
+            if (
+              props.location.state.type === "chef" ||
+              props.location.state.type === "Chef"
+            ) {
+              swal({text: "Chef left the session!"}).then((isConfirm) => {
+                if (isConfirm) {
+                  // setPaid(true);
+                  leaveCall("left");
+                } else {
+                  leaveCall("left");
+                }
+              });
+            } else {
+              swal({text: "Stylist left the session!"}).then((isConfirm) => {
+                if (isConfirm) {
+                  leaveCall("left");
+                } else {
+                  leaveCall("left");
+                }
+              });
+            }
+            // props.history.push("/fanHomePage");
+            // }
             setSubscribed(false);
           });
 
@@ -460,7 +487,7 @@ function FanChefORB(props) {
     }
   }, [paymentState]);
 
-  async function leaveCall() {
+  async function leaveCall(HostStatus = null) {
     swal({
       text: "Are you sure you want to exit the live session?",
       buttons: ["Cancel", "Yes"],
@@ -505,7 +532,9 @@ function FanChefORB(props) {
               userId: props.location.state.id,
               streamId: StreamData.streamData.message._id,
             };
-            await dispatch(storeFan3MinuteCount(dataToPass1));
+            if (HostStatus !== "left") {
+              await dispatch(storeFan3MinuteCount(dataToPass1));
+            }
           }
         }
 

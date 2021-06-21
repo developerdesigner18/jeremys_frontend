@@ -296,6 +296,7 @@ function MyStory(props) {
               : ""
             : "",
           id: userInfo ? userInfo.data._id : "",
+          type: userInfo ? userInfo.data.type : "",
         });
       }
     }
@@ -310,6 +311,7 @@ function MyStory(props) {
               : ""
             : "",
           id: userInfo ? userInfo.data._id : "",
+          type: userInfo ? userInfo.data.type : "",
         });
       }
     }
