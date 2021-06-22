@@ -403,7 +403,7 @@ function PayOrder(props) {
                     if (isConfirm) {
                       props.setShow(true);
                     } else {
-                      props.setShow(false);
+                      // props.setShow(false);
                       props.leaveCallFromFan();
                     }
                   });

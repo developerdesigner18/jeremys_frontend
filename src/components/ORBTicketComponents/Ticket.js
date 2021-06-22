@@ -202,7 +202,11 @@ function Ticket(props) {
                 // if (props.freeSessionCompleted) {
                 //   props.setShow(true);
                 // } else {
-                console.log("3 minutes props.. ", props.threeMinutesComplete);
+                console.log(
+                  "3 minutes props.. ",
+                  props.threeMinutesComplete,
+                  props.freeSessionCompleted
+                );
                 if (props.threeMinutesComplete) {
                   swal({
                     text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
@@ -223,7 +227,7 @@ function Ticket(props) {
                     if (isConfirm) {
                       props.setShow(true);
                     } else {
-                      props.setShow(false);
+                      // props.setShow(false);
                       props.leaveCallFromFan();
                     }
                   });
