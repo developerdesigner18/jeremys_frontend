@@ -126,11 +126,29 @@ function SingleUserORBPage(props) {
       if (paid) {
         setShow(false);
       } else {
-        if (streamObj && props.location.state.id) setShow(true);
-        else setShow(false);
+        console.log(
+          "in else of handle close..",
+          freeSessionCompleted,
+          threeMinutesComplete
+        );
+        swal({
+          text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
+          buttons: ["Exit", "Go back to pay"],
+        }).then(async function (isConfirm) {
+          if (isConfirm) {
+            setShow(true);
+          } else {
+            setShow(false);
+            leaveCallFromFan();
+          }
+        });
       }
     } else {
-      setShow(false);
+      if (threeMinutesComplete) {
+        leaveCallFromFan();
+      } else {
+        setShow(false);
+      }
     }
     setIsActive(true);
   };
@@ -813,7 +831,8 @@ function SingleUserORBPage(props) {
         ) {
           if (exitCalled === false) handleShow();
         } else {
-          handleClose();
+          console.log("calling handle close in use effect...", exitCalled);
+          if (exitCalled === false) handleClose();
         }
       }
     }
