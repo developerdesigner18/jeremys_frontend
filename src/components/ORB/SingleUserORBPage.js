@@ -945,6 +945,8 @@ function SingleUserORBPage(props) {
             uid: fanUid,
           });
         }
+      } else {
+        handleShow();
       }
     });
   }

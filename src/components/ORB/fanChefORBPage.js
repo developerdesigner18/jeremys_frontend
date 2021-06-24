@@ -88,24 +88,23 @@ function FanChefORB(props) {
         setTime(0);
         setIsActive(false);
       } else {
-        setShow(false);
-        // setIsActive(true);
-      }
-    } else {
-      setShow(false);
-      if (threeMinutesComplete) {
-        // setShowLeaveModal(true);
         swal({
-          text: "Are you sure you want to exit the live session?",
+          text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
           buttons: ["Exit", "Go back to pay"],
         }).then(async function (isConfirm) {
           if (isConfirm) {
             setShow(true);
           } else {
+            setShow(false);
             leaveCall();
           }
         });
+      }
+    } else {
+      if (threeMinutesComplete) {
+        leaveCall();
       } else {
+        setShow(false);
         setIsActive(true);
       }
     }
@@ -346,7 +345,7 @@ function FanChefORB(props) {
 
           if (exitCalled === false) handleShow();
         } else {
-          handleClose();
+          if (exitCalled === false) handleClose();
         }
       }
     }
@@ -506,10 +505,9 @@ function FanChefORB(props) {
         }
 
         await dispatch(empty3MinuteCount());
+      } else {
+        handleShow();
       }
-      // else {
-      //   setShow(true);
-      // }
     });
   }
 

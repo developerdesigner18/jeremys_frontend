@@ -384,18 +384,17 @@ function PayOrder(props) {
                   props.freeSessionCompleted
                 );
                 if (props.threeMinutesComplete) {
-                  swal({
-                    text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
-                    buttons: ["Exit", "Go back to pay"],
-                  }).then(async function (isConfirm) {
-                    if (isConfirm) {
-                      props.setShow(true);
-                    } else {
-                      props.leaveCallFromFan();
-                    }
-                  });
-                } else {
-                  // props.handleClose();
+                  // swal({
+                  //   text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
+                  //   buttons: ["Exit", "Go back to pay"],
+                  // }).then(async function (isConfirm) {
+                  //   if (isConfirm) {
+                  //     props.setShow(true);
+                  //   } else {
+                  //   }
+                  // });
+                  props.leaveCallFromFan();
+                } else if (props.freeSessionCompleted) {
                   swal({
                     text: "Our Apologies You have exceeded the three minutes time limit. Are you sure you want to exit live session?",
                     buttons: ["Exit", "Go back to pay"],
@@ -407,6 +406,8 @@ function PayOrder(props) {
                       props.leaveCallFromFan();
                     }
                   });
+                } else {
+                  props.handleClose();
                 }
                 // }
               }}
