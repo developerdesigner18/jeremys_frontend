@@ -540,6 +540,8 @@ function FanChefORB(props) {
 
   const closeTip = () => {
     setShowTip(false);
+    setShow(false);
+    setIsActive(true);
   };
 
   const shareOnFB = () => {
