@@ -220,6 +220,7 @@ function ORBPage(props) {
     }
   };
   const callGoToLive = async (selectedAudioDevice, selectedVideoDevice) => {
+    console.log("params... ", selectedAudioDevice, selectedVideoDevice);
     socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
     const dataToPass = {
@@ -870,9 +871,9 @@ function ORBPage(props) {
     setMediaDevice(false);
     setImageModal(false);
     setShow(false);
-    if (selectedAudioDevice && selectedVideoDevice) {
-      callGoToLive(selectedAudioDevice, selectedVideoDevice);
-    }
+    // if (selectedAudioDevice && selectedVideoDevice) {
+    //   callGoToLive(selectedAudioDevice, selectedVideoDevice);
+    // }
   };
 
   return (
@@ -948,6 +949,7 @@ function ORBPage(props) {
               attachedVideoDevices={attachedVideoDevices}
               setSelectedVideoDevice={setSelectedVideoDevice}
               setSelectedAudioDevice={setSelectedAudioDevice}
+              callGoToLive={callGoToLive}
             />
           ) : null}
         </Modal.Body>

@@ -18,6 +18,7 @@ function MediaDevices(props) {
       props.setSelectedVideoDevice(selectedVideo);
 
       props.closeMediaDeviceModal();
+      props.callGoToLive(selectedAudio, selectedVideo);
     } else {
       swal("Info", "Please select the audio and camera device!", "info");
     }
