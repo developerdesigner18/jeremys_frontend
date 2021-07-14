@@ -323,7 +323,7 @@ function ORBPage(props) {
         };
 
         // Publish the local audio and video tracks to the channel.
-        await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+        await rtc.client.publish([audioTrack, videoTrack]);
 
         // user-published event
         rtc.client.on("user-published", async (user, mediaType) => {
