@@ -1,0 +1,15 @@
+.media_div {
+  flex-direction: column;
+  padding: 25px;
+}
+.media_div > div:first-child {
+  margin-bottom: 25px;
+}
+
+.media_div button {
+  margin-top: 15px;
+}
+.media_div input {
+  margin-right: 5px;
+  margin-bottom: 10px;
+}

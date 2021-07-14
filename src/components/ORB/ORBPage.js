@@ -24,9 +24,10 @@ import GenerateTicket from "../ORBTicketComponents/GenerateTicket";
 import moment from "moment";
 import socketIOClient from "socket.io-client";
 import ScreenShotUpload from "../ORBTicketComponents/ScreenShotUpload";
+import MediaDevices from "../ORBTicketComponents/MediaDevices";
 
 const useOutsideClick = (ref, callback) => {
-  const handleClick = (e) => {
+  const handleClick = e => {
     if (ref.current && !ref.current.contains(e.target)) {
       callback();
     }
@@ -73,6 +74,11 @@ function ORBPage(props) {
   const [fansFromQ, setFansFromQ] = useState([]);
   const [fansWithR, setFansWithR] = useState([]);
   const [availableHost, setAvailableHost] = useState([]);
+  const [attachedAudioDevices, setAttachedAudioDevices] = useState([]);
+  const [attachedVideoDevices, setAttachedVideoDevices] = useState([]);
+  const [selectedAudioDevice, setSelectedAudioDevice] = useState("");
+  const [selectedVideoDevice, setSelectedVideoDevice] = useState("");
+  const [mediaDevice, setMediaDevice] = useState(false);
   const rtc = {
     client: null,
     localAudioTrack: null,
@@ -99,7 +105,7 @@ function ORBPage(props) {
       localStorage.getItem("type") === "Trainer"
     ) {
       console.log("inside if...........");
-      socket.on("getQvalue", (data) => {
+      socket.on("getQvalue", data => {
         console.log("data from q event", data);
         if (data[localStorage.getItem("id")]) {
           setFansFromQ(data[localStorage.getItem("id")]);
@@ -107,18 +113,18 @@ function ORBPage(props) {
       });
     }
 
-    socket.on("tipTicketValue", (data) => {
+    socket.on("tipTicketValue", data => {
       console.log("data from tip ticket event", data);
       setTipRatio(data.tip);
       setTicketSold(data.soldTicket);
     });
 
-    socket.on("getFanRValue", (data) => {
+    socket.on("getFanRValue", data => {
       console.log("r fan data.. ", data);
       setFansWithR(data);
     });
 
-    window.addEventListener("beforeunload", async (ev) => {
+    window.addEventListener("beforeunload", async ev => {
       console.log("before unload evenet called at star side..", ev);
 
       await dispatch(removeOnlineUser());
@@ -142,7 +148,7 @@ function ORBPage(props) {
     if (time > 0) {
       if (isLive) {
         interval = setInterval(() => {
-          setTime((prev) => prev - 1);
+          setTime(prev => prev - 1);
         }, 1000);
       }
     } else {
@@ -181,13 +187,13 @@ function ORBPage(props) {
     setShow(true);
   };
 
-  const stateData = useSelector((state) => state.ORB);
-  const stateUser = useSelector((state) => state.user);
+  const stateData = useSelector(state => state.ORB);
+  const stateUser = useSelector(state => state.user);
 
   const setMoreIcon = () => {
     setIsOpen(!isOpen);
   };
-  const onClickVideo = (uid) => {
+  const onClickVideo = uid => {
     setFanVideoClicked(true);
     setFanVideoClickedUid(uid);
     console.log("uid=-=-=-=-=-", uid);
@@ -213,195 +219,209 @@ function ORBPage(props) {
       }
     }
   };
-  const callGoToLive = async () => {
-    // console.log("seats and time... ", seats, time);
-    if (seats > 0 && time > 0) {
-      socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
+  const callGoToLive = async (selectedAudioDevice, selectedVideoDevice) => {
+    socket = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
-      const dataToPass = {
-        userId: localStorage.getItem("id").toString(),
-        timer: time,
-        seat: seats,
-        price: ticketPrice,
-      };
-      await dispatch(storeLiveStream(dataToPass));
+    const dataToPass = {
+      userId: localStorage.getItem("id").toString(),
+      timer: time,
+      seat: seats,
+      price: ticketPrice,
+    };
+    await dispatch(storeLiveStream(dataToPass));
 
-      setIsLive(true);
-      await dispatch(storeOnlineUser());
+    setIsLive(true);
+    await dispatch(storeOnlineUser());
 
-      let token;
-      let subscribedValue = false;
+    let token;
+    let subscribedValue = false;
 
-      socket.emit("storeUser", localStorage.getItem("id"));
-      let userId = localStorage.getItem("id").toString();
+    socket.emit("storeUser", localStorage.getItem("id"));
+    let userId = localStorage.getItem("id").toString();
 
-      await axios
-        .get(
-          `${
-            process.env.REACT_APP_API_URL
-          }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
-            "id"
-          )}`
-        )
-        .then((result) => {
-          // console.log("result-==-=--=", result.data.key);
-          setOptions((prevState) => ({...prevState, token: result.data.key}));
-          token = result.data.key;
-        })
-        .catch((err) => console.log("error ", err));
+    await axios
+      .get(
+        `${
+          process.env.REACT_APP_API_URL
+        }api/agora/generateRtcToken?channelName=${userId}&userId=${localStorage.getItem(
+          "id"
+        )}`
+      )
+      .then(result => {
+        // console.log("result-==-=--=", result.data.key);
+        setOptions(prevState => ({...prevState, token: result.data.key}));
+        token = result.data.key;
+      })
+      .catch(err => console.log("error ", err));
 
-      rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
-      setORB((prevState) => ({...prevState, client: rtc.client}));
-      await rtc.client.setClientRole(options.role);
-      const uid = await rtc.client.join(
-        options.appId,
-        options.channel,
-        token,
-        null
-      );
-      await dispatch(storeHostUId(uid));
-      console.log("uid Host==-=-=-=", uid);
+    rtc.client = AgoraRTC.createClient({mode: "live", codec: "vp8"});
+    setORB(prevState => ({...prevState, client: rtc.client}));
+    await rtc.client.setClientRole(options.role);
+    const uid = await rtc.client.join(
+      options.appId,
+      options.channel,
+      token,
+      null
+    );
+    await dispatch(storeHostUId(uid));
+    console.log("uid Host==-=-=-=", uid);
 
-      // await rtc.client.enableDualStream();
-      // Create an audio track from the audio sampled by a microphone.
-      rtc.localAudioTrack = await AgoraRTC
-        .createMicrophoneAudioTrack
-        // {
-        // encoderConfig: {
-        //   sampleRate: 48000,
-        //   stereo: true,
-        //   bitrate: 128,
-        // },
-        // AEC: true,
-        // AGC: true,
-        // ANS: true,
-        // }
-        ();
-      setORB((prevState) => ({
-        ...prevState,
-        localAudioTrack: rtc.localAudioTrack,
-      }));
-      AgoraRTC.onMicrophoneChanged = async (changedDevice) => {
-        // When plugging in a device, switch to a device that is newly plugged in.
-        if (changedDevice.state === "ACTIVE") {
-          rtc.localAudioTrack.setDevice(changedDevice.device.deviceId);
-          // Switch to an existing device when the current device is unplugged.
-        } else if (
-          changedDevice.device.label === rtc.localAudioTrack.getTrackLabel()
-        ) {
-          const oldMicrophones = await AgoraRTC.getMicrophones();
-          oldMicrophones[0] &&
-            rtc.localAudioTrack.setDevice(oldMicrophones[0].deviceId);
-        }
-      };
+    Promise.resolve()
+      .then(() => {
+        let selectedMicrophoneId = selectedAudioDevice;
+        let selectedCameraId = selectedVideoDevice;
 
-      // Create a video track from the video captured by a camera.
-      rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack();
-      setORB((prevState) => ({
-        ...prevState,
-        localVideoTrack: rtc.localVideoTrack,
-      }));
+        return Promise.all([
+          AgoraRTC.createCameraVideoTrack({cameraId: selectedCameraId}),
+          AgoraRTC.createMicrophoneAudioTrack({
+            microphoneId: selectedMicrophoneId,
+          }),
+        ]);
+      })
+      .then(async ([videoTrack, audioTrack]) => {
+        // Create an audio track from the audio sampled by a microphone.
+        rtc.localAudioTrack = audioTrack;
+        setORB(prevState => ({
+          ...prevState,
+          localAudioTrack: audioTrack,
+        }));
 
-      rtc.localVideoTrack.play("local-player");
-      // rtc.localAudioTrack.play();
+        // Create a video track from the video captured by a camera.
+        rtc.localVideoTrack = videoTrack;
+        setORB(prevState => ({
+          ...prevState,
+          localVideoTrack: videoTrack,
+        }));
 
-      // Publish the local audio and video tracks to the channel.
-      await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
+        rtc.localVideoTrack.play("local-player");
 
-      // user-published event
-      rtc.client.on("user-published", async (user, mediaType) => {
-        // console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+        AgoraRTC.onMicrophoneChanged = async changedDevice => {
+          // When plugging in a device, switch to a device that is newly plugged in.
+          if (changedDevice.state === "ACTIVE") {
+            rtc.localAudioTrack.setDevice(changedDevice.device.deviceId);
+            // Switch to an existing device when the current device is unplugged.
+          } else if (
+            changedDevice.device.label === rtc.localAudioTrack.getTrackLabel()
+          ) {
+            const oldMicrophones = await AgoraRTC.getMicrophones();
+            oldMicrophones[0] &&
+              rtc.localAudioTrack.setDevice(oldMicrophones[0].deviceId);
+          }
+        };
 
-        // Subscribe to a remote user.
+        AgoraRTC.onCameraChanged = async info => {
+          console.log("info for camera changed.. ", info);
+          if (info.state === "ACTIVE") {
+            rtc.localVideoTrack.setDevice(info.device.deviceId);
+          } else if (
+            info.device.label === rtc.localVideoTrack.getTrackLabel()
+          ) {
+            const oldCameras = await AgoraRTC.getCameras();
+            oldCameras[0] &&
+              rtc.localVideoTrack.setDevice(oldCameras[0].deviceId);
+          }
+        };
 
-        var x = document.getElementsByClassName(
-          "fan_ORB_small_video_idle"
-        ).length;
-        const seatCount = seats - 1;
-        console.log("x-=-=-=-=-", x, seats, x <= seatCount);
-        if (x <= seatCount) {
-          await rtc.client.subscribe(user, mediaType);
-          await dispatch(changeUserStatus());
+        // Publish the local audio and video tracks to the channel.
+        await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
 
-          if (mediaType === "video") {
-            subscribedValue = true;
-            setSubscribedUsers(subscribedValue);
-            host.push(user);
-            setAvailableHost([...host]);
-            let agoraClass = document.getElementById("fan-remote-playerlist2");
-            for (let i = 0; i < seatCount; i++) {
-              let generatedDiv = document.getElementById(
-                `player-wrapper-${user.uid}`
+        // user-published event
+        rtc.client.on("user-published", async (user, mediaType) => {
+          // console.log("user-published!-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
+          // Subscribe to a remote user.
+
+          var x = document.getElementsByClassName(
+            "fan_ORB_small_video_idle"
+          ).length;
+          const seatCount = seats - 1;
+          console.log("x-=-=-=-=-", x, seats, x <= seatCount);
+          if (x <= seatCount) {
+            await rtc.client.subscribe(user, mediaType);
+            await dispatch(changeUserStatus());
+
+            if (mediaType === "video") {
+              subscribedValue = true;
+              setSubscribedUsers(subscribedValue);
+              host.push(user);
+              setAvailableHost([...host]);
+              let agoraClass = document.getElementById(
+                "fan-remote-playerlist2"
               );
-              if (generatedDiv) {
-                generatedDiv.remove();
+              for (let i = 0; i < seatCount; i++) {
+                let generatedDiv = document.getElementById(
+                  `player-wrapper-${user.uid}`
+                );
+                if (generatedDiv) {
+                  generatedDiv.remove();
+                }
+                let playerWrapper = document.createElement("div");
+                playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
+                playerWrapper.classList.add("col-md-2");
+                playerWrapper.classList.add("my-1");
+                playerWrapper.classList.add("fan_ORB_main_small_video");
+                playerWrapper.classList.add("fan_ORB_small_video_idle");
+                playerWrapper.addEventListener("click", () => {
+                  onClickVideo(user.uid);
+                });
+                playerWrapper.setAttribute(
+                  "style",
+                  "height:165px; width: 100%; border-radius:50%;"
+                );
+                agoraClass.insertBefore(
+                  playerWrapper,
+                  agoraClass.childNodes[0]
+                );
+                user.videoTrack.play(`player-wrapper-${user.uid}`);
               }
-              let playerWrapper = document.createElement("div");
-              playerWrapper.setAttribute("id", `player-wrapper-${user.uid}`);
-              playerWrapper.classList.add("col-md-2");
-              playerWrapper.classList.add("my-1");
-              playerWrapper.classList.add("fan_ORB_main_small_video");
-              playerWrapper.classList.add("fan_ORB_small_video_idle");
-              playerWrapper.addEventListener("click", () => {
-                onClickVideo(user.uid);
+            } else {
+              rtc.client.on("media-reconnect-start", uid => {
+                // console.log("media-reconnect-start event called.............", uid);
               });
-              playerWrapper.setAttribute(
-                "style",
-                "height:165px; width: 100%; border-radius:50%;"
-              );
-              agoraClass.insertBefore(playerWrapper, agoraClass.childNodes[0]);
-              user.videoTrack.play(`player-wrapper-${user.uid}`);
             }
-          } else {
-            rtc.client.on("media-reconnect-start", (uid) => {
-              // console.log("media-reconnect-start event called.............", uid);
-            });
-          }
-          if (mediaType === "audio") {
-            console.log("data-=-=medialType-=-==--=Audio");
+            if (mediaType === "audio") {
+              console.log("data-=-=medialType-=-==--=Audio");
 
-            // socket.on("getFanRValue", (data) => {
-            //   console.log("data-=-=", data);
+              // socket.on("getFanRValue", (data) => {
+              //   console.log("data-=-=", data);
 
-            //   console.log("1st if", data);
-            //   if (data.length) {
-            //     console.log("2nd if");
-            //     for (let info of data) {
-            //       console.log("3rd if");
-            //       console.log(
-            //         "check condition.. ",
-            //         info === user.uid,
-            //         info,
-            //         user.uid
-            //       );
-            //       if (info === user.uid) {
-            //         console.log("4th if");
-            user.audioTrack.play();
-            //       }
-            //     }
-            //   }
-            // });
-          } else {
-            rtc.client.on("media-reconnect-start", (uid) => {
-              // console.log("media-reconnect-start event called.............", uid);
-            });
+              //   console.log("1st if", data);
+              //   if (data.length) {
+              //     console.log("2nd if");
+              //     for (let info of data) {
+              //       console.log("3rd if");
+              //       console.log(
+              //         "check condition.. ",
+              //         info === user.uid,
+              //         info,
+              //         user.uid
+              //       );
+              //       if (info === user.uid) {
+              //         console.log("4th if");
+              user.audioTrack.play();
+              //       }
+              //     }
+              //   }
+              // });
+            } else {
+              rtc.client.on("media-reconnect-start", uid => {
+                // console.log("media-reconnect-start event called.............", uid);
+              });
+            }
           }
-        }
-      });
-      // user-unpulished event
-      rtc.client.on("user-unpublished", async (user, mediaType) => {
-        if (mediaType === "video") {
-          let generatedDiv = document.getElementById(
-            `player-wrapper-${user.uid}`
-          );
-          if (generatedDiv) {
-            generatedDiv.remove();
+        });
+        // user-unpulished event
+        rtc.client.on("user-unpublished", async (user, mediaType) => {
+          if (mediaType === "video") {
+            let generatedDiv = document.getElementById(
+              `player-wrapper-${user.uid}`
+            );
+            if (generatedDiv) {
+              generatedDiv.remove();
+            }
           }
-        }
+        });
       });
-    } else {
-      swal("Info", "Please fill up the show time and seats!", "info");
-    }
   };
 
   const callRoarFunction = () => {
@@ -442,8 +462,7 @@ function ORBPage(props) {
         hosts.push(
           <div
             className={`ORB_main_cat ${subscribedUsers ? "col-md-2" : null}`}
-            id={`fan-ORB${i}`}
-          >
+            id={`fan-ORB${i}`}>
             {subscribedUsers ? (
               <></>
             ) : (
@@ -484,8 +503,7 @@ function ORBPage(props) {
         <div
           className="ORB_main_cat col-md-2 my-1 mx-0"
           id={`fan-ORB${i}`}
-          style={{width: "100%", height: "165px"}}
-        >
+          style={{width: "100%", height: "165px"}}>
           <img
             src="../assets/images/button_bg.png"
             style={{width: "100%", height: "100%"}}
@@ -616,10 +634,10 @@ function ORBPage(props) {
           // if (stateData.joinedFanList.length >= 15) {
           //   swal("Info", "You cannot communicate with this user", "info");
           // } else {
-          setFanList((prevState) => [...prevState, stateData.joinedFanList]);
+          setFanList(prevState => [...prevState, stateData.joinedFanList]);
           // }
         } else {
-          setFanList((prevState) => [...prevState, stateData.joinedFanList]);
+          setFanList(prevState => [...prevState, stateData.joinedFanList]);
         }
       }, 5000);
     }
@@ -708,7 +726,7 @@ function ORBPage(props) {
     window.open(`https://twitter.com/intent/tweet?url=${encodedURL}`);
   };
 
-  const closedBigORB = (uid) => {
+  const closedBigORB = uid => {
     console.log("closed fn clicked on big column...");
 
     console.log(
@@ -805,6 +823,58 @@ function ORBPage(props) {
     setShow(false);
   };
 
+  const showMediaDeviceModal = () => {
+    if (seats > 0 && time > 0) {
+      setMediaDevice(true);
+
+      AgoraRTC.getDevices()
+        .then(devices => {
+          const audioDevices = devices.filter(function (device) {
+            return device.kind === "audioinput";
+          });
+          const videoDevices = devices.filter(function (device) {
+            return device.kind === "videoinput";
+          });
+
+          console.log(
+            "audio and video devices...... ",
+            audioDevices,
+            videoDevices
+          );
+          setAttachedVideoDevices(videoDevices);
+          setAttachedAudioDevices(audioDevices);
+          // let selectedMicrophoneId = audioDevices[0].deviceId;
+          // let selectedCameraId = videoDevices[0].deviceId;
+
+          // return Promise.all([
+          //   AgoraRTC.createCameraVideoTrack({cameraId: selectedCameraId}),
+          //   AgoraRTC.createMicrophoneAudioTrack({
+          //     microphoneId: selectedMicrophoneId,
+          //   }),
+          // ]);
+        })
+        .catch(() => swal("No audio and video device attached!"));
+      setImageModal(false);
+      setShow(false);
+    } else {
+      swal("Info", "Please fill up the show time and seats!", "info");
+    }
+  };
+
+  const closeMediaDeviceModal = () => {
+    console.log(
+      "attached video and audio device... ",
+      selectedAudioDevice,
+      selectedVideoDevice
+    );
+    setMediaDevice(false);
+    setImageModal(false);
+    setShow(false);
+    if (selectedAudioDevice && selectedVideoDevice) {
+      callGoToLive(selectedAudioDevice, selectedVideoDevice);
+    }
+  };
+
   return (
     <div
       style={{
@@ -814,15 +884,13 @@ function ORBPage(props) {
         backgroundSize: "100vw auto",
         marginTop: "-48px",
       }}
-      id="capture"
-    >
+      id="capture">
       <Modal
         show={show}
         onHide={handleClose}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
+        aria-labelledby="example-custom-modal-styling-title">
         <Modal.Body style={{padding: "0"}}>
           {showTimer ? (
             <Timer setShow={setShow} setTime={setTime} />
@@ -853,13 +921,33 @@ function ORBPage(props) {
         onHide={closeImageModal}
         centered
         dialogClassName="modal-ticket"
-        aria-labelledby="example-custom-modal-styling-title"
-      >
+        aria-labelledby="example-custom-modal-styling-title">
         <Modal.Body style={{padding: "0"}}>
           {imageModal ? (
             <ScreenShotUpload
               closeImageModal={closeImageModal}
               imageModal={imageModal}
+            />
+          ) : null}
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={mediaDevice}
+        size="sm"
+        onHide={closeMediaDeviceModal}
+        centered
+        dialogClassName="modal-ticket"
+        aria-labelledby="example-custom-modal-styling-title">
+        <Modal.Body style={{padding: "0"}}>
+          {mediaDevice ? (
+            <MediaDevices
+              closeMediaDeviceModal={closeMediaDeviceModal}
+              mediaDevice={mediaDevice}
+              attachedAudioDevices={attachedAudioDevices}
+              attachedVideoDevices={attachedVideoDevices}
+              setSelectedVideoDevice={setSelectedVideoDevice}
+              setSelectedAudioDevice={setSelectedAudioDevice}
             />
           ) : null}
         </Modal.Body>
@@ -876,8 +964,7 @@ function ORBPage(props) {
               ? "inset 3px 5px 5px #3a3a3a"
               : "rgb(89 89 89) 3px 5px 5px 8px inset",
             backgroundColor: "#424242",
-          }}
-        >
+          }}>
           {/* <div className="ORB_video_live d-flex position-relative">
             <div></div>
           </div> */}
@@ -975,8 +1062,7 @@ function ORBPage(props) {
           {isLive ? (
             <div
               className="container d-flex justify-content-center mt-1"
-              style={{textAlign: "center", height: "100px"}}
-            >
+              style={{textAlign: "center", height: "100px"}}>
               {/* <div className="ORB_main_cat m-0"> */}
               <img
                 src="../assets/images/live-btn.png"
@@ -990,8 +1076,7 @@ function ORBPage(props) {
           <div
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-4" : "mt-1"
-            }`}
-          >
+            }`}>
             {" "}
             {fanVideoClicked ? (
               <>
@@ -1000,8 +1085,7 @@ function ORBPage(props) {
                 </div>
                 <div
                   className="col-md-6 d-flex justify-content-center"
-                  id="BigColumn"
-                ></div>
+                  id="BigColumn"></div>
                 <div className="col-md-3">
                   <div className="row" id="SmallColumnRight"></div>
                 </div>
@@ -1013,14 +1097,12 @@ function ORBPage(props) {
             className={`container row ORB_videos_container mx-auto player ${
               subscribedUsers ? "mt-0" : "mt-1"
             }`}
-            id="fan-remote-playerlist2"
-          >
+            id="fan-remote-playerlist2">
             {showEmptyCircles()}
           </div>
           <div
             className="container d-flex justify-content-center"
-            style={{textAlign: "center", height: "100px"}}
-          >
+            style={{textAlign: "center", height: "100px"}}>
             {/* <div className="ORB_main_cat m-0"> */}
             {localStorage.getItem("type") === "star" ||
             localStorage.getItem("type") === "Star" ? (
@@ -1048,8 +1130,7 @@ function ORBPage(props) {
                 //   return (
                 <div
                   className="ORB_main_cat"
-                  style={{margin: "0", justifyContent: "center"}}
-                >
+                  style={{margin: "0", justifyContent: "center"}}>
                   <img
                     src={`${fansFromQ[0].profilePic}`}
                     style={{borderRadius: "50%"}}
@@ -1101,8 +1182,7 @@ function ORBPage(props) {
               <div
                 className="ORB_main_cat"
                 style={{cursor: "pointer"}}
-                onClick={callGoToLive}
-              >
+                onClick={showMediaDeviceModal}>
                 {isLive ? (
                   <img src="../assets/images/live-btn.png" />
                 ) : (
@@ -1221,8 +1301,7 @@ function ORBPage(props) {
 
         <a
           style={{cursor: isLive ? "no-drop" : "pointer"}}
-          onClick={showTimerModal}
-        >
+          onClick={showTimerModal}>
           <div className="ORB_link d-flex flex-column">
             <img src="../assets/images/time.png" />
             <p>
@@ -1252,8 +1331,7 @@ function ORBPage(props) {
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            onClick={() => setMoreIcon()}
-          >
+            onClick={() => setMoreIcon()}>
             <img
               src="../assets/images/share.png"
               style={
@@ -1273,8 +1351,7 @@ function ORBPage(props) {
                 background: "#333333",
                 borderRadius: "10px",
                 verticalAlign: "middle",
-              }}
-            >
+              }}>
               <ul className="menu_item d-flex m-0 justify-content-between px-3 align-items-center">
                 {" "}
                 <li
@@ -1286,8 +1363,7 @@ function ORBPage(props) {
                     {" "}
                     <span
                       className="fab fa-facebook-square"
-                      style={{fontSize: "25px"}}
-                    ></span>
+                      style={{fontSize: "25px"}}></span>
                   </a>
                 </li>
                 <li
@@ -1299,8 +1375,7 @@ function ORBPage(props) {
                   <a style={{cursor: "pointer"}} onClick={shareOnTwitter}>
                     <span
                       className="fab fa-twitter-square"
-                      style={{fontSize: "25px"}}
-                    ></span>{" "}
+                      style={{fontSize: "25px"}}></span>{" "}
                   </a>
                 </li>
               </ul>
